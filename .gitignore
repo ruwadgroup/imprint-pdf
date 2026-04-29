@@ -1,0 +1,58 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# build output
+dist/
+build/
+out/
+.turbo/
+*.tsbuildinfo
+
+# WASM build artifacts (prebuilt artifacts that ARE committed live in
+# packages/*/wasm/prebuilt/ — only the from-source build dir is ignored)
+packages/**/wasm/target/
+packages/**/wasm/dist/
+packages/**/wasm/pkg/
+
+# rust
+target/
+Cargo.lock.bak
+
+# test
+coverage/
+.nyc_output/
+__pixmaps__/diff/
+__fixtures__/.cache/
+
+# logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# editors
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# env
+.env
+.env.local
+.env.*.local
+
+# misc
+.cache/
+.temp/
+.tmp/
+
+# imprint output
+*.pdf.tmp
+.imprint/

@@ -1,0 +1,46 @@
+name: Bug report
+description: Something is broken
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Before opening:** search existing issues and check the [FAQ](https://github.com/tamimbinhakim/imprint/blob/main/docs/faq.md).
+
+  - type: input
+    id: version
+    attributes:
+      label: Imprint version(s)
+      placeholder: "@imprint/react@0.1.0, @imprint/core@0.1.0"
+    validations:
+      required: true
+
+  - type: input
+    id: runtime
+    attributes:
+      label: Runtime / framework
+      placeholder: "Node 22 / Next.js 15 / Cloudflare Workers"
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: StackBlitz link or a minimal repo. Issues without reproductions are closed.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+    validations:
+      required: true

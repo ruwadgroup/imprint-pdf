@@ -1,0 +1,11 @@
+node_modules
+dist
+build
+coverage
+.turbo
+.next
+pnpm-lock.yaml
+CHANGELOG.md
+**/wasm/dist
+**/__fixtures__
+**/__pixmaps__

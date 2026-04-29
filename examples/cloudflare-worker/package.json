@@ -1,0 +1,21 @@
+{
+  "name": "@imprint/example-cloudflare-worker",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Imprint example — Cloudflare Worker that generates PDFs in < 100 ms using the standalone WASM build.",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "@imprint/core": "workspace:*",
+    "@imprint/react": "workspace:*",
+    "@imprint/tailwind": "workspace:*"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.0.0",
+    "@types/react": "^19.0.0",
+    "typescript": "catalog:",
+    "wrangler": "^3.0.0"
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "name": "@imprint/core",
+  "version": "0.1.0",
+  "description": "Framework-free PDF IR types, layout primitives, asset resolution, and Tailwind CSS processing for Imprint.",
+  "license": "Apache-2.0",
+  "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tamimbinhakim/imprint.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/core#readme",
+  "bugs": "https://github.com/tamimbinhakim/imprint/issues",
+  "keywords": ["pdf", "react", "tailwind", "typescript", "wasm", "edge"],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
+      "require": { "types": "./dist/index.d.cts", "default": "./dist/index.cjs" }
+    },
+    "./config": {
+      "types": "./dist/config.d.ts",
+      "import": { "types": "./dist/config.d.ts", "default": "./dist/config.js" },
+      "require": { "types": "./dist/config.d.cts", "default": "./dist/config.cjs" }
+    },
+    "./assets": {
+      "types": "./dist/assets.d.ts",
+      "import": { "types": "./dist/assets.d.ts", "default": "./dist/assets.js" },
+      "require": { "types": "./dist/assets.d.cts", "default": "./dist/assets.cjs" }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": ["dist", "README.md", "CHANGELOG.md", "LICENSE"],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "test:ci": "vitest run --coverage",
+    "bench": "vitest bench --run",
+    "clean": "rm -rf dist .turbo *.tsbuildinfo"
+  },
+  "dependencies": {
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "tsup": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "engines": { "node": ">=20.0.0" },
+  "publishConfig": { "access": "public", "provenance": true }
+}

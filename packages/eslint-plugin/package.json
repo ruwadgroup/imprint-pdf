@@ -1,0 +1,49 @@
+{
+  "name": "@imprint/eslint-plugin",
+  "version": "0.1.0",
+  "description": "ESLint rules for Imprint — catch unsupported CSS properties, missing alt text, and unsafe dynamic class names at write time.",
+  "license": "Apache-2.0",
+  "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tamimbinhakim/imprint.git",
+    "directory": "packages/eslint-plugin"
+  },
+  "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/eslint-plugin#readme",
+  "bugs": "https://github.com/tamimbinhakim/imprint/issues",
+  "keywords": ["eslint", "pdf", "imprint", "lint"],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
+      "require": { "types": "./dist/index.d.cts", "default": "./dist/index.cjs" }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": ["dist", "README.md", "CHANGELOG.md", "LICENSE"],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "test:ci": "vitest run --coverage",
+    "clean": "rm -rf dist .turbo *.tsbuildinfo"
+  },
+  "peerDependencies": {
+    "eslint": ">=8.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "eslint": "^9.0.0",
+    "tsup": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "engines": { "node": ">=20.0.0" },
+  "publishConfig": { "access": "public", "provenance": true }
+}

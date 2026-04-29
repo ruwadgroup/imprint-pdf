@@ -1,0 +1,49 @@
+{
+  "name": "@imprint/sign",
+  "version": "0.1.0",
+  "description": "PKCS#7 detached digital signatures for Imprint PDFs.",
+  "license": "BSL-1.1",
+  "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tamimbinhakim/imprint.git",
+    "directory": "packages/sign"
+  },
+  "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/sign#readme",
+  "bugs": "https://github.com/tamimbinhakim/imprint/issues",
+  "keywords": ["pdf", "digital-signature", "pkcs7", "imprint", "enterprise"],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
+      "require": { "types": "./dist/index.d.cts", "default": "./dist/index.cjs" }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": ["dist", "README.md", "CHANGELOG.md", "LICENSE"],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "test:ci": "vitest run --coverage",
+    "clean": "rm -rf dist .turbo *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@imprint/core": "workspace:*",
+    "@imprint/react": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "tsup": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "engines": { "node": ">=20.0.0" },
+  "publishConfig": { "access": "public", "provenance": true }
+}

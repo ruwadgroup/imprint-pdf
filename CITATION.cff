@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+title: imprint
+message: >-
+  If you use this software, please cite it using the metadata below.
+type: software
+authors:
+  - given-names: Tamim
+    family-names: Bin Hakim
+    email: tamimbinhakim.work@gmail.com
+    affiliation: Independent
+repository-code: "https://github.com/tamimbinhakim/imprint"
+url: "https://github.com/tamimbinhakim/imprint"
+abstract: >-
+  Chromium-free, isomorphic React + Tailwind PDF library for TypeScript. Real
+  Tailwind via the Tailwind v4 Oxide compiler, real typography via HarfBuzz +
+  Knuth–Plass, real layout via Taffy. Runs on Node, Bun, the browser, Vercel
+  Edge, Cloudflare Workers, AWS Lambda, and Deno from a single source.
+keywords:
+  - pdf
+  - react
+  - tailwind
+  - typescript
+  - typography
+  - harfbuzz
+  - knuth-plass
+  - wasm
+  - edge-runtime
+license:
+  - Apache-2.0
+  - BUSL-1.1

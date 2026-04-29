@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": [],
+  "references": [
+    { "path": "./packages/core" },
+    { "path": "./packages/react" },
+    { "path": "./packages/tailwind" },
+    { "path": "./packages/cli" },
+    { "path": "./packages/next" },
+    { "path": "./packages/vite" },
+    { "path": "./packages/print" },
+    { "path": "./packages/sign" },
+    { "path": "./packages/ua" },
+    { "path": "./packages/eslint-plugin" }
+  ]
+}

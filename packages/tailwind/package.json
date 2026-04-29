@@ -1,0 +1,70 @@
+{
+  "name": "@imprint/tailwind",
+  "version": "0.1.0",
+  "description": "Vite, Webpack, and Bun plugins for compile-time Tailwind v4 extraction, plus the runtime Oxide WASM fallback.",
+  "license": "Apache-2.0",
+  "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tamimbinhakim/imprint.git",
+    "directory": "packages/tailwind"
+  },
+  "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/tailwind#readme",
+  "bugs": "https://github.com/tamimbinhakim/imprint/issues",
+  "keywords": ["tailwind", "pdf", "vite", "plugin", "css"],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
+      "require": { "types": "./dist/index.d.cts", "default": "./dist/index.cjs" }
+    },
+    "./vite": {
+      "types": "./dist/vite.d.ts",
+      "import": { "types": "./dist/vite.d.ts", "default": "./dist/vite.js" },
+      "require": { "types": "./dist/vite.d.cts", "default": "./dist/vite.cjs" }
+    },
+    "./webpack": {
+      "types": "./dist/webpack.d.ts",
+      "import": { "types": "./dist/webpack.d.ts", "default": "./dist/webpack.js" },
+      "require": { "types": "./dist/webpack.d.cts", "default": "./dist/webpack.cjs" }
+    },
+    "./runtime": {
+      "types": "./dist/runtime.d.ts",
+      "import": { "types": "./dist/runtime.d.ts", "default": "./dist/runtime.js" },
+      "require": { "types": "./dist/runtime.d.cts", "default": "./dist/runtime.cjs" }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": ["dist", "README.md", "CHANGELOG.md", "LICENSE"],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "test:ci": "vitest run --coverage",
+    "clean": "rm -rf dist .turbo *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@imprint/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "tailwindcss": ">=4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "tailwindcss": { "optional": false }
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "tailwindcss": "^4.0.0",
+    "tsup": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "engines": { "node": ">=20.0.0" },
+  "publishConfig": { "access": "public", "provenance": true }
+}

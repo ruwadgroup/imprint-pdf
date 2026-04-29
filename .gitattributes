@@ -1,0 +1,14 @@
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+*.otf binary
+*.ttf binary
+*.wasm binary
+pnpm-lock.yaml linguist-generated=true -diff
+packages/**/wasm/prebuilt/** linguist-generated=true -diff
