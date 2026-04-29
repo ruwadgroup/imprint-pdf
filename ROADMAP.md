@@ -10,6 +10,9 @@ a milestone matters to you.
 - [ ] `<Document>`, `<Page>`, `<View>`, `<Text>`, `<Image>`, `<Svg>`,
       plus HTML aliases (`<div>`, `<p>`, `<h1>`…, `<ul>`, `<table>`,
       `<a>`)
+- [ ] `<Header>` / `<Footer>` running components — repeated across pages
+      via CSS `position: running()`; supports page numbers, doc title,
+      chapter name
 - [ ] Taffy WASM (Block + Flexbox + Grid)
 - [ ] HarfBuzz WASM shaping for Latin / Greek / Cyrillic; CJK behind a
       flag
@@ -57,6 +60,14 @@ a milestone matters to you.
 - [ ] Codegen'd page-size unions, font unions
 - [ ] Editor diagnostics for Tailwind classes that resolve to
       paged-incompatible CSS
+- [ ] `@imprint/testing` — Vitest / Jest matcher `toMatchPdfSnapshot()`
+      for visual regression testing of PDF output
+- [ ] `<Bookmark>` component + auto-generation from heading hierarchy for
+      PDF outline / navigation panel
+- [ ] Document metadata API — title, author, subject, keywords, XMP
+      (required for PDF/A and enterprise DMS ingestion)
+- [ ] Internal cross-references — named destinations and `<a href="#id">`
+      within-document links
 
 ## v1.0-beta — Enterprise stack (BSL)
 
@@ -67,6 +78,8 @@ a milestone matters to you.
 - [ ] `@imprint/ua` — PDF/UA-1 tagged PDF
 - [ ] veraPDF CI validation harness
 - [ ] `@imprint/sign` — PKCS#7 detached signatures
+- [ ] PDF encryption — AES-256, owner / user passwords, permission flags
+      (print-only, no-copy, no-modify) for confidential docs
 - [ ] PDF/A-2b, PDF/A-3 with embedded XML (factur-X / ZUGFeRD)
 - [ ] Streaming generation; sub-100 ms cold edge benchmark verified
 - [ ] All packages public on npm
