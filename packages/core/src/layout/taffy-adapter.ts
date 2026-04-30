@@ -153,8 +153,8 @@ function toTaffyStyle(style: ResolvedStyle, containerWidth: number): Style {
   const isFlex = display === 'flex' || display === 'inline-flex';
   if (display === 'grid') s.display = Display.Grid;
   else if (display === 'none') s.display = Display.None;
-  // Map block→flex-column: Taffy's Display.Block doesn't propagate available width to leaf
-  // measure callbacks, but flex-column with alignItems:Stretch does (same as React Native / Yoga).
+  // Taffy's Display.Block doesn't propagate available width into leaf measure callbacks;
+  // flex-column with alignItems:Stretch does, so we emulate block via flex (same trick Yoga uses).
   else s.display = Display.Flex;
 
   const pos = style.position ?? 'static';
@@ -202,12 +202,19 @@ function toTaffyStyle(style: ResolvedStyle, containerWidth: number): Style {
   else if (jc === 'space-evenly') s.justifyContent = JustifyContent.SpaceEvenly;
   else s.justifyContent = JustifyContent.FlexStart;
 
+  // Track whether `flex` shorthand has already established a basis. The
+  // shorthand `flex: 1` expands to `1 1 0%`; longhand `flex-basis` should
+  // override that, but absence of longhand must not silently revert to `auto`
+  // — otherwise `flex-1` columns size to their content instead of sharing
+  // available width equally.
+  let basisSetByShorthand = false;
   if (style.flex !== undefined) {
     const f = typeof style.flex === 'number' ? style.flex : parseFloat(String(style.flex));
     if (!Number.isNaN(f)) {
       s.flexGrow = f;
       s.flexShrink = 1;
       s.flexBasis = 0;
+      basisSetByShorthand = true;
     }
   }
   if (style.flexGrow !== undefined) {
@@ -222,10 +229,11 @@ function toTaffyStyle(style: ResolvedStyle, containerWidth: number): Style {
         : parseFloat(String(style.flexShrink));
     if (!Number.isNaN(v)) s.flexShrink = v;
   }
-  s.flexBasis =
-    style.flexBasis !== undefined && style.flexBasis !== 'auto'
-      ? resolvePt(style.flexBasis, containerWidth)
-      : 'auto';
+  if (style.flexBasis !== undefined) {
+    s.flexBasis = style.flexBasis === 'auto' ? 'auto' : resolvePt(style.flexBasis, containerWidth);
+  } else if (!basisSetByShorthand) {
+    s.flexBasis = 'auto';
+  }
 
   s.size = {
     width: dim(style.width, containerWidth),
@@ -286,12 +294,27 @@ function toTaffyStyle(style: ResolvedStyle, containerWidth: number): Style {
   );
   s.gridRow = parseGridLine(style.gridRow, style.gridRowStart, style.gridRowEnd);
 
+  if (style.aspectRatio !== undefined) {
+    const ar = String(style.aspectRatio);
+    if (ar.includes('/')) {
+      const [num, den] = ar.split('/').map((v) => parseFloat(v.trim()));
+      if (num && den && den !== 0) s.aspectRatio = num / den;
+    } else {
+      const n = parseFloat(ar);
+      if (!Number.isNaN(n)) s.aspectRatio = n;
+    }
+  }
+
   return s;
 }
 
 interface LeafContext {
   node: PdfNode;
   fixed?: boolean;
+  /** Font family inherited from the nearest styled ancestor; text leaves
+   *  consult this when their own style.fontFamily is unset, so the measure
+   *  pass uses the same font the writer will eventually draw with. */
+  inheritedFontFamily?: string;
 }
 
 interface BuildResult {
@@ -300,20 +323,34 @@ interface BuildResult {
   children: BuildResult[];
 }
 
-function buildNode(node: PdfNode, tree: TaffyTree, containerWidth: number): BuildResult {
+function buildNode(
+  node: PdfNode,
+  tree: TaffyTree,
+  containerWidth: number,
+  inheritedFontFamily?: string,
+): BuildResult {
   const isLeafFixed = node.type === 'image' || node.type === 'svg' || node.type === 'chart';
+
+  // CSS font-family inherits; carry the nearest non-empty value down so a
+  // <Text> deep inside a Page with fontFamily set still measures correctly.
+  const ownFamily = (node.style.fontFamily as string | undefined) ?? undefined;
+  const passDownFamily = ownFamily ?? inheritedFontFamily;
 
   if (node.type === 'text') {
     const s = new Style();
     s.display = Display.Flex;
-    const ctx: LeafContext = { node };
+    const ctx: LeafContext = passDownFamily
+      ? { node, inheritedFontFamily: passDownFamily }
+      : { node };
     const taffyId = tree.newLeafWithContext(s, ctx);
     return { taffyId, imprintId: node.id, children: [] };
   }
 
   if (isLeafFixed) {
     const s = toTaffyStyle(node.style, containerWidth);
-    const ctx: LeafContext = { node, fixed: true };
+    const ctx: LeafContext = passDownFamily
+      ? { node, fixed: true, inheritedFontFamily: passDownFamily }
+      : { node, fixed: true };
     const taffyId = tree.newLeafWithContext(s, ctx);
     return { taffyId, imprintId: node.id, children: [] };
   }
@@ -322,7 +359,7 @@ function buildNode(node: PdfNode, tree: TaffyTree, containerWidth: number): Buil
   const childResults: BuildResult[] = [];
   const childTaffyIds: bigint[] = [];
   for (const child of node.children) {
-    const r = buildNode(child, tree, containerWidth);
+    const r = buildNode(child, tree, containerWidth, passDownFamily);
     childResults.push(r);
     childTaffyIds.push(r.taffyId);
   }
@@ -354,8 +391,8 @@ function extractGeometries(
     contentHeight: layout.contentHeight,
   });
 
-  // Taffy bakes the parent's padding offset into each child's layout.x/y, so pass absX/absY
-  // directly — adding paddingLeft/Top here would double-count it.
+  // Taffy already folds the parent's padding into each child's layout.x/y; adding
+  // paddingLeft/Top to absX/absY would double-count it.
   for (const child of result.children) {
     extractGeometries(child, tree, absX, absY, geometries);
   }
@@ -384,6 +421,10 @@ async function layoutPage(
   fontMetrics: Map<string, LoadedFont> = new Map(),
 ): Promise<void> {
   const tree = new TaffyTree();
+  // Taffy rounds to whole pixels by default — fine for screens, wrong for PDF.
+  // We measure text in fractional points; rounding the container down past an
+  // intrinsic text width forces the line breaker to wrap on the second pass.
+  tree.disableRounding();
 
   const rootStyle = toTaffyStyle(pageNode.style, pageW);
   rootStyle.size = { width: pageW, height: pageH };
@@ -392,10 +433,11 @@ async function layoutPage(
   const padding = resolveEdges(pageNode.style, 'padding', pageW);
   const contentW = pageW - padding.left - padding.right;
 
+  const pageFontFamily = pageNode.style.fontFamily as string | undefined;
   const childResults: BuildResult[] = [];
   const childTaffyIds: bigint[] = [];
   for (const child of pageNode.children) {
-    const r = buildNode(child, tree, contentW);
+    const r = buildNode(child, tree, contentW, pageFontFamily);
     childResults.push(r);
     childTaffyIds.push(r.taffyId);
   }
@@ -433,9 +475,11 @@ async function layoutPage(
         const textNode = node as TextNode;
         const effectiveWidth = knownDimensions.width ?? (availW > 0 ? availW : pageW);
         const style = textNode.style;
+        const familyRaw =
+          (style.fontFamily as string | undefined) ?? ctx.inheritedFontFamily ?? 'Helvetica';
         const family =
-          (style.fontFamily as string | undefined)
-            ?.split(',')[0]
+          familyRaw
+            .split(',')[0]
             ?.trim()
             .replace(/^['"]|['"]$/g, '') ?? 'Helvetica';
         const weight =
@@ -456,7 +500,7 @@ async function layoutPage(
 
   geometries.set(pageNode.id, makePageGeo(pageW, pageH));
 
-  // Root node is at (0,0); children's layout.x/y already include the root's padding offset.
+  // Root sits at (0,0); each child's layout.x/y already includes the root's padding.
   for (const child of rootResult.children) {
     extractGeometries(child, tree, 0, 0, geometries);
   }

@@ -40,11 +40,12 @@ export async function drawText(
   const wrapWidth = geo.width - geo.paddingLeft - geo.paddingRight;
   const metrics = measureText(node.text, style, wrapWidth, loadedFont);
 
-  // text-decoration
   const decoration = (style.textDecoration as string | undefined) ?? '';
   const hasUnderline = decoration.includes('underline');
   const hasStrikethrough = decoration.includes('line-through');
   const hasOverline = decoration.includes('overline');
+  // 1/20 of font-size matches what most browsers settle on; never thinner than
+  // 0.5pt or it disappears at common print resolutions.
   const decorationThickness = Math.max(0.5, fontSize / 20);
 
   for (const line of metrics.lines) {
@@ -56,6 +57,8 @@ export async function drawText(
       line.width,
     );
     const lineY = pageHeight - (geo.y + geo.paddingTop + line.y + fontSize);
+    // Skip lines fully off-page. A one-fontSize slop on each side keeps glyphs
+    // that straddle the edge from being culled mid-stroke.
     if (lineY < -fontSize || lineY > pageHeight + fontSize) continue;
 
     page.drawText(line.text, {
