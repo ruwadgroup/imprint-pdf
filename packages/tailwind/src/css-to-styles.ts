@@ -1,6 +1,5 @@
 import type { ResolvedStyle } from '@imprint/core';
 
-// Map from CSS property name to ResolvedStyle key
 const PROP_MAP: Partial<Record<string, keyof ResolvedStyle>> = {
   display: 'display',
   'flex-direction': 'flexDirection',
@@ -31,8 +30,10 @@ const PROP_MAP: Partial<Record<string, keyof ResolvedStyle>> = {
   'padding-right': 'paddingRight',
   'padding-bottom': 'paddingBottom',
   'padding-left': 'paddingLeft',
-  'padding-inline': 'paddingLeft', // will also set paddingRight below
-  'padding-block': 'paddingTop', // will also set paddingBottom below
+  // The logical-property shorthands have no direct ResolvedStyle key —
+  // the parse loop below splits each one into both sides.
+  'padding-inline': 'paddingLeft',
+  'padding-block': 'paddingTop',
   margin: 'margin',
   'margin-top': 'marginTop',
   'margin-right': 'marginRight',
@@ -49,6 +50,10 @@ const PROP_MAP: Partial<Record<string, keyof ResolvedStyle>> = {
   'border-bottom-color': 'borderBottomColor',
   'border-left-color': 'borderLeftColor',
   'border-radius': 'borderRadius',
+  'border-top-left-radius': 'borderTopLeftRadius',
+  'border-top-right-radius': 'borderTopRightRadius',
+  'border-bottom-right-radius': 'borderBottomRightRadius',
+  'border-bottom-left-radius': 'borderBottomLeftRadius',
   'font-family': 'fontFamily',
   'font-size': 'fontSize',
   'font-weight': 'fontWeight',
@@ -77,12 +82,19 @@ const PROP_MAP: Partial<Record<string, keyof ResolvedStyle>> = {
   overflow: 'overflow',
   'overflow-x': 'overflowX',
   'overflow-y': 'overflowY',
+  transform: 'transform',
+  'transform-origin': 'transformOrigin',
+  'box-shadow': 'boxShadow',
+  'background-image': 'backgroundImage',
+  'object-position': 'objectPosition',
+  'aspect-ratio': 'aspectRatio',
 };
 
-// Parse CSS variables from :root / :host selector blocks
+// Tailwind v4 declares its design tokens as CSS custom properties on :root.
+// We pre-extract them so resolveValue can expand var(...) references without
+// re-walking the full stylesheet for every declaration.
 function parseCssVars(css: string): Map<string, string> {
   const vars = new Map<string, string>();
-  // Match :root, :host, *, html blocks
   const rootRe = /(?::root|:host|\*|html)\s*(?:,\s*(?::root|:host|\*|html)\s*)*\{([^}]*)\}/gs;
   let m = rootRe.exec(css);
   while (m !== null) {
@@ -98,15 +110,17 @@ function parseCssVars(css: string): Map<string, string> {
   return vars;
 }
 
-// Extract one var(...) call from `str` starting at `start`, respecting nested parens.
-// Returns { match, name, fallback, end } or null if not a var( at start.
+// A regex can't safely match var(...) because the fallback can contain
+// arbitrarily nested parentheses (e.g. `var(--x, calc(1px + 2px))`). Walk the
+// string with a depth counter instead, then split name/fallback at the first
+// top-level comma.
 function parseVarCall(
   str: string,
   start: number,
 ): { name: string; fallback: string | null; end: number } | null {
   if (!str.startsWith('var(', start)) return null;
   let depth = 1;
-  let i = start + 4; // past 'var('
+  let i = start + 4;
   const inner: string[] = [];
   while (i < str.length && depth > 0) {
     const ch = str[i]!;
@@ -119,7 +133,6 @@ function parseVarCall(
     i++;
   }
   const content = inner.join('').trim();
-  // Split on first comma that is not inside nested parens
   let commaIdx = -1;
   let d = 0;
   for (let j = 0; j < content.length; j++) {
@@ -135,7 +148,8 @@ function parseVarCall(
   return { name, fallback, end: i + 1 };
 }
 
-// Resolve var(--name, fallback) recursively, up to 8 levels deep
+// Depth cap stops self-referential token graphs (Tailwind's --color-* chains
+// can be deep but never legitimately loop) from blowing the stack.
 function resolveVars(value: string, vars: Map<string, string>, depth = 0): string {
   if (depth > 8 || !value.includes('var(')) return value;
   let result = '';
@@ -167,24 +181,21 @@ function resolveVars(value: string, vars: Map<string, string>, depth = 0): strin
   return result;
 }
 
-// Evaluate simple calc() expressions: only handles + - * / with plain numbers and px/rem.
-// Returns a dimensional value ('Npx') if the expression involves rem/px units,
-// or a bare number string if it's a unitless ratio (e.g. line-height multipliers).
+// Handles +, -, *, / over numbers and px/rem; anything more elaborate falls
+// through unchanged. The caller-side regex (`^[\d\s+\-*/().]+$`) guards the
+// eval — without it we'd be running arbitrary CSS expressions through a JS
+// interpreter. Unitless results (e.g. line-height multipliers) are returned
+// bare so they aren't later mis-converted to pt.
 function resolveCalc(value: string): string {
   if (!value.includes('calc(')) return value;
   return value.replace(/calc\(([^)]+)\)/g, (_, expr: string) => {
     try {
-      // Check if expression has rem/px units before stripping
       const hasDimension = /\d(?:\.\d+)?(?:rem|px|em|pt)/.test(expr);
-      // Convert rem to plain numbers (px equivalent)
       const withPx = expr.replace(/(\d*\.?\d+)rem/g, (__, n: string) => `${parseFloat(n) * 16}`);
-      // Strip px units for arithmetic
       const noUnits = withPx.replace(/(\d*\.?\d+)px/g, '$1');
-      // Only evaluate if it's a simple arithmetic expression
       if (/^[\d\s+\-*/().]+$/.test(noUnits)) {
-        // biome-ignore lint/security/noGlobalEval: safe — only digits and operators
+        // biome-ignore lint/security/noGlobalEval: input is regex-restricted to digits and operators
         const result = eval(noUnits) as number;
-        // Append px only for dimensional values; leave unitless ratios bare
         return hasDimension ? `${result}px` : `${result}`;
       }
     } catch {}
@@ -192,13 +203,16 @@ function resolveCalc(value: string): string {
   });
 }
 
-// oklch(L% C H) → hex — approximate conversion via OKLab → linear sRGB → sRGB
+// Tailwind v4 ships its default palette in oklch(); pdf-lib's color parser
+// only understands hex/rgb. The matrix coefficients are from CSS Color 4
+// §11.3 (OKLab → linear sRGB) followed by the standard sRGB transfer
+// function. Out-of-gamut values are clamped per channel — good enough for
+// document chrome, not colorimetrically correct.
 function oklchToHex(l: number, c: number, h: number): string {
   const hRad = (h * Math.PI) / 180;
   const a = c * Math.cos(hRad);
   const b = c * Math.sin(hRad);
 
-  // OKLab → linear sRGB
   const l_ = l + 0.3963377774 * a + 0.2158037573 * b;
   const m_ = l - 0.1055613458 * a - 0.0638541728 * b;
   const s_ = l - 0.0894841775 * a - 1.291485548 * b;
@@ -210,7 +224,6 @@ function oklchToHex(l: number, c: number, h: number): string {
   let g = -1.2684380046 * lc + 2.6097574011 * mc - 0.3413193965 * sc;
   let bv = -0.0041960863 * lc - 0.7034186147 * mc + 1.707614701 * sc;
 
-  // Gamma correction (linear → sRGB)
   const gamma = (x: number) => {
     const clamped = Math.max(0, Math.min(1, x));
     return clamped <= 0.0031308 ? 12.92 * clamped : 1.055 * clamped ** (1 / 2.4) - 0.055;
@@ -226,7 +239,6 @@ function oklchToHex(l: number, c: number, h: number): string {
   return `#${toHex(r)}${toHex(g)}${toHex(bv)}`;
 }
 
-// Resolve oklch() function calls to hex
 function resolveOklch(value: string): string {
   return value.replace(
     /oklch\(\s*(\d*\.?\d+)%\s+(\d*\.?\d+)\s+(\d*\.?\d+)\s*\)/g,
@@ -239,12 +251,13 @@ function resolveValue(raw: string, vars: Map<string, string>): string {
   let v = resolveVars(raw, vars);
   v = resolveCalc(v);
   v = resolveOklch(v);
-  // Convert remaining rem → px
   v = v.replace(/(\d*\.?\d+)rem/g, (_, n: string) => `${parseFloat(n) * 16}px`);
-  // Strip Tailwind opacity variable trick
+  // Tailwind smuggles per-class opacity through a `/ var(--tw-text-opacity)`
+  // suffix on color values. PDF colors don't carry alpha, so drop the divisor
+  // and let the surrounding `opacity` property handle it.
   v = v.replace(/\s*\/\s*var\(--tw-[^)]+\)/g, '');
-  // Convert px → pt (PDF layout unit: 1px = 0.75pt).
-  // This prevents lineHeight numbers being mis-interpreted as unitless ratios by measureText.
+  // Always emit pt with an explicit unit so downstream measurement code
+  // never mistakes a length (e.g. line-height: 24) for a unitless ratio.
   v = v.replace(/(\d*\.?\d+)px/g, (_, n: string) => {
     const pt = parseFloat(n) * 0.75;
     return `${Number.isInteger(pt) ? pt : parseFloat(pt.toFixed(4))}pt`;
@@ -252,9 +265,9 @@ function resolveValue(raw: string, vars: Map<string, string>): string {
   return v.trim();
 }
 
-// Process CSS: unwrap @layer blocks (their rules are needed) and strip all
-// other @-rules (@media, @keyframes, @supports, @font-face, etc.).
-// Uses brace-counting to avoid regex-based brace mismatches.
+// Tailwind v4 emits everything inside @layer blocks; we keep their contents
+// and discard every other at-rule (@media/@keyframes/@supports/@font-face).
+// Brace counting handles nested blocks that a flat regex can't match safely.
 function stripAtRules(css: string): string {
   let out = '';
   let i = 0;
@@ -265,28 +278,22 @@ function stripAtRules(css: string): string {
       out += css.slice(i);
       break;
     }
-    // Copy everything before the @-rule
     out += css.slice(i, atIdx);
 
-    // Find the opening brace of this @-rule
     const braceIdx = css.indexOf('{', atIdx);
     const semiIdx = css.indexOf(';', atIdx);
 
-    // @-rules with no block (e.g. @import, @charset) — skip to semicolon
+    // Statement-form at-rule (@import, @charset). Skip past its terminator.
     if (semiIdx !== -1 && (braceIdx === -1 || semiIdx < braceIdx)) {
       i = semiIdx + 1;
       continue;
     }
 
-    if (braceIdx === -1) {
-      // No opening brace found — skip to end
-      break;
-    }
+    if (braceIdx === -1) break;
 
     const ruleName = css.slice(atIdx, braceIdx).trimEnd();
     const isLayer = /^@layer\b/.test(ruleName);
 
-    // Find the matching closing brace using brace counting
     let depth = 1;
     let j = braceIdx + 1;
     while (j < css.length && depth > 0) {
@@ -297,11 +304,11 @@ function stripAtRules(css: string): string {
 
     const inner = css.slice(braceIdx + 1, j - 1);
 
+    // @layer's body can contain its own at-rules, so recurse rather than
+    // splicing it back in raw.
     if (isLayer) {
-      // @layer: recurse into its content so nested rules are kept
       out += stripAtRules(inner);
     }
-    // All other @-rules: discard entirely
 
     i = j;
   }
@@ -314,20 +321,22 @@ export function parseCssToStyleMap(css: string): Map<string, ResolvedStyle> {
   const vars = parseCssVars(css);
   const cleaned = stripAtRules(css);
 
-  // Match .className { declarations } — class name may contain escaped chars
+  // Tailwind class names contain characters CSS requires to be escaped
+  // (`/`, `[`, `]`, `%`, etc.), so the selector regex accepts the escape and
+  // we strip the backslash later.
   const ruleRe = /\.((?:[a-zA-Z0-9_\-\\:./[\]%@#!])+)\s*\{([^}]*)\}/g;
   let m = ruleRe.exec(cleaned);
   while (m !== null) {
     const rawName = m[1] ?? '';
     const decls = m[2] ?? '';
 
-    // Skip pseudo-class / pseudo-element selectors (unescaped colon)
+    // Unescaped colon means a pseudo selector (`.btn:hover`); we can't model
+    // those statelessly, so skip the rule rather than half-applying it.
     if (/(?<!\\):/.test(rawName)) {
       m = ruleRe.exec(cleaned);
       continue;
     }
 
-    // Unescape: \/ → /, \[ → [, \] → ], etc.
     const className = rawName.replace(/\\(.)/g, '$1');
 
     const style: Partial<Record<keyof ResolvedStyle, unknown>> = {};
@@ -342,11 +351,10 @@ export function parseCssToStyleMap(css: string): Map<string, ResolvedStyle> {
           const val = resolveValue(rawVal, vars);
           if (val) {
             style[key] = val;
-            // padding-inline sets both paddingLeft and paddingRight
+            // Logical-property shorthands fan out to both physical sides.
             if (prop === 'padding-inline') {
               style.paddingRight = val;
             }
-            // padding-block sets both paddingTop and paddingBottom
             if (prop === 'padding-block') {
               style.paddingBottom = val;
             }

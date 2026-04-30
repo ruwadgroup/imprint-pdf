@@ -1,5 +1,5 @@
-import type { PDFPage } from 'pdf-lib';
-import { PDFArray, PDFName, PDFString } from 'pdf-lib';
+import type { PDFDocument, PDFPage } from 'pdf-lib';
+import { PDFArray, PDFName, PDFNull, PDFNumber, PDFString } from 'pdf-lib';
 import type { ComputedGeometry, LinkNode } from '../types.js';
 import { pdfY } from './coords.js';
 
@@ -8,31 +8,67 @@ export function drawLink(
   page: PDFPage,
   pageHeight: number,
   geo: ComputedGeometry,
+  doc: PDFDocument,
+  /** Map of lowercase anchor name → target PDFPage for #anchor hrefs. */
+  namedDests?: Map<string, PDFPage>,
 ): void {
   const href = node.props.href;
   if (!href) return;
   const { x, y, width, height } = geo;
   const pdfYPos = pdfY(pageHeight, y, height);
 
-  const linkDict = page.doc.context.obj({
-    Type: PDFName.of('Annot'),
-    Subtype: PDFName.of('Link'),
-    Rect: PDFArray.withContext(page.doc.context),
-    Border: PDFArray.withContext(page.doc.context),
-    A: page.doc.context.obj({
-      Type: PDFName.of('Action'),
-      S: PDFName.of('URI'),
-      URI: PDFString.of(href),
-    }),
-  });
-  const rectArr = linkDict.lookup(PDFName.of('Rect')) as PDFArray;
-  rectArr.push(page.doc.context.obj(x));
-  rectArr.push(page.doc.context.obj(pdfYPos));
-  rectArr.push(page.doc.context.obj(x + width));
-  rectArr.push(page.doc.context.obj(pdfYPos + height));
-  const borderArr = linkDict.lookup(PDFName.of('Border')) as PDFArray;
-  borderArr.push(page.doc.context.obj(0));
-  borderArr.push(page.doc.context.obj(0));
-  borderArr.push(page.doc.context.obj(0));
-  page.node.addAnnot(page.doc.context.register(linkDict));
+  const rectArr = PDFArray.withContext(doc.context);
+  rectArr.push(doc.context.obj(x));
+  rectArr.push(doc.context.obj(pdfYPos));
+  rectArr.push(doc.context.obj(x + width));
+  rectArr.push(doc.context.obj(pdfYPos + height));
+
+  // Border [H V W] = [horiz radius, vert radius, width]. All zero = no visible
+  // border, which matches what almost everyone wants (web links don't get
+  // boxed by default either).
+  const borderArr = doc.context.obj([0, 0, 0]);
+
+  // In-document anchors resolve through the named-dest map and become a
+  // /Dest GoTo. Anything else falls through to a /URI external link below.
+  if (href.startsWith('#') && namedDests) {
+    const anchor = href.slice(1).toLowerCase();
+    const targetPage = namedDests.get(anchor);
+    if (targetPage) {
+      const destArr = doc.context.obj([
+        targetPage.ref,
+        PDFName.of('XYZ'),
+        PDFNull,
+        PDFNull,
+        PDFNumber.of(0),
+      ]);
+      page.node.addAnnot(
+        doc.context.register(
+          doc.context.obj({
+            Type: PDFName.of('Annot'),
+            Subtype: PDFName.of('Link'),
+            Rect: rectArr,
+            Border: borderArr,
+            Dest: destArr,
+          }),
+        ),
+      );
+      return;
+    }
+  }
+
+  page.node.addAnnot(
+    doc.context.register(
+      doc.context.obj({
+        Type: PDFName.of('Annot'),
+        Subtype: PDFName.of('Link'),
+        Rect: rectArr,
+        Border: borderArr,
+        A: doc.context.obj({
+          Type: PDFName.of('Action'),
+          S: PDFName.of('URI'),
+          URI: PDFString.of(href),
+        }),
+      }),
+    ),
+  );
 }

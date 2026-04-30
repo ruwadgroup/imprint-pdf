@@ -6,10 +6,41 @@ import type {
   ComputedGeometry,
   DropdownNode,
   RadioGroupNode,
+  ResolvedStyle,
   SignatureNode,
   TextFieldNode,
 } from '../types.js';
+import { parseColor, toPt } from './color.js';
 import { pdfY } from './coords.js';
+
+// PDF spec §12.7.3.1, table 227 (Tx) / §12.7.4.2.1, table 229 (Btn) /
+// §12.7.4.4.1, table 231 (Ch). Bit positions are 1-indexed in the spec.
+const FF_REQUIRED = 1 << 1; // bit 2: Required
+const FF_MULTILINE = 1 << 12; // bit 13: Multiline (Tx)
+const FF_RADIO = 1 << 15; // bit 16: Radio (Btn)
+const FF_PUSHBUTTON = 1 << 16; // bit 17: Pushbutton (Btn)
+const FF_COMBO = 1 << 17; // bit 18: Combo (Ch)
+
+/**
+ * Default-appearance string for a form widget (PDF spec §12.7.3.3). The format
+ * is a tiny PDF content-stream snippet: font/size selector, then a colour op.
+ *
+ * We always emit Helvetica because embedding the user's font into the
+ * widget's own resource dictionary is a separate, much bigger problem; viewers
+ * fall back to Helvetica anyway when the named font isn't available.
+ */
+function buildDA(style: ResolvedStyle): string {
+  const fontSize = toPt(style.fontSize, 12);
+  const color = parseColor(style.color as string | undefined);
+  let colorOp = '0 g';
+  if (color && 'red' in color) {
+    const fmt = (n: number) => Math.round(n * 1000) / 1000;
+    colorOp = `${fmt(color.red)} ${fmt(color.green)} ${fmt(color.blue)} rg`;
+  } else if (color && 'gray' in color) {
+    colorOp = `${Math.round((color as { gray: number }).gray * 1000) / 1000} g`;
+  }
+  return `/Helvetica ${fontSize} Tf ${colorOp}`;
+}
 
 function ensureAcroForm(doc: PDFDocument): PDFDict {
   let acroForm = doc.catalog.lookupMaybe(PDFName.of('AcroForm'), PDFDict);
@@ -48,7 +79,7 @@ export function drawTextField(
   const { x, y, width, height } = geo;
   const pdfYPos = pdfY(pageHeight, y, height);
   const props = node.props;
-  const flags = props.required ? (props.multiline ? 4096 | 2 : 2) : props.multiline ? 4096 : 0;
+  const flags = (props.required ? FF_REQUIRED : 0) | (props.multiline ? FF_MULTILINE : 0);
 
   const fieldDict = doc.context.obj({
     Type: PDFName.of('Annot'),
@@ -56,7 +87,7 @@ export function drawTextField(
     FT: PDFName.of('Tx'),
     Rect: rectArray(doc, x, pdfYPos, width, height),
     T: PDFString.of(props.name),
-    DA: PDFString.of('/Helvetica 12 Tf 0 g'),
+    DA: PDFString.of(buildDA(node.style)),
   }) as PDFDict;
 
   if (flags > 0) fieldDict.set(PDFName.of('Ff'), doc.context.obj(flags));
@@ -108,10 +139,12 @@ export function drawRadioGroup(
   const options = props.options ?? [];
   if (options.length === 0) return;
 
-  // Parent field holds the group — no Rect, no annotation itself
+  // Radio groups are modeled as a single field with N child widgets (PDF spec
+  // §12.7.4.2.3). The parent owns the value and the field flags; only the
+  // children get on-page Rects and annotations.
   const groupDict = doc.context.obj({
     FT: PDFName.of('Btn'),
-    Ff: doc.context.obj(32768), // Ff bit 16 = radio
+    Ff: doc.context.obj(FF_RADIO),
     T: PDFString.of(props.name),
     V: PDFName.of(props.defaultValue ?? 'Off'),
     Kids: doc.context.obj([]) as PDFArray,
@@ -128,7 +161,8 @@ export function drawRadioGroup(
 
   for (let i = 0; i < options.length; i++) {
     const opt = options[i]!;
-    // Options run top-to-bottom in layout space; PDF y-axis is flipped
+    // i=0 is the first (topmost) option in document order; PDF y goes up,
+    // so the first option sits at the highest y-coordinate.
     const optCenterY = pdfYPos + height - (i + 0.5) * optH;
     const ry = optCenterY - radioSize / 2;
 
@@ -159,7 +193,9 @@ export function drawDropdown(
   const props = node.props;
   const options = props.options ?? [];
 
-  // Opt: array of [exportValue, displayValue] pairs
+  // PDF Choice fields (§12.7.4.4): each option is [exportValue, displayValue].
+  // Exporting separately from display lets form data stay stable when labels
+  // get translated or rephrased.
   const optArr = doc.context.obj([]) as PDFArray;
   for (const opt of options) {
     const pair = PDFArray.withContext(doc.context);
@@ -172,11 +208,11 @@ export function drawDropdown(
     Type: PDFName.of('Annot'),
     Subtype: PDFName.of('Widget'),
     FT: PDFName.of('Ch'),
-    Ff: doc.context.obj(131072), // Ff bit 18 = combo (dropdown)
+    Ff: doc.context.obj(FF_COMBO),
     Rect: rectArray(doc, x, pdfYPos, width, height),
     T: PDFString.of(props.name),
     Opt: optArr,
-    DA: PDFString.of('/Helvetica 12 Tf 0 g'),
+    DA: PDFString.of(buildDA(node.style)),
   }) as PDFDict;
 
   if (props.defaultValue !== undefined) {
@@ -202,10 +238,10 @@ export function drawButton(
     Type: PDFName.of('Annot'),
     Subtype: PDFName.of('Widget'),
     FT: PDFName.of('Btn'),
-    Ff: doc.context.obj(65536), // Ff bit 17 = push button
+    Ff: doc.context.obj(FF_PUSHBUTTON),
     Rect: rectArray(doc, x, pdfYPos, width, height),
     T: PDFString.of(props.name),
-    DA: PDFString.of('/Helvetica 12 Tf 0 g'),
+    DA: PDFString.of(buildDA(node.style)),
   }) as PDFDict;
 
   registerField(doc, page, fieldDict);

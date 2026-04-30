@@ -17,6 +17,7 @@ export type PdfNodeType =
   | 'pagebreak'
   | 'header'
   | 'footer'
+  | 'watermark'
   | 'bookmark';
 
 export interface ResolvedStyle {
@@ -48,6 +49,10 @@ export interface ResolvedStyle {
   borderBottomColor?: string;
   borderLeftColor?: string;
   borderRadius?: string | number;
+  borderTopLeftRadius?: string | number;
+  borderTopRightRadius?: string | number;
+  borderBottomRightRadius?: string | number;
+  borderBottomLeftRadius?: string | number;
   display?: string;
   flexDirection?: string;
   flexWrap?: string;
@@ -86,6 +91,12 @@ export interface ResolvedStyle {
   lineClamp?: string | number;
   textIndent?: string | number;
   color?: string;
+  transform?: string;
+  transformOrigin?: string;
+  boxShadow?: string;
+  backgroundImage?: string;
+  objectPosition?: string;
+  aspectRatio?: string;
   opacity?: string | number;
   backgroundColor?: string;
   position?: string;
@@ -136,7 +147,8 @@ export interface DocumentProps {
   lang?: string;
   intent?: string;
   outputIntent?: string;
-  embeds?: Array<{ name: string; data: Uint8Array; mimeType: string }>;
+  /** Files to embed as PDF attachments. */
+  embeds?: Array<{ name: string; data: Uint8Array; mimeType: string; description?: string }>;
   /** Default size/orientation applied to all pages that don't specify their own. */
   pageDefaults?: PageDefaults;
   [key: string]: unknown;
@@ -336,6 +348,10 @@ export interface FooterNode extends BaseNode {
   type: 'footer';
 }
 
+export interface WatermarkNode extends BaseNode {
+  type: 'watermark';
+}
+
 export interface BookmarkNode extends BaseNode {
   type: 'bookmark';
   props: BookmarkProps;
@@ -360,6 +376,7 @@ export type PdfNode =
   | PageBreakNode
   | HeaderNode
   | FooterNode
+  | WatermarkNode
   | BookmarkNode;
 
 export interface ComputedGeometry {
