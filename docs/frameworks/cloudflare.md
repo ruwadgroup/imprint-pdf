@@ -5,9 +5,9 @@ dedicated package — use `@imprint/react/standalone` directly.
 
 ## The standalone build
 
-Cloudflare Workers cannot load WASM from the filesystem at runtime. The
-solution (identical to how Satori works) is to import WASM as a static module
-asset that is bundled with the Worker.
+Cloudflare Workers cannot load WASM from the filesystem at runtime. The solution
+(identical to how Satori works) is to import WASM as a static module asset that
+is bundled with the Worker.
 
 ```ts
 // src/index.ts
@@ -22,8 +22,10 @@ export default {
     const id = url.searchParams.get('id') ?? 'demo';
 
     const stream = await renderToStream(
-      React.createElement(Invoice, { data: { id, customer: 'Acme Corp', total: 4200 } }),
-      { wasm }
+      React.createElement(Invoice, {
+        data: { id, customer: 'Acme Corp', total: 4200 },
+      }),
+      { wasm },
     );
 
     return new Response(stream, {
@@ -78,8 +80,8 @@ Then import and pass it via `AssetResolver`.
 ## Tailwind on Workers
 
 Static class extraction at build time (via the Vite or Webpack plugin) means
-zero Tailwind processing at request time. The resolved CSS map is bundled in
-the Worker. Dynamic classes and the Oxide WASM fallback are not recommended on
+zero Tailwind processing at request time. The resolved CSS map is bundled in the
+Worker. Dynamic classes and the Oxide WASM fallback are not recommended on
 Workers due to the WASM size budget — keep classes static.
 
 ## Example

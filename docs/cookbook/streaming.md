@@ -17,8 +17,8 @@ return new Response(stream, {
 });
 ```
 
-`renderToStream` returns a `ReadableStream<Uint8Array>` that emits one chunk
-per page, followed by the cross-reference table when all pages are complete.
+`renderToStream` returns a `ReadableStream<Uint8Array>` that emits one chunk per
+page, followed by the cross-reference table when all pages are complete.
 
 ## Cloudflare Workers
 
@@ -45,13 +45,13 @@ await stream.pipeTo(Writable.toWeb(fileStream));
 
 ## When to use streaming vs. `renderToBuffer`
 
-| Scenario                                   | Recommendation          |
-| ------------------------------------------ | ----------------------- |
-| Single-page invoice / certificate          | `renderToBuffer`        |
-| Multi-page report (10+ pages)              | `renderToStream`        |
-| Edge function with low memory budget       | `renderToStream`        |
-| Need to pipe directly to S3 / storage      | `renderToStream`        |
-| Client needs to open PDF in a new tab      | `renderToBuffer` → `URL.createObjectURL` |
+| Scenario                              | Recommendation                           |
+| ------------------------------------- | ---------------------------------------- |
+| Single-page invoice / certificate     | `renderToBuffer`                         |
+| Multi-page report (10+ pages)         | `renderToStream`                         |
+| Edge function with low memory budget  | `renderToStream`                         |
+| Need to pipe directly to S3 / storage | `renderToStream`                         |
+| Client needs to open PDF in a new tab | `renderToBuffer` → `URL.createObjectURL` |
 
 ## Progress tracking
 

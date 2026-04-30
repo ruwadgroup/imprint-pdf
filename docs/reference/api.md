@@ -41,9 +41,8 @@ renderToStream(element: ReactElement, options?: RenderOptions): Promise<Readable
 ### Components
 
 `Document`, `Page`, `View`, `Text`, `Image`, `Svg`, `Link`, `Bullet`,
-`PageNumber`, `TotalPages`,
-`Form`, `TextField`, `Checkbox`, `RadioGroup`, `Dropdown`, `Signature`, `Button`,
-`Chart`.
+`PageNumber`, `TotalPages`, `Form`, `TextField`, `Checkbox`, `RadioGroup`,
+`Dropdown`, `Signature`, `Button`, `Chart`.
 
 ### `@imprint/react/server`
 
@@ -97,7 +96,8 @@ import '@imprint/print';
 
 New `<Document>` props: `intent`, `outputIntent`.  
 New `<Page>` props: `bleed`, `marks`.  
-New Tailwind variants: `imprint:cmyk-[…]`, `imprint:spot-[…]`, `imprint:overprint`.
+New Tailwind variants: `imprint:cmyk-[…]`, `imprint:spot-[…]`,
+`imprint:overprint`.
 
 ## `@imprint/sign` (Enterprise, BSL)
 
@@ -110,7 +110,8 @@ signBuffer(
 ): Promise<Uint8Array>
 ```
 
-`SignOptions`: `{ certificate: string; privateKey: string; reason?: string; location?: string; tsaUrl?: string }`.
+`SignOptions`:
+`{ certificate: string; privateKey: string; reason?: string; location?: string; tsaUrl?: string }`.
 
 ## `@imprint/ua` (Enterprise, BSL)
 
@@ -120,7 +121,8 @@ import '@imprint/ua';
 ```
 
 Enables the PDF/UA-1 structure tree, marked content, alt text, and language
-propagation. No new public API — all via JSX props (`alt`, `aria-label`, `lang`).
+propagation. No new public API — all via JSX props (`alt`, `aria-label`,
+`lang`).
 
 ## `@imprint/eslint-plugin`
 

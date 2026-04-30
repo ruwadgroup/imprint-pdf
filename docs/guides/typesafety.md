@@ -47,8 +47,8 @@ const stream = await renderToStream(<Invoice data={data} />, { wasm });
 ## JSX namespace
 
 Imprint registers its own JSX namespace for the `className`-bearing document
-components. Applying `className` to a `<Page>` from a different namespace
-would be a type error.
+components. Applying `className` to a `<Page>` from a different namespace would
+be a type error.
 
 ```ts
 // tsconfig.json
@@ -70,7 +70,8 @@ import { Document, Page } from '@imprint/react';
 
 The `@imprint/eslint-plugin` catches PDF-specific errors before TypeScript does:
 
-- `imprint/no-unsupported-css` — warns on CSS properties that have no PDF output.
+- `imprint/no-unsupported-css` — warns on CSS properties that have no PDF
+  output.
 - `imprint/no-missing-alt` — errors on `<Image>` without `alt`.
 - `imprint/no-hover-variants` — warns on `hover:`, `focus:`, `active:`.
 

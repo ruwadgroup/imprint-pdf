@@ -4,13 +4,19 @@ Embedding charts from Recharts, Visx, and D3 as PDF vector graphics.
 
 ## Recharts
 
-Wrap your Recharts tree in `<Chart>`. Imprint renders it to SVG server-side
-and converts the output to PDF vector operators.
+Wrap your Recharts tree in `<Chart>`. Imprint renders it to SVG server-side and
+converts the output to PDF vector operators.
 
 ```tsx
 import { Chart } from '@imprint/react';
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
 } from 'recharts';
 
 const data = [
@@ -35,9 +41,9 @@ export function RevenueChart() {
 }
 ```
 
-Note: `<Tooltip>` and `<Legend>` are rendered as static elements in PDFs —
-hover interactivity has no effect. Remove them for cleaner output or style
-them for static display.
+Note: `<Tooltip>` and `<Legend>` are rendered as static elements in PDFs — hover
+interactivity has no effect. Remove them for cleaner output or style them for
+static display.
 
 ## Visx
 
@@ -57,7 +63,7 @@ export function LineChart({ data }: { data: Point[] }) {
         <LinePath
           data={data}
           x={(d, i) => xScale(i)}
-          y={d => yScale(d.value)}
+          y={(d) => yScale(d.value)}
           stroke="#3B82F6"
           strokeWidth={2}
         />
@@ -71,8 +77,8 @@ export function LineChart({ data }: { data: Point[] }) {
 
 ## D3 (manual SVG → `<Svg>`)
 
-D3 doesn't have a server-side "render to SVG string" API out of the box.
-Use a detached SVG document with `jsdom` (Node) or pass the SVG string manually:
+D3 doesn't have a server-side "render to SVG string" API out of the box. Use a
+detached SVG document with `jsdom` (Node) or pass the SVG string manually:
 
 ```ts
 import * as d3 from 'd3';
@@ -83,11 +89,13 @@ function renderD3ToSvg(data: number[]): string {
   const body = d3.select(dom.window.document.querySelector('body'));
   const svg = body.append('svg').attr('width', 500).attr('height', 200);
 
-  const line = d3.line<number>()
+  const line = d3
+    .line<number>()
     .x((_, i) => i * 50)
-    .y(d => 200 - d * 2);
+    .y((d) => 200 - d * 2);
 
-  svg.append('path')
+  svg
+    .append('path')
     .datum(data)
     .attr('fill', 'none')
     .attr('stroke', '#3B82F6')
@@ -104,11 +112,11 @@ function renderD3ToSvg(data: number[]): string {
 
 ## What gets vectorized
 
-| SVG feature               | Treatment                             |
-| ------------------------- | ------------------------------------- |
-| `<path>`, `<rect>`, `<circle>` | → PDF path operators             |
-| Linear / radial gradients | → PDF Type 2/3 shadings               |
-| Clip paths                | → PDF clipping paths                  |
-| SVG masks                 | → PDF soft masks (smask)              |
-| CSS filters (blur, etc.)  | → rasterized via resvg-wasm (fallback)|
-| `<text>` elements         | → converted to glyph paths            |
+| SVG feature                    | Treatment                              |
+| ------------------------------ | -------------------------------------- |
+| `<path>`, `<rect>`, `<circle>` | → PDF path operators                   |
+| Linear / radial gradients      | → PDF Type 2/3 shadings                |
+| Clip paths                     | → PDF clipping paths                   |
+| SVG masks                      | → PDF soft masks (smask)               |
+| CSS filters (blur, etc.)       | → rasterized via resvg-wasm (fallback) |
+| `<text>` elements              | → converted to glyph paths             |

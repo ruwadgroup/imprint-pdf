@@ -12,10 +12,23 @@ export default defineConfig({
   fonts: [
     { family: 'Inter', src: './public/fonts/Inter-Regular.woff2' },
     { family: 'Inter', src: './public/fonts/Inter-Medium.woff2', weight: 500 },
-    { family: 'Inter', src: './public/fonts/Inter-SemiBold.woff2', weight: 600 },
+    {
+      family: 'Inter',
+      src: './public/fonts/Inter-SemiBold.woff2',
+      weight: 600,
+    },
     { family: 'Inter', src: './public/fonts/Inter-Bold.woff2', weight: 700 },
-    { family: 'Inter', src: './public/fonts/Inter-Italic.woff2', style: 'italic' },
-    { family: 'Inter', src: './public/fonts/Inter-BoldItalic.woff2', weight: 700, style: 'italic' },
+    {
+      family: 'Inter',
+      src: './public/fonts/Inter-Italic.woff2',
+      style: 'italic',
+    },
+    {
+      family: 'Inter',
+      src: './public/fonts/Inter-BoldItalic.woff2',
+      weight: 700,
+      style: 'italic',
+    },
   ],
 });
 ```
@@ -63,8 +76,8 @@ Usage with `font-variation-settings`:
 }
 ```
 
-Fonts fetched by URL are cached in the `AssetResolver`. In production, wrap
-the resolver to cache aggressively:
+Fonts fetched by URL are cached in the `AssetResolver`. In production, wrap the
+resolver to cache aggressively:
 
 ```ts
 const cachedFetch = memoize(fetch);
@@ -93,14 +106,14 @@ fontFamily: {
 }
 ```
 
-Imprint resolves glyphs from left to right in the font stack — Latin from
-Inter, Arabic from Noto Sans Arabic, etc.
+Imprint resolves glyphs from left to right in the font stack — Latin from Inter,
+Arabic from Noto Sans Arabic, etc.
 
 ## Subsetting
 
-Subsetting is automatic. The HarfBuzz subsetter embeds only the glyphs
-actually used in the document. A full Noto Sans CJK file (~12 MB) might embed
-as ~60–100 KB for a document with 500 Chinese characters.
+Subsetting is automatic. The HarfBuzz subsetter embeds only the glyphs actually
+used in the document. A full Noto Sans CJK file (~12 MB) might embed as ~60–100
+KB for a document with 500 Chinese characters.
 
 To disable subsetting (for debugging):
 

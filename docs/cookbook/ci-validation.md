@@ -1,7 +1,7 @@
 # Cookbook — CI validation (PDF/UA, PDF/X)
 
-Run veraPDF in CI to certify that every generated PDF passes PDF/UA-1 or
-PDF/X-4 conformance. Requires `@imprint/print` or `@imprint/ua` (BSL).
+Run veraPDF in CI to certify that every generated PDF passes PDF/UA-1 or PDF/X-4
+conformance. Requires `@imprint/print` or `@imprint/ua` (BSL).
 
 ## Setup
 
@@ -19,7 +19,8 @@ imprint validate ./dist/report.pdf --profile pdf-ua-1
 # exits 0 on pass, 1 on fail — safe for CI gates
 ```
 
-Supported profiles: `pdf-ua-1`, `pdf-ua-2` (roadmap), `pdf-x-4`, `pdf-a-2b`, `pdf-a-3`.
+Supported profiles: `pdf-ua-1`, `pdf-ua-2` (roadmap), `pdf-x-4`, `pdf-a-2b`,
+`pdf-a-3`.
 
 ## GitHub Actions
 
@@ -84,11 +85,11 @@ writeFileSync(
 
 ## veraPDF exit codes
 
-| Code | Meaning                                                        |
-| ---- | -------------------------------------------------------------- |
-| 0    | All files passed.                                              |
-| 1    | One or more files failed conformance.                          |
-| 2    | veraPDF encountered an internal error.                         |
+| Code | Meaning                                |
+| ---- | -------------------------------------- |
+| 0    | All files passed.                      |
+| 1    | One or more files failed conformance.  |
+| 2    | veraPDF encountered an internal error. |
 
 ## What veraPDF checks
 

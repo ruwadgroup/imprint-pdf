@@ -1,16 +1,23 @@
 # Forms (AcroForms)
 
-Imprint authors interactive PDF forms as JSX. The renderer creates
-`pdf-lib` `PDFForm` objects from the same layout pass that computes visual
-geometry — widget rectangles are exact.
+Imprint authors interactive PDF forms as JSX. The renderer creates `pdf-lib`
+`PDFForm` objects from the same layout pass that computes visual geometry —
+widget rectangles are exact.
 
-XFA is explicitly **not supported**. XFA is deprecated in PDF 2.0 and
-disallowed in PDF/A. AcroForms are sufficient for every real-world use case.
+XFA is explicitly **not supported**. XFA is deprecated in PDF 2.0 and disallowed
+in PDF/A. AcroForms are sufficient for every real-world use case.
 
 ## Basic form
 
 ```tsx
-import { Document, Page, Form, TextField, Checkbox, Signature } from '@imprint/react';
+import {
+  Document,
+  Page,
+  Form,
+  TextField,
+  Checkbox,
+  Signature,
+} from '@imprint/react';
 
 export function ApplicationForm() {
   return (
@@ -39,8 +46,8 @@ export function ApplicationForm() {
           </label>
 
           <label className="flex items-center gap-2 mt-6 text-sm">
-            <Checkbox name="agree" required className="h-4 w-4" />
-            I agree to the terms and conditions.
+            <Checkbox name="agree" required className="h-4 w-4" />I agree to the
+            terms and conditions.
           </label>
 
           <Signature
@@ -80,7 +87,7 @@ Single-line or multi-line text input.
 <TextField
   name="customer.name"
   required
-  multiline       // multi-line text area
+  multiline // multi-line text area
   maxLength={200}
   defaultValue="Type here…"
   className="…"
@@ -112,21 +119,18 @@ Single-line or multi-line text input.
 ```tsx
 <Dropdown
   name="country"
-  options={countries.map(c => ({ value: c.code, label: c.name }))}
+  options={countries.map((c) => ({ value: c.code, label: c.name }))}
   className="w-full border rounded px-3 py-2 text-sm"
 />
 ```
 
 ### `<Signature>`
 
-Widget for a drawn digital signature. For cryptographic PKCS#7 signing, add
-the `certificate` and `privateKey` props (requires `@imprint/sign`).
+Widget for a drawn digital signature. For cryptographic PKCS#7 signing, add the
+`certificate` and `privateKey` props (requires `@imprint/sign`).
 
 ```tsx
-<Signature
-  name="director"
-  className="h-24 w-full border-b border-gray-400"
-/>
+<Signature name="director" className="h-24 w-full border-b border-gray-400" />
 ```
 
 ### `<Button>`
@@ -155,5 +159,5 @@ document fonts — set `font-sans` or `font-serif` on the nearest parent.
 
 ## Flattening forms
 
-To render a filled-in form as a non-interactive PDF (flatten the fields into
-the page content), pass `{ flattenForms: true }` to `renderToBuffer`.
+To render a filled-in form as a non-interactive PDF (flatten the fields into the
+page content), pass `{ flattenForms: true }` to `renderToBuffer`.

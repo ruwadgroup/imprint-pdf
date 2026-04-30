@@ -22,7 +22,10 @@ interface ResumeProps {
     contact: { email: string; github: string; location: string };
     summary: string;
     experience: Array<{
-      company: string; role: string; period: string; bullets: string[];
+      company: string;
+      role: string;
+      period: string;
+      bullets: string[];
     }>;
     skills: string[];
     education: Array<{ institution: string; degree: string; year: string }>;
@@ -32,9 +35,11 @@ interface ResumeProps {
 export function Resume({ data }: ResumeProps) {
   return (
     <Document title={`${data.name} — Resume`} lang="en">
-      <Page size="Letter" className="font-sans text-[10pt] text-gray-900 bg-white">
+      <Page
+        size="Letter"
+        className="font-sans text-[10pt] text-gray-900 bg-white"
+      >
         <View className="grid grid-cols-[200px_1fr] min-h-full">
-
           {/* Sidebar */}
           <View className="bg-gray-50 p-6 border-r border-gray-200">
             <p className="text-lg font-bold leading-tight">{data.name}</p>
@@ -53,7 +58,7 @@ export function Resume({ data }: ResumeProps) {
                 Skills
               </p>
               <View className="flex flex-wrap gap-1">
-                {data.skills.map(skill => (
+                {data.skills.map((skill) => (
                   <span
                     key={skill}
                     className="bg-white border border-gray-200 rounded px-2 py-0.5 text-[9pt]"
@@ -94,10 +99,15 @@ export function Resume({ data }: ResumeProps) {
                     <p className="font-semibold">{exp.role}</p>
                     <p className="text-[9pt] text-gray-500">{exp.period}</p>
                   </View>
-                  <p className="text-[9pt] text-gray-500 font-medium">{exp.company}</p>
+                  <p className="text-[9pt] text-gray-500 font-medium">
+                    {exp.company}
+                  </p>
                   <ul className="mt-1 space-y-0.5">
                     {exp.bullets.map((b, j) => (
-                      <li key={j} className="flex gap-2 text-[9pt] text-gray-700">
+                      <li
+                        key={j}
+                        className="flex gap-2 text-[9pt] text-gray-700"
+                      >
                         <span>•</span>
                         <span>{b}</span>
                       </li>
@@ -107,7 +117,6 @@ export function Resume({ data }: ResumeProps) {
               ))}
             </View>
           </View>
-
         </View>
       </Page>
     </Document>
@@ -120,4 +129,5 @@ export function Resume({ data }: ResumeProps) {
 - `grid-cols-[200px_1fr]` — arbitrary CSS Grid column template.
 - `first:mt-0` — removes top margin on the first experience entry.
 - `text-[9pt]` — arbitrary point size for tight typesetting on a resume.
-- `min-h-full` on the grid container ensures both columns reach the bottom of the page.
+- `min-h-full` on the grid container ensures both columns reach the bottom of
+  the page.

@@ -14,25 +14,26 @@ properties instead of silent drops.
 
 The main differences:
 
-- **Tailwind.** Imprint uses the real Tailwind v4 compiler; `@react-pdf/renderer`
-  uses a hand-curated `StyleSheet` DSL that supports a subset of CSS.
-- **CSS Grid.** Imprint (via Taffy) supports `display: grid`. `@react-pdf/renderer`
-  (via Yoga) only has Flexbox.
+- **Tailwind.** Imprint uses the real Tailwind v4 compiler;
+  `@react-pdf/renderer` uses a hand-curated `StyleSheet` DSL that supports a
+  subset of CSS.
+- **CSS Grid.** Imprint (via Taffy) supports `display: grid`.
+  `@react-pdf/renderer` (via Yoga) only has Flexbox.
 - **Typography.** Imprint uses HarfBuzz for shaping and Knuth–Plass for
   justification. `@react-pdf/renderer` uses fontkit-only shaping with greedy
   line breaking.
-- **AcroForms.** Imprint has `<TextField>`, `<Signature>`, etc. `@react-pdf/renderer`
-  has no form authoring.
-- **Edge runtime.** Imprint runs on Cloudflare Workers; `@react-pdf/renderer`
-  is incompatible with edge runtimes.
+- **AcroForms.** Imprint has `<TextField>`, `<Signature>`, etc.
+  `@react-pdf/renderer` has no form authoring.
+- **Edge runtime.** Imprint runs on Cloudflare Workers; `@react-pdf/renderer` is
+  incompatible with edge runtimes.
 
 ## Can I use my existing `tailwind.config.ts`?
 
-Yes. Point `@imprint/tailwind` at your config file and your entire design
-system — colors, spacing, fonts, plugins — resolves identically in PDFs.
+Yes. Point `@imprint/tailwind` at your config file and your entire design system
+— colors, spacing, fonts, plugins — resolves identically in PDFs.
 
 ```ts
-imprintTailwind({ config: './tailwind.config.ts' })
+imprintTailwind({ config: './tailwind.config.ts' });
 ```
 
 ## Does it run in the browser?
@@ -42,25 +43,25 @@ is ~800 KB gzipped. Use subpath imports to tree-shake features you don't need.
 
 ## Does it support Arabic, Hindi, Thai, CJK?
 
-Yes. HarfBuzz + ICU4X handle bidirectional text, complex script shaping
-(Arabic Nastaliq, Devanagari, Thai, CJK), GSUB/GPOS kerning, and ligatures.
-You need to supply a font that covers the script; subsetting handles the rest.
-Enable language-specific hyphenation via the `hyphenation` config option.
+Yes. HarfBuzz + ICU4X handle bidirectional text, complex script shaping (Arabic
+Nastaliq, Devanagari, Thai, CJK), GSUB/GPOS kerning, and ligatures. You need to
+supply a font that covers the script; subsetting handles the rest. Enable
+language-specific hyphenation via the `hyphenation` config option.
 
 ## Can I use custom fonts?
 
-Yes. Point `fonts` in `imprint.config.ts` at local `.woff2`, `.otf`, or
-`.ttf` files. Google Fonts and Bunny Fonts are supported via URL. Variable
-fonts work; provide the `axes` you want to use.
+Yes. Point `fonts` in `imprint.config.ts` at local `.woff2`, `.otf`, or `.ttf`
+files. Google Fonts and Bunny Fonts are supported via URL. Variable fonts work;
+provide the `axes` you want to use.
 
 ## Is it really faster than Puppeteer?
 
-On cold starts, yes, by 10–20×. Chromium cold-starts take 800–2,000 ms.
-Imprint cold-starts in 40–100 ms on Cloudflare Workers.
+On cold starts, yes, by 10–20×. Chromium cold-starts take 800–2,000 ms. Imprint
+cold-starts in 40–100 ms on Cloudflare Workers.
 
 On warm throughput for complex documents with lots of JavaScript, Chromium can
-be faster — it has a JIT for the rendering engine. Imprint's sweet spot is
-paged documents authored as React components, not converted web pages.
+be faster — it has a JIT for the rendering engine. Imprint's sweet spot is paged
+documents authored as React components, not converted web pages.
 
 ## What's the licensing for the enterprise packages?
 
@@ -88,6 +89,6 @@ embedded attachments — used for factur-X and ZUGFeRD e-invoicing.
 
 ## How does streaming work?
 
-`renderToStream` returns a `ReadableStream<Uint8Array>` that emits one chunk
-per page. The first byte arrives in <50 ms for most documents. Pipe it directly
-into a `Response` object in Cloudflare Workers or Vercel Edge Functions.
+`renderToStream` returns a `ReadableStream<Uint8Array>` that emits one chunk per
+page. The first byte arrives in <50 ms for most documents. Pipe it directly into
+a `Response` object in Cloudflare Workers or Vercel Edge Functions.

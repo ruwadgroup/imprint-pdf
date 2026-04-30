@@ -73,12 +73,13 @@ const workers = Array.from({ length: 4 }, () => new Worker('./worker.ts'));
 const invoices = await fetchInvoices();
 
 const pdfs = await Promise.all(
-  invoices.map((data, i) =>
-    new Promise<Uint8Array>(resolve => {
-      workers[i % workers.length]!.onmessage = e => resolve(e.data);
-      workers[i % workers.length]!.postMessage(data);
-    })
-  )
+  invoices.map(
+    (data, i) =>
+      new Promise<Uint8Array>((resolve) => {
+        workers[i % workers.length]!.onmessage = (e) => resolve(e.data);
+        workers[i % workers.length]!.postMessage(data);
+      }),
+  ),
 );
 ```
 

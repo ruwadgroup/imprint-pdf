@@ -21,9 +21,8 @@ DocumentNode
     └── …
 ```
 
-Every HTML element (`<h1>`, `<p>`, `<table>`, `<ul>`) maps to the same
-`PdfNode` types, with a `role` tag that the PDF/UA writer uses to emit the
-structure tree.
+Every HTML element (`<h1>`, `<p>`, `<table>`, `<ul>`) maps to the same `PdfNode`
+types, with a `role` tag that the PDF/UA writer uses to emit the structure tree.
 
 ## Layout
 
@@ -62,13 +61,13 @@ Line boxes
 Embedded font + glyph paths in PDF content stream
 ```
 
-The font subset emitted into the PDF contains only the glyphs actually used.
-A 12 MB CJK font becomes ~50 KB in output.
+The font subset emitted into the PDF contains only the glyphs actually used. A
+12 MB CJK font becomes ~50 KB in output.
 
 ## Tailwind in Imprint
 
-Imprint runs the **actual** Tailwind v4 Oxide compiler — not a translator, not
-a subset. The flow:
+Imprint runs the **actual** Tailwind v4 Oxide compiler — not a translator, not a
+subset. The flow:
 
 1. At build time, the Vite/Webpack plugin runs Oxide over your source files and
    produces a CSS class-to-property map.
@@ -86,15 +85,16 @@ The `print:` variant is always active. Imprint adds its own variants:
 
 ## Runtime
 
-The rendering pipeline is designed to run identically on every JavaScript runtime.
+The rendering pipeline is designed to run identically on every JavaScript
+runtime.
 
-| Runtime                  | WASM loading                            | Asset resolution         |
-| ------------------------ | --------------------------------------- | ------------------------ |
-| Node.js ≥ 20             | `fs.readFileSync` of inlined WASM bytes | `fs` + `fetch`           |
-| Bun                      | Bun's native WASM imports               | `fs` + `fetch`           |
-| Browser                  | `WebAssembly.instantiateStreaming`       | `fetch` + IndexedDB cache |
-| Cloudflare Workers       | Static WASM module asset (à la Satori)  | `fetch` only             |
-| Vercel Edge / Lambda     | Inlined or static asset                 | `fetch` + layer          |
+| Runtime              | WASM loading                            | Asset resolution          |
+| -------------------- | --------------------------------------- | ------------------------- |
+| Node.js ≥ 20         | `fs.readFileSync` of inlined WASM bytes | `fs` + `fetch`            |
+| Bun                  | Bun's native WASM imports               | `fs` + `fetch`            |
+| Browser              | `WebAssembly.instantiateStreaming`      | `fetch` + IndexedDB cache |
+| Cloudflare Workers   | Static WASM module asset (à la Satori)  | `fetch` only              |
+| Vercel Edge / Lambda | Inlined or static asset                 | `fetch` + layer           |
 
 All I/O is behind the `AssetResolver` interface. Swap it to control where fonts
 and images come from without touching your component code.

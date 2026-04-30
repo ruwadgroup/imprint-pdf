@@ -6,14 +6,14 @@ deliberate improvements.
 
 ## Key differences
 
-| `@react-pdf/renderer`                         | Imprint                                       |
-| --------------------------------------------- | --------------------------------------------- |
-| `StyleSheet.create({})` or inline styles       | Tailwind classes via `className`              |
-| Flexbox only (Yoga)                            | Block + Flexbox + CSS Grid (Taffy)            |
-| `fontkit` shaping (no OpenType layout)         | HarfBuzz shaping (GSUB/GPOS, ligatures, CJK)  |
-| Greedy line breaking                           | Knuth–Plass (default)                         |
-| No AcroForms                                   | `<Form>`, `<TextField>`, `<Signature>`, etc.  |
-| No PDF/X, no PDF/UA                            | Enterprise packages available                 |
+| `@react-pdf/renderer`                    | Imprint                                      |
+| ---------------------------------------- | -------------------------------------------- |
+| `StyleSheet.create({})` or inline styles | Tailwind classes via `className`             |
+| Flexbox only (Yoga)                      | Block + Flexbox + CSS Grid (Taffy)           |
+| `fontkit` shaping (no OpenType layout)   | HarfBuzz shaping (GSUB/GPOS, ligatures, CJK) |
+| Greedy line breaking                     | Knuth–Plass (default)                        |
+| No AcroForms                             | `<Form>`, `<TextField>`, `<Signature>`, etc. |
+| No PDF/X, no PDF/UA                      | Enterprise packages available                |
 
 ## Package swap
 
@@ -25,17 +25,17 @@ pnpm add -D @imprint/tailwind tailwindcss
 
 ## Component renames
 
-| `@react-pdf/renderer` | `@imprint/react`               |
-| --------------------- | ------------------------------ |
-| `Document`            | `Document`                     |
-| `Page`                | `Page`                         |
-| `View`                | `View`                         |
+| `@react-pdf/renderer` | `@imprint/react`                  |
+| --------------------- | --------------------------------- |
+| `Document`            | `Document`                        |
+| `Page`                | `Page`                            |
+| `View`                | `View`                            |
 | `Text`                | `Text` (or plain `<p>`, `<span>`) |
-| `Image`               | `Image`                        |
-| `Svg`                 | `Svg`                          |
-| `Link`                | `Link`                         |
-| `Note`                | removed (not needed in PDFs)   |
-| `Canvas`              | Use `<Svg>` instead            |
+| `Image`               | `Image`                           |
+| `Svg`                 | `Svg`                             |
+| `Link`                | `Link`                            |
+| `Note`                | removed (not needed in PDFs)      |
+| `Canvas`              | Use `<Svg>` instead               |
 
 ## Style migration
 

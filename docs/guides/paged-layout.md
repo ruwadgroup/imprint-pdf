@@ -6,15 +6,15 @@ breaking that browsers still do not have.
 
 ## Automatic page breaking
 
-Imprint breaks pages automatically. You do not need to decide which content
-goes on which page. The Plass two-pass page algorithm:
+Imprint breaks pages automatically. You do not need to decide which content goes
+on which page. The Plass two-pass page algorithm:
 
 1. Runs Knuth–Plass paragraph breaking to get optimal line boxes.
-2. Distributes line boxes across pages using a dynamic-programming cost
-   function that penalises widows, orphans, and bad float interactions.
+2. Distributes line boxes across pages using a dynamic-programming cost function
+   that penalises widows, orphans, and bad float interactions.
 
-The result: widows and orphans are minimised across the whole document, not
-just per-paragraph.
+The result: widows and orphans are minimised across the whole document, not just
+per-paragraph.
 
 ## Manual break control
 
@@ -75,7 +75,9 @@ The `<PageNumber>` and `<TotalPages>` components resolve at render time.
 <Page className="relative pt-16 pb-12 px-12">
   {/* Header */}
   <View className="absolute top-0 inset-x-0 h-12 flex items-center px-12 border-b">
-    <span className="text-xs text-gray-500 font-medium">Acme Corp Q1 Report</span>
+    <span className="text-xs text-gray-500 font-medium">
+      Acme Corp Q1 Report
+    </span>
     <span className="ml-auto text-xs text-gray-400">
       Page <PageNumber /> of <TotalPages />
     </span>
@@ -95,14 +97,14 @@ The `<PageNumber>` and `<TotalPages>` components resolve at render time.
 
 CSS `@page` rules are expressed as `<Page>` and `<Document>` props:
 
-| CSS `@page`            | Imprint equivalent                              |
-| ---------------------- | ----------------------------------------------- |
-| `size: A4 portrait`    | `<Page size="A4" orientation="portrait">`       |
-| `margin: 20mm`         | `<Page className="p-[20mm]">`                   |
-| `marks: trim crop`     | `<Page marks="trim,crop">` (Enterprise)         |
-| `bleed: 3mm`           | `<Page bleed="3mm">` (Enterprise)               |
-| `:first`               | `page-first:` Tailwind variant                  |
-| `:left` / `:right`     | `page-left:` / `page-right:` variants           |
+| CSS `@page`         | Imprint equivalent                        |
+| ------------------- | ----------------------------------------- |
+| `size: A4 portrait` | `<Page size="A4" orientation="portrait">` |
+| `margin: 20mm`      | `<Page className="p-[20mm]">`             |
+| `marks: trim crop`  | `<Page marks="trim,crop">` (Enterprise)   |
+| `bleed: 3mm`        | `<Page bleed="3mm">` (Enterprise)         |
+| `:first`            | `page-first:` Tailwind variant            |
+| `:left` / `:right`  | `page-left:` / `page-right:` variants     |
 
 ## Footnotes
 

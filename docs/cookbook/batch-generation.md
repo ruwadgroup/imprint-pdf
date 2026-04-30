@@ -57,17 +57,19 @@ import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 const s3 = new S3Client({ region: 'us-east-1' });
 
 async function uploadPdf(key: string, pdf: Uint8Array) {
-  await s3.send(new PutObjectCommand({
-    Bucket: 'my-invoices',
-    Key: key,
-    Body: pdf,
-    ContentType: 'application/pdf',
-  }));
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: 'my-invoices',
+      Key: key,
+      Body: pdf,
+      ContentType: 'application/pdf',
+    }),
+  );
 }
 
 const pdfs = await generateBatch(invoices);
 await Promise.all(
-  pdfs.map((pdf, i) => uploadPdf(`invoices/${invoices[i]!.id}.pdf`, pdf))
+  pdfs.map((pdf, i) => uploadPdf(`invoices/${invoices[i]!.id}.pdf`, pdf)),
 );
 ```
 
@@ -76,11 +78,11 @@ await Promise.all(
 Measured on a 4-core Node 22 / M2 MacBook with `renderToBuffer` in 4 worker
 threads:
 
-| Document type                      | Throughput          |
-| ---------------------------------- | ------------------- |
-| 1-page invoice, 5 Tailwind classes | ~120 PDFs/s         |
-| 1-page invoice, 50 Tailwind classes | ~80 PDFs/s         |
-| 5-page report with a chart         | ~18 PDFs/s          |
+| Document type                       | Throughput  |
+| ----------------------------------- | ----------- |
+| 1-page invoice, 5 Tailwind classes  | ~120 PDFs/s |
+| 1-page invoice, 50 Tailwind classes | ~80 PDFs/s  |
+| 5-page report with a chart          | ~18 PDFs/s  |
 
 WASM is instantiated once per worker thread. Warm throughput is limited by the
 Knuth–Plass and HarfBuzz shaping passes — scale horizontally by adding workers.

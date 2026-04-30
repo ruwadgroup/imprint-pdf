@@ -22,6 +22,7 @@ export default withImprint()({
 ```
 
 `withImprint()` does three things:
+
 1. Wires `@imprint/tailwind/webpack` for compile-time class extraction.
 2. Configures `@next/font` passthrough for `.woff2` files.
 3. Sets up WASM loading for both Node and Edge targets.

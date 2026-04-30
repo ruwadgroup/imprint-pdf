@@ -1,7 +1,7 @@
 # Typography
 
-Imprint's typography pipeline is categorically better than what browsers
-provide for paged, justified text. Here's what's in it and how to use it.
+Imprint's typography pipeline is categorically better than what browsers provide
+for paged, justified text. Here's what's in it and how to use it.
 
 ## Font loading
 
@@ -62,18 +62,18 @@ utilities:
 
 ## Script support
 
-| Script                | Status       |
-| --------------------- | ------------ |
-| Latin / Greek / Cyrillic | ✓ default  |
-| Arabic (including Nastaliq) | ✓       |
-| Hebrew (RTL)          | ✓            |
-| Devanagari / Hindi    | ✓            |
-| Thai / Khmer          | ✓            |
-| CJK (Han, Kana, Hangul) | ✓          |
-| Mathematical symbols  | ✓ (with MathML roadmap) |
+| Script                      | Status                  |
+| --------------------------- | ----------------------- |
+| Latin / Greek / Cyrillic    | ✓ default               |
+| Arabic (including Nastaliq) | ✓                       |
+| Hebrew (RTL)                | ✓                       |
+| Devanagari / Hindi          | ✓                       |
+| Thai / Khmer                | ✓                       |
+| CJK (Han, Kana, Hangul)     | ✓                       |
+| Mathematical symbols        | ✓ (with MathML roadmap) |
 
-Bidirectional text is handled by ICU4X (UAX #9 BiDi algorithm). Mixed
-LTR/RTL paragraphs resolve correctly.
+Bidirectional text is handled by ICU4X (UAX #9 BiDi algorithm). Mixed LTR/RTL
+paragraphs resolve correctly.
 
 ## Knuth–Plass justification
 
@@ -93,7 +93,9 @@ breaks, no widows.
 To use the greedy fallback (faster for very long documents):
 
 ```tsx
-<Text lineBreaking="greedy" className="text-justify">…</Text>
+<Text lineBreaking="greedy" className="text-justify">
+  …
+</Text>
 ```
 
 ## Hyphenation
@@ -103,22 +105,22 @@ To use the greedy fallback (faster for very long documents):
 defineConfig({
   typography: {
     hyphenation: {
-      en: true,     // English (default: true)
-      de: true,     // German
+      en: true, // English (default: true)
+      de: true, // German
       fr: true,
     },
   },
 });
 ```
 
-Pattern files are Liang–Knuth `.dic` files loaded lazily per language. Based
-on `hyphen` (same patterns used by LaTeX and LibreOffice).
+Pattern files are Liang–Knuth `.dic` files loaded lazily per language. Based on
+`hyphen` (same patterns used by LaTeX and LibreOffice).
 
 ## Page breaking — widows and orphans
 
-The Plass two-pass page breaking algorithm minimises widows (isolated last
-lines of a paragraph at the top of a page) and orphans (isolated first lines
-at the bottom).
+The Plass two-pass page breaking algorithm minimises widows (isolated last lines
+of a paragraph at the top of a page) and orphans (isolated first lines at the
+bottom).
 
 ```tsx
 // Per-element control via CSS Paged Media properties

@@ -16,13 +16,29 @@ Imprint detects Recharts components and renders them to SVG server-side.
 
 ```tsx
 import { Chart } from '@imprint/react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  ResponsiveContainer,
+} from 'recharts';
 
 export function TrendChart({ data }: { data: DataPoint[] }) {
   return (
     <Chart className="w-full h-56">
-      <LineChart width={540} height={220} data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" vertical={false} />
+      <LineChart
+        width={540}
+        height={220}
+        data={data}
+        margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
+      >
+        <CartesianGrid
+          strokeDasharray="3 3"
+          stroke="#E5E7EB"
+          vertical={false}
+        />
         <XAxis
           dataKey="month"
           tick={{ fontSize: 10, fill: '#9CA3AF' }}

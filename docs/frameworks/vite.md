@@ -37,7 +37,7 @@ import { Invoice } from './templates/Invoice';
 
 async function downloadPdf() {
   const pdf = await renderToBuffer(
-    <Invoice data={{ id: 'INV-001', customer: 'Acme Corp', total: 4200 }} />
+    <Invoice data={{ id: 'INV-001', customer: 'Acme Corp', total: 4200 }} />,
   );
 
   const url = URL.createObjectURL(new Blob([pdf], { type: 'application/pdf' }));
@@ -70,8 +70,8 @@ template, the preview reloads without a full rebuild.
 ## SSR (Vike, Astro)
 
 For SSR frameworks built on Vite, `renderToBuffer` runs on the server path
-normally — no special config needed. Add `@imprint/vite` to the Vite plugin
-list and use `renderToBuffer` in your server route.
+normally — no special config needed. Add `@imprint/vite` to the Vite plugin list
+and use `renderToBuffer` in your server route.
 
 ## Virtual font module
 
@@ -85,6 +85,5 @@ instead of managing `fs.readFileSync` paths manually.
 
 ## WASM assets
 
-The plugin handles `.wasm` asset copying and `?url` imports automatically.
-The WASM modules are fingerprinted and cached by the browser after the first
-load.
+The plugin handles `.wasm` asset copying and `?url` imports automatically. The
+WASM modules are fingerprinted and cached by the browser after the first load.

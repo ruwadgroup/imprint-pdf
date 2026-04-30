@@ -15,7 +15,14 @@ and vector charts.
 
 ```tsx
 // src/templates/Report.tsx
-import { Document, Page, View, Chart, PageNumber, TotalPages } from '@imprint/react';
+import {
+  Document,
+  Page,
+  View,
+  Chart,
+  PageNumber,
+  TotalPages,
+} from '@imprint/react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
 interface ReportProps {
@@ -30,7 +37,9 @@ interface ReportProps {
 function Header({ company, period }: { company: string; period: string }) {
   return (
     <View className="absolute top-0 inset-x-0 h-12 flex items-center px-12 border-b border-gray-100">
-      <span className="text-xs font-medium text-gray-500">{company} — {period}</span>
+      <span className="text-xs font-medium text-gray-500">
+        {company} — {period}
+      </span>
       <span className="ml-auto text-xs text-gray-400">
         <PageNumber /> / <TotalPages />
       </span>
@@ -41,14 +50,18 @@ function Header({ company, period }: { company: string; period: string }) {
 export function Report({ report }: ReportProps) {
   return (
     <Document title={`${report.company} — ${report.period}`} lang="en">
-
       {/* Cover */}
-      <Page size="A4" className="relative p-12 font-sans bg-[#0F172A] text-white">
+      <Page
+        size="A4"
+        className="relative p-12 font-sans bg-[#0F172A] text-white"
+      >
         <View className="flex flex-col h-full justify-end">
           <p className="text-xs uppercase tracking-widest text-white/50 mb-3">
             Financial Report
           </p>
-          <h1 className="text-4xl font-bold tracking-tight">{report.company}</h1>
+          <h1 className="text-4xl font-bold tracking-tight">
+            {report.company}
+          </h1>
           <p className="mt-2 text-xl text-white/70">{report.period}</p>
         </View>
       </Page>
@@ -59,7 +72,9 @@ export function Report({ report }: ReportProps) {
 
         {/* Revenue chart */}
         <View className="break-inside-avoid">
-          <h2 className="text-lg font-semibold break-after-avoid">Revenue Overview</h2>
+          <h2 className="text-lg font-semibold break-after-avoid">
+            Revenue Overview
+          </h2>
           <Chart className="mt-4 w-full h-56">
             <BarChart width={520} height={220} data={report.quarters}>
               <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
@@ -74,15 +89,18 @@ export function Report({ report }: ReportProps) {
         {/* Sections */}
         {report.sections.map((section, i) => (
           <View key={i} className="mt-8">
-            <h2 className="text-base font-semibold break-after-avoid">{section.heading}</h2>
+            <h2 className="text-base font-semibold break-after-avoid">
+              {section.heading}
+            </h2>
             <p className="mt-2 text-sm text-gray-600 leading-relaxed text-justify [widows:3] [orphans:3]">
               {section.body}
             </p>
-            {section.table && <DataTable data={section.table} className="mt-4" />}
+            {section.table && (
+              <DataTable data={section.table} className="mt-4" />
+            )}
           </View>
         ))}
       </Page>
-
     </Document>
   );
 }

@@ -21,9 +21,7 @@ Edit the generated `imprint.config.ts`:
 import { defineConfig } from '@imprint/core/config';
 
 export default defineConfig({
-  fonts: [
-    { family: 'Inter', src: './public/fonts/Inter.woff2' },
-  ],
+  fonts: [{ family: 'Inter', src: './public/fonts/Inter.woff2' }],
   tailwind: { config: './tailwind.config.ts' },
 });
 ```
@@ -145,5 +143,6 @@ Exits non-zero on failure — wire it into CI.
 - **[Concepts](concepts.md)** — how the pipeline fits together
 - **[Tailwind guide](guides/tailwind.md)** — what's supported, what's dropped
 - **[Typography](guides/typography.md)** — fonts, shaping, Knuth–Plass
-- **[Next.js](frameworks/nextjs.md)** or **[Vite](frameworks/vite.md)** — framework setup
+- **[Next.js](frameworks/nextjs.md)** or **[Vite](frameworks/vite.md)** —
+  framework setup
 - **[Cookbook](README.md#cookbook)** — real-world recipes

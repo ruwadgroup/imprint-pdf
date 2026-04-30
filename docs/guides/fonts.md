@@ -14,7 +14,11 @@ export default defineConfig({
     // Local files
     { family: 'Inter', src: './public/fonts/Inter.woff2' },
     { family: 'Inter', src: './public/fonts/Inter-Bold.woff2', weight: 700 },
-    { family: 'Inter', src: './public/fonts/Inter-Italic.woff2', style: 'italic' },
+    {
+      family: 'Inter',
+      src: './public/fonts/Inter-Italic.woff2',
+      style: 'italic',
+    },
 
     // Variable font
     {
@@ -73,19 +77,19 @@ fontFamily: {
 }
 ```
 
-`sans-serif` and `serif` at the end resolve to Imprint's built-in fallback
-fonts (a minimal Latin+CJK coverage set). These are not embedded by default —
+`sans-serif` and `serif` at the end resolve to Imprint's built-in fallback fonts
+(a minimal Latin+CJK coverage set). These are not embedded by default —
 explicitly declare the font files you want in the PDF.
 
 ## Font formats
 
-| Format   | Supported | Notes                                |
-| -------- | :-------: | ------------------------------------ |
-| `.woff2` | ✓         | Recommended. Best compression.       |
-| `.woff`  | ✓         |                                      |
-| `.otf`   | ✓         |                                      |
-| `.ttf`   | ✓         |                                      |
-| `.eot`   | ✗         | Legacy IE format, not supported.     |
+| Format   | Supported | Notes                            |
+| -------- | :-------: | -------------------------------- |
+| `.woff2` |     ✓     | Recommended. Best compression.   |
+| `.woff`  |     ✓     |                                  |
+| `.otf`   |     ✓     |                                  |
+| `.ttf`   |     ✓     |                                  |
+| `.eot`   |     ✗     | Legacy IE format, not supported. |
 
 ## System fonts
 

@@ -39,8 +39,8 @@ No dedicated package. Use `@imprint/react/standalone` — see the
 
 ### Bun
 
-No dedicated package. `@imprint/react` works natively with Bun's WASM
-support — see the [Bun guide](frameworks/bun.md).
+No dedicated package. `@imprint/react` works natively with Bun's WASM support —
+see the [Bun guide](frameworks/bun.md).
 
 ## Tailwind
 
@@ -53,11 +53,11 @@ pnpm add -D @imprint/tailwind tailwindcss
 These are [BSL-licensed](../LICENSING.md). A commercial license is required for
 production use.
 
-| Package          | Use it for                                            |
-| ---------------- | ----------------------------------------------------- |
-| `@imprint/print` | PDF/X-4, CMYK, ICC profiles, PDF/A, bleed/trim/marks  |
-| `@imprint/sign`  | PKCS#7 detached digital signatures                    |
-| `@imprint/ua`    | Tagged PDF / PDF/UA-1 accessibility                   |
+| Package          | Use it for                                           |
+| ---------------- | ---------------------------------------------------- |
+| `@imprint/print` | PDF/X-4, CMYK, ICC profiles, PDF/A, bleed/trim/marks |
+| `@imprint/sign`  | PKCS#7 detached digital signatures                   |
+| `@imprint/ua`    | Tagged PDF / PDF/UA-1 accessibility                  |
 
 ```bash
 pnpm add @imprint/print @imprint/sign @imprint/ua
@@ -65,9 +65,9 @@ pnpm add @imprint/print @imprint/sign @imprint/ua
 
 ## Optional tooling
 
-| Package                    | Use it for                                         |
-| -------------------------- | -------------------------------------------------- |
-| `@imprint/eslint-plugin`   | Catch unsupported CSS and missing alt text at write time |
+| Package                  | Use it for                                               |
+| ------------------------ | -------------------------------------------------------- |
+| `@imprint/eslint-plugin` | Catch unsupported CSS and missing alt text at write time |
 
 ```bash
 pnpm add -D @imprint/eslint-plugin
@@ -79,14 +79,14 @@ pnpm add -D @imprint/eslint-plugin
 npx imprint init
 ```
 
-Writes `imprint.config.ts` to your project root. Edit `fonts` and `tailwind`
-for your project — see [Configuration](reference/configuration.md).
+Writes `imprint.config.ts` to your project root. Edit `fonts` and `tailwind` for
+your project — see [Configuration](reference/configuration.md).
 
 ## Version matrix
 
-| @imprint/\* | React | Next.js | Vite  | Tailwind CSS | Node  |
-| ----------- | ----- | ------- | ----- | ------------ | ----- |
-| 0.x         | ≥18   | ≥14     | ≥5    | ≥4.0         | ≥20   |
+| @imprint/\* | React | Next.js | Vite | Tailwind CSS | Node |
+| ----------- | ----- | ------- | ---- | ------------ | ---- |
+| 0.x         | ≥18   | ≥14     | ≥5   | ≥4.0         | ≥20  |
 
 ## Next
 

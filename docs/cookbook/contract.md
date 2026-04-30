@@ -13,7 +13,16 @@ A multi-page contract PDF with a fillable AcroForm signature section.
 
 ```tsx
 // src/templates/Contract.tsx
-import { Document, Page, View, Form, TextField, Checkbox, Signature, Button } from '@imprint/react';
+import {
+  Document,
+  Page,
+  View,
+  Form,
+  TextField,
+  Checkbox,
+  Signature,
+  Button,
+} from '@imprint/react';
 
 interface ContractProps {
   contract: {
@@ -28,7 +37,6 @@ interface ContractProps {
 export function Contract({ contract }: ContractProps) {
   return (
     <Document title={contract.title} lang="en">
-
       {/* Cover page */}
       <Page size="Letter" className="p-[72pt] font-serif">
         <View className="flex flex-col items-center text-center h-full justify-center">
@@ -37,9 +45,11 @@ export function Contract({ contract }: ContractProps) {
             Effective {contract.effectiveDate}
           </p>
           <View className="mt-12 grid grid-cols-2 gap-16 w-full max-w-md">
-            {contract.parties.map(p => (
+            {contract.parties.map((p) => (
               <View key={p.party}>
-                <p className="text-xs uppercase tracking-wider text-gray-400">{p.party}</p>
+                <p className="text-xs uppercase tracking-wider text-gray-400">
+                  {p.party}
+                </p>
                 <p className="mt-1 font-semibold">{p.name}</p>
                 <p className="text-sm text-gray-500">{p.address}</p>
               </View>
@@ -69,7 +79,7 @@ export function Contract({ contract }: ContractProps) {
 
           <Form name="signatures">
             <View className="mt-8 grid grid-cols-2 gap-12">
-              {contract.parties.map(p => (
+              {contract.parties.map((p) => (
                 <View key={p.party}>
                   <p className="text-xs uppercase tracking-wider text-gray-400 mb-1">
                     {p.party}
@@ -102,7 +112,6 @@ export function Contract({ contract }: ContractProps) {
           </Form>
         </Page>
       )}
-
     </Document>
   );
 }

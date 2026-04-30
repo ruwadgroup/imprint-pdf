@@ -17,27 +17,37 @@ Real Tailwind. Real React. Real typography. PDF anywhere — no Chromium, ever.
 
 The features, in depth.
 
-- **[Components](guides/components.md)** — `<Document>`, `<Page>`, `<View>`, `<Text>`, `<Image>`, `<Svg>`
-- **[Tailwind](guides/tailwind.md)** — how real Tailwind works inside Imprint; variants and dropped properties
-- **[Typography](guides/typography.md)** — HarfBuzz shaping, Knuth–Plass, variable fonts, CJK, Arabic
-- **[Paged layout](guides/paged-layout.md)** — `@page`, `break-before`, widows/orphans, running headers, footnotes
+- **[Components](guides/components.md)** — `<Document>`, `<Page>`, `<View>`,
+  `<Text>`, `<Image>`, `<Svg>`
+- **[Tailwind](guides/tailwind.md)** — how real Tailwind works inside Imprint;
+  variants and dropped properties
+- **[Typography](guides/typography.md)** — HarfBuzz shaping, Knuth–Plass,
+  variable fonts, CJK, Arabic
+- **[Paged layout](guides/paged-layout.md)** — `@page`, `break-before`,
+  widows/orphans, running headers, footnotes
 - **[Fonts](guides/fonts.md)** — loading, subsetting, Google Fonts, system fonts
-- **[Forms (AcroForms)](guides/forms.md)** — `<TextField>`, `<Checkbox>`, `<RadioGroup>`, `<Dropdown>`, `<Signature>`
-- **[Charts & SVG](guides/charts.md)** — vector charts from Recharts, Visx, D3, ECharts
-- **[Type safety](guides/typesafety.md)** — strict props, generated types, JSX constraints
+- **[Forms (AcroForms)](guides/forms.md)** — `<TextField>`, `<Checkbox>`,
+  `<RadioGroup>`, `<Dropdown>`, `<Signature>`
+- **[Charts & SVG](guides/charts.md)** — vector charts from Recharts, Visx, D3,
+  ECharts
+- **[Type safety](guides/typesafety.md)** — strict props, generated types, JSX
+  constraints
 
 ## Frameworks
 
-- **[Next.js](frameworks/nextjs.md)** — App Router, RSC, route handlers, Edge Runtime
+- **[Next.js](frameworks/nextjs.md)** — App Router, RSC, route handlers, Edge
+  Runtime
 - **[Vite](frameworks/vite.md)** — SPA and SSR, virtual modules, HMR
-- **[Cloudflare Workers](frameworks/cloudflare.md)** — standalone WASM build, cold start
+- **[Cloudflare Workers](frameworks/cloudflare.md)** — standalone WASM build,
+  cold start
 - **[Bun](frameworks/bun.md)** — native WASM, Bun.serve
 
 ## Integrations
 
 - **[Recharts](integrations/recharts.md)** — vector chart embedding
 - **[D3](integrations/d3.md)** — SVG-to-PDF vector pipeline
-- **[Tailwind config](integrations/tailwind-config.md)** — sharing your design tokens
+- **[Tailwind config](integrations/tailwind-config.md)** — sharing your design
+  tokens
 
 ## Cookbook
 
@@ -65,11 +75,13 @@ Task-oriented recipes for patterns that actually come up.
 - **[Configuration](reference/configuration.md)** — `imprint.config.ts` schema
 - **[CLI](reference/cli.md)** — every command, every flag
 - **[API](reference/api.md)** — typed exports per package
-- **[Components](reference/components.md)** — all JSX components, props, and defaults
+- **[Components](reference/components.md)** — all JSX components, props, and
+  defaults
 
 ## Examples
 
 - **[`examples/next-app`](../examples/next-app)** — Next.js App Router demo
 - **[`examples/vite-react`](../examples/vite-react)** — Vite + React SPA
-- **[`examples/cloudflare-worker`](../examples/cloudflare-worker)** — edge PDF generation
+- **[`examples/cloudflare-worker`](../examples/cloudflare-worker)** — edge PDF
+  generation
 - **[`examples/bun-server`](../examples/bun-server)** — Bun HTTP server
