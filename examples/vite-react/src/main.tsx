@@ -1,4 +1,4 @@
-import { Document, Page, renderToBuffer, Text, View } from '@imprint/react';
+import { Document, Page, renderToBuffer } from '@imprint/react';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 
@@ -17,23 +17,23 @@ function Invoice({ id, customer, total, date }: InvoiceProps) {
   return (
     <Document title={`Invoice ${id}`}>
       <Page size="A4" className="p-12 font-sans bg-white text-gray-900">
-        <View className="flex justify-between items-center mb-8">
-          <Text className="text-3xl font-bold tracking-tight">Invoice</Text>
-          <Text className="text-sm text-gray-500">#{id}</Text>
-        </View>
-        <View className="mb-4">
-          <Text className="text-sm text-gray-500 font-medium">Bill to</Text>
-          <Text className="text-base mt-1">{customer}</Text>
-        </View>
-        <View className="flex-1" />
-        <View className="mt-12 pt-4 border-t border-gray-200 flex justify-between">
-          <Text className="text-sm font-medium">Due date</Text>
-          <Text className="text-sm text-gray-600">{date}</Text>
-        </View>
-        <View className="mt-2 flex justify-between">
-          <Text className="text-base font-semibold">Total</Text>
-          <Text className="text-xl font-bold">${total.toLocaleString()}</Text>
-        </View>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold tracking-tight">Invoice</h1>
+          <span className="text-sm text-gray-500">#{id}</span>
+        </div>
+        <div className="mb-4">
+          <p className="text-sm text-gray-500 font-medium">Bill to</p>
+          <p className="text-base mt-1">{customer}</p>
+        </div>
+        <div className="flex-1" />
+        <div className="mt-12 pt-4 border-t border-gray-200 flex justify-between">
+          <span className="text-sm font-medium">Due date</span>
+          <span className="text-sm text-gray-600">{date}</span>
+        </div>
+        <div className="mt-2 flex justify-between">
+          <span className="text-base font-semibold">Total</span>
+          <span className="text-xl font-bold">${total.toLocaleString()}</span>
+        </div>
       </Page>
     </Document>
   );
@@ -54,7 +54,7 @@ function App() {
       const pdf = await renderToBuffer(
         <Invoice id="INV-001" customer="Acme Corp" total={4200} date="2026-04-29" />,
       );
-      const blob = new Blob([pdf], { type: 'application/pdf' });
+      const blob = new Blob([pdf as Uint8Array<ArrayBuffer>], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
