@@ -92,10 +92,13 @@ async function loadCustomFont(
           : 400;
     const style: 'normal' | 'italic' = decl.style ?? 'normal';
 
-    // pdf-lib embeds fontkit; access metrics via internal reference
+    // Reach into pdf-lib's embedder to grab the underlying fontkit font.
+    // pdf-lib doesn't expose font metrics on its public surface, but we need
+    // them for line-height resolution. Two property names because the field
+    // moved between minor versions; defaults catch any future rename.
     let metrics: FontMetrics = DEFAULT_METRICS;
     try {
-      // @ts-expect-error — accessing internal fontkit font
+      // @ts-expect-error — internal fontkit reference
       const fk = pdfFont.embedder?.font ?? pdfFont.embedder?.customFont;
       if (fk) {
         metrics = {
@@ -106,7 +109,8 @@ async function loadCustomFont(
         };
       }
     } catch {
-      // fall back to default metrics
+      // Default metrics are accurate enough for layout when embedder shape
+      // changes; the visible result is slightly looser leading.
     }
 
     return {
@@ -132,7 +136,9 @@ async function loadStandardFont(
   const canonicalFamily = normalizeFamily(family);
   const fontVariants = STANDARD_FONT_MAP[canonicalFamily] ?? STANDARD_FONT_MAP.Helvetica!;
 
-  // try exact match, then weight fallback, then plain
+  // PDF standard fonts ship with only four variants per family. Map any
+  // requested (weight, style) onto the closest available one rather than
+  // refusing to render: exact → same-style 700 if heavy / 400 if light → plain.
   const exactKey = `${weight}-${style}`;
   const boldKey = `700-${style}`;
   const normalKey = `400-${style}`;
@@ -155,8 +161,13 @@ async function loadStandardFont(
   };
 }
 
-// keys are `family:weight:style` strings
-// Loads only HbFont metric objects (no PDF embedding) for use during layout measurement.
+/**
+ * Pre-pass loader that builds HarfBuzz shapers without embedding into a PDF.
+ * Layout measurement runs before we have a PDFDocument, and embedding is the
+ * expensive step (subsetting, CFF parsing, …). Splitting out the shaping-only
+ * path lets the layout phase use real glyph advances at a fraction of the
+ * cost of full embedding.
+ */
 export async function loadFontMetricsOnly(
   declarations: FontDeclaration[],
   resolver: AssetResolver,
@@ -180,7 +191,7 @@ export async function loadFontMetricsOnly(
         hbFont: createHbFont(bytes),
       });
     } catch {
-      // ignore — font will fall back to approximation during layout
+      // Layout falls back to charWidth heuristics if shaping is unavailable.
     }
   }
   return fonts;
@@ -191,7 +202,9 @@ export async function loadFonts(
   declarations: FontDeclaration[],
   resolver: AssetResolver,
 ): Promise<Map<string, LoadedFont>> {
-  // Register fontkit so pdf-lib can embed custom (non-standard) fonts
+  // pdf-lib only embeds StandardFonts out of the box; fontkit is required for
+  // anything else. Skip the registration when no custom fonts are declared so
+  // documents that only use Helvetica don't pull in fontkit's parser.
   if (declarations.length > 0) {
     doc.registerFontkit(fontkitLib);
   }
@@ -212,7 +225,8 @@ export async function loadFonts(
     }
   }
 
-  // always ensure helvetica fallback is available
+  // selectFont's last-resort fallback is Helvetica at 400 normal — make sure
+  // it's actually loaded so a missing font never ends in undefined.
   const fallbackKey = fontKey('Helvetica', 400, 'normal');
   if (!fonts.has(fallbackKey)) {
     const fallback = await loadStandardFont(doc, 'Helvetica', 400, 'normal');
@@ -226,7 +240,19 @@ export async function loadFonts(
   return fonts;
 }
 
-// falls back gracefully if an exact match is not found
+/**
+ * Resolves (family, weight, style) to a loaded font, walking a chain of
+ * progressively looser matches:
+ *
+ *   1. Exact (family, weight, style) hit.
+ *   2. Same family, closest weight + matching style preferred — `bestDiff`
+ *      penalizes a style mismatch by 100, which exceeds the largest legal
+ *      weight gap (900 - 100 = 800), so any weight in the matching style
+ *      beats every weight in the wrong style.
+ *   3. Resolve the family through aliases (`Arial` → `Helvetica`, etc.) and
+ *      retry against the alias.
+ *   4. Helvetica 400 normal — guaranteed present by loadFonts.
+ */
 export function selectFont(
   fonts: Map<string, LoadedFont>,
   family: string,
@@ -236,7 +262,6 @@ export function selectFont(
   const exact = fonts.get(fontKey(family, weight, style));
   if (exact) return exact;
 
-  // same family, find closest weight
   const families = [...fonts.values()].filter((f) => f.family === family);
   if (families.length > 0) {
     let best: LoadedFont | undefined;
@@ -251,7 +276,6 @@ export function selectFont(
     if (best) return best;
   }
 
-  // try normalized family alias
   const canonical = normalizeFamily(family);
   if (canonical !== family) {
     return selectFont(fonts, canonical, weight, style);

@@ -5,7 +5,9 @@ import type { ResolvedStyle } from '@imprint/core';
 import { parseCssToStyleMap } from './css-to-styles.js';
 import type { ImprintTailwindOptions } from './index.js';
 
-// Tailwind v4 JS API — matches `tailwindcss@>=4.0.0` peer dep
+// Subset of the Tailwind v4 programmatic API we depend on. Pinned by the
+// `tailwindcss@>=4.0.0` peer dep — earlier versions exposed a different
+// surface and would fail at the `tw.compile` call below.
 interface TailwindV4 {
   compile: (
     css: string,
@@ -24,12 +26,15 @@ export async function runTailwind(
   if (classes.size === 0) return new Map();
 
   try {
+    // Resolve tailwindcss from the user's project, not from this package, so
+    // they get the version their tailwind.config.js was written against.
     const req = createRequire(path.join(projectRoot, 'package.json'));
     const tw = req('tailwindcss') as TailwindV4;
     const twDir = path.dirname(req.resolve('tailwindcss/package.json'));
 
-    // loadStylesheet resolves @import statements during Tailwind compilation.
-    // Bare specifiers like "tailwindcss" map to their package CSS entry.
+    // Tailwind invokes this for every `@import "..."` it encounters during
+    // compilation. We support: the special "tailwindcss" specifier, bare
+    // package names (resolved to <pkg>/index.css), and plain relative paths.
     async function loadStylesheet(
       id: string,
       base: string,
@@ -38,13 +43,11 @@ export async function runTailwind(
         const cssPath = path.join(twDir, 'index.css');
         return { content: readFileSync(cssPath, 'utf8'), base: twDir };
       }
-      // Try resolving as a bare package name with /index.css
       try {
         const pkgDir = path.dirname(req.resolve(`${id}/package.json`));
         const cssPath = path.join(pkgDir, 'index.css');
         return { content: readFileSync(cssPath, 'utf8'), base: pkgDir };
       } catch {}
-      // Fall back to relative path resolution
       try {
         const abs = path.resolve(base, id);
         return { content: readFileSync(abs, 'utf8'), base: path.dirname(abs) };

@@ -45,7 +45,9 @@ export function addOutline(doc: PDFDocument, document: DocumentNode, pdfPages: P
         Parent: outlineRef,
       }) as PDFDict;
 
-      // /Dest [pageRef /XYZ null null null] → navigate to the top of the page
+      // PDF spec §12.3.2.2: [page /XYZ left top zoom]. Nulls preserve the
+      // viewer's current left/top, so the bookmark scrolls to the page top
+      // without zooming or recentering. Final 0 means "use current zoom".
       if (pdfPage) {
         const destArr = doc.context.obj([
           pdfPage.ref,
@@ -63,6 +65,7 @@ export function addOutline(doc: PDFDocument, document: DocumentNode, pdfPages: P
       prevRef = itemRef;
     }
   } catch {
-    /* non-critical */
+    // The outline is a navigation convenience — if we fail to build it the
+    // document is still readable, just without bookmarks in the sidebar.
   }
 }

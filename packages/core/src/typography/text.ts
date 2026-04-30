@@ -37,10 +37,13 @@ function charWidth(char: string, size: number, font: LoadedFont | undefined): nu
       return font.pdfFont.widthOfTextAtSize(char, size);
     } catch {}
   }
+  // Heuristic widths used when no font has loaded yet (during initial layout).
+  // Tuned so paragraph wrapping picks roughly correct line counts; the real
+  // glyph widths replace these once the PDF font is embedded.
   const code = char.charCodeAt(0);
-  if (code === 32) return size * 0.25;
-  if (code >= 105 && code <= 108) return size * 0.28;
-  if (code === 109 || code === 119) return size * 0.78;
+  if (code === 32) return size * 0.25; // space
+  if (code >= 105 && code <= 108) return size * 0.28; // i j k l (narrow)
+  if (code === 109 || code === 119) return size * 0.78; // m w (wide)
   return size * 0.55;
 }
 
@@ -185,7 +188,9 @@ export function measureText(
         const w = measure(lineText);
         const xOff = lineIdx === 0 ? indent : 0;
 
-        // Apply ellipsis on the last clamped line
+        // Last line of a clamped block gets an ellipsis so the truncation
+        // is visible. We re-measure with the ellipsis baked in to keep the
+        // line within the available width even after the suffix is added.
         if (lineClamp > 0 && lines.length === lineClamp - 1) {
           const availW = maxWidth - xOff;
           const truncated = truncateWithEllipsis(lineWords, spaceW, availW, measure);

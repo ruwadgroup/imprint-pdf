@@ -17,6 +17,16 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } {
   };
 }
 
+/**
+ * OKLCH → sRGB. Three-step pipeline: polar OKLCH → cartesian Oklab → linear
+ * RGB → sRGB with gamma. The constants come straight from Björn Ottosson's
+ * Oklab spec (https://bottosson.github.io/posts/oklab/) and the published
+ * Oklab→linear-sRGB matrix.
+ *
+ * Negative outputs (out-of-gamut colors) get clamped to [0, 1] before gamma —
+ * the more sophisticated answer is gamut-mapping, but for print-style
+ * documents nobody picks colors so saturated they need it.
+ */
 function oklchToRgb(l: number, c: number, h: number): { r: number; g: number; b: number } {
   const hRad = (h * Math.PI) / 180;
   const a = c * Math.cos(hRad);
@@ -95,7 +105,6 @@ export function parseColor(colorStr: string | undefined): Color | undefined {
     );
   }
 
-  // hsl(H, S%, L%) or hsl(H S% L%)
   const hsl = colorStr.match(
     /hsla?\(\s*(\d*\.?\d+)\s*[,\s]\s*(\d*\.?\d+)%?\s*[,\s]\s*(\d*\.?\d+)%/,
   );
@@ -104,7 +113,6 @@ export function parseColor(colorStr: string | undefined): Color | undefined {
     return rgb(r, g, b);
   }
 
-  // oklch(L% C H)
   const oklch = colorStr.match(/oklch\(\s*(\d*\.?\d+)%\s+(\d*\.?\d+)\s+(\d*\.?\d+)\s*\)/);
   if (oklch) {
     const { r, g, b } = oklchToRgb(
@@ -115,7 +123,10 @@ export function parseColor(colorStr: string | undefined): Color | undefined {
     return rgb(r, g, b);
   }
 
-  // device-cmyk(C M Y K) — CSS Color 4, values 0–1 or percentages
+  // CSS Color 4 device-cmyk(): both fractional (0–1) and percent forms are
+  // legal, sometimes interleaved. We capture each number alongside its `%`
+  // suffix (or absence) and divide accordingly, matching the spec rather than
+  // assuming one or the other.
   const deviceCmyk = colorStr.match(
     /device-cmyk\(\s*(\d*\.?\d+)(%?)\s+(\d*\.?\d+)(%?)\s+(\d*\.?\d+)(%?)\s+(\d*\.?\d+)(%?)\s*\)/,
   );
@@ -129,7 +140,8 @@ export function parseColor(colorStr: string | undefined): Color | undefined {
     );
   }
 
-  // cmyk(C, M, Y, K) — 0–100 percentage scale (print convention)
+  // cmyk() from print pipelines is conventionally 0–100; CSS device-cmyk()
+  // is 0–1. Different syntaxes, different conventions — keep them separate.
   const cmykFn = colorStr.match(
     /cmyk\(\s*(\d*\.?\d+)%?\s*,\s*(\d*\.?\d+)%?\s*,\s*(\d*\.?\d+)%?\s*,\s*(\d*\.?\d+)%?\s*\)/,
   );
@@ -142,11 +154,10 @@ export function parseColor(colorStr: string | undefined): Color | undefined {
     );
   }
 
-  // grayscale(N%) or gray(N%)
   const gray = colorStr.match(/gr(?:ay|ayscale)\(\s*(\d*\.?\d+)%?\s*\)/);
   if (gray) {
     const v = parseFloat(gray[1]!);
-    // If > 1 treat as percentage, otherwise 0–1
+    // Accept both `gray(50%)` and `gray(0.5)`. >1 is unambiguously percentage.
     return grayscale(v > 1 ? v / 100 : v);
   }
 
