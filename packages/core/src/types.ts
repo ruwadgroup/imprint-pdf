@@ -83,6 +83,8 @@ export interface ResolvedStyle {
   whiteSpace?: string;
   textOverflow?: string;
   wordSpacing?: string | number;
+  lineClamp?: string | number;
+  textIndent?: string | number;
   color?: string;
   opacity?: string | number;
   backgroundColor?: string;

@@ -8,6 +8,8 @@ export interface TextLine {
   text: string;
   width: number;
   y: number;
+  /** x-offset from the node's left edge (used for text-indent on the first line). */
+  xOffset: number;
 }
 
 export interface TextMetrics {
@@ -105,6 +107,12 @@ export function measureText(
   const nowrap = whiteSpace === 'nowrap' || whiteSpace === 'pre';
   const ellipsis = textOverflow === 'ellipsis';
 
+  const lineClampRaw = style.lineClamp;
+  const lineClamp = lineClampRaw !== undefined ? parseInt(String(lineClampRaw), 10) : 0;
+
+  const textIndentRaw = style.textIndent;
+  const textIndent = textIndentRaw !== undefined ? parsePx(textIndentRaw, size) : 0;
+
   const maxWidth = nowrap || containerWidth <= 0 ? Infinity : containerWidth;
 
   const letterSpacingRaw = style.letterSpacing;
@@ -133,46 +141,72 @@ export function measureText(
   const lines: TextLine[] = [];
   let y = 0;
   let maxW = 0;
+  let isFirstParagraph = true;
 
   for (const para of inputText.split('\n')) {
+    if (lineClamp > 0 && lines.length >= lineClamp) break;
+
     if (!para) {
-      lines.push({ text: '', width: 0, y });
+      lines.push({ text: '', width: 0, y, xOffset: 0 });
       y += lineHeight;
+      isFirstParagraph = false;
       continue;
     }
 
     const words = para.split(/\s+/).filter(Boolean);
     if (!words.length) {
-      lines.push({ text: '', width: 0, y });
+      lines.push({ text: '', width: 0, y, xOffset: 0 });
       y += lineHeight;
+      isFirstParagraph = false;
       continue;
     }
 
     const baseDir = detectBaseDir(para);
+    const indent = isFirstParagraph && textIndent > 0 ? textIndent : 0;
 
     if (nowrap) {
-      // Single line — optionally truncated with ellipsis
       let lineText = words.join(' ');
-      if (ellipsis && containerWidth > 0) {
-        lineText = truncateWithEllipsis(words, spaceW, containerWidth, measure);
+      const availW = containerWidth > 0 ? containerWidth - indent : Infinity;
+      if (ellipsis && availW > 0 && isFinite(availW)) {
+        lineText = truncateWithEllipsis(words, spaceW, availW, measure);
       }
       const w = measure(lineText);
       if (hasRtlChars(lineText)) lineText = reorderLine(lineText, baseDir);
-      lines.push({ text: lineText, width: w, y });
-      maxW = Math.max(maxW, w);
+      lines.push({ text: lineText, width: w, y, xOffset: indent });
+      maxW = Math.max(maxW, w + indent);
       y += lineHeight;
     } else {
       const broken = breakLines(words, spaceW, spaceW * 0.5, spaceW * 0.333, maxWidth, measure);
+      let lineIdx = 0;
       for (const lineWords of broken) {
+        if (lineClamp > 0 && lines.length >= lineClamp) break;
         if (!lineWords.length) continue;
         let lineText = lineWords.join(' ');
         const w = measure(lineText);
+        const xOff = lineIdx === 0 ? indent : 0;
+
+        // Apply ellipsis on the last clamped line
+        if (lineClamp > 0 && lines.length === lineClamp - 1) {
+          const availW = maxWidth - xOff;
+          const truncated = truncateWithEllipsis(lineWords, spaceW, availW, measure);
+          const tw = measure(truncated);
+          const tText = hasRtlChars(truncated) ? reorderLine(truncated, baseDir) : truncated;
+          lines.push({ text: tText, width: tw, y, xOffset: xOff });
+          maxW = Math.max(maxW, tw + xOff);
+          y += lineHeight;
+          lineIdx++;
+          continue;
+        }
+
         if (hasRtlChars(lineText)) lineText = reorderLine(lineText, baseDir);
-        lines.push({ text: lineText, width: w, y });
-        maxW = Math.max(maxW, w);
+        lines.push({ text: lineText, width: w, y, xOffset: xOff });
+        maxW = Math.max(maxW, w + xOff);
         y += lineHeight;
+        lineIdx++;
       }
     }
+
+    isFirstParagraph = false;
   }
 
   return { width: maxW, height: y, lineHeight, lines };

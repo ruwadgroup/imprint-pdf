@@ -48,7 +48,13 @@ export async function drawText(
   const decorationThickness = Math.max(0.5, fontSize / 20);
 
   for (const line of metrics.lines) {
-    const lineX = alignTextX(textAlign, geo.x + geo.paddingLeft, wrapWidth, line.width);
+    const xOffset = line.xOffset ?? 0;
+    const lineX = alignTextX(
+      textAlign,
+      geo.x + geo.paddingLeft + xOffset,
+      wrapWidth - xOffset,
+      line.width,
+    );
     const lineY = pageHeight - (geo.y + geo.paddingTop + line.y + fontSize);
     if (lineY < -fontSize || lineY > pageHeight + fontSize) continue;
 
