@@ -1,18 +1,30 @@
 import type { PDFDocument, PDFPage } from 'pdf-lib';
+import { clip, endPath, popGraphicsState, pushGraphicsState, rectangle } from 'pdf-lib';
 import type {
   AssetResolver,
+  ButtonNode,
   CheckboxNode,
   ComputedGeometry,
+  DropdownNode,
   ImageNode,
   LinkNode,
   PdfNode,
+  RadioGroupNode,
+  SignatureNode,
   TextFieldNode,
   TextNode,
 } from '../types.js';
 import type { LoadedFont } from '../typography/fonts.js';
 import { parseColor, toPt } from './color.js';
 import { pdfY } from './coords.js';
-import { drawCheckbox, drawTextField } from './drawForms.js';
+import {
+  drawButton,
+  drawCheckbox,
+  drawDropdown,
+  drawRadioGroup,
+  drawSignature,
+  drawTextField,
+} from './drawForms.js';
 import { drawImage } from './drawImage.js';
 import { drawLink } from './drawLink.js';
 import { drawText } from './drawText.js';
@@ -98,6 +110,29 @@ function drawBackground(
   }
 }
 
+function shouldClip(style: Record<string, unknown>): boolean {
+  const ov = style.overflow as string | undefined;
+  const ovX = style.overflowX as string | undefined;
+  const ovY = style.overflowY as string | undefined;
+  if (ov === 'hidden') return true;
+  if (ovX === 'hidden' && (ovY === 'hidden' || ovY === undefined)) return true;
+  if (ovY === 'hidden' && (ovX === 'hidden' || ovX === undefined)) return true;
+  return false;
+}
+
+function pushClip(page: PDFPage, x: number, pdfYPos: number, width: number, height: number): void {
+  page.pushOperators(
+    pushGraphicsState(),
+    rectangle(x, pdfYPos, Math.max(0, width), Math.max(0, height)),
+    clip(),
+    endPath(),
+  );
+}
+
+function popClip(page: PDFPage): void {
+  page.pushOperators(popGraphicsState());
+}
+
 export async function drawNode(
   node: PdfNode,
   page: PDFPage,
@@ -136,12 +171,34 @@ export async function drawNode(
     case 'checkbox':
       drawCheckbox(node as CheckboxNode, page, doc, pageHeight, geo);
       break;
+    case 'radiogroup':
+      drawRadioGroup(node as RadioGroupNode, page, doc, pageHeight, geo);
+      break;
+    case 'dropdown':
+      drawDropdown(node as DropdownNode, page, doc, pageHeight, geo);
+      break;
+    case 'button':
+      drawButton(node as ButtonNode, page, doc, pageHeight, geo);
+      break;
+    case 'signature':
+      drawSignature(node as SignatureNode, page, doc, pageHeight, geo);
+      break;
+    case 'svg':
+    case 'chart':
+      // SVG/canvas rendering requires a rasterization pipeline not available in all
+      // environments — children (e.g. fallback content) are still drawn below.
+      break;
   }
 
   if (node.type !== 'document') {
+    const clip = shouldClip(style as Record<string, unknown>);
+    if (clip) pushClip(page, geo.x, pdfYPos, geo.width, geo.height);
+
     const childInherited = { ...inheritedStyle, ...node.style };
     for (const child of node.children) {
       await drawNode(child, page, pageHeight, geometries, fonts, doc, resolver, childInherited);
     }
+
+    if (clip) popClip(page);
   }
 }
