@@ -15,7 +15,7 @@
     "strict": true,
     "noImplicitAny": true,
     "skipLibCheck": true,
-    "types": ["bun-types"],
+    "types": ["bun"],
     "jsx": "react-jsx",
     "jsxImportSource": "react"
   },

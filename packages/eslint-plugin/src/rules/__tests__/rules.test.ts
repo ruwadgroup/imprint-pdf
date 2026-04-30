@@ -27,15 +27,15 @@ const outside = (inner: string) => `const x = (${inner});`;
 tester.run('no-hover-variants', noHoverVariants, {
   valid: [
     { code: outside('<div className="hover:text-red-500" />') },
-    { code: inDoc('<View className="text-red-500 flex p-4" />') },
+    { code: inDoc('<div className="text-red-500 flex p-4" />') },
   ],
   invalid: [
     {
-      code: inDoc('<View className="hover:text-red-500" />'),
+      code: inDoc('<div className="hover:text-red-500" />'),
       errors: [{ messageId: 'noHover' }],
     },
     {
-      code: inDoc('<View className="flex focus:outline-none" />'),
+      code: inDoc('<div className="flex focus:outline-none" />'),
       errors: [{ messageId: 'noHover' }],
     },
   ],
@@ -44,15 +44,15 @@ tester.run('no-hover-variants', noHoverVariants, {
 tester.run('no-unsupported-css', noUnsupportedCss, {
   valid: [
     { code: outside('<div className="hover:text-red-500 sticky" />') },
-    { code: inDoc('<View className="flex p-4 text-red-500" />') },
+    { code: inDoc('<div className="flex p-4 text-red-500" />') },
   ],
   invalid: [
     {
-      code: inDoc('<View className="hover:text-blue-500" />'),
+      code: inDoc('<div className="hover:text-blue-500" />'),
       errors: [{ messageId: 'unsupported' }],
     },
     {
-      code: inDoc('<View className="sticky" />'),
+      code: inDoc('<div className="sticky" />'),
       errors: [{ messageId: 'unsupported' }],
     },
   ],
@@ -61,20 +61,20 @@ tester.run('no-unsupported-css', noUnsupportedCss, {
 tester.run('no-dynamic-class-without-safelist', noDynamicClassWithoutSafelist, {
   valid: [
     { code: outside('<div className={`text-${size}`} />') },
-    { code: inDoc('<View className="flex p-4" />') },
-    { code: inDoc('<View className={"flex p-4"} />') },
+    { code: inDoc('<div className="flex p-4" />') },
+    { code: inDoc('<div className={"flex p-4"} />') },
   ],
   invalid: [
     {
-      code: inDoc('<View className={`text-${size}`} />'),
+      code: inDoc('<div className={`text-${size}`} />'),
       errors: [{ messageId: 'dynamic' }],
     },
     {
-      code: inDoc('<View className={isActive ? "flex" : "hidden"} />'),
+      code: inDoc('<div className={isActive ? "flex" : "hidden"} />'),
       errors: [{ messageId: 'dynamic' }],
     },
     {
-      code: inDoc('<View className={isActive && "flex"} />'),
+      code: inDoc('<div className={isActive && "flex"} />'),
       errors: [{ messageId: 'dynamic' }],
     },
   ],
@@ -84,7 +84,7 @@ tester.run('no-missing-alt', noMissingAlt, {
   valid: [
     { code: outside('<Image src="logo.png" />') },
     { code: inDoc('<Image src="logo.png" alt="Company logo" />') },
-    { code: inDoc('<View><Image src="photo.jpg" alt="" /></View>') },
+    { code: inDoc('<div><Image src="photo.jpg" alt="" /></div>') },
   ],
   invalid: [
     {
@@ -92,7 +92,7 @@ tester.run('no-missing-alt', noMissingAlt, {
       errors: [{ messageId: 'missingAlt' }],
     },
     {
-      code: inDoc('<Page><View><Image src="photo.jpg" /></View></Page>'),
+      code: inDoc('<Page><div><Image src="photo.jpg" /></div></Page>'),
       errors: [{ messageId: 'missingAlt' }],
     },
   ],
@@ -100,12 +100,12 @@ tester.run('no-missing-alt', noMissingAlt, {
 
 tester.run('require-page-in-document', requirePageInDocument, {
   valid: [
-    { code: 'const x = (<Document><Page><View /></Page></Document>);' },
+    { code: 'const x = (<Document><Page><div /></Page></Document>);' },
     { code: 'const x = (<Document><Page /><Page /></Document>);' },
   ],
   invalid: [
     {
-      code: 'const x = (<Document><View /></Document>);',
+      code: 'const x = (<Document><div /></Document>);',
       errors: [{ messageId: 'noPage' }],
     },
     {

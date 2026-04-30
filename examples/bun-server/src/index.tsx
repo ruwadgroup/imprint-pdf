@@ -1,4 +1,4 @@
-import { Document, Page, renderToBuffer, Text, View } from '@imprint/react';
+import { Document, Page, renderToBuffer } from '@imprint/react';
 
 // ---------------------------------------------------------------------------
 // Invoice template
@@ -33,123 +33,123 @@ function Invoice({ id }: { id: string }) {
     <Document title={`Invoice ${id}`}>
       <Page size="A4" className="p-12 font-sans bg-white">
         {/* Header */}
-        <View className="flex flex-row justify-between items-start mb-10">
-          <View>
-            <Text className="text-2xl font-bold text-indigo-600">Acme Studio</Text>
-            <Text className="text-xs text-slate-500 mt-1">hello@acmestudio.io</Text>
-            <Text className="text-xs text-slate-500">
+        <div className="flex flex-row justify-between items-start mb-10">
+          <div>
+            <span className="text-2xl font-bold text-indigo-600">Acme Studio</span>
+            <span className="text-xs text-slate-500 mt-1">hello@acmestudio.io</span>
+            <span className="text-xs text-slate-500">
               123 Design Street, San Francisco, CA 94105
-            </Text>
-          </View>
-          <View className="flex flex-col items-end">
-            <Text className="text-sm font-bold text-slate-400 tracking-widest">INVOICE</Text>
-            <Text className="text-xl font-bold text-slate-900 mt-1">{id}</Text>
-            <View className="flex flex-row mt-2 gap-4">
-              <View>
-                <Text className="text-xs text-slate-400 mb-0.5">Issue date</Text>
-                <Text className="text-xs font-semibold text-slate-900">{today}</Text>
-              </View>
-              <View>
-                <Text className="text-xs text-slate-400 mb-0.5">Due date</Text>
-                <Text className="text-xs font-semibold text-indigo-600">{due}</Text>
-              </View>
-            </View>
-          </View>
-        </View>
+            </span>
+          </div>
+          <div className="flex flex-col items-end">
+            <span className="text-sm font-bold text-slate-400 tracking-widest">INVOICE</span>
+            <span className="text-xl font-bold text-slate-900 mt-1">{id}</span>
+            <div className="flex flex-row mt-2 gap-4">
+              <div>
+                <span className="text-xs text-slate-400 mb-0.5">Issue date</span>
+                <span className="text-xs font-semibold text-slate-900">{today}</span>
+              </div>
+              <div>
+                <span className="text-xs text-slate-400 mb-0.5">Due date</span>
+                <span className="text-xs font-semibold text-indigo-600">{due}</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* Bill-To section */}
-        <View className="flex flex-row justify-between mb-10">
-          <View>
-            <Text className="text-xs font-semibold text-indigo-600 mb-1 tracking-widest">FROM</Text>
-            <Text className="text-sm font-bold text-slate-900 mb-0.5">Acme Studio</Text>
-            <Text className="text-xs text-slate-500">123 Design Street</Text>
-            <Text className="text-xs text-slate-500">San Francisco, CA 94105</Text>
-            <Text className="text-xs text-slate-500 mt-1">hello@acmestudio.io</Text>
-          </View>
-          <View>
-            <Text className="text-xs font-semibold text-indigo-600 mb-1 tracking-widest">
+        <div className="flex flex-row justify-between mb-10">
+          <div>
+            <span className="text-xs font-semibold text-indigo-600 mb-1 tracking-widest">FROM</span>
+            <span className="text-sm font-bold text-slate-900 mb-0.5">Acme Studio</span>
+            <span className="text-xs text-slate-500">123 Design Street</span>
+            <span className="text-xs text-slate-500">San Francisco, CA 94105</span>
+            <span className="text-xs text-slate-500 mt-1">hello@acmestudio.io</span>
+          </div>
+          <div>
+            <span className="text-xs font-semibold text-indigo-600 mb-1 tracking-widest">
               BILL TO
-            </Text>
-            <Text className="text-sm font-bold text-slate-900 mb-0.5">Globex Corporation</Text>
-            <Text className="text-xs text-slate-500">456 Enterprise Ave</Text>
-            <Text className="text-xs text-slate-500">New York, NY 10001</Text>
-            <Text className="text-xs text-slate-500 mt-1">accounts@globex.com</Text>
-          </View>
-        </View>
+            </span>
+            <span className="text-sm font-bold text-slate-900 mb-0.5">Globex Corporation</span>
+            <span className="text-xs text-slate-500">456 Enterprise Ave</span>
+            <span className="text-xs text-slate-500">New York, NY 10001</span>
+            <span className="text-xs text-slate-500 mt-1">accounts@globex.com</span>
+          </div>
+        </div>
 
         {/* Table header */}
-        <View className="flex flex-row items-center bg-slate-900 py-2 px-3 rounded-md mb-0.5">
-          <View className="flex-1">
-            <Text className="text-xs font-bold text-white tracking-widest">DESCRIPTION</Text>
-          </View>
-          <View className="w-10 text-right">
-            <Text className="text-xs font-bold text-white">QTY</Text>
-          </View>
-          <View className="w-20 text-right">
-            <Text className="text-xs font-bold text-white">RATE</Text>
-          </View>
-          <View className="w-24 text-right">
-            <Text className="text-xs font-bold text-white">AMOUNT</Text>
-          </View>
-        </View>
+        <div className="flex flex-row items-center bg-slate-900 py-2 px-3 rounded-md mb-0.5">
+          <div className="flex-1">
+            <span className="text-xs font-bold text-white tracking-widest">DESCRIPTION</span>
+          </div>
+          <div className="w-10 text-right">
+            <span className="text-xs font-bold text-white">QTY</span>
+          </div>
+          <div className="w-20 text-right">
+            <span className="text-xs font-bold text-white">RATE</span>
+          </div>
+          <div className="w-24 text-right">
+            <span className="text-xs font-bold text-white">AMOUNT</span>
+          </div>
+        </div>
 
         {/* Line items */}
         {ITEMS.map((item, i) => (
-          <View
+          <div
             key={i}
             className={`flex flex-row items-center py-2 px-3 ${i % 2 === 0 ? 'bg-slate-50' : 'bg-white'}`}
           >
-            <View className="flex-1">
-              <Text className="text-xs text-slate-800">{item.description}</Text>
-            </View>
-            <View className="w-10 text-right">
-              <Text className="text-xs text-slate-500">{item.qty}</Text>
-            </View>
-            <View className="w-20 text-right">
-              <Text className="text-xs text-slate-500">{fmt(item.rate)}</Text>
-            </View>
-            <View className="w-24 text-right">
-              <Text className="text-xs font-semibold text-slate-900">
+            <div className="flex-1">
+              <span className="text-xs text-slate-800">{item.description}</span>
+            </div>
+            <div className="w-10 text-right">
+              <span className="text-xs text-slate-500">{item.qty}</span>
+            </div>
+            <div className="w-20 text-right">
+              <span className="text-xs text-slate-500">{fmt(item.rate)}</span>
+            </div>
+            <div className="w-24 text-right">
+              <span className="text-xs font-semibold text-slate-900">
                 {fmt(item.qty * item.rate)}
-              </Text>
-            </View>
-          </View>
+              </span>
+            </div>
+          </div>
         ))}
 
         {/* Totals */}
-        <View className="flex flex-col items-end mt-6">
-          <View className="flex flex-row justify-end mb-1.5">
-            <Text className="text-xs text-slate-500 w-24 text-right">Subtotal</Text>
-            <Text className="text-xs text-slate-900 w-28 text-right">{fmt(subtotal)}</Text>
-          </View>
-          <View className="flex flex-row justify-end mb-4">
-            <Text className="text-xs text-slate-500 w-24 text-right">Tax (10%)</Text>
-            <Text className="text-xs text-slate-900 w-28 text-right">{fmt(tax)}</Text>
-          </View>
-          <View className="flex flex-row items-center bg-indigo-600 py-2.5 px-5 rounded-lg">
-            <Text className="text-sm font-semibold text-white mr-6">Total due</Text>
-            <Text className="text-lg font-bold text-white">{fmt(total)}</Text>
-          </View>
-        </View>
+        <div className="flex flex-col items-end mt-6">
+          <div className="flex flex-row justify-end mb-1.5">
+            <span className="text-xs text-slate-500 w-24 text-right">Subtotal</span>
+            <span className="text-xs text-slate-900 w-28 text-right">{fmt(subtotal)}</span>
+          </div>
+          <div className="flex flex-row justify-end mb-4">
+            <span className="text-xs text-slate-500 w-24 text-right">Tax (10%)</span>
+            <span className="text-xs text-slate-900 w-28 text-right">{fmt(tax)}</span>
+          </div>
+          <div className="flex flex-row items-center bg-indigo-600 py-2.5 px-5 rounded-lg">
+            <span className="text-sm font-semibold text-white mr-6">Total due</span>
+            <span className="text-lg font-bold text-white">{fmt(total)}</span>
+          </div>
+        </div>
 
         {/* Notes */}
-        <View className="bg-slate-50 py-4 px-5 rounded-lg mt-10">
-          <Text className="text-xs font-bold text-indigo-600 mb-1.5 tracking-widest">
+        <div className="bg-slate-50 py-4 px-5 rounded-lg mt-10">
+          <span className="text-xs font-bold text-indigo-600 mb-1.5 tracking-widest">
             PAYMENT NOTE
-          </Text>
-          <Text className="text-xs text-slate-500 leading-relaxed">
+          </span>
+          <span className="text-xs text-slate-500 leading-relaxed">
             Please transfer payment to the bank account listed below within 30 days of the invoice
             date. Include the invoice number as the payment reference.
-          </Text>
-        </View>
+          </span>
+        </div>
 
         {/* Footer */}
-        <View className="absolute flex flex-row justify-between bottom-10 left-12 right-12">
-          <Text className="text-xs text-slate-400">Acme Studio</Text>
-          <Text className="text-xs text-slate-400">
+        <div className="absolute flex flex-row justify-between bottom-10 left-12 right-12">
+          <span className="text-xs text-slate-400">Acme Studio</span>
+          <span className="text-xs text-slate-400">
             Generated by Imprint · {new Date().getFullYear()}
-          </Text>
-        </View>
+          </span>
+        </div>
       </Page>
     </Document>
   );
