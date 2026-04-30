@@ -20,9 +20,9 @@
       "!!**/.next",
       "!!**/node_modules",
       "!!**/coverage",
-      "!!**/__fixtures__/**",
-      "!!**/__pixmaps__/**",
-      "!!**/wasm/dist/**"
+      "!!**/__fixtures__",
+      "!!**/__pixmaps__",
+      "!!**/wasm/dist"
     ]
   },
   "formatter": {
