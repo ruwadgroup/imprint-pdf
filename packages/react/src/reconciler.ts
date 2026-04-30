@@ -54,8 +54,6 @@ const HTML_ALIASES: Record<string, PdfNodeType> = {
 const IMPRINT_TYPES: Record<string, PdfNodeType> = {
   'imprint-document': 'document',
   'imprint-page': 'page',
-  'imprint-view': 'view',
-  'imprint-text': 'view', // Text component — same layout type as view, carries text-specific props
   'imprint-image': 'image',
   'imprint-svg': 'svg',
   'imprint-link': 'link',
@@ -70,6 +68,7 @@ const IMPRINT_TYPES: Record<string, PdfNodeType> = {
   'imprint-pagebreak': 'pagebreak',
   'imprint-header': 'header',
   'imprint-footer': 'footer',
+  'imprint-watermark': 'watermark',
   'imprint-bookmark': 'bookmark',
 };
 
@@ -95,20 +94,20 @@ function makeIdGenerator() {
 }
 
 const hostConfig: ReactReconciler.HostConfig<
-  string, // Type
-  Record<string, unknown>, // Props
-  Container, // Container
-  PdfNode, // Instance
-  PdfNode, // TextInstance
-  never, // SuspenseInstance
-  never, // HydratableInstance
-  never, // FormInstance
-  PdfNode, // PublicInstance
-  HostContext, // HostContext
-  never, // ChildSet
-  ReturnType<typeof setTimeout>, // TimeoutHandle
-  -1, // NoTimeout
-  never // TransitionStatus
+  string,
+  Record<string, unknown>,
+  Container,
+  PdfNode,
+  PdfNode,
+  never,
+  never,
+  never,
+  PdfNode,
+  HostContext,
+  never,
+  ReturnType<typeof setTimeout>,
+  -1,
+  never
 > = {
   isPrimaryRenderer: true,
   supportsMutation: true,
@@ -147,7 +146,8 @@ const hostConfig: ReactReconciler.HostConfig<
       style as Record<string, unknown> | undefined,
     );
 
-    // store className on props so downstream processors can run tailwind
+    // The two-pass Tailwind pipeline reads className back off the tree to
+    // collect candidates, so it has to survive on the node alongside style.
     const nodeProps: Record<string, unknown> = { ...restProps };
     if (className != null) {
       nodeProps.className = className;
@@ -273,7 +273,9 @@ const hostConfig: ReactReconciler.HostConfig<
   preparePortalMount(_container: Container): void {},
 
   NotPendingTransition: null,
-  // ReactContext<never> requires internal fields not on the public Context type
+  // The HostConfig type wants a real ReactContext<never> with internal fields
+  // React doesn't expose. We never read this in PDF rendering, so we hand back
+  // a regular Context coerced through `never` rather than re-implementing it.
   HostTransitionContext: createContext<never>(null as never) as never,
 
   resolveUpdatePriority(): number {
@@ -310,13 +312,9 @@ const hostConfig: ReactReconciler.HostConfig<
     return true;
   },
 
-  startSuspendingCommit(): void {
-    // no-op
-  },
+  startSuspendingCommit(): void {},
 
-  suspendInstance(_type: string, _props: Record<string, unknown>): void {
-    // no-op
-  },
+  suspendInstance(_type: string, _props: Record<string, unknown>): void {},
 
   waitForCommitToBeReady(): null {
     return null;
@@ -329,12 +327,15 @@ if (typeof globalThis !== 'undefined' && !('__REACT_DEVTOOLS_GLOBAL_HOOK__' in g
   (globalThis as Record<string, unknown>).__REACT_DEVTOOLS_GLOBAL_HOOK__ = { isDisabled: true };
 }
 
+// React splits text into one TextInstance per JSX expression, e.g.
+// `<Text>Hello {name}</Text>` becomes ["Hello ", name]. Taffy measures each
+// child independently, which produces wrong line breaks. Merge sibling text
+// nodes into one and inherit the parent's style so font metrics line up.
 function collapseTextChildren(node: PdfNode): void {
   if (node.children.length > 0 && node.children.every((c) => c.type === 'text')) {
     const merged = node.children.map((c) => (c.type === 'text' ? (c.text ?? '') : '')).join('');
     const first = node.children[0];
     if (first) {
-      // Copy parent style so Taffy measurement uses the correct font size
       node.children = [{ ...first, text: merged, style: node.style, children: [] }];
     }
   } else {
@@ -348,14 +349,14 @@ export function buildPdfNodeTree(element: ReactElement): PdfNode {
   const root = reconciler.createContainer(
     container,
     LegacyRoot,
-    null, // hydrationCallbacks
-    false, // isStrictMode
-    null, // concurrentUpdatesByDefaultOverride
-    '', // identifierPrefix
-    () => {}, // onUncaughtError
-    () => {}, // onCaughtError
-    () => {}, // onRecoverableError
-    () => {}, // onDefaultTransitionIndicator
+    null,
+    false,
+    null,
+    '',
+    () => {},
+    () => {},
+    () => {},
+    () => {},
   );
 
   reconciler.updateContainerSync(element, root, null, null);

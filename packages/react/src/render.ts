@@ -17,10 +17,10 @@ export async function renderToBuffer(
 ): Promise<Uint8Array> {
   const resolver = options.assetResolver ?? createAssetResolver();
 
-  // Two-pass Tailwind pipeline: when options.tailwind is provided, do a dry
-  // reconcile first to collect all className strings, compile them via the real
-  // Tailwind Oxide compiler, then inject the result into the module-level cache
-  // before the real render so resolveClassName uses compiled values.
+  // Tailwind needs the full set of class candidates up front to know what to
+  // emit. We can't get them without reconciling, and we can't resolve styles
+  // without Tailwind — so we reconcile twice: once dry to harvest classes,
+  // then again with the compiled class map populated.
   if (options.tailwind) {
     const { runTailwind } = await import('@imprint/tailwind');
     const dryRoot = buildPdfNodeTree(element);
