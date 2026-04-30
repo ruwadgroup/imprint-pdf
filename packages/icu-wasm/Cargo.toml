@@ -1,0 +1,19 @@
+[package]
+name = "imprint-icu"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+icu_segmenter = { version = "2", features = ["auto"] }
+icu_bidi = "2"
+icu_properties = "2"
+wasm-bindgen = "0.2"
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"

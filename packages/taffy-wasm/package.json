@@ -1,0 +1,36 @@
+{
+  "name": "@imprint/taffy-wasm",
+  "version": "0.1.0",
+  "description": "Taffy CSS layout engine (Rust→WASM) for Imprint",
+  "license": "BSL-1.1",
+  "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tamimbinhakim/imprint.git",
+    "directory": "packages/taffy-wasm"
+  },
+  "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/taffy-wasm#readme",
+  "bugs": "https://github.com/tamimbinhakim/imprint/issues",
+  "type": "module",
+  "main": "./pkg/imprint_taffy.js",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./pkg/imprint_taffy.js"
+    }
+  },
+  "files": [
+    "pkg",
+    "src/index.ts"
+  ],
+  "scripts": {
+    "build": "wasm-pack build --target web --out-dir pkg",
+    "build:node": "wasm-pack build --target nodejs --out-dir pkg-node",
+    "clean": "rm -rf pkg pkg-node target"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}
