@@ -11,7 +11,14 @@
   },
   "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/core#readme",
   "bugs": "https://github.com/tamimbinhakim/imprint/issues",
-  "keywords": ["pdf", "react", "tailwind", "typescript", "wasm", "edge"],
+  "keywords": [
+    "pdf",
+    "react",
+    "tailwind",
+    "typescript",
+    "wasm",
+    "edge"
+  ],
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -19,22 +26,45 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
-      "require": { "types": "./dist/index.d.cts", "default": "./dist/index.cjs" }
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./config": {
       "types": "./dist/config.d.ts",
-      "import": { "types": "./dist/config.d.ts", "default": "./dist/config.js" },
-      "require": { "types": "./dist/config.d.cts", "default": "./dist/config.cjs" }
+      "import": {
+        "types": "./dist/config.d.ts",
+        "default": "./dist/config.js"
+      },
+      "require": {
+        "types": "./dist/config.d.cts",
+        "default": "./dist/config.cjs"
+      }
     },
     "./assets": {
       "types": "./dist/assets.d.ts",
-      "import": { "types": "./dist/assets.d.ts", "default": "./dist/assets.js" },
-      "require": { "types": "./dist/assets.d.cts", "default": "./dist/assets.cjs" }
+      "import": {
+        "types": "./dist/assets.d.ts",
+        "default": "./dist/assets.js"
+      },
+      "require": {
+        "types": "./dist/assets.d.cts",
+        "default": "./dist/assets.cjs"
+      }
     },
     "./package.json": "./package.json"
   },
-  "files": ["dist", "README.md", "CHANGELOG.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
@@ -46,7 +76,12 @@
     "clean": "rm -rf dist .turbo *.tsbuildinfo"
   },
   "dependencies": {
-    "zod": "catalog:"
+    "zod": "catalog:",
+    "pdf-lib": "catalog:",
+    "fontkit": "catalog:",
+    "@pdf-lib/fontkit": "catalog:",
+    "harfbuzzjs": "1.0.0-beta.1",
+    "taffy-wasm": "^0.9.10"
   },
   "devDependencies": {
     "@types/node": "catalog:",
@@ -54,6 +89,11 @@
     "typescript": "catalog:",
     "vitest": "catalog:"
   },
-  "engines": { "node": ">=20.0.0" },
-  "publishConfig": { "access": "public", "provenance": true }
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
 }

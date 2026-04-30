@@ -19,13 +19,13 @@ pnpm add @imprint/react @imprint/core
 
 ### Content
 
-| Component  | Description                                              |
-| ---------- | -------------------------------------------------------- |
-| `<Text>`   | Inline text run. Supports HarfBuzz shaping.              |
-| `<Image>`  | Raster image. Accepts `src`, `alt`, `objectFit`.         |
-| `<Svg>`    | SVG subtree. Converted to PDF vector operators.          |
-| `<Link>`   | External hyperlink annotation.                           |
-| `<Bullet>` | Unordered list item marker.                              |
+| Component  | Description                                      |
+| ---------- | ------------------------------------------------ |
+| `<Text>`   | Inline text run. Supports HarfBuzz shaping.      |
+| `<Image>`  | Raster image. Accepts `src`, `alt`, `objectFit`. |
+| `<Svg>`    | SVG subtree. Converted to PDF vector operators.  |
+| `<Link>`   | External hyperlink annotation.                   |
+| `<Bullet>` | Unordered list item marker.                      |
 
 ### HTML aliases
 
@@ -41,20 +41,20 @@ with semantic role tags so PDF/UA tagging works automatically.
 
 ### Forms (AcroForms)
 
-| Component      | Description                                          |
-| -------------- | ---------------------------------------------------- |
-| `<Form>`       | AcroForm container.                                  |
-| `<TextField>`  | Single or multi-line text input.                     |
-| `<Checkbox>`   | Boolean field.                                       |
-| `<RadioGroup>` | Mutually exclusive option set.                       |
-| `<Dropdown>`   | Select/combobox.                                     |
+| Component      | Description                                                |
+| -------------- | ---------------------------------------------------------- |
+| `<Form>`       | AcroForm container.                                        |
+| `<TextField>`  | Single or multi-line text input.                           |
+| `<Checkbox>`   | Boolean field.                                             |
+| `<RadioGroup>` | Mutually exclusive option set.                             |
+| `<Dropdown>`   | Select/combobox.                                           |
 | `<Signature>`  | Signature widget (Enterprise signing via `@imprint/sign`). |
-| `<Button>`     | Submit, reset, or JS action button.                  |
+| `<Button>`     | Submit, reset, or JS action button.                        |
 
 ### Charts
 
-| Component | Description                                            |
-| --------- | ------------------------------------------------------ |
+| Component | Description                                                                          |
+| --------- | ------------------------------------------------------------------------------------ |
 | `<Chart>` | Wraps a Recharts/Visx/ECharts/D3 tree and converts the SVG output to PDF vector ops. |
 
 ## API
@@ -70,7 +70,7 @@ const bytes = await renderToBuffer(
       <h1 className="text-3xl font-bold">Hello, PDF</h1>
     </Page>
   </Document>,
-  { fonts: ['Inter'] }
+  { fonts: ['Inter'] },
 );
 ```
 
@@ -83,8 +83,8 @@ import { renderToStream } from '@imprint/react/standalone';
 import wasm from '@imprint/react/imprint.wasm';
 ```
 
-Returns `ReadableStream<Uint8Array>`. Designed for Cloudflare Workers and
-Vercel Edge Functions where you import WASM as a static asset.
+Returns `ReadableStream<Uint8Array>`. Designed for Cloudflare Workers and Vercel
+Edge Functions where you import WASM as a static asset.
 
 ### `renderToServer`
 
@@ -97,8 +97,8 @@ handlers without any WASM loading ceremony.
 
 ## Subpath entries
 
-| Entry                    | Purpose                                  |
-| ------------------------ | ---------------------------------------- |
-| `@imprint/react`         | All components + `renderToBuffer`        |
-| `@imprint/react/server`  | `renderToServer` for RSC / route handlers |
+| Entry                       | Purpose                                         |
+| --------------------------- | ----------------------------------------------- |
+| `@imprint/react`            | All components + `renderToBuffer`               |
+| `@imprint/react/server`     | `renderToServer` for RSC / route handlers       |
 | `@imprint/react/standalone` | `renderToStream` + manual WASM loading for edge |

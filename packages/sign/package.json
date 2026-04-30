@@ -11,7 +11,13 @@
   },
   "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/sign#readme",
   "bugs": "https://github.com/tamimbinhakim/imprint/issues",
-  "keywords": ["pdf", "digital-signature", "pkcs7", "imprint", "enterprise"],
+  "keywords": [
+    "pdf",
+    "digital-signature",
+    "pkcs7",
+    "imprint",
+    "enterprise"
+  ],
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -19,12 +25,23 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
-      "require": { "types": "./dist/index.d.cts", "default": "./dist/index.cjs" }
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./package.json": "./package.json"
   },
-  "files": ["dist", "README.md", "CHANGELOG.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
@@ -36,14 +53,21 @@
   },
   "dependencies": {
     "@imprint/core": "workspace:*",
-    "@imprint/react": "workspace:*"
+    "@imprint/react": "workspace:*",
+    "node-forge": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",
+    "@types/node-forge": "catalog:",
     "tsup": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   },
-  "engines": { "node": ">=20.0.0" },
-  "publishConfig": { "access": "public", "provenance": true }
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
 }

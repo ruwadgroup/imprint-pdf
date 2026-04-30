@@ -20,17 +20,17 @@ pnpm add @imprint/core
   schema.
 - **`AssetResolver` interface** — `fetch`, `fs`, `IndexedDB`, or custom loaders
   for fonts and images.
-- **CSS normaliser** — Lightning CSS (WASM) parses Tailwind output into a
-  stable property map; unsupported PDF properties are surfaced as warnings.
+- **CSS normaliser** — Lightning CSS (WASM) parses Tailwind output into a stable
+  property map; unsupported PDF properties are surfaced as warnings.
 - **Hashing** — SHA-256 helpers for cache keys and node fingerprints.
 
 ## Subpath entries
 
-| Entry                  | Purpose                                                          |
-| ---------------------- | ---------------------------------------------------------------- |
-| `@imprint/core`        | PdfNode IR, CSS normaliser, hashing, shared types                |
-| `@imprint/core/config` | `defineConfig`, `parseConfig`, Zod schema, all config types      |
-| `@imprint/core/assets` | `AssetResolver`, built-in `fetchResolver`, `fsResolver`          |
+| Entry                  | Purpose                                                     |
+| ---------------------- | ----------------------------------------------------------- |
+| `@imprint/core`        | PdfNode IR, CSS normaliser, hashing, shared types           |
+| `@imprint/core/config` | `defineConfig`, `parseConfig`, Zod schema, all config types |
+| `@imprint/core/assets` | `AssetResolver`, built-in `fetchResolver`, `fsResolver`     |
 
 ## Quick start
 
@@ -38,9 +38,7 @@ pnpm add @imprint/core
 import { defineConfig } from '@imprint/core/config';
 
 export default defineConfig({
-  fonts: [
-    { family: 'Inter', src: './public/fonts/Inter.woff2' },
-  ],
+  fonts: [{ family: 'Inter', src: './public/fonts/Inter.woff2' }],
   tailwind: { config: './tailwind.config.ts' },
 });
 ```
@@ -51,5 +49,5 @@ export default defineConfig({
 - CSS properties unsupported by the PDF model are **silently dropped** by
   default; pass `{ strict: true }` to `renderToBuffer` to surface them as
   errors.
-- `AssetResolver` is the single seam for all I/O — swap it to run identically
-  in Node and Cloudflare Workers.
+- `AssetResolver` is the single seam for all I/O — swap it to run identically in
+  Node and Cloudflare Workers.

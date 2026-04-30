@@ -11,7 +11,12 @@
   },
   "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/vite#readme",
   "bugs": "https://github.com/tamimbinhakim/imprint/issues",
-  "keywords": ["vite", "pdf", "plugin", "imprint"],
+  "keywords": [
+    "vite",
+    "pdf",
+    "plugin",
+    "imprint"
+  ],
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -19,12 +24,23 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
-      "require": { "types": "./dist/index.d.cts", "default": "./dist/index.cjs" }
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./package.json": "./package.json"
   },
-  "files": ["dist", "README.md", "CHANGELOG.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
@@ -48,6 +64,11 @@
     "vite": "^6.0.0",
     "vitest": "catalog:"
   },
-  "engines": { "node": ">=20.0.0" },
-  "publishConfig": { "access": "public", "provenance": true }
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
 }

@@ -3,8 +3,8 @@
 Tagged PDF and PDF/UA-1 accessible output for
 [Imprint](https://github.com/tamimbinhakim/imprint).
 
-Mandated by the EU European Accessibility Act (EAA, in force June 2025) and
-US Section 508. This package makes Imprint's output machine-verifiable against
+Mandated by the EU European Accessibility Act (EAA, in force June 2025) and US
+Section 508. This package makes Imprint's output machine-verifiable against
 PDF/UA-1 (ISO 14289-1) and PDF/UA-2 (roadmap).
 
 **License: Business Source License 1.1.** Reverts to Apache-2.0 after four
@@ -39,14 +39,20 @@ const pdf = await renderToBuffer(
       <img src={logoUrl} alt="Acme Corp logo" className="mt-4 h-16" />
       <table aria-label="Q1 Revenue">
         <thead>
-          <tr><th>Region</th><th>Revenue</th></tr>
+          <tr>
+            <th>Region</th>
+            <th>Revenue</th>
+          </tr>
         </thead>
         <tbody>
-          <tr><td>North America</td><td>$4.2M</td></tr>
+          <tr>
+            <td>North America</td>
+            <td>$4.2M</td>
+          </tr>
         </tbody>
       </table>
     </Page>
-  </Document>
+  </Document>,
 );
 ```
 

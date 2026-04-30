@@ -38,7 +38,7 @@ const pdf = await renderToBuffer(
         />
       </Form>
     </Page>
-  </Document>
+  </Document>,
 );
 ```
 

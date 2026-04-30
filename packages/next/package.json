@@ -11,7 +11,13 @@
   },
   "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/next#readme",
   "bugs": "https://github.com/tamimbinhakim/imprint/issues",
-  "keywords": ["pdf", "next", "nextjs", "react", "imprint"],
+  "keywords": [
+    "pdf",
+    "next",
+    "nextjs",
+    "react",
+    "imprint"
+  ],
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -19,17 +25,34 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
-      "require": { "types": "./dist/index.d.cts", "default": "./dist/index.cjs" }
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./plugin": {
       "types": "./dist/plugin.d.ts",
-      "import": { "types": "./dist/plugin.d.ts", "default": "./dist/plugin.js" },
-      "require": { "types": "./dist/plugin.d.cts", "default": "./dist/plugin.cjs" }
+      "import": {
+        "types": "./dist/plugin.d.ts",
+        "default": "./dist/plugin.js"
+      },
+      "require": {
+        "types": "./dist/plugin.d.cts",
+        "default": "./dist/plugin.cjs"
+      }
     },
     "./package.json": "./package.json"
   },
-  "files": ["dist", "README.md", "CHANGELOG.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
@@ -48,11 +71,18 @@
   },
   "devDependencies": {
     "@types/node": "catalog:",
+    "@types/react": "catalog:",
     "next": "^15.0.0",
+    "react": "catalog:",
     "tsup": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   },
-  "engines": { "node": ">=20.0.0" },
-  "publishConfig": { "access": "public", "provenance": true }
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
 }

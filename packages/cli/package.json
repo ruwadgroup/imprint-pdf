@@ -11,7 +11,12 @@
   },
   "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/cli#readme",
   "bugs": "https://github.com/tamimbinhakim/imprint/issues",
-  "keywords": ["pdf", "cli", "render", "imprint"],
+  "keywords": [
+    "pdf",
+    "cli",
+    "render",
+    "imprint"
+  ],
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -22,12 +27,23 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
-      "require": { "types": "./dist/index.d.cts", "default": "./dist/index.cjs" }
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./package.json": "./package.json"
   },
-  "files": ["dist", "README.md", "CHANGELOG.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
@@ -38,14 +54,23 @@
   },
   "dependencies": {
     "@imprint/core": "workspace:*",
-    "@imprint/react": "workspace:*"
+    "@imprint/react": "workspace:*",
+    "cac": "catalog:",
+    "chokidar": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "react": "catalog:",
     "tsup": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   },
-  "engines": { "node": ">=20.0.0" },
-  "publishConfig": { "access": "public", "provenance": true }
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
 }

@@ -11,7 +11,12 @@
   },
   "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/react#readme",
   "bugs": "https://github.com/tamimbinhakim/imprint/issues",
-  "keywords": ["pdf", "react", "tailwind", "typescript"],
+  "keywords": [
+    "pdf",
+    "react",
+    "tailwind",
+    "typescript"
+  ],
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -19,22 +24,45 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
-      "require": { "types": "./dist/index.d.cts", "default": "./dist/index.cjs" }
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./standalone": {
       "types": "./dist/standalone.d.ts",
-      "import": { "types": "./dist/standalone.d.ts", "default": "./dist/standalone.js" },
-      "require": { "types": "./dist/standalone.d.cts", "default": "./dist/standalone.cjs" }
+      "import": {
+        "types": "./dist/standalone.d.ts",
+        "default": "./dist/standalone.js"
+      },
+      "require": {
+        "types": "./dist/standalone.d.cts",
+        "default": "./dist/standalone.cjs"
+      }
     },
     "./server": {
       "types": "./dist/server.d.ts",
-      "import": { "types": "./dist/server.d.ts", "default": "./dist/server.js" },
-      "require": { "types": "./dist/server.d.cts", "default": "./dist/server.cjs" }
+      "import": {
+        "types": "./dist/server.d.ts",
+        "default": "./dist/server.js"
+      },
+      "require": {
+        "types": "./dist/server.d.cts",
+        "default": "./dist/server.cjs"
+      }
     },
     "./package.json": "./package.json"
   },
-  "files": ["dist", "README.md", "CHANGELOG.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
@@ -45,19 +73,33 @@
     "clean": "rm -rf dist .turbo *.tsbuildinfo"
   },
   "dependencies": {
-    "@imprint/core": "workspace:*"
+    "@imprint/core": "workspace:*",
+    "react-reconciler": "catalog:"
   },
   "peerDependencies": {
+    "@imprint/tailwind": "workspace:*",
     "react": ">=18.0.0"
   },
+  "peerDependenciesMeta": {
+    "@imprint/tailwind": {
+      "optional": true
+    }
+  },
   "devDependencies": {
+    "@imprint/tailwind": "workspace:*",
     "@types/node": "catalog:",
-    "@types/react": "^19.0.0",
-    "react": "^19.0.0",
+    "@types/react": "catalog:",
+    "@types/react-reconciler": "catalog:",
+    "react": "catalog:",
     "tsup": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   },
-  "engines": { "node": ">=20.0.0" },
-  "publishConfig": { "access": "public", "provenance": true }
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
 }

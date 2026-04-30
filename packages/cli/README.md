@@ -16,12 +16,12 @@ Render a React component to a PDF file.
 imprint render ./src/templates/Invoice.tsx --out ./out/invoice.pdf
 ```
 
-| Flag           | Default          | Description                                  |
-| -------------- | ---------------- | -------------------------------------------- |
-| `--out`        | `./out.pdf`      | Output file path.                            |
-| `--props`      | `{}`             | JSON-encoded props to pass to the component. |
-| `--watch`      | off              | Rebuild on file change.                      |
-| `--open`       | off              | Open in the system PDF viewer after render.  |
+| Flag      | Default     | Description                                  |
+| --------- | ----------- | -------------------------------------------- |
+| `--out`   | `./out.pdf` | Output file path.                            |
+| `--props` | `{}`        | JSON-encoded props to pass to the component. |
+| `--watch` | off         | Rebuild on file change.                      |
+| `--open`  | off         | Open in the system PDF viewer after render.  |
 
 ### `imprint dev`
 
@@ -31,9 +31,9 @@ Live preview server with hot module replacement and an element inspector.
 imprint dev ./src/templates/Invoice.tsx
 ```
 
-Opens a browser tab at `http://localhost:4000` showing the PDF rendered in
-real time. Edit your component or Tailwind classes and the preview updates
-without a full rebuild.
+Opens a browser tab at `http://localhost:4000` showing the PDF rendered in real
+time. Edit your component or Tailwind classes and the preview updates without a
+full rebuild.
 
 ### `imprint validate`
 
@@ -43,8 +43,8 @@ Validate a PDF against PDF/X-4 or PDF/UA-1 using veraPDF.
 imprint validate ./out/invoice.pdf --profile pdf-ua-1
 ```
 
-Requires `@imprint/print` or `@imprint/ua`. Exits non-zero on failure — wire
-it into your CI pipeline.
+Requires `@imprint/print` or `@imprint/ua`. Exits non-zero on failure — wire it
+into your CI pipeline.
 
 ```bash
 # In CI

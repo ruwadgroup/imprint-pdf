@@ -19,6 +19,7 @@ export default withImprint()({
 ```
 
 The plugin wires up:
+
 - Compile-time Tailwind extraction via `@imprint/tailwind/webpack`
 - `.woff2` font imports
 - WASM loading configuration for the standalone edge build
@@ -75,7 +76,7 @@ import { renderToEdge } from '@imprint/next';
 
 ## Exports
 
-| Entry                | Purpose                                       |
-| -------------------- | --------------------------------------------- |
-| `@imprint/next`      | `renderToServer`, `getImprintConfig`           |
-| `@imprint/next/plugin` | `withImprint` Next.js plugin wrapper         |
+| Entry                  | Purpose                              |
+| ---------------------- | ------------------------------------ |
+| `@imprint/next`        | `renderToServer`, `getImprintConfig` |
+| `@imprint/next/plugin` | `withImprint` Next.js plugin wrapper |
