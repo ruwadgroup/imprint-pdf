@@ -78,7 +78,7 @@ right tool when you own the template and want it to look good.
 
 ## How do I add a watermark / background to every page?
 
-Use `<Page className="relative">` and add an absolutely-positioned `<View>` as
+Use `<Page className="relative">` and add an absolutely-positioned `<div>` as
 the first child. Absolute positioning inside `<Page>` uses the page coordinate
 system.
 

@@ -52,33 +52,27 @@ decide which content goes on which page unless you want explicit control.
 | `bleed`       | `string` (CSS length)        | —            | Bleed area. Enterprise (`@imprint/print`).  |
 | `marks`       | `string`                     | —            | Trim/registration marks.                    |
 
-### `<View>`
+### Containers — use HTML
 
-Block/flex/grid container. The workhorse.
+Imprint doesn't ship a `<View>` or `<Text>` component. Use HTML elements
+directly — they're first-class and emit the same `PdfNode` types.
 
 ```tsx
-<View className="grid grid-cols-12 gap-6">
-  <View className="col-span-8">…</View>
-  <View className="col-span-4">…</View>
-</View>
+<div className="grid grid-cols-12 gap-6">
+  <div className="col-span-8">…</div>
+  <div className="col-span-4">…</div>
+</div>
+
+<p className="text-base leading-relaxed">Long paragraph copy here…</p>
 ```
+
+Recognised: `<div>`, `<span>`, `<p>`, `<h1>`–`<h6>`, `<ul>`, `<ol>`, `<li>`,
+`<table>`, `<thead>`, `<tbody>`, `<tfoot>`, `<tr>`, `<td>`, `<th>`, `<a>`,
+`<img>`, `<section>`, `<article>`, `<aside>`, `<header>`, `<footer>`, `<main>`,
+`<nav>`, `<figure>`, `<figcaption>`, `<blockquote>`, `<pre>`, `<code>`,
+`<strong>`, `<em>`, `<small>`, `<label>`.
 
 ## Content
-
-### `<Text>`
-
-Explicit text container for when you need fine-grained typography control. In
-most cases you can use `<p>`, `<span>`, etc. directly.
-
-```tsx
-<Text
-  hyphenation="auto"
-  textAlign="justify"
-  className="text-base leading-relaxed"
->
-  Long paragraph copy here…
-</Text>
-```
 
 ### `<Image>`
 
@@ -105,12 +99,61 @@ filters, in which case resvg-wasm rasterizes it.
 
 ### `<Link>`
 
-External hyperlink annotation.
+Hyperlink annotation. `href` may be an external URL or `#anchor` — the latter
+resolves to a `<Bookmark>` with the matching title in this document.
 
 ```tsx
 <Link href="https://acme.com" className="text-blue-600 underline">
   acme.com
 </Link>
+
+<Link href="#chapter-two">Jump to Chapter Two</Link>
+```
+
+## Document-level chrome
+
+Place these as direct children of `<Document>` (siblings of `<Page>`). They're
+re-laid out per page and stamped automatically.
+
+### `<Header>` / `<Footer>`
+
+Running header and footer. Use `<PageNumber>` / `<TotalPages>` inside to inject
+the current page index.
+
+```tsx
+<Document>
+  <Header className="flex flex-row justify-between p-6 text-xs">
+    <span>Annual Report</span>
+    <span>Acme Corp</span>
+  </Header>
+  <Footer className="flex flex-row justify-end p-6 text-xs">
+    <PageNumber /> / <TotalPages />
+  </Footer>
+  <Page size="A4">…</Page>
+  <Page size="A4">…</Page>
+</Document>
+```
+
+### `<Watermark>`
+
+Drawn behind page content on every page.
+
+```tsx
+<Watermark className="absolute inset-0 flex items-center justify-center">
+  <span className="text-6xl font-bold text-gray-200 -rotate-30">DRAFT</span>
+</Watermark>
+```
+
+### `<Bookmark>`
+
+Registers an entry in the PDF outline. Doubles as a named destination — any
+`<Link href="#title">` resolves to the page containing the bookmark.
+
+```tsx
+<Page size="A4">
+  <Bookmark title="Chapter Two" level={1} />
+  <h1>Chapter Two</h1>
+</Page>
 ```
 
 ## HTML aliases

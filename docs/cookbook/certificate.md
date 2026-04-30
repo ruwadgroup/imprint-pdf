@@ -6,7 +6,7 @@ A one-page certificate of completion with decorative borders and custom fonts.
 
 ```tsx
 // src/templates/Certificate.tsx
-import { Document, Page, View, Image } from '@imprint/react';
+import { Document, Page, Image } from '@imprint/react';
 
 interface CertificateProps {
   cert: {
@@ -28,11 +28,11 @@ export function Certificate({ cert }: CertificateProps) {
         className="relative font-serif bg-white"
       >
         {/* Decorative border */}
-        <View className="absolute inset-4 border-[3px] border-[#C9A84C] pointer-events-none" />
-        <View className="absolute inset-[18px] border border-[#C9A84C] pointer-events-none" />
+        <div className="absolute inset-4 border-[3px] border-[#C9A84C] pointer-events-none" />
+        <div className="absolute inset-[18px] border border-[#C9A84C] pointer-events-none" />
 
         {/* Content */}
-        <View className="flex flex-col items-center justify-center h-full px-20 text-center">
+        <div className="flex flex-col items-center justify-center h-full px-20 text-center">
           <Image
             src="./public/seal.png"
             alt="Official seal"
@@ -62,33 +62,33 @@ export function Certificate({ cert }: CertificateProps) {
           </p>
 
           {/* Footer */}
-          <View className="mt-12 grid grid-cols-3 gap-16 w-full max-w-xl">
-            <View className="flex flex-col items-center">
-              <View className="w-32 border-b border-gray-300" />
+          <div className="mt-12 grid grid-cols-3 gap-16 w-full max-w-xl">
+            <div className="flex flex-col items-center">
+              <div className="w-32 border-b border-gray-300" />
               <p className="mt-1 text-xs text-gray-500">
                 {cert.instructorName}
               </p>
               <p className="text-[9pt] text-gray-400">Instructor</p>
-            </View>
-            <View className="flex flex-col items-center">
+            </div>
+            <div className="flex flex-col items-center">
               <Image
                 src="./public/signature.png"
                 alt="Signature"
                 className="h-8 w-auto"
               />
-              <View className="w-32 border-b border-gray-300 mt-1" />
+              <div className="w-32 border-b border-gray-300 mt-1" />
               <p className="mt-1 text-xs text-gray-500">{cert.issuedBy}</p>
               <p className="text-[9pt] text-gray-400">Issuing Organization</p>
-            </View>
-            <View className="flex flex-col items-center">
-              <View className="w-32 border-b border-gray-300" />
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="w-32 border-b border-gray-300" />
               <p className="mt-1 text-[9pt] text-gray-400">Credential ID</p>
               <p className="text-[9pt] font-mono text-gray-500">
                 {cert.credentialId}
               </p>
-            </View>
-          </View>
-        </View>
+            </div>
+          </div>
+        </div>
       </Page>
     </Document>
   );

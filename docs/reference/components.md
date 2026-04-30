@@ -26,16 +26,18 @@ All component props. Every component also accepts `className` (Tailwind) and
 | `bleed`       | `string`                     | —            | Bleed area. Enterprise.              |
 | `marks`       | `string`                     | —            | Trim/registration marks. Enterprise. |
 
-## `<View>`
+## HTML containers
 
-Container. Maps to a `<div>`. No additional props beyond `className` / `style`.
+Imprint accepts HTML elements directly — no `<View>` or `<Text>` wrapper. They
+share the same `className` and `style` surface as Imprint components and emit
+the same `PdfNode` types.
 
-## `<Text>`
-
-| Prop           | Type                        | Default        | Description               |
-| -------------- | --------------------------- | -------------- | ------------------------- |
-| `hyphenation`  | `'auto' \| 'none'`          | config default | Hyphenation for this run. |
-| `lineBreaking` | `'knuth-plass' \| 'greedy'` | config default | Line-break algorithm.     |
+Recognised: `<div>`, `<span>`, `<p>`, `<h1>`–`<h6>`, `<ul>`, `<ol>`, `<li>`,
+`<table>`, `<thead>`, `<tbody>`, `<tfoot>`, `<tr>`, `<td>`, `<th>`, `<a>` (alias
+for `<Link>`), `<img>` (alias for `<Image>`), `<section>`, `<article>`,
+`<aside>`, `<header>`, `<footer>`, `<main>`, `<nav>`, `<figure>`,
+`<figcaption>`, `<blockquote>`, `<pre>`, `<code>`, `<strong>`, `<em>`,
+`<small>`, `<label>`.
 
 ## `<Image>`
 
@@ -53,13 +55,30 @@ Container. Maps to a `<div>`. No additional props beyond `className` / `style`.
 
 ## `<Link>`
 
-| Prop   | Type     | Default  | Description      |
-| ------ | -------- | -------- | ---------------- |
-| `href` | `string` | required | Destination URL. |
+| Prop   | Type     | Default  | Description                                                                  |
+| ------ | -------- | -------- | ---------------------------------------------------------------------------- |
+| `href` | `string` | required | External URL or `#anchor` referencing a `<Bookmark>` title in this document. |
+
+## `<Header>` / `<Footer>`
+
+Document-level children of `<Document>`. Re-laid out and stamped on every page.
+No additional props beyond `className` / `style`.
+
+## `<Watermark>`
+
+Document-level child of `<Document>`. Drawn behind page content on every page.
+No additional props beyond `className` / `style`.
+
+## `<Bookmark>`
+
+| Prop    | Type     | Default  | Description                                                             |
+| ------- | -------- | -------- | ----------------------------------------------------------------------- |
+| `title` | `string` | required | Outline label and slug used to resolve `<Link href="#…">` destinations. |
+| `level` | `1`–`6`  | `1`      | Heading level — controls indentation in the PDF outline.                |
 
 ## `<PageNumber>` / `<TotalPages>`
 
-No props. Render as inline text.
+No props. Render as inline text — resolved at draw time.
 
 ## `<Form>`
 

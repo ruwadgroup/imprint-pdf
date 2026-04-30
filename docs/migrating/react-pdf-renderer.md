@@ -60,9 +60,9 @@ const styles = StyleSheet.create({
 
 export function Invoice() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Invoice</Text>
-    </View>
+    <div style={styles.container}>
+      <span style={styles.heading}>Invoice</span>
+    </div>
   );
 }
 ```
@@ -74,9 +74,9 @@ import { View } from '@imprint/react';
 
 export function Invoice() {
   return (
-    <View className="flex flex-row justify-between p-12 bg-white">
+    <div className="flex flex-row justify-between p-12 bg-white">
       <h1 className="text-2xl font-bold text-gray-900">Invoice</h1>
-    </View>
+    </div>
   );
 }
 ```
@@ -128,10 +128,10 @@ If you were using `react-pdf-tailwind` on top of `@react-pdf/renderer`, your
 
 ```tsx
 // Before
-<View style={tw('flex flex-row justify-between')}>
+<div style={tw('flex flex-row justify-between')}>
 
 // After
-<View className="flex flex-row justify-between">
+<div className="flex flex-row justify-between">
 ```
 
 CSS Grid, arbitrary values, plugins, and `@theme` tokens that

@@ -17,8 +17,9 @@ Real Tailwind. Real React. Real typography. PDF anywhere — no Chromium, ever.
 
 The features, in depth.
 
-- **[Components](guides/components.md)** — `<Document>`, `<Page>`, `<View>`,
-  `<Text>`, `<Image>`, `<Svg>`
+- **[Components](guides/components.md)** — `<Document>`, `<Page>`, `<Image>`,
+  `<Svg>`, plus first-class HTML elements (`<div>`, `<span>`, `<p>`,
+  `<h1>`–`<h6>`, `<a>`, `<img>`, `<table>`, …)
 - **[Tailwind](guides/tailwind.md)** — how real Tailwind works inside Imprint;
   variants and dropped properties
 - **[Typography](guides/typography.md)** — HarfBuzz shaping, Knuth–Plass,

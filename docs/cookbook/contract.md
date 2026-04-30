@@ -39,36 +39,36 @@ export function Contract({ contract }: ContractProps) {
     <Document title={contract.title} lang="en">
       {/* Cover page */}
       <Page size="Letter" className="p-[72pt] font-serif">
-        <View className="flex flex-col items-center text-center h-full justify-center">
+        <div className="flex flex-col items-center text-center h-full justify-center">
           <p className="text-2xl font-bold tracking-tight">{contract.title}</p>
           <p className="mt-4 text-base text-gray-600">
             Effective {contract.effectiveDate}
           </p>
-          <View className="mt-12 grid grid-cols-2 gap-16 w-full max-w-md">
+          <div className="mt-12 grid grid-cols-2 gap-16 w-full max-w-md">
             {contract.parties.map((p) => (
-              <View key={p.party}>
+              <div key={p.party}>
                 <p className="text-xs uppercase tracking-wider text-gray-400">
                   {p.party}
                 </p>
                 <p className="mt-1 font-semibold">{p.name}</p>
                 <p className="text-sm text-gray-500">{p.address}</p>
-              </View>
+              </div>
             ))}
-          </View>
-        </View>
+          </div>
+        </div>
       </Page>
 
       {/* Terms */}
       <Page size="Letter" className="p-[72pt] font-serif text-[11pt]">
         {contract.clauses.map((clause, i) => (
-          <View key={i} className="mt-6 first:mt-0 break-inside-avoid">
+          <div key={i} className="mt-6 first:mt-0 break-inside-avoid">
             <h3 className="font-bold text-[11pt] break-after-avoid">
               {i + 1}. {clause.heading}
             </h3>
             <p className="mt-1 text-justify leading-[1.6] [widows:3] [orphans:3]">
               {clause.body}
             </p>
-          </View>
+          </div>
         ))}
       </Page>
 
@@ -78,9 +78,9 @@ export function Contract({ contract }: ContractProps) {
           <h2 className="text-lg font-bold break-before-page">Signatures</h2>
 
           <Form name="signatures">
-            <View className="mt-8 grid grid-cols-2 gap-12">
+            <div className="mt-8 grid grid-cols-2 gap-12">
               {contract.parties.map((p) => (
-                <View key={p.party}>
+                <div key={p.party}>
                   <p className="text-xs uppercase tracking-wider text-gray-400 mb-1">
                     {p.party}
                   </p>
@@ -98,17 +98,17 @@ export function Contract({ contract }: ContractProps) {
                     placeholder="Date"
                     className="mt-2 w-32 border-b border-gray-300 text-sm py-1"
                   />
-                </View>
+                </div>
               ))}
-            </View>
+            </div>
 
-            <View className="mt-8 flex items-start gap-2">
+            <div className="mt-8 flex items-start gap-2">
               <Checkbox name="agree" required className="mt-0.5 h-4 w-4" />
               <p className="text-xs text-gray-600 leading-relaxed">
                 By signing, both parties acknowledge they have read and agree to
                 the terms set forth in this agreement.
               </p>
-            </View>
+            </div>
           </Form>
         </Page>
       )}

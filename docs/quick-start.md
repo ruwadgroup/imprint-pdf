@@ -30,7 +30,7 @@ export default defineConfig({
 
 ```tsx
 // src/templates/Invoice.tsx
-import { Document, Page, View } from '@imprint/react';
+import { Document, Page } from '@imprint/react';
 
 interface InvoiceProps {
   invoice: { id: string; customer: string; total: number };
@@ -40,20 +40,20 @@ export function Invoice({ invoice }: InvoiceProps) {
   return (
     <Document>
       <Page size="A4" className="p-12 font-sans bg-white text-gray-900">
-        <View className="flex justify-between items-start">
+        <div className="flex justify-between items-start">
           <h1 className="text-2xl font-bold tracking-tight">Invoice</h1>
           <span className="text-sm text-gray-500">#{invoice.id}</span>
-        </View>
-        <View className="mt-8">
+        </div>
+        <div className="mt-8">
           <p className="text-sm font-medium text-gray-500">Bill to</p>
           <p className="mt-1 text-base">{invoice.customer}</p>
-        </View>
-        <View className="mt-12 border-t border-gray-200 pt-4 flex justify-between">
+        </div>
+        <div className="mt-12 border-t border-gray-200 pt-4 flex justify-between">
           <span className="text-sm font-medium">Total</span>
           <span className="text-lg font-bold">
             ${invoice.total.toLocaleString()}
           </span>
-        </View>
+        </div>
       </Page>
     </Document>
   );

@@ -26,10 +26,10 @@ per-paragraph.
 <section className="break-after-page">…</section>
 
 // Prevent a break inside this element
-<View className="break-inside-avoid">
+<div className="break-inside-avoid">
   <img … />
   <p className="mt-2 text-sm text-gray-500">Figure 1. Revenue by quarter.</p>
-</View>
+</div>
 
 // Avoid a break after headings (keeps heading with following paragraph)
 <h3 className="break-after-avoid">Section title</h3>
@@ -74,22 +74,22 @@ The `<PageNumber>` and `<TotalPages>` components resolve at render time.
 ```tsx
 <Page className="relative pt-16 pb-12 px-12">
   {/* Header */}
-  <View className="absolute top-0 inset-x-0 h-12 flex items-center px-12 border-b">
+  <div className="absolute top-0 inset-x-0 h-12 flex items-center px-12 border-b">
     <span className="text-xs text-gray-500 font-medium">
       Acme Corp Q1 Report
     </span>
     <span className="ml-auto text-xs text-gray-400">
       Page <PageNumber /> of <TotalPages />
     </span>
-  </View>
+  </div>
 
   {/* Content */}
-  <View>…</View>
+  <div>…</div>
 
   {/* Footer */}
-  <View className="absolute bottom-0 inset-x-0 h-10 flex items-center px-12 border-t">
+  <div className="absolute bottom-0 inset-x-0 h-10 flex items-center px-12 border-t">
     <span className="text-xs text-gray-400">Confidential</span>
-  </View>
+  </div>
 </Page>
 ```
 
@@ -109,4 +109,4 @@ CSS `@page` rules are expressed as `<Page>` and `<Document>` props:
 ## Footnotes
 
 Footnotes are on the v1.5 roadmap. The current pattern is to use a fixed
-`<View className="absolute bottom-12 …">` inside `<Page>`.
+`<div className="absolute bottom-12 …">` inside `<Page>`.

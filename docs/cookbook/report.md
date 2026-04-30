@@ -36,14 +36,14 @@ interface ReportProps {
 
 function Header({ company, period }: { company: string; period: string }) {
   return (
-    <View className="absolute top-0 inset-x-0 h-12 flex items-center px-12 border-b border-gray-100">
+    <div className="absolute top-0 inset-x-0 h-12 flex items-center px-12 border-b border-gray-100">
       <span className="text-xs font-medium text-gray-500">
         {company} — {period}
       </span>
       <span className="ml-auto text-xs text-gray-400">
         <PageNumber /> / <TotalPages />
       </span>
-    </View>
+    </div>
   );
 }
 
@@ -55,7 +55,7 @@ export function Report({ report }: ReportProps) {
         size="A4"
         className="relative p-12 font-sans bg-[#0F172A] text-white"
       >
-        <View className="flex flex-col h-full justify-end">
+        <div className="flex flex-col h-full justify-end">
           <p className="text-xs uppercase tracking-widest text-white/50 mb-3">
             Financial Report
           </p>
@@ -63,7 +63,7 @@ export function Report({ report }: ReportProps) {
             {report.company}
           </h1>
           <p className="mt-2 text-xl text-white/70">{report.period}</p>
-        </View>
+        </div>
       </Page>
 
       {/* Content pages */}
@@ -71,7 +71,7 @@ export function Report({ report }: ReportProps) {
         <Header company={report.company} period={report.period} />
 
         {/* Revenue chart */}
-        <View className="break-inside-avoid">
+        <div className="break-inside-avoid">
           <h2 className="text-lg font-semibold break-after-avoid">
             Revenue Overview
           </h2>
@@ -84,11 +84,11 @@ export function Report({ report }: ReportProps) {
               <Bar dataKey="expenses" fill="#E5E7EB" radius={[3, 3, 0, 0]} />
             </BarChart>
           </Chart>
-        </View>
+        </div>
 
         {/* Sections */}
         {report.sections.map((section, i) => (
-          <View key={i} className="mt-8">
+          <div key={i} className="mt-8">
             <h2 className="text-base font-semibold break-after-avoid">
               {section.heading}
             </h2>
@@ -98,7 +98,7 @@ export function Report({ report }: ReportProps) {
             {section.table && (
               <DataTable data={section.table} className="mt-4" />
             )}
-          </View>
+          </div>
         ))}
       </Page>
     </Document>

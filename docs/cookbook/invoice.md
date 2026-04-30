@@ -15,7 +15,7 @@ A single-page A4 invoice with:
 
 ```tsx
 // src/templates/Invoice.tsx
-import { Document, Page, View, Image, Svg } from '@imprint/react';
+import { Document, Page, Image, Svg } from '@imprint/react';
 
 interface LineItem {
   description: string;
@@ -52,17 +52,17 @@ export function Invoice({ invoice }: InvoiceProps) {
     <Document title={`Invoice ${invoice.id}`} lang="en">
       <Page size="A4" className="p-[48pt] font-sans text-gray-900 bg-white">
         {/* Header */}
-        <View className="flex justify-between items-start">
+        <div className="flex justify-between items-start">
           <Svg src={logoSvg} className="h-10 w-auto" />
-          <View className="text-right">
+          <div className="text-right">
             <p className="text-2xl font-bold tracking-tight">INVOICE</p>
             <p className="mt-1 text-sm text-gray-500">#{invoice.id}</p>
-          </View>
-        </View>
+          </div>
+        </div>
 
         {/* Addresses */}
-        <View className="mt-10 grid grid-cols-2 gap-8">
-          <View>
+        <div className="mt-10 grid grid-cols-2 gap-8">
+          <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
               From
             </p>
@@ -72,8 +72,8 @@ export function Invoice({ invoice }: InvoiceProps) {
                 {line}
               </p>
             ))}
-          </View>
-          <View>
+          </div>
+          <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
               Bill to
             </p>
@@ -83,20 +83,20 @@ export function Invoice({ invoice }: InvoiceProps) {
                 {line}
               </p>
             ))}
-          </View>
-        </View>
+          </div>
+        </div>
 
         {/* Dates */}
-        <View className="mt-8 flex gap-8 text-sm">
-          <View>
+        <div className="mt-8 flex gap-8 text-sm">
+          <div>
             <p className="text-gray-400">Invoice date</p>
             <p className="font-medium">{invoice.date}</p>
-          </View>
-          <View>
+          </div>
+          <div>
             <p className="text-gray-400">Due date</p>
             <p className="font-medium">{invoice.dueDate}</p>
-          </View>
-        </View>
+          </div>
+        </div>
 
         {/* Line items */}
         <table className="mt-10 w-full text-sm">
@@ -129,29 +129,29 @@ export function Invoice({ invoice }: InvoiceProps) {
         </table>
 
         {/* Totals */}
-        <View className="mt-4 ml-auto w-64 space-y-1 text-sm">
-          <View className="flex justify-between">
+        <div className="mt-4 ml-auto w-64 space-y-1 text-sm">
+          <div className="flex justify-between">
             <span className="text-gray-500">Subtotal</span>
             <span>{currency(subtotal)}</span>
-          </View>
-          <View className="flex justify-between">
+          </div>
+          <div className="flex justify-between">
             <span className="text-gray-500">
               Tax ({(invoice.taxRate * 100).toFixed(0)}%)
             </span>
             <span>{currency(tax)}</span>
-          </View>
-          <View className="flex justify-between border-t border-gray-200 pt-2 font-semibold">
+          </div>
+          <div className="flex justify-between border-t border-gray-200 pt-2 font-semibold">
             <span>Total</span>
             <span>{currency(total)}</span>
-          </View>
-        </View>
+          </div>
+        </div>
 
         {/* Notes */}
         {invoice.notes && (
-          <View className="mt-10 text-sm text-gray-500">
+          <div className="mt-10 text-sm text-gray-500">
             <p className="font-medium text-gray-700">Notes</p>
             <p className="mt-1">{invoice.notes}</p>
-          </View>
+          </div>
         )}
       </Page>
     </Document>

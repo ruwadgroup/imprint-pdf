@@ -22,7 +22,7 @@ pnpm add @imprint/ua
   operator back to a structure element.
 - **Alt text.** Reads JSX `alt`, `aria-label`, and `title` props.
 - **Language.** `<Document lang="en-US">` sets the document language; per-span
-  `lang` overrides work on `<Text>` and HTML `<span>`.
+  `lang` overrides work on `<span>` and HTML `<span>`.
 - **`MarkInfo` dictionary.** `Marked: true` required by PDF/UA-1.
 - **veraPDF CI.** `imprint validate --profile pdf-ua-1` (via `@imprint/cli`)
   runs veraPDF and exits non-zero on failure.

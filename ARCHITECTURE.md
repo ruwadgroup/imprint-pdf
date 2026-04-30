@@ -67,36 +67,37 @@ Dependencies flow downward only. `@imprint/core` has no workspace deps.
 ### 1. Authoring
 
 ```tsx
-import { Document, Page, View, Text } from '@imprint/react';
+import { Document, Page } from '@imprint/react';
 
 export function Invoice({ data }: { data: InvoiceData }) {
   return (
     <Document title={`Invoice ${data.id}`}>
       <Page size="A4" className="p-12 font-sans">
         <h1 className="text-3xl font-bold">{data.id}</h1>
-        <View className="mt-8 grid grid-cols-12 gap-4">
+        <div className="mt-8 grid grid-cols-12 gap-4">
           {data.lineItems.map((item) => (
-            <Text key={item.id} className="col-span-8">
+            <span key={item.id} className="col-span-8">
               {item.description}
-            </Text>
+            </span>
           ))}
-        </View>
+        </div>
       </Page>
     </Document>
   );
 }
 ```
 
-HTML elements (`<div>`, `<p>`, `<h1>`–`<h6>`, `<ul>`, `<table>`, `<a>`) are also
-supported and compile to the same `PdfNode` types with semantic role tags so
-PDF/UA tagging works out of the box.
+HTML elements (`<div>`, `<p>`, `<h1>`–`<h6>`, `<ul>`, `<table>`, `<a>`) are
+first-class — there is no separate `<View>` or `<Text>` component. Each element
+compiles to a `PdfNode` with the appropriate semantic role tag so PDF/UA tagging
+works out of the box.
 
 ### 2. Reconciliation
 
 A custom React reconciler (using `react-reconciler`, like `@react-pdf` and Ink)
-emits an immutable `PdfNode` tree. Every `Document`, `Page`, `View`, `Text`,
-`Image`, `Svg`, `Chart`, `TextField`, `Signature` has explicit semantics — no
-DOM speculation.
+emits an immutable `PdfNode` tree. Every `Document`, `Page`, `Image`, `Svg`,
+`Chart`, `TextField`, `Signature`, plus all recognised HTML elements, has
+explicit semantics — no DOM speculation.
 
 ### 3. Style resolution
 

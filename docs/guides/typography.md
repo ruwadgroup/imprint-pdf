@@ -51,13 +51,13 @@ official `-DHB_TINY` WASM build) for shaping. Every OpenType feature is
 available: GSUB/GPOS tables, kerning, ligatures, contextual alternates,
 discretionary ligatures, stylistic sets.
 
-Enable OpenType features on a `<Text>` or with Tailwind's `font-variant-*`
+Enable OpenType features on a `<span>` or with Tailwind's `font-variant-*`
 utilities:
 
 ```tsx
-<Text className="font-feature-settings-['liga','kern','calt']">
+<span className="font-feature-settings-['liga','kern','calt']">
   Typography-grade text.
-</Text>
+</span>
 ```
 
 ## Script support
@@ -93,9 +93,9 @@ breaks, no widows.
 To use the greedy fallback (faster for very long documents):
 
 ```tsx
-<Text lineBreaking="greedy" className="text-justify">
+<span lineBreaking="greedy" className="text-justify">
   …
-</Text>
+</span>
 ```
 
 ## Hyphenation
@@ -130,10 +130,10 @@ bottom).
 <h2 className="break-before-page">Chapter 2</h2>
 
 // Prevent a break inside
-<View className="break-inside-avoid">
+<div className="break-inside-avoid">
   <img … />
   <p>Caption</p>
-</View>
+</div>
 ```
 
 ## Running headers and footers
@@ -141,13 +141,13 @@ bottom).
 ```tsx
 <Page>
   {/* Fixed-position header — appears on every page */}
-  <View className="absolute top-0 left-0 right-0 h-12 flex items-center px-12">
+  <div className="absolute top-0 left-0 right-0 h-12 flex items-center px-12">
     <span className="text-xs text-gray-400">Acme Corp — Confidential</span>
     <PageNumber className="ml-auto text-xs text-gray-400" />
-  </View>
+  </div>
 
   {/* Page content starts below the header */}
-  <View className="mt-12">…</View>
+  <div className="mt-12">…</div>
 </Page>
 ```
 

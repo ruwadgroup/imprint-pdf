@@ -13,7 +13,7 @@ A clean, single-page resume with a sidebar layout using CSS Grid.
 
 ```tsx
 // src/templates/Resume.tsx
-import { Document, Page, View } from '@imprint/react';
+import { Document, Page } from '@imprint/react';
 
 interface ResumeProps {
   data: {
@@ -39,25 +39,25 @@ export function Resume({ data }: ResumeProps) {
         size="Letter"
         className="font-sans text-[10pt] text-gray-900 bg-white"
       >
-        <View className="grid grid-cols-[200px_1fr] min-h-full">
+        <div className="grid grid-cols-[200px_1fr] min-h-full">
           {/* Sidebar */}
-          <View className="bg-gray-50 p-6 border-r border-gray-200">
+          <div className="bg-gray-50 p-6 border-r border-gray-200">
             <p className="text-lg font-bold leading-tight">{data.name}</p>
             <p className="mt-1 text-xs text-gray-500 font-medium uppercase tracking-wide">
               {data.title}
             </p>
 
-            <View className="mt-6 space-y-1 text-xs text-gray-600">
+            <div className="mt-6 space-y-1 text-xs text-gray-600">
               <p>{data.contact.email}</p>
               <p>{data.contact.github}</p>
               <p>{data.contact.location}</p>
-            </View>
+            </div>
 
-            <View className="mt-8">
+            <div className="mt-8">
               <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">
                 Skills
               </p>
-              <View className="flex flex-wrap gap-1">
+              <div className="flex flex-wrap gap-1">
                 {data.skills.map((skill) => (
                   <span
                     key={skill}
@@ -66,39 +66,39 @@ export function Resume({ data }: ResumeProps) {
                     {skill}
                   </span>
                 ))}
-              </View>
-            </View>
+              </div>
+            </div>
 
-            <View className="mt-8">
+            <div className="mt-8">
               <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">
                 Education
               </p>
               {data.education.map((edu, i) => (
-                <View key={i} className="mt-2">
+                <div key={i} className="mt-2">
                   <p className="font-medium text-[9pt]">{edu.degree}</p>
                   <p className="text-[9pt] text-gray-500">{edu.institution}</p>
                   <p className="text-[9pt] text-gray-400">{edu.year}</p>
-                </View>
+                </div>
               ))}
-            </View>
-          </View>
+            </div>
+          </div>
 
           {/* Main */}
-          <View className="p-8">
+          <div className="p-8">
             <p className="text-sm leading-relaxed text-gray-600 border-b border-gray-200 pb-4">
               {data.summary}
             </p>
 
-            <View className="mt-6">
+            <div className="mt-6">
               <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">
                 Experience
               </p>
               {data.experience.map((exp, i) => (
-                <View key={i} className="mt-4 first:mt-0">
-                  <View className="flex justify-between items-baseline">
+                <div key={i} className="mt-4 first:mt-0">
+                  <div className="flex justify-between items-baseline">
                     <p className="font-semibold">{exp.role}</p>
                     <p className="text-[9pt] text-gray-500">{exp.period}</p>
-                  </View>
+                  </div>
                   <p className="text-[9pt] text-gray-500 font-medium">
                     {exp.company}
                   </p>
@@ -113,11 +113,11 @@ export function Resume({ data }: ResumeProps) {
                       </li>
                     ))}
                   </ul>
-                </View>
+                </div>
               ))}
-            </View>
-          </View>
-        </View>
+            </div>
+          </div>
+        </div>
       </Page>
     </Document>
   );
