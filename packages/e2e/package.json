@@ -1,0 +1,32 @@
+{
+  "name": "@imprint/e2e",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "End-to-end test suite — renders real PDFs through @imprint/react and asserts on the output (text positions, geometry, visual snapshots).",
+  "scripts": {
+    "test": "vitest --run --passWithNoTests",
+    "test:watch": "vitest",
+    "test:visual": "vitest --run --passWithNoTests visual",
+    "test:goldens:update": "UPDATE_GOLDENS=1 vitest --run --passWithNoTests"
+  },
+  "dependencies": {
+    "@imprint/core": "workspace:*",
+    "@imprint/google-fonts": "workspace:*",
+    "@imprint/react": "workspace:*",
+    "@imprint/tailwind": "workspace:*",
+    "pdf-lib": "1.17.1",
+    "pdfjs-dist": "^4.10.0",
+    "pixelmatch": "^7.1.0",
+    "pngjs": "^7.0.0",
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@types/pixelmatch": "^5.2.6",
+    "@types/pngjs": "^6.0.5",
+    "@types/react": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "^4.1.0"
+  }
+}
