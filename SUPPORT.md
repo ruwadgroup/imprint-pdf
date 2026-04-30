@@ -13,8 +13,8 @@ Start with the [docs](docs/README.md):
 - [Frameworks](docs/README.md#frameworks)
 - [Reference](docs/README.md#reference)
 
-The [README](README.md) covers install, quick-start, and a feature
-overview. The [ARCHITECTURE](ARCHITECTURE.md) doc explains the design.
+The [README](README.md) covers install, quick-start, and a feature overview. The
+[ARCHITECTURE](ARCHITECTURE.md) doc explains the design.
 
 ## Bugs
 
@@ -34,8 +34,8 @@ Issues without a reproduction are usually closed.
 
 For questions, design discussion, or "how do I…" prompts, use
 [GitHub Discussions](https://github.com/tamimbinhakim/imprint/discussions).
-Discussions stay searchable, so future users with the same question can
-find the answer.
+Discussions stay searchable, so future users with the same question can find the
+answer.
 
 ## Security
 
@@ -46,16 +46,16 @@ find the answer.
 
 File a
 [feature request issue](https://github.com/tamimbinhakim/imprint/issues/new/choose)
-explaining the use case and what you've already tried. Pre-1.0 the API
-moves quickly; the [roadmap](ROADMAP.md) shows what's planned.
+explaining the use case and what you've already tried. Pre-1.0 the API moves
+quickly; the [roadmap](ROADMAP.md) shows what's planned.
 
 ## Enterprise support
 
-`@imprint/print`, `@imprint/sign`, `@imprint/ua` (BSL 1.1) ship with
-priority support, security review, and an SLA. Contact
-**enterprise@imprint.dev** for terms.
+`@imprint/print`, `@imprint/sign`, `@imprint/ua` (BSL 1.1) ship with priority
+support, security review, and an SLA. Contact **enterprise@imprint.dev** for
+terms.
 
 ## Contributing
 
-Want to land a fix or feature? See [`CONTRIBUTING.md`](CONTRIBUTING.md)
-for the dev workflow.
+Want to land a fix or feature? See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the
+dev workflow.

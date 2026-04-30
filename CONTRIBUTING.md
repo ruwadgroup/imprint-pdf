@@ -1,14 +1,14 @@
 # Contributing to imprint
 
-Thanks for considering a contribution! This guide gets you from zero to
-a merged PR.
+Thanks for considering a contribution! This guide gets you from zero to a merged
+PR.
 
 ## Prerequisites
 
 - **Node** ≥ 20 (see `.nvmrc` — `nvm use`)
 - **pnpm** ≥ 10 (pinned via `packageManager` in `package.json`)
-- **Rust** ≥ 1.78 + `wasm-pack` (only required to rebuild the WASM
-  modules; prebuilt artifacts ship in the repo)
+- **Rust** ≥ 1.78 + `wasm-pack` (only required to rebuild the WASM modules;
+  prebuilt artifacts ship in the repo)
 - **Git** with `core.autocrlf` off (LF is enforced via `.gitattributes`)
 
 ## Setup
@@ -20,9 +20,8 @@ pnpm install
 pnpm build
 ```
 
-The build runs `tsup` for every TypeScript package and copies the
-prebuilt WASM artifacts into each package's `dist/`. To rebuild WASM
-from source:
+The build runs `tsup` for every TypeScript package and copies the prebuilt WASM
+artifacts into each package's `dist/`. To rebuild WASM from source:
 
 ```bash
 pnpm wasm:build
@@ -47,14 +46,14 @@ pnpm --filter @imprint/example-bun-server dev
 
 ## Code style
 
-- **Formatter & linter** — [Biome](https://biomejs.dev/) for `.ts` /
-  `.tsx` / `.json`. Prettier handles `.md` / `.yml` / `.yaml`.
+- **Formatter & linter** — [Biome](https://biomejs.dev/) for `.ts` / `.tsx` /
+  `.json`. Prettier handles `.md` / `.yml` / `.yaml`.
 - **TypeScript** — strict mode, `noUncheckedIndexedAccess`,
   `exactOptionalPropertyTypes`. No `any` without a `// biome-ignore`
   justification.
 - **Imports** — `useImportType` is enforced. Type-only imports use
   `import type`.
-- **Comments** — default to none. Add only when *why* is non-obvious. No
+- **Comments** — default to none. Add only when _why_ is non-obvious. No
   multi-paragraph docstrings.
 
 ```bash
@@ -66,20 +65,19 @@ pnpm typecheck      # full project tsc
 
 ## Tests
 
-[Vitest](https://vitest.dev) across the monorepo. Place tests next to
-source (`*.test.ts`) or under `tests/`.
+[Vitest](https://vitest.dev) across the monorepo. Place tests next to source
+(`*.test.ts`) or under `tests/`.
 
-For PDF output, golden-file tests live under
-`packages/<pkg>/__fixtures__/`. The runner compares the produced PDF
-against the golden using a tolerant byte-level diff (object stream
-ordering is allowed to vary). To regenerate goldens:
+For PDF output, golden-file tests live under `packages/<pkg>/__fixtures__/`. The
+runner compares the produced PDF against the golden using a tolerant byte-level
+diff (object stream ordering is allowed to vary). To regenerate goldens:
 
 ```bash
 pnpm test:goldens:update
 ```
 
-For visual regressions, the suite renders each fixture to PNG via
-`pdfium-wasm` and diffs against `__pixmaps__/`.
+For visual regressions, the suite renders each fixture to PNG via `pdfium-wasm`
+and diffs against `__pixmaps__/`.
 
 ```bash
 pnpm test               # watch
@@ -91,8 +89,8 @@ A PR that introduces new behavior includes tests.
 
 ## Commit messages
 
-[Conventional Commits](https://www.conventionalcommits.org/), enforced
-via the `commit-msg` hook.
+[Conventional Commits](https://www.conventionalcommits.org/), enforced via the
+`commit-msg` hook.
 
 ```
 <type>(<scope>): <subject>
@@ -102,12 +100,12 @@ via the `commit-msg` hook.
 <footer>
 ```
 
-Allowed types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`,
-`test`, `build`, `ci`, `chore`, `revert`.
+Allowed types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`,
+`build`, `ci`, `chore`, `revert`.
 
-Allowed scopes: `core`, `react`, `tailwind`, `cli`, `next`, `vite`,
-`print`, `sign`, `ua`, `eslint-plugin`, `examples`, `docs`, `wasm`,
-`ci`, `deps`, `release`.
+Allowed scopes: `core`, `react`, `tailwind`, `cli`, `next`, `vite`, `print`,
+`sign`, `ua`, `eslint-plugin`, `examples`, `docs`, `wasm`, `ci`, `deps`,
+`release`.
 
 Examples:
 
@@ -125,19 +123,18 @@ Any change to a published package needs a changeset.
 pnpm changeset
 ```
 
-Pick the affected packages, the bump (`patch` / `minor` / `major`), and
-write a short summary aimed at end users. Commit the generated `.md`.
+Pick the affected packages, the bump (`patch` / `minor` / `major`), and write a
+short summary aimed at end users. Commit the generated `.md`.
 
-Skip changesets for: docs-only changes, internal refactors that don't
-touch public API, CI / dev-tooling tweaks.
+Skip changesets for: docs-only changes, internal refactors that don't touch
+public API, CI / dev-tooling tweaks.
 
 ## Pull request flow
 
 1. Fork & branch from `main`. Branch naming: `feat/<scope>/<short-desc>`,
    `fix/<scope>/<short-desc>`.
 2. Make your change. Add tests. Add a changeset.
-3. `pnpm lint && pnpm typecheck && pnpm test:ci && pnpm build` — all
-   green.
+3. `pnpm lint && pnpm typecheck && pnpm test:ci && pnpm build` — all green.
 4. Open a PR against `main`. The template walks through the checklist.
 5. CI runs lint, typecheck, tests on Node 20 + 22 across Linux / macOS /
    Windows, plus the visual regression suite.
@@ -146,13 +143,11 @@ touch public API, CI / dev-tooling tweaks.
 ## Working on `@imprint/print`, `@imprint/sign`, `@imprint/ua`
 
 These packages are **BSL 1.1 licensed** (see [`LICENSE-BSL`](LICENSE-BSL)).
-Contributions are welcome under the same Developer Certificate of Origin
-as the Apache packages, but contributors agree their changes are
-relicensed by the maintainer to Apache-2.0 at the BSL change date (4
-years from release).
+Contributions are welcome under the same Developer Certificate of Origin as the
+Apache packages, but contributors agree their changes are relicensed by the
+maintainer to Apache-2.0 at the BSL change date (4 years from release).
 
-If you're not comfortable with that, contribute to the Apache packages
-only.
+If you're not comfortable with that, contribute to the Apache packages only.
 
 ## Releasing
 
@@ -163,14 +158,12 @@ Maintainers only. See [`.github/RELEASING.md`](.github/RELEASING.md).
 Use the issue templates. Provide a minimal reproduction (StackBlitz,
 CodeSandbox, or a small repo) — issues without one get closed.
 
-PDF bugs: please attach the PDF (or a redacted version), the source
-component, and the imprint version. A `pnpm imprint validate <pdf>`
-report helps.
+PDF bugs: please attach the PDF (or a redacted version), the source component,
+and the imprint version. A `pnpm imprint validate <pdf>` report helps.
 
 ## Security
 
-Don't open a public issue for vulnerabilities. See
-[`SECURITY.md`](SECURITY.md).
+Don't open a public issue for vulnerabilities. See [`SECURITY.md`](SECURITY.md).
 
 ## Code of conduct
 

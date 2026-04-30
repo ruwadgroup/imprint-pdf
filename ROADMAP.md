@@ -1,21 +1,18 @@
 # Roadmap
 
-Public, intentionally narrow. Expect cuts and reorders — file an issue if
-a milestone matters to you.
+Public, intentionally narrow. Expect cuts and reorders — file an issue if a
+milestone matters to you.
 
 ## v0.1 — Reconciler + JS pipeline (alpha)
 
 - [ ] `@imprint/core` — PdfNode IR, layout types, asset resolver, hashing
 - [ ] React reconciler emitting PdfNode IR
-- [ ] `<Document>`, `<Page>`, `<View>`, `<Text>`, `<Image>`, `<Svg>`,
-      plus HTML aliases (`<div>`, `<p>`, `<h1>`…, `<ul>`, `<table>`,
-      `<a>`)
-- [ ] `<Header>` / `<Footer>` running components — repeated across pages
-      via CSS `position: running()`; supports page numbers, doc title,
-      chapter name
+- [ ] `<Document>`, `<Page>`, `<View>`, `<Text>`, `<Image>`, `<Svg>`, plus HTML
+      aliases (`<div>`, `<p>`, `<h1>`…, `<ul>`, `<table>`, `<a>`)
+- [ ] `<Header>` / `<Footer>` running components — repeated across pages via CSS
+      `position: running()`; supports page numbers, doc title, chapter name
 - [ ] Taffy WASM (Block + Flexbox + Grid)
-- [ ] HarfBuzz WASM shaping for Latin / Greek / Cyrillic; CJK behind a
-      flag
+- [ ] HarfBuzz WASM shaping for Latin / Greek / Cyrillic; CJK behind a flag
 - [ ] `pdf-lib` writer with subset embedding
 - [ ] Greedy line breaking (Knuth–Plass behind opt-in)
 - [ ] `@imprint/cli` — `init`, `render`, `validate`
@@ -50,22 +47,22 @@ a milestone matters to you.
 - [ ] `<Chart>` adapters for Recharts, Visx, ECharts, Observable Plot
 - [ ] Vector SVG → PDF (gradients, masks, clipping paths)
 - [ ] resvg WASM fallback for filters and complex masks
-- [ ] `examples/cloudflare-worker` end-to-end with sub-100 ms cold
-      benchmark verified
+- [ ] `examples/cloudflare-worker` end-to-end with sub-100 ms cold benchmark
+      verified
 
 ## v0.5 — Linting + type safety
 
 - [ ] `@imprint/eslint-plugin` — `no-unsupported-css`, `no-overflow`,
       `tailwind-classes`, `aria-on-imprint-elements`
 - [ ] Codegen'd page-size unions, font unions
-- [ ] Editor diagnostics for Tailwind classes that resolve to
-      paged-incompatible CSS
-- [ ] `@imprint/testing` — Vitest / Jest matcher `toMatchPdfSnapshot()`
-      for visual regression testing of PDF output
-- [ ] `<Bookmark>` component + auto-generation from heading hierarchy for
-      PDF outline / navigation panel
-- [ ] Document metadata API — title, author, subject, keywords, XMP
-      (required for PDF/A and enterprise DMS ingestion)
+- [ ] Editor diagnostics for Tailwind classes that resolve to paged-incompatible
+      CSS
+- [ ] `@imprint/testing` — Vitest / Jest matcher `toMatchPdfSnapshot()` for
+      visual regression testing of PDF output
+- [ ] `<Bookmark>` component + auto-generation from heading hierarchy for PDF
+      outline / navigation panel
+- [ ] Document metadata API — title, author, subject, keywords, XMP (required
+      for PDF/A and enterprise DMS ingestion)
 - [ ] Internal cross-references — named destinations and `<a href="#id">`
       within-document links
 
@@ -87,8 +84,7 @@ a milestone matters to you.
 ## v1.0 — Stability & ergonomics
 
 - [ ] Public API freeze
-- [ ] Migration guides from `@react-pdf/renderer`, Puppeteer, DocRaptor,
-      jsPDF
+- [ ] Migration guides from `@react-pdf/renderer`, Puppeteer, DocRaptor, jsPDF
 - [ ] Performance — sub-50 ms warm on 1-page A4 invoice
 - [ ] More cookbook recipes — packing slips, certificates, transcripts,
       brochures
@@ -96,8 +92,7 @@ a milestone matters to you.
 ## Beyond v1
 
 - PDF/UA-2 + Well-Tagged PDF
-- Math typography (KaTeX → MathML → glyph runs, or embedded
-  `typst-math`)
+- Math typography (KaTeX → MathML → glyph runs, or embedded `typst-math`)
 - Templates marketplace (paid templates; imprint takes 15–30%)
 - Visual editor (à la pdfme designer) that round-trips with code
 - AI template generator: "describe your invoice / upload a sample → JSX
