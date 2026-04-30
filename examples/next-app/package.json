@@ -5,7 +5,7 @@
   "description": "Imprint example — Next.js App Router with RSC and an API route that streams a PDF.",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "tsc --noEmit",
     "start": "next start"
   },
   "dependencies": {

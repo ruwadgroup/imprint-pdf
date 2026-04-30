@@ -4,8 +4,8 @@
   "private": true,
   "description": "Imprint example — Bun HTTP server that generates PDFs using Bun's native WASM support.",
   "scripts": {
-    "dev": "bun run --watch src/index.ts",
-    "start": "bun run src/index.ts"
+    "dev": "bun run --watch src/index.tsx",
+    "start": "bun run src/index.tsx"
   },
   "dependencies": {
     "@imprint/core": "workspace:*",
