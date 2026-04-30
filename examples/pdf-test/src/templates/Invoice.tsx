@@ -1,0 +1,121 @@
+import { Document, Page } from '@imprint/react';
+import { Table, Td, Th, Tr } from '../components/Table.js';
+import type { InvoiceData } from '../data/invoice.js';
+
+const fmt = (n: number) => n.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+
+export function Invoice({ data }: { data: InvoiceData }) {
+  const subtotal = data.items.reduce((s, i) => s + i.qty * i.rate, 0);
+  const tax = subtotal * data.taxRate;
+  const total = subtotal + tax;
+
+  return (
+    <Document title={`Invoice ${data.number}`} author={data.from.name}>
+      <Page size="A4" className="bg-white px-14 py-12" style={{ fontFamily: 'Outfit' }}>
+        {/* Header */}
+        <div className="flex flex-row justify-between items-start mb-12">
+          <div>
+            <h2 className="text-2xl font-bold text-indigo-500">{data.from.name.split(' ')[0]}</h2>
+            <p className="text-xs text-slate-500 mt-1">{data.from.email}</p>
+          </div>
+          <div className="flex flex-col items-end">
+            <span className="text-sm font-bold text-slate-500 tracking-[2pt]">INVOICE</span>
+            <p className="text-xl font-bold text-slate-900 mt-1">{data.number}</p>
+            <div className="flex flex-row mt-2">
+              <div className="mr-4">
+                <span className="text-xs text-slate-500 mb-0.5">Issue date</span>
+                <p className="text-xs font-semibold text-slate-900">{data.date}</p>
+              </div>
+              <div>
+                <span className="text-xs text-slate-500 mb-0.5">Due date</span>
+                <p className="text-xs font-semibold text-indigo-500">{data.due}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* FROM / BILL TO */}
+        <div className="flex flex-row justify-between mb-11">
+          {[data.from, data.to].map((party, pi) => (
+            <div key={pi}>
+              <span className="text-xs font-semibold text-indigo-500 mb-1 tracking-[1pt]">
+                {pi === 0 ? 'FROM' : 'BILL TO'}
+              </span>
+              <p className="text-sm font-bold text-slate-900 mb-1">{party.name}</p>
+              {party.address.split('\n').map((line, i) => (
+                <p key={i} className="text-xs text-slate-500 leading-relaxed">
+                  {line}
+                </p>
+              ))}
+              <p className="text-xs text-slate-500 mt-1">{party.email}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Items table */}
+        <Table>
+          <Tr className="bg-slate-900 rounded-md px-3">
+            <Th flex>DESCRIPTION</Th>
+            <Th width={36} align="right">
+              QTY
+            </Th>
+            <Th width={68} align="right">
+              UNIT PRICE
+            </Th>
+            <Th width={76} align="right">
+              AMOUNT
+            </Th>
+          </Tr>
+          {data.items.map((item, i) => (
+            <Tr key={i} className={`px-3 ${i % 2 === 0 ? 'bg-slate-50' : 'bg-white'}`}>
+              <Td flex>{item.description}</Td>
+              <Td width={36} align="right">
+                {item.qty}
+              </Td>
+              <Td width={68} align="right">
+                {fmt(item.rate)}
+              </Td>
+              <Td width={76} align="right">
+                <span className="text-xs font-semibold text-slate-900 text-right">
+                  {fmt(item.qty * item.rate)}
+                </span>
+              </Td>
+            </Tr>
+          ))}
+        </Table>
+
+        {/* Totals */}
+        <div className="flex flex-col items-end mt-6">
+          <div className="flex flex-row justify-end mb-1.5">
+            <span className="text-xs text-slate-500 text-right w-[90pt]">Subtotal</span>
+            <span className="text-xs text-slate-900 text-right w-[76pt]">{fmt(subtotal)}</span>
+          </div>
+          <div className="flex flex-row justify-end mb-4">
+            <span className="text-xs text-slate-500 text-right w-[90pt]">
+              Tax {(data.taxRate * 100).toFixed(1)}%
+            </span>
+            <span className="text-xs text-slate-900 text-right w-[76pt]">{fmt(tax)}</span>
+          </div>
+          <div className="flex flex-row items-center bg-indigo-500 py-2.5 px-5 rounded-lg">
+            <span className="text-sm font-semibold text-white mr-6">Total due</span>
+            <span className="text-lg font-bold text-white">{fmt(total)}</span>
+          </div>
+        </div>
+
+        {/* Note */}
+        <div className="bg-slate-50 py-4 px-5 rounded-lg mt-11">
+          <span className="text-xs font-bold text-indigo-500 mb-1.5 tracking-[1pt]">NOTE</span>
+          <p className="text-xs text-slate-500 leading-relaxed">{data.notes}</p>
+        </div>
+
+        {/* Footer */}
+        <div className="absolute flex flex-row justify-between bottom-[28pt] left-[56pt] right-[56pt]">
+          <span className="text-xs text-slate-500">{data.from.name}</span>
+          <span className="text-xs text-slate-500">
+            Generated by Imprint · {new Date().getFullYear()}
+          </span>
+        </div>
+      </Page>
+    </Document>
+  );
+}
