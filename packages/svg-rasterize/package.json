@@ -1,0 +1,58 @@
+{
+  "name": "@imprint/svg-rasterize",
+  "version": "0.1.0",
+  "description": "resvg-WASM rasterizer for SVG → PNG, used as a fallback path for SVGs with filters/masks/foreignObject in imprint.",
+  "license": "Apache-2.0",
+  "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tamimbinhakim/imprint.git",
+    "directory": "packages/svg-rasterize"
+  },
+  "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/svg-rasterize#readme",
+  "bugs": "https://github.com/tamimbinhakim/imprint/issues",
+  "keywords": ["pdf", "svg", "resvg", "wasm", "rasterize", "imprint"],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": ["dist", "README.md", "LICENSE"],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "clean": "rm -rf dist .turbo *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@resvg/resvg-wasm": "^2.6.2"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "tsup": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}
