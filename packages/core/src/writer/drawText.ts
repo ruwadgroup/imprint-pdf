@@ -1,5 +1,5 @@
 import type { PDFPage } from 'pdf-lib';
-import { rgb } from 'pdf-lib';
+import { degrees, rgb } from 'pdf-lib';
 import type { ComputedGeometry, TextNode } from '../types.js';
 import type { LoadedFont } from '../typography/fonts.js';
 import { selectFont } from '../typography/fonts.js';
@@ -40,12 +40,35 @@ export async function drawText(
   const wrapWidth = geo.width - geo.paddingLeft - geo.paddingRight;
   const metrics = measureText(node.text, style, wrapWidth, loadedFont);
 
+  // Vertical writing mode rotates each line 90° and stacks columns. Layout
+  // still measures horizontally — full vertical line stacking is v0.4 work.
+  const writingMode = (style.writingMode as string | undefined) ?? 'horizontal-tb';
+  const vertical = writingMode === 'vertical-rl' || writingMode === 'vertical-lr';
+  if (vertical) {
+    const rtlStack = writingMode === 'vertical-rl';
+    const baseX = geo.x + (rtlStack ? geo.width - geo.paddingRight : geo.paddingLeft);
+    for (const line of metrics.lines) {
+      const lineX = baseX + (rtlStack ? -line.y - fontSize : line.y);
+      const lineY = pageHeight - (geo.y + geo.paddingTop);
+      page.drawText(line.text, {
+        x: lineX,
+        y: lineY,
+        font: loadedFont.pdfFont,
+        size: fontSize,
+        color,
+        opacity,
+        rotate: degrees(-90),
+      });
+    }
+    return;
+  }
+
   const decoration = (style.textDecoration as string | undefined) ?? '';
   const hasUnderline = decoration.includes('underline');
   const hasStrikethrough = decoration.includes('line-through');
   const hasOverline = decoration.includes('overline');
-  // 1/20 of font-size matches what most browsers settle on; never thinner than
-  // 0.5pt or it disappears at common print resolutions.
+  // 1/20 of font-size matches what browsers settle on; clamp at 0.5pt so it
+  // doesn't disappear at common print resolutions.
   const decorationThickness = Math.max(0.5, fontSize / 20);
 
   for (const line of metrics.lines) {
@@ -57,8 +80,7 @@ export async function drawText(
       line.width,
     );
     const lineY = pageHeight - (geo.y + geo.paddingTop + line.y + fontSize);
-    // Skip lines fully off-page. A one-fontSize slop on each side keeps glyphs
-    // that straddle the edge from being culled mid-stroke.
+    // One-fontSize slop on each side keeps edge-straddling glyphs intact.
     if (lineY < -fontSize || lineY > pageHeight + fontSize) continue;
 
     page.drawText(line.text, {

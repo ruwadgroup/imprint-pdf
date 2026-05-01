@@ -1,10 +1,12 @@
 import {
+  Direction,
   Blob as HbBlob,
   Buffer as HbBuffer,
   Face as HbFace,
   Font as HbFont2,
   shape,
 } from 'harfbuzzjs';
+import { type ScriptTag, splitByScript } from './script.js';
 
 export interface HbFont {
   font: HbFont2;
@@ -15,21 +17,53 @@ export function createHbFont(fontBytes: Uint8Array): HbFont {
   const blob = new HbBlob(fontBytes.buffer as ArrayBuffer);
   const face = new HbFace(blob);
   const font = new HbFont2(face);
-  // Shape in font design units; the caller scales advances to point size.
   font.setScale(face.upem, face.upem);
   return { font, upem: face.upem };
 }
 
-// Total advance width of `text` at `sizePt`, with HarfBuzz applying GSUB/GPOS
-// (kerning, ligatures, marks). guessSegmentProperties picks script/direction
-// from the buffer contents — good enough for measurement, where we don't care
-// about the resolved glyph order.
-export function shapeAdvance(hbFont: HbFont, text: string, sizePt: number): number {
+export interface ShapeOptions {
+  variations?: Record<string, number>;
+  language?: string;
+  /** Enables vertical metrics (`vert` / `vrt2` GSUB) and uses `yAdvance`. */
+  vertical?: boolean;
+}
+
+const RTL_SCRIPTS = new Set<ScriptTag>(['arab', 'hebr']);
+
+function shapeRun(hbFont: HbFont, text: string, script: ScriptTag, options: ShapeOptions): number {
   const buf = new HbBuffer();
   buf.addText(text);
-  buf.guessSegmentProperties();
+  buf.setScript(script);
+  buf.setDirection(
+    options.vertical ? Direction.TTB : RTL_SCRIPTS.has(script) ? Direction.RTL : Direction.LTR,
+  );
+  if (options.language) buf.setLanguage(options.language);
   shape(hbFont.font, buf);
   let total = 0;
-  for (const p of buf.getGlyphPositions()) total += p.xAdvance;
+  for (const p of buf.getGlyphPositions()) {
+    total += options.vertical ? -p.yAdvance : p.xAdvance;
+  }
+  return total;
+}
+
+/**
+ * Shapes `text` and returns its total advance in points. Splits into per-script
+ * runs first — HarfBuzz's `guessSegmentProperties` only reads the first strong
+ * character, which mis-shapes mixed-script text.
+ */
+export function shapeAdvance(
+  hbFont: HbFont,
+  text: string,
+  sizePt: number,
+  options: ShapeOptions = {},
+): number {
+  if (options.variations && Object.keys(options.variations).length > 0) {
+    hbFont.font.setVariations(options.variations);
+  }
+
+  const runs = splitByScript(text);
+  if (runs.length === 0) return 0;
+  let total = 0;
+  for (const run of runs) total += shapeRun(hbFont, run.text, run.script, options);
   return (total / hbFont.upem) * sizePt;
 }

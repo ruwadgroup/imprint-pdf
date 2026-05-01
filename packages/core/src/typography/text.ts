@@ -1,14 +1,16 @@
 import type { ResolvedStyle } from '../types.js';
 import { detectBaseDir, hasRtlChars, reorderLine } from './bidi.js';
 import type { LoadedFont } from './fonts.js';
+import { getHyphenator } from './hyphen.js';
 import { breakLines } from './knuth-plass.js';
 import { shapeAdvance } from './shaper.js';
+import { deriveAxesFromStyle } from './variations.js';
 
 export interface TextLine {
   text: string;
   width: number;
   y: number;
-  /** x-offset from the node's left edge (used for text-indent on the first line). */
+  /** Per-line `text-indent` offset; non-zero only on the first line. */
   xOffset: number;
 }
 
@@ -37,18 +39,28 @@ function charWidth(char: string, size: number, font: LoadedFont | undefined): nu
       return font.pdfFont.widthOfTextAtSize(char, size);
     } catch {}
   }
-  // Heuristic widths used when no font has loaded yet (during initial layout).
-  // Tuned so paragraph wrapping picks roughly correct line counts; the real
-  // glyph widths replace these once the PDF font is embedded.
+  // Pre-embed heuristic — replaced by real glyph widths once the font loads.
   const code = char.charCodeAt(0);
-  if (code === 32) return size * 0.25; // space
-  if (code >= 105 && code <= 108) return size * 0.28; // i j k l (narrow)
-  if (code === 109 || code === 119) return size * 0.78; // m w (wide)
+  if (code === 32) return size * 0.25;
+  if (code >= 105 && code <= 108) return size * 0.28;
+  if (code === 109 || code === 119) return size * 0.78;
   return size * 0.55;
 }
 
-function wordWidth(word: string, size: number, font: LoadedFont | undefined): number {
-  if (font?.hbFont) return shapeAdvance(font.hbFont, word, size);
+function wordWidth(
+  word: string,
+  size: number,
+  font: LoadedFont | undefined,
+  variations?: Record<string, number>,
+): number {
+  if (font?.hbFont) {
+    return shapeAdvance(
+      font.hbFont,
+      word,
+      size,
+      variations && Object.keys(variations).length > 0 ? { variations } : {},
+    );
+  }
   if (font?.pdfFont) {
     try {
       return font.pdfFont.widthOfTextAtSize(word, size);
@@ -88,11 +100,16 @@ function truncateWithEllipsis(
   return kept.join(' ') + (kept.length < words.length ? ellipsis : '');
 }
 
+export interface MeasureTextOptions {
+  hyphenate?: (word: string) => string[];
+}
+
 export function measureText(
   text: string,
   style: ResolvedStyle,
   containerWidth: number,
   font: LoadedFont | undefined,
+  options: MeasureTextOptions = {},
 ): TextMetrics {
   const size = parsePx(style.fontSize, 12);
   const lineHeightRaw = style.lineHeight;
@@ -135,7 +152,9 @@ export function measureText(
     else extraSpaceW = parsePx(ws, size);
   }
 
-  const measure = (w: string) => wordWidth(w, size, font) + [...w].length * letterSpacing;
+  const variations = deriveAxesFromStyle(style);
+  const measure = (w: string) =>
+    wordWidth(w, size, font, variations) + [...w].length * letterSpacing;
   const spaceW = measure(' ') + extraSpaceW;
 
   const transform = style.textTransform as string | undefined;
@@ -170,7 +189,7 @@ export function measureText(
     if (nowrap) {
       let lineText = words.join(' ');
       const availW = containerWidth > 0 ? containerWidth - indent : Infinity;
-      if (ellipsis && availW > 0 && isFinite(availW)) {
+      if (ellipsis && availW > 0 && Number.isFinite(availW)) {
         lineText = truncateWithEllipsis(words, spaceW, availW, measure);
       }
       const w = measure(lineText);
@@ -179,7 +198,10 @@ export function measureText(
       maxW = Math.max(maxW, w + indent);
       y += lineHeight;
     } else {
-      const broken = breakLines(words, spaceW, spaceW * 0.5, spaceW * 0.333, maxWidth, measure);
+      const hyphenate = options.hyphenate ?? getHyphenator() ?? undefined;
+      const broken = breakLines(words, spaceW, spaceW * 0.5, spaceW * 0.333, maxWidth, measure, {
+        ...(hyphenate ? { hyphenate } : {}),
+      });
       let lineIdx = 0;
       for (const lineWords of broken) {
         if (lineClamp > 0 && lines.length >= lineClamp) break;
@@ -188,9 +210,7 @@ export function measureText(
         const w = measure(lineText);
         const xOff = lineIdx === 0 ? indent : 0;
 
-        // Last line of a clamped block gets an ellipsis so the truncation
-        // is visible. We re-measure with the ellipsis baked in to keep the
-        // line within the available width even after the suffix is added.
+        // Last line of a clamp: re-measure with the ellipsis included.
         if (lineClamp > 0 && lines.length === lineClamp - 1) {
           const availW = maxWidth - xOff;
           const truncated = truncateWithEllipsis(lineWords, spaceW, availW, measure);

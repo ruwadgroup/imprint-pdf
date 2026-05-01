@@ -1,7 +1,5 @@
-// Unicode blocks whose characters have strong-RTL bidi class. Approximated
-// from UCD DerivedBidiClass.txt — strict UAX #9 conformance would need the
-// full property table, but for line-level reorder the major Hebrew/Arabic/
-// Syriac/Thaana blocks plus the Arabic Presentation Forms cover real text.
+// Approximation of UCD DerivedBidiClass.txt strong-RTL characters; covers
+// the blocks real-world mixed-direction text actually uses.
 const RTL_RANGES: [number, number][] = [
   [0x0590, 0x05ff], // Hebrew
   [0x0600, 0x06ff], // Arabic
@@ -28,9 +26,7 @@ export function hasRtlChars(text: string): boolean {
   return false;
 }
 
-// UAX #9 P2/P3: paragraph direction is taken from the first strong character.
-// Strong-LTR ranges below cover Latin, Greek, and Cyrillic — enough for the
-// scripts a mixed-direction PDF is likely to contain.
+/** Resolves paragraph direction from the first strong character (UAX #9 P2/P3). */
 export function detectBaseDir(text: string): 'ltr' | 'rtl' {
   for (const ch of text) {
     const cp = ch.codePointAt(0) ?? 0;
@@ -52,9 +48,7 @@ interface Run {
   rtl: boolean;
 }
 
-// Splits text into maximal directional runs. Whitespace stays attached to the
-// current run rather than starting a new one — UAX #9 treats it as neutral and
-// the surrounding strong characters dictate its direction.
+// Whitespace is neutral per UAX #9 — keep it on whichever run it follows.
 function runs(text: string): Run[] {
   if (!text.length) return [];
   const result: Run[] = [];
@@ -76,10 +70,7 @@ function runs(text: string): Run[] {
   return result;
 }
 
-// Visual reorder for a single resolved line. RTL runs are reversed in place
-// (level 1), then if the paragraph base direction is RTL, the run order itself
-// is reversed (level 0 → level 1 across the whole line). This is the line-level
-// approximation of UAX #9 — sufficient for non-nested mixed-direction text.
+/** Line-level UAX #9 reorder — sufficient for non-nested mixed-direction text. */
 export function reorderLine(text: string, baseDir: 'ltr' | 'rtl'): string {
   if (!hasRtlChars(text)) return text;
   const rs = runs(text).map((r) => (r.rtl ? [...r.text].reverse().join('') : r.text));
