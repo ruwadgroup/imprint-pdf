@@ -35,7 +35,8 @@ milestone matters to you.
 - [x] `@imprint/tailwind/runtime` — Oxide WASM fallback
 - [x] `@imprint/next` — App Router route handler, edge build, asset bundling
 - [x] `@imprint/vite` — Tailwind plugin
-- [ ] `imprint dev` — live preview server with element inspector
+- [x] `imprint dev` — live preview server with element inspector (PdfNode IR +
+      post-layout geometry over JSON, SSE live reload)
 - [x] `examples/next-app`, `examples/vite-react` end-to-end
 - [x] Custom Tailwind variants — `page-first:`, `page-left:`, `page-right:`
       (runtime-applied), `imprint-bleed:`, `imprint-cmyk:` (registered; runtime
@@ -72,7 +73,12 @@ milestone matters to you.
       `<filter>`, soft `<mask>`, or `<foreignObject>`
 - [x] `examples/cloudflare-worker` end-to-end — `wrangler.toml` +
       `scripts/bench.ts` reporting cold and warm `p50/p95/p99`
+- [x] cloudflare-worker `bench:verify` harness — multi-cold sampling, JSON
+      results, fails non-zero on threshold breach
 - [ ] cloudflare-worker sub-100 ms cold benchmark verified on a real deploy
+      (deploy +
+      `pnpm --filter @imprint/example-cloudflare-worker bench:verify <url>`;
+      commit the resulting `bench-results.json` to flip this box)
 
 ## v0.5 — Linting + type safety + testing
 

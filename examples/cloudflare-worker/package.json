@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "bench": "tsx scripts/bench.ts"
+    "bench": "tsx scripts/bench.ts",
+    "bench:verify": "tsx scripts/bench.ts --cold-runs 5 --max-cold-ms 100 --out bench-results.json"
   },
   "dependencies": {
     "@imprint/core": "workspace:*",

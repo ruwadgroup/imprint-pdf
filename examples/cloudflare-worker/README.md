@@ -26,17 +26,38 @@ examples/cloudflare-worker/
 # Local (wrangler dev must be running):
 pnpm --filter @imprint/example-cloudflare-worker bench http://localhost:8787
 
-# Deployed:
+# Deployed (1 cold + 20 warm):
 pnpm --filter @imprint/example-cloudflare-worker bench \
   https://imprint-cloudflare-worker.<account>.workers.dev
 
-# Force a true cold start by waiting through the isolate-eviction window:
-BENCH_COLD=true pnpm --filter @imprint/example-cloudflare-worker bench <url>
+# More cold samples (waits through the eviction window between each):
+pnpm --filter @imprint/example-cloudflare-worker bench <url> --cold-runs 5
+
+# CI / verification: fail non-zero if any cold sample exceeds N ms,
+# write machine-readable results to bench-results.json:
+pnpm --filter @imprint/example-cloudflare-worker bench:verify <url>
 ```
 
-The bench reports cold + warm `p50 / p95 / p99`. The roadmap target is sub-100
-ms warm; cold-start depends on whether Cloudflare keeps your isolate hot and is
-outside your direct control beyond keeping the bundle small.
+`bench:verify` runs `--cold-runs 5 --max-cold-ms 100 --out bench-results.json`.
+That's the harness the roadmap "sub-100 ms cold benchmark verified on a real
+deploy" item gates on — run it once against your deployed Worker and commit the
+results JSON as evidence.
+
+Flags:
+
+| Flag                 | Default | Description                                    |
+| -------------------- | ------- | ---------------------------------------------- |
+| `--warm-runs <N>`    | `20`    | Warm-up sample count.                          |
+| `--cold-runs <N>`    | `1`     | Cold-start sample count.                       |
+| `--cold-gap-sec <N>` | `30`    | Eviction wait between cold samples (s).        |
+| `--max-cold-ms <N>`  | off     | Exit non-zero if any cold sample exceeds N ms. |
+| `--out <path>`       | off     | Write `Results` JSON to path.                  |
+
+Each flag has a `BENCH_*` env equivalent (`BENCH_RUNS`, `BENCH_COLD_RUNS`,
+`BENCH_COLD_GAP_SEC`, `BENCH_MAX_COLD_MS`, `BENCH_OUT`).
+
+Cold-start depends on whether Cloudflare keeps your isolate hot and is outside
+your direct control beyond keeping the bundle small.
 
 ## Notes
 

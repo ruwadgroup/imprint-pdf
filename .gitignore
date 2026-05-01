@@ -24,6 +24,7 @@ coverage/
 .nyc_output/
 __pixmaps__/diff/
 __fixtures__/.cache/
+.test-tmp/
 
 # logs
 logs/

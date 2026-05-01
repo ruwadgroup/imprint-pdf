@@ -25,15 +25,34 @@ imprint render ./src/templates/Invoice.tsx --out ./out/invoice.pdf
 
 ### `imprint dev`
 
-Live preview server with hot module replacement and an element inspector.
+Live preview server with element inspector.
 
 ```bash
 imprint dev ./src/templates/Invoice.tsx
 ```
 
-Opens a browser tab at `http://localhost:4000` showing the PDF rendered in real
-time. Edit your component or Tailwind classes and the preview updates without a
-full rebuild.
+Opens a browser tab at `http://localhost:4000` with the rendered PDF on the left
+and a tree inspector on the right. Click any node to see its resolved style,
+sanitized props, and post-layout geometry box (x/y/w/h, padding, content size,
+effective fontFamily). On file save, both panes refresh over SSE — no polling,
+no hard reload.
+
+| Flag     | Default | Description  |
+| -------- | ------- | ------------ |
+| `--port` | `4000`  | Listen port. |
+
+Endpoints:
+
+- `GET /` — inspector UI
+- `GET /pdf` — current PDF bytes (`application/pdf`)
+- `GET /inspect` — `{ file, renderedAt, tree }` JSON tree (PdfNode IR +
+  geometry)
+- `GET /events` — Server-Sent Events; `reload` fires after each successful
+  render
+
+The fixture file must be loadable by Node directly (`.js` / `.mjs`) or via a
+TypeScript loader (e.g.
+`node --import tsx ./node_modules/@imprint/cli/dist/bin.js dev …`).
 
 ### `imprint validate`
 

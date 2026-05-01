@@ -34,4 +34,5 @@ export { TextField } from './components/TextField.js';
 export { TotalPages } from './components/TotalPages.js';
 export type { WatermarkProps } from './components/Watermark.js';
 export { Watermark } from './components/Watermark.js';
-export { renderToBuffer, renderToStream } from './render.js';
+export type { InspectorRenderResult } from './render.js';
+export { renderForInspector, renderToBuffer, renderToStream } from './render.js';
