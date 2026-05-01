@@ -1,0 +1,28 @@
+/*
+ * @imprint/tailwind preset — registers the page-position and print-pipeline
+ * variants used by imprint. Each variant is a passthrough; imprint's
+ * resolver is the one that decides whether a variant is active for a given
+ * page based on its position (or output pipeline). Tailwind only needs to
+ * know the variants exist so it compiles classes like `page-first:p-12`.
+ *
+ * Usage in your app stylesheet:
+ *
+ *   @import "tailwindcss";
+ *   @import "@imprint/tailwind/preset";
+ */
+
+@custom-variant page-first {
+  @slot;
+}
+@custom-variant page-left {
+  @slot;
+}
+@custom-variant page-right {
+  @slot;
+}
+@custom-variant imprint-bleed {
+  @slot;
+}
+@custom-variant imprint-cmyk {
+  @slot;
+}

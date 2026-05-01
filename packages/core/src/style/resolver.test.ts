@@ -4,7 +4,9 @@ import {
   clearCompiledClassMap,
   mergeStyles,
   resolveClassName,
+  resolveClassNameWithVariants,
   resolveStyles,
+  resolveStylesWithVariants,
   setCompiledClassMap,
 } from './resolver.js';
 
@@ -97,5 +99,63 @@ describe('resolveStyles', () => {
   it('returns only inline style when className has no compiled entry', () => {
     const r = resolveStyles('font-bold', { fontWeight: 300 });
     expect(r).toEqual({ fontWeight: 300 });
+  });
+});
+
+describe('imprint variant resolution', () => {
+  afterEach(() => {
+    clearCompiledClassMap();
+  });
+
+  it('separates page-first prefixed classes into the page-first variant bucket', () => {
+    setCompiledClassMap(
+      new Map<string, ResolvedStyle>([
+        ['p-8', { padding: '8pt' }],
+        ['page-first:p-12', { padding: '12pt' }],
+      ]),
+    );
+    const r = resolveClassNameWithVariants('p-8 page-first:p-12');
+    expect(r.base).toEqual({ padding: '8pt' });
+    expect(r.variants['page-first']).toEqual({ padding: '12pt' });
+  });
+
+  it('routes each known imprint variant prefix to its bucket', () => {
+    setCompiledClassMap(
+      new Map<string, ResolvedStyle>([
+        ['page-first:bg-red', { backgroundColor: 'red' }],
+        ['page-left:p-2', { padding: '2pt' }],
+        ['page-right:p-4', { padding: '4pt' }],
+        ['imprint-bleed:m-1', { margin: '1pt' }],
+        ['imprint-cmyk:text-black', { color: 'black' }],
+      ]),
+    );
+    const r = resolveClassNameWithVariants(
+      'page-first:bg-red page-left:p-2 page-right:p-4 imprint-bleed:m-1 imprint-cmyk:text-black',
+    );
+    expect(r.base).toEqual({});
+    expect(r.variants['page-first']).toEqual({ backgroundColor: 'red' });
+    expect(r.variants['page-left']).toEqual({ padding: '2pt' });
+    expect(r.variants['page-right']).toEqual({ padding: '4pt' });
+    expect(r.variants.bleed).toEqual({ margin: '1pt' });
+    expect(r.variants.cmyk).toEqual({ color: 'black' });
+  });
+
+  it('keeps non-imprint variants (sm:, hover:) on the base by stripping the prefix', () => {
+    setCompiledClassMap(new Map<string, ResolvedStyle>([['flex', { display: 'flex' }]]));
+    const r = resolveClassNameWithVariants('sm:flex hover:flex');
+    expect(r.base).toEqual({ display: 'flex' });
+    expect(r.variants).toEqual({});
+  });
+
+  it('inline style flows through resolveStylesWithVariants and merges over base', () => {
+    setCompiledClassMap(
+      new Map<string, ResolvedStyle>([
+        ['p-8', { padding: '8pt' }],
+        ['page-first:p-12', { padding: '12pt' }],
+      ]),
+    );
+    const r = resolveStylesWithVariants('p-8 page-first:p-12', { color: 'red' });
+    expect(r.style).toEqual({ padding: '8pt', color: 'red' });
+    expect(r.variants['page-first']).toEqual({ padding: '12pt' });
   });
 });

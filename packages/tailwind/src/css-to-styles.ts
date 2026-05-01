@@ -30,8 +30,7 @@ const PROP_MAP: Partial<Record<string, keyof ResolvedStyle>> = {
   'padding-right': 'paddingRight',
   'padding-bottom': 'paddingBottom',
   'padding-left': 'paddingLeft',
-  // The logical-property shorthands have no direct ResolvedStyle key —
-  // the parse loop below splits each one into both sides.
+  // Logical shorthands; the parse loop fans these out to both physical sides.
   'padding-inline': 'paddingLeft',
   'padding-block': 'paddingTop',
   margin: 'margin',
@@ -58,6 +57,9 @@ const PROP_MAP: Partial<Record<string, keyof ResolvedStyle>> = {
   'font-size': 'fontSize',
   'font-weight': 'fontWeight',
   'font-style': 'fontStyle',
+  'font-variation-settings': 'fontVariationSettings',
+  'font-stretch': 'fontStretch',
+  'font-feature-settings': 'fontFeatureSettings',
   'line-height': 'lineHeight',
   'letter-spacing': 'letterSpacing',
   'text-align': 'textAlign',
@@ -67,6 +69,7 @@ const PROP_MAP: Partial<Record<string, keyof ResolvedStyle>> = {
   'white-space': 'whiteSpace',
   'text-overflow': 'textOverflow',
   'word-spacing': 'wordSpacing',
+  'writing-mode': 'writingMode',
   '-webkit-line-clamp': 'lineClamp',
   'line-clamp': 'lineClamp',
   'text-indent': 'textIndent',
@@ -90,9 +93,7 @@ const PROP_MAP: Partial<Record<string, keyof ResolvedStyle>> = {
   'aspect-ratio': 'aspectRatio',
 };
 
-// Tailwind v4 declares its design tokens as CSS custom properties on :root.
-// We pre-extract them so resolveValue can expand var(...) references without
-// re-walking the full stylesheet for every declaration.
+// Pre-extracts :root custom properties so var(...) lookups don't rescan the CSS.
 function parseCssVars(css: string): Map<string, string> {
   const vars = new Map<string, string>();
   const rootRe = /(?::root|:host|\*|html)\s*(?:,\s*(?::root|:host|\*|html)\s*)*\{([^}]*)\}/gs;
@@ -110,10 +111,8 @@ function parseCssVars(css: string): Map<string, string> {
   return vars;
 }
 
-// A regex can't safely match var(...) because the fallback can contain
-// arbitrarily nested parentheses (e.g. `var(--x, calc(1px + 2px))`). Walk the
-// string with a depth counter instead, then split name/fallback at the first
-// top-level comma.
+// Manual depth-walk — var() fallbacks can contain nested parens (e.g.
+// `var(--x, calc(1px + 2px))`) which a flat regex can't handle.
 function parseVarCall(
   str: string,
   start: number,
@@ -148,8 +147,7 @@ function parseVarCall(
   return { name, fallback, end: i + 1 };
 }
 
-// Depth cap stops self-referential token graphs (Tailwind's --color-* chains
-// can be deep but never legitimately loop) from blowing the stack.
+// Depth cap defends against pathological self-referential token graphs.
 function resolveVars(value: string, vars: Map<string, string>, depth = 0): string {
   if (depth > 8 || !value.includes('var(')) return value;
   let result = '';
@@ -181,11 +179,8 @@ function resolveVars(value: string, vars: Map<string, string>, depth = 0): strin
   return result;
 }
 
-// Handles +, -, *, / over numbers and px/rem; anything more elaborate falls
-// through unchanged. The caller-side regex (`^[\d\s+\-*/().]+$`) guards the
-// eval — without it we'd be running arbitrary CSS expressions through a JS
-// interpreter. Unitless results (e.g. line-height multipliers) are returned
-// bare so they aren't later mis-converted to pt.
+// Handles +, -, *, / over numbers and px/rem. The regex below restricts the
+// eval input to digits and operators — anything else passes through unchanged.
 function resolveCalc(value: string): string {
   if (!value.includes('calc(')) return value;
   return value.replace(/calc\(([^)]+)\)/g, (_, expr: string) => {
