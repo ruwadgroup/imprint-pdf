@@ -1,0 +1,109 @@
+{
+  "name": "@imprint/testing",
+  "version": "0.1.0",
+  "description": "Vitest / Jest matchers for imprint — toMatchPdfSnapshot for visual regression testing of rendered PDFs.",
+  "license": "Apache-2.0",
+  "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tamimbinhakim/imprint.git",
+    "directory": "packages/testing"
+  },
+  "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/testing#readme",
+  "bugs": "https://github.com/tamimbinhakim/imprint/issues",
+  "keywords": [
+    "pdf",
+    "imprint",
+    "vitest",
+    "jest",
+    "snapshot",
+    "visual-regression",
+    "testing"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./vitest": {
+      "types": "./dist/vitest.d.ts",
+      "import": {
+        "types": "./dist/vitest.d.ts",
+        "default": "./dist/vitest.js"
+      },
+      "require": {
+        "types": "./dist/vitest.d.cts",
+        "default": "./dist/vitest.cjs"
+      }
+    },
+    "./jest": {
+      "types": "./dist/jest.d.ts",
+      "import": {
+        "types": "./dist/jest.d.ts",
+        "default": "./dist/jest.js"
+      },
+      "require": {
+        "types": "./dist/jest.d.cts",
+        "default": "./dist/jest.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest --run --passWithNoTests",
+    "test:ci": "vitest run --coverage",
+    "clean": "rm -rf dist .turbo *.tsbuildinfo"
+  },
+  "dependencies": {
+    "pixelmatch": "^7.1.0",
+    "pngjs": "^7.0.0"
+  },
+  "peerDependencies": {
+    "vitest": ">=1.0.0",
+    "@jest/expect-utils": ">=29.0.0"
+  },
+  "peerDependenciesMeta": {
+    "vitest": {
+      "optional": true
+    },
+    "@jest/expect-utils": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@types/pixelmatch": "^5.2.6",
+    "@types/pngjs": "^6.0.5",
+    "tsup": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}
