@@ -1,5 +1,5 @@
-import type { PdfNode, PdfNodeType, ResolvedStyle } from '@imprint/core';
-import { resolveStyles, shortHash } from '@imprint/core';
+import type { PdfNode, PdfNodeType, ResolvedStyle, VariantStyles } from '@imprint/core';
+import { resolveStylesWithVariants, shortHash } from '@imprint/core';
 import { createContext, type ReactElement } from 'react';
 import ReactReconciler from 'react-reconciler';
 import { DefaultEventPriority, LegacyRoot } from 'react-reconciler/constants.js';
@@ -81,8 +81,8 @@ function mapType(type: string): PdfNodeType {
 function resolveStyle(
   className: string | undefined,
   style: Record<string, unknown> | undefined,
-): ResolvedStyle {
-  return resolveStyles(className, style as Partial<ResolvedStyle> | undefined);
+): { style: ResolvedStyle; variants: VariantStyles } {
+  return resolveStylesWithVariants(className, style as Partial<ResolvedStyle> | undefined);
 }
 
 function makeIdGenerator() {
@@ -141,25 +141,28 @@ const hostConfig: ReactReconciler.HostConfig<
   ): PdfNode {
     const nodeType = mapType(type);
     const { className, style, children: _children, ...restProps } = props;
-    const resolvedStyle = resolveStyle(
+    const resolved = resolveStyle(
       className as string | undefined,
       style as Record<string, unknown> | undefined,
     );
 
-    // The two-pass Tailwind pipeline reads className back off the tree to
-    // collect candidates, so it has to survive on the node alongside style.
+    // The Tailwind two-pass pipeline reads className back off the tree.
     const nodeProps: Record<string, unknown> = { ...restProps };
     if (className != null) {
       nodeProps.className = className;
     }
 
-    return {
+    const node: PdfNode = {
       type: nodeType,
       id: rootContainer.nextId(),
       props: nodeProps,
-      style: resolvedStyle,
+      style: resolved.style,
       children: [],
     } as PdfNode;
+    if (Object.keys(resolved.variants).length > 0) {
+      node.variants = resolved.variants;
+    }
+    return node;
   },
 
   createTextInstance(text: string, rootContainer: Container, _hostContext: HostContext): PdfNode {
@@ -236,10 +239,13 @@ const hostConfig: ReactReconciler.HostConfig<
     newProps: Record<string, unknown>,
   ): void {
     const { className, style, children: _children, ...restProps } = newProps;
-    instance.style = resolveStyle(
+    const resolved = resolveStyle(
       className as string | undefined,
       style as Record<string, unknown> | undefined,
     );
+    instance.style = resolved.style;
+    if (Object.keys(resolved.variants).length > 0) instance.variants = resolved.variants;
+    else delete instance.variants;
     Object.assign(instance.props, restProps);
     if (className != null) {
       instance.props.className = className;
@@ -273,9 +279,8 @@ const hostConfig: ReactReconciler.HostConfig<
   preparePortalMount(_container: Container): void {},
 
   NotPendingTransition: null,
-  // The HostConfig type wants a real ReactContext<never> with internal fields
-  // React doesn't expose. We never read this in PDF rendering, so we hand back
-  // a regular Context coerced through `never` rather than re-implementing it.
+  // HostConfig wants a ReactContext<never> with internals React doesn't expose;
+  // we never read this in PDF rendering.
   HostTransitionContext: createContext<never>(null as never) as never,
 
   resolveUpdatePriority(): number {
@@ -327,10 +332,8 @@ if (typeof globalThis !== 'undefined' && !('__REACT_DEVTOOLS_GLOBAL_HOOK__' in g
   (globalThis as Record<string, unknown>).__REACT_DEVTOOLS_GLOBAL_HOOK__ = { isDisabled: true };
 }
 
-// React splits text into one TextInstance per JSX expression, e.g.
-// `<Text>Hello {name}</Text>` becomes ["Hello ", name]. Taffy measures each
-// child independently, which produces wrong line breaks. Merge sibling text
-// nodes into one and inherit the parent's style so font metrics line up.
+// React splits `<Text>Hello {name}</Text>` into separate text instances; Taffy
+// would measure each one independently and break lines wrong. Merge them.
 function collapseTextChildren(node: PdfNode): void {
   if (node.children.length > 0 && node.children.every((c) => c.type === 'text')) {
     const merged = node.children.map((c) => (c.type === 'text' ? (c.text ?? '') : '')).join('');

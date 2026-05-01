@@ -12,7 +12,7 @@ export function resolvePageDimensions(node: PageNode, defaults?: PageDefaults): 
     w = sizeRaw[0] * factor;
     h = sizeRaw[1] * factor;
   } else {
-    const dims = PAGE_SIZES[sizeRaw] ?? PAGE_SIZES.A4!;
+    const dims = PAGE_SIZES[sizeRaw];
     w = dims[0];
     h = dims[1];
   }

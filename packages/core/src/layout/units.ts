@@ -1,5 +1,5 @@
-export const PAGE_SIZES: Record<string, [number, number]> = {
-  // ISO 216 A-series (portrait, in pts)
+/** Named page sizes in PDF points. `PageSize` is derived from these keys. */
+export const PAGE_SIZES = {
   A0: [2383.94, 3370.39],
   A1: [1683.78, 2383.94],
   A2: [1190.55, 1683.78],
@@ -7,20 +7,19 @@ export const PAGE_SIZES: Record<string, [number, number]> = {
   A4: [595.28, 841.89],
   A5: [419.53, 595.28],
   A6: [297.64, 419.53],
-  // ISO 216 B-series
   B4: [708.66, 1000.63],
   B5: [498.9, 708.66],
   B6: [354.33, 498.9],
-  // US sizes
   Letter: [612, 792],
   Legal: [612, 1008],
   Tabloid: [792, 1224],
   Ledger: [1224, 792],
   Executive: [521.86, 756],
-  // Envelopes
   DL: [311.81, 623.62],
   C5: [459.21, 649.13],
-};
+} as const satisfies Record<string, readonly [number, number]>;
+
+export type NamedPageSize = keyof typeof PAGE_SIZES;
 
 export const UNIT_TO_PT = { pt: 1, mm: 2.8346, cm: 28.346, in: 72, px: 0.75 } as const;
 

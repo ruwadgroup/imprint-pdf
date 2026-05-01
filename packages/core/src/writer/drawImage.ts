@@ -2,12 +2,7 @@ import type { PDFDocument, PDFPage } from 'pdf-lib';
 import type { AssetResolver, ComputedGeometry, ImageNode } from '../types.js';
 import { pdfY } from './coords.js';
 
-/**
- * Resolves CSS `object-position` to a [posX, posY] pair in [0, 1] space, where
- * 0 means top/left, 1 means bottom/right, and 0.5 is center. Both the fit
- * algorithm (contain/cover/etc.) and the caller use this fraction the same
- * way, so we never need to know the raw px values downstream.
- */
+/** Resolves CSS `object-position` to `[posX, posY]` in 0–1 space (0 = top/left, 1 = bottom/right). */
 function parseObjectPosition(
   css: string,
   containerW: number,
@@ -85,8 +80,6 @@ export async function drawImage(
       if (aspect > ca) {
         drawH = height;
         drawW = height * aspect;
-        // Image is wider than the box: it overflows horizontally and
-        // posX controls which slice of the overflow is visible.
         drawX = x - (drawW - width) * posX;
       } else {
         drawW = width;
@@ -99,8 +92,6 @@ export async function drawImage(
       drawX = x + (width - drawW) * posX;
       drawY = pdfYPos + (height - drawH) * posY;
     } else if (objectFit === 'scale-down') {
-      // scale-down = whichever of `none` or `contain` produces the smaller
-      // rendered size. If the image already fits, don't upscale it.
       const aspect = image.width / image.height;
       const ca = width / height;
       if (image.width <= width && image.height <= height) {

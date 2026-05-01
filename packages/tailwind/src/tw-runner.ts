@@ -5,9 +5,7 @@ import type { ResolvedStyle } from '@imprint/core';
 import { parseCssToStyleMap } from './css-to-styles.js';
 import type { ImprintTailwindOptions } from './index.js';
 
-// Subset of the Tailwind v4 programmatic API we depend on. Pinned by the
-// `tailwindcss@>=4.0.0` peer dep — earlier versions exposed a different
-// surface and would fail at the `tw.compile` call below.
+// Tailwind v4 programmatic surface — pinned by the `tailwindcss>=4` peer dep.
 interface TailwindV4 {
   compile: (
     css: string,
@@ -26,15 +24,12 @@ export async function runTailwind(
   if (classes.size === 0) return new Map();
 
   try {
-    // Resolve tailwindcss from the user's project, not from this package, so
-    // they get the version their tailwind.config.js was written against.
+    // Resolve tailwindcss from the user's project so they get the version
+    // their config was written against.
     const req = createRequire(path.join(projectRoot, 'package.json'));
     const tw = req('tailwindcss') as TailwindV4;
     const twDir = path.dirname(req.resolve('tailwindcss/package.json'));
 
-    // Tailwind invokes this for every `@import "..."` it encounters during
-    // compilation. We support: the special "tailwindcss" specifier, bare
-    // package names (resolved to <pkg>/index.css), and plain relative paths.
     async function loadStylesheet(
       id: string,
       base: string,

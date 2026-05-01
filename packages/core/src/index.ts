@@ -9,9 +9,13 @@ export {
   clearCompiledClassMap,
   mergeStyles,
   resolveClassName,
+  resolveClassNameWithVariants,
   resolveStyles,
+  resolveStylesWithVariants,
   setCompiledClassMap,
 } from './style/resolver.js';
+export type { VariantContext } from './style/variants.js';
+export { applyImprintVariants } from './style/variants.js';
 export type {
   AssetResolver,
   BaseNode,
@@ -36,6 +40,7 @@ export type {
   HeaderNode,
   ImageNode,
   ImageProps,
+  ImprintVariant,
   LinkNode,
   LinkProps,
   PageBreakNode,
@@ -59,10 +64,23 @@ export type {
   TextFieldProps,
   TextFieldType,
   TextNode,
+  VariantStyles,
   ViewNode,
 } from './types.js';
 export type { FontMetrics, LoadedFont } from './typography/fonts.js';
 export { loadFontMetricsOnly, loadFonts, selectFont } from './typography/fonts.js';
-export type { TextLine, TextMetrics } from './typography/text.js';
+export { clearHyphenator, getHyphenator, setHyphenator } from './typography/hyphen.js';
+export type { BreakPagesOptions, PageAssignment, PageBlock } from './typography/plass.js';
+export { breakPages } from './typography/plass.js';
+export type { ScriptRun, ScriptTag } from './typography/script.js';
+export { scriptOf, splitByScript } from './typography/script.js';
+export type { MeasureTextOptions, TextLine, TextMetrics } from './typography/text.js';
 export { measureText } from './typography/text.js';
+export { deriveAxesFromStyle, parseVariationSettings } from './typography/variations.js';
 export { writePdf } from './writer/index.js';
+export {
+  clearSvgRasterizer,
+  getSvgRasterizer,
+  needsRasterization,
+  setSvgRasterizer,
+} from './writer/svg/rasterize-slot.js';

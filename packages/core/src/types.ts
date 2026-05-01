@@ -1,3 +1,5 @@
+import type { NamedPageSize } from './layout/units.js';
+
 export type PdfNodeType =
   | 'document'
   | 'page'
@@ -80,6 +82,12 @@ export interface ResolvedStyle {
   fontSize?: string | number;
   fontWeight?: string | number;
   fontStyle?: string;
+  // CSS spec: `"wght" 700, "wdth" 80, "opsz" 12`. Quoted-tag/value pairs
+  // separated by commas; numeric only (no `auto`/`normal`/`italic` keywords —
+  // those map to font-weight/font-style/font-stretch).
+  fontVariationSettings?: string;
+  fontStretch?: string | number;
+  fontFeatureSettings?: string;
   lineHeight?: string | number;
   letterSpacing?: string | number;
   textAlign?: string;
@@ -88,6 +96,10 @@ export interface ResolvedStyle {
   whiteSpace?: string;
   textOverflow?: string;
   wordSpacing?: string | number;
+  // CSS `writing-mode`. `vertical-rl` (East Asian default) rotates glyphs
+  // 90° clockwise and stacks lines right-to-left. `vertical-lr` is the
+  // mirror. Currently affects draw only — layout still measures horizontal.
+  writingMode?: 'horizontal-tb' | 'vertical-rl' | 'vertical-lr' | string;
   lineClamp?: string | number;
   textIndent?: string | number;
   color?: string;
@@ -110,25 +122,8 @@ export interface ResolvedStyle {
   overflowY?: string;
 }
 
-export type PageSize =
-  | 'A0'
-  | 'A1'
-  | 'A2'
-  | 'A3'
-  | 'A4'
-  | 'A5'
-  | 'A6'
-  | 'B4'
-  | 'B5'
-  | 'B6'
-  | 'Letter'
-  | 'Legal'
-  | 'Tabloid'
-  | 'Ledger'
-  | 'Executive'
-  | 'DL'
-  | 'C5'
-  | [number, number];
+/** Either a named page size (derived from `PAGE_SIZES`) or an explicit `[w, h]` in points. */
+export type PageSize = NamedPageSize | [number, number];
 
 export type SizeUnit = 'pt' | 'mm' | 'cm' | 'in' | 'px';
 export type PageOrientation = 'portrait' | 'landscape';
@@ -254,12 +249,20 @@ export interface BookmarkProps {
   [key: string]: unknown;
 }
 
+// Variants whose match condition is known statically per page (first/left/
+// right) or per output pipeline (bleed/cmyk). Resolved up front by the
+// reconciler, applied per page in a pre-layout pass.
+export type ImprintVariant = 'page-first' | 'page-left' | 'page-right' | 'bleed' | 'cmyk';
+
+export type VariantStyles = Partial<Record<ImprintVariant, ResolvedStyle>>;
+
 export interface BaseNode {
   type: PdfNodeType;
   id: string;
   props: Record<string, unknown>;
   style: ResolvedStyle;
   children: PdfNode[];
+  variants?: VariantStyles;
 }
 
 export interface DocumentNode extends BaseNode {
@@ -412,4 +415,13 @@ export interface RenderOptions {
   tailwind?: { config?: string; stylesheet?: string; projectRoot?: string };
   assetResolver?: AssetResolver;
   debug?: boolean;
+  /** Splits a word into syllables for paragraph hyphenation; typically `loadHyphenator(lang).hyphenate`. */
+  hyphenate?: (word: string) => string[];
+  /** Raster fallback for SVGs that use `<filter>`, soft `<mask>`, or `<foreignObject>`. */
+  svgRasterizer?: SvgRasterizer;
 }
+
+export type SvgRasterizer = (
+  svg: string,
+  options: { width: number; height: number },
+) => Promise<Uint8Array>;

@@ -35,18 +35,12 @@ import {
 import { drawImage } from './drawImage.js';
 import { drawLink } from './drawLink.js';
 import { drawText } from './drawText.js';
+import { drawSvgString } from './svg/drawSvg.js';
+import { getSvgRasterizer, needsRasterization } from './svg/rasterize-slot.js';
 import { buildTransformMatrix } from './transform.js';
 
-// ---------------------------------------------------------------------------
-// Per-corner rounded rectangle
-//
-// pdf-lib's drawRectangle takes a single radius for all four corners, which
-// isn't enough for `border-top-left-radius` & friends. We emit an SVG path
-// instead and feed it to drawSvgPath. The path uses y-down layout coordinates
-// (origin at top-left); the call site is responsible for translating into
-// PDF y-up space.
-// ---------------------------------------------------------------------------
-
+// pdf-lib's drawRectangle only supports a uniform radius; emit a path so each
+// corner can have its own. Coordinates are y-down (layout space).
 function roundedRectPath(
   x: number,
   svgY: number,
@@ -57,16 +51,12 @@ function roundedRectPath(
   br: number,
   bl: number,
 ): string {
-  // CSS clamps each radius to half the shorter side so opposing corners can't
-  // overlap. We do the same, then floor at zero — negative radii are invalid.
+  // CSS-spec radius clamping.
   const maxR = Math.min(w / 2, h / 2);
   tl = Math.min(Math.max(0, tl), maxR);
   tr = Math.min(Math.max(0, tr), maxR);
   br = Math.min(Math.max(0, br), maxR);
   bl = Math.min(Math.max(0, bl), maxR);
-  // Walk the perimeter clockwise from the top edge, replacing each corner
-  // with a quadratic curve. Quadratic is "good enough" for radii at PDF
-  // resolution; cubic would be more accurate but visually indistinguishable.
   return [
     `M ${x + tl} ${svgY}`,
     `H ${x + w - tr}`,
@@ -81,18 +71,9 @@ function roundedRectPath(
   ].join(' ');
 }
 
-// ---------------------------------------------------------------------------
-// box-shadow
-//
-// Shape: [dx] [dy] [blur?] [spread?] [color?]
-//
-// PDF has no native blur, and approximating one (multi-stamped semi-transparent
-// rects) is expensive and looks worse than dropping it. We render shadow as a
-// solid offset rect with optional spread and parse blur out of the input only
-// to skip past it. `inset` shadows aren't supported either — they require
-// clipping the inverse and aren't common in print-style documents.
-// ---------------------------------------------------------------------------
-
+// CSS box-shadow grammar: `[dx] [dy] [blur?] [spread?] [color?]`. We render
+// only the offset + spread — PDF has no native blur, and `inset` shadows
+// would require clipping the inverse.
 interface Shadow {
   dx: number;
   dy: number;
@@ -108,29 +89,14 @@ function parseBoxShadow(css: string): Shadow | null {
   if (nums.length < 2) return null;
   const dx = parseFloat(nums[0] ?? '0');
   const dy = parseFloat(nums[1] ?? '0');
-  // Position 2 is blur (skipped). Position 3 is spread when there are 4 numbers.
   const spread = nums.length >= 4 ? parseFloat(nums[3] ?? '0') : 0;
   const colorStr = colorMatch?.[0] ?? 'rgba(0,0,0,0.3)';
   const color = parseColor(colorStr);
-  // rgba carries alpha in-band; PDF needs it broken out as a separate ExtGState
-  // value, so we pull the alpha channel here and let the caller apply it.
+  // Pull alpha out of rgba() so it can be applied as ExtGState opacity.
   const rgbaMatch = colorStr.match(/rgba\([^,]+,[^,]+,[^,]+,\s*([\d.]+)\)/);
   const opacity = rgbaMatch ? parseFloat(rgbaMatch[1] ?? '1') : 0.3;
   return { dx, dy, spread, color, opacity };
 }
-
-// ---------------------------------------------------------------------------
-// Background and borders
-//
-// Two paint modes depending on shape:
-//   1. No corner radius   → drawRectangle (fast path, single PDF op).
-//   2. Any corner radius  → drawSvgPath with a custom rounded-rect path so each
-//                           corner can have its own radius.
-//
-// Per-side borders (borderTopWidth, etc.) are drawn as four independent lines
-// after the fill. They're only emitted when the all-sides `borderWidth` is
-// unset — otherwise drawRectangle/drawSvgPath has already stroked the outline.
-// ---------------------------------------------------------------------------
 
 function resolveRadius(style: Record<string, unknown>, key: string, fallback: number): number {
   const v = style[key];
@@ -152,8 +118,6 @@ function drawBackground(
     (style.borderColor ?? style.borderTopColor) as string | undefined,
   );
 
-  // CSS shorthand precedence: per-corner overrides shorthand `borderRadius`.
-  // Anything left undefined falls back to the uniform value.
   const uniformR =
     style.borderRadius !== undefined ? toPt(style.borderRadius as string | number, 0) : 0;
   const tl = resolveRadius(style, 'borderTopLeftRadius', uniformR);
@@ -165,12 +129,8 @@ function drawBackground(
 
   if (bgColor || (allBorderColor && allBorderW > 0)) {
     if (hasRadius) {
-      // The path is in y-down layout space; drawSvgPath translates by
-      // (options.x, options.y) and then applies scale(1, -1) to flip the y-axis.
-      // Setting y = pageHeight puts the SVG origin at the page's top-left, so a
-      // path coordinate (x, y) lands at PDF position (x, pageHeight - y) — the
-      // exact layout-to-PDF mapping we want. Without this, the default y = 0
-      // sends every coordinate below the page.
+      // y = pageHeight makes drawSvgPath's `scale(1,-1)` map y-down layout
+      // coords directly to PDF y-up. y=0 (the default) would flip below the page.
       const path = roundedRectPath(
         geo.x,
         geo.y,
@@ -205,8 +165,7 @@ function drawBackground(
     }
   }
 
-  // The unified rectangle/path stroke above already drew every side at the same
-  // width — drawing them again would double-stroke the outline.
+  // The uniform stroke above already drew every side; per-side strokes would double up.
   if (allBorderW > 0) return;
 
   const sides = [
@@ -260,16 +219,8 @@ function drawBackground(
   }
 }
 
-// ---------------------------------------------------------------------------
-// Overflow clipping
-//
-// PDF clipping is binary: a region either clips its contents or it doesn't —
-// no per-axis clipping like CSS. We approximate `overflow-x: hidden` etc. by
-// only clipping when both axes are hidden (or one is hidden and the other is
-// the implicit default). Asymmetric clipping silently degrades to no clip,
-// which is the safer failure mode (visible content > truncated content).
-// ---------------------------------------------------------------------------
-
+// PDF clipping is whole-region only. Asymmetric `overflow-x/y: hidden`
+// degrades to no clip rather than truncating one axis surprisingly.
 function shouldClip(style: Record<string, unknown>): boolean {
   const ov = style.overflow as string | undefined;
   const ovX = style.overflowX as string | undefined;
@@ -280,16 +231,7 @@ function shouldClip(style: Record<string, unknown>): boolean {
   return false;
 }
 
-// ---------------------------------------------------------------------------
-// background-image
-//
-// Currently limited to `url(...)` resolved through the asset resolver. Repeat,
-// position, size, and gradients are all out of scope — gradients in particular
-// would need PDF shading patterns, which are a much bigger lift. The image is
-// stretched to fit the box; users wanting `cover`/`contain` should use <Image>
-// with object-fit instead.
-// ---------------------------------------------------------------------------
-
+// `url(...)` only — repeat / position / size / gradients are out of scope.
 async function drawBackgroundImage(
   page: PDFPage,
   geo: { x: number; y: number; width: number; height: number },
@@ -302,8 +244,7 @@ async function drawBackgroundImage(
   if (!urlMatch?.[1]) return;
   try {
     const bytes = await resolver.resolve(urlMatch[1]);
-    // PNG signature is 89 50 4E 47; anything else, we assume JPEG. WebP/AVIF
-    // aren't natively supported by pdf-lib and would need rasterization first.
+    // PNG signature 89 50; anything else assumed JPEG (WebP/AVIF not supported).
     const isPng = bytes[0] === 0x89 && bytes[1] === 0x50;
     const img = isPng ? await doc.embedPng(bytes) : await doc.embedJpg(bytes);
     page.drawImage(img, {
@@ -312,33 +253,14 @@ async function drawBackgroundImage(
       width: Math.max(0.1, geo.width),
       height: Math.max(0.1, geo.height),
     });
-  } catch {
-    // A missing background image shouldn't break a 200-page document. Swallow
-    // and let the rest of the page render without it.
-  }
+  } catch {}
 }
 
-// ---------------------------------------------------------------------------
-// drawNode
-//
-// Walks the laid-out tree and emits PDF content-stream operators for each
-// node. The order of operations within a single node matters and mirrors the
-// CSS painting algorithm:
-//
-//   1. box-shadow         (painted behind, outside clip/transform)
-//   2. push graphics state + CTM/clip
-//   3. background-color and borders
-//   4. background-image
-//   5. node-specific content (text, image, form widget, link annotation, …)
-//   6. children
-//   7. pop graphics state
-//
-// Why the graphics-state push wraps both the transform and the children:
-// in PDF, the CTM is part of the graphics state, so any transform we apply
-// must be undone before the next sibling is drawn. Clipping rides along on
-// the same push/pop pair.
-// ---------------------------------------------------------------------------
-
+/**
+ * Walks the laid-out tree, emitting PDF operators per node in CSS paint order:
+ * box-shadow, graphics-state push (CTM + clip), background, border,
+ * background-image, content, children, pop.
+ */
 export async function drawNode(
   node: PdfNode,
   page: PDFPage,
@@ -353,9 +275,7 @@ export async function drawNode(
   const geo = geometries.get(node.id);
   if (!geo) return;
 
-  // Text inherits cascading style (color, font, etc.) from its ancestors;
-  // every other node type already has its own resolved style and shouldn't
-  // be polluted by the parent's text-only properties.
+  // Only text inherits cascading style — other nodes carry their fully resolved style.
   const style =
     node.type === 'text' ? ({ ...inheritedStyle, ...node.style } as typeof node.style) : node.style;
 
@@ -363,9 +283,8 @@ export async function drawNode(
   const pdfYPos = pdfY(pageHeight, geo.y, geo.height);
   const hasClip = node.type !== 'text' && shouldClip(styleRecord);
 
-  // box-shadow is painted *before* the graphics-state push so it isn't clipped
-  // by its own element's overflow, which matches CSS. Text and image draw
-  // their own backgrounds elsewhere — skip them here to avoid double-paint.
+  // box-shadow paints before the graphics-state push so it isn't clipped by
+  // its own element's overflow (CSS behavior).
   if (node.type !== 'text' && node.type !== 'image') {
     const shadowCss = styleRecord.boxShadow as string | undefined;
     if (shadowCss) {
@@ -387,18 +306,15 @@ export async function drawNode(
     }
   }
 
-  // Push a single graphics state for transform + clip. They share the q/Q
-  // pair because both modify the CTM/clip path, both want to be unwound at
-  // the same time, and combining them avoids extra operator overhead.
+  // Single q/Q pair for transform + clip — both live in graphics state.
   const transformCss =
     node.type !== 'text' ? (styleRecord.transform as string | undefined) : undefined;
   const hasCssTransform = Boolean(transformCss);
   if (hasCssTransform || hasClip) {
     page.pushOperators(pushGraphicsState());
     if (hasCssTransform && transformCss) {
-      // CSS transforms rotate/scale around the element's center by default.
-      // buildTransformMatrix bakes the origin offset into the resulting CTM
-      // so the caller doesn't need an extra translate pair.
+      // CSS rotates/scales around the element's center; buildTransformMatrix
+      // bakes that origin offset into the CTM.
       const ox = geo.x + geo.width / 2;
       const oy = pdfYPos + geo.height / 2;
       const m = buildTransformMatrix(transformCss, ox, oy);
@@ -407,9 +323,7 @@ export async function drawNode(
       }
     }
     if (hasClip) {
-      // The PDF clipping operator W / W* doesn't paint anything; it modifies
-      // the current path into a clip path. We follow it with `n` (endPath) so
-      // the path is consumed without filling or stroking it.
+      // `W` sets the clip; pair with `n` so the path isn't also painted.
       page.pushOperators(
         rectangle(geo.x, pdfYPos, Math.max(0, geo.width), Math.max(0, geo.height)),
         clip(),
@@ -458,19 +372,35 @@ export async function drawNode(
       drawSignature(node as SignatureNode, page, doc, pageHeight, geo);
       break;
     case 'svg':
-    case 'chart':
-      // Real <svg> and <canvas> rendering needs a rasterizer (Skia/Resvg) we
-      // don't ship in core. Children still recurse — most chart libraries put
-      // a DOM fallback inside their <svg>, which gives us a usable result.
+    case 'chart': {
+      const src = (node.props as { src?: string } | undefined)?.src;
+      if (typeof src === 'string' && src.trim().startsWith('<')) {
+        try {
+          const rasterizer = getSvgRasterizer();
+          if (rasterizer && needsRasterization(src)) {
+            // 2× density for retina-grade zoom in PDF readers.
+            const pxW = Math.max(1, Math.round(geo.width * 2));
+            const pxH = Math.max(1, Math.round(geo.height * 2));
+            const png = await rasterizer(src, { width: pxW, height: pxH });
+            const img = await doc.embedPng(png);
+            page.drawImage(img, { x: geo.x, y: pdfYPos, width: geo.width, height: geo.height });
+          } else {
+            drawSvgString(
+              src,
+              page,
+              { x: geo.x, y: geo.y, width: geo.width, height: geo.height },
+              pageHeight,
+            );
+          }
+        } catch {}
+      }
       break;
+    }
   }
 
-  // <Document> is a layout root, not a paint target — its only "children"
-  // are <Page> nodes, each of which is drawn separately by the writer. If we
-  // recursed here we'd draw every page on top of every other page.
+  // <Document> children are pages, drawn separately — recursing here would
+  // stack every page onto every other.
   if (node.type !== 'document') {
-    // Style cascades down for text resolution. Non-text nodes ignore it but
-    // still pass it through so nested text sees the full inherited context.
     const childInherited = { ...inheritedStyle, ...node.style };
     for (const child of node.children) {
       await drawNode(

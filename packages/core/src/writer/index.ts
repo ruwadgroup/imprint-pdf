@@ -18,6 +18,7 @@ import type {
 import { loadFonts } from '../typography/fonts.js';
 import { drawNode } from './drawNode.js';
 import { addOutline } from './outline.js';
+import { addXmpMetadata } from './xmp.js';
 
 function collectBookmarks(node: PdfNode, result: BookmarkNode[] = []): BookmarkNode[] {
   if (node.type === 'bookmark') result.push(node as BookmarkNode);
@@ -25,12 +26,8 @@ function collectBookmarks(node: PdfNode, result: BookmarkNode[] = []): BookmarkN
   return result;
 }
 
-/**
- * Builds the lookup table that resolves `<a href="#anchor">` to a target page.
- * Each bookmark contributes two keys — slug form (`my-section`) and verbatim
- * lowercase (`my section`) — so authors can link by either convention without
- * thinking about it.
- */
+// Each bookmark contributes two keys — slug (`my-section`) and verbatim
+// lowercase (`my section`) — so `<a href="#…">` resolves either way.
 function buildNamedDests(document: DocumentNode, pdfPages: PDFPage[]): Map<string, PDFPage> {
   const map = new Map<string, PDFPage>();
   document.children
@@ -97,10 +94,8 @@ export async function writePdf(
   const pageNodes = document.children.filter((c): c is PageNode => c.type === 'page');
   const pdfPages: PDFPage[] = [];
 
-  // Two-pass writing: allocate every page object before drawing anything so a
-  // forward `<Link href="#later">` on page 1 can find page N's PDFPage in the
-  // namedDests map. The PDF spec doesn't care about authoring order, but our
-  // single-pass writer would.
+  // Allocate every page object before drawing so forward
+  // `<Link href="#later">` on page 1 can find page N in namedDests.
   for (const pageNode of pageNodes) {
     const [pageWidth, pageHeight] = resolvePageDimensions(pageNode, pageDefaults);
     pdfPages.push(doc.addPage([pageWidth, pageHeight]));
@@ -113,9 +108,8 @@ export async function writePdf(
     const page = pdfPages[i]!;
     const [pageWidth, pageHeight] = resolvePageDimensions(pageNode, pageDefaults);
 
-    // Stamping order matters: watermark sits behind page content, header and
-    // footer sit on top so they aren't obscured. Each running element is
-    // re-laid-out per page because page sizes can vary across the document.
+    // Order: watermark below content, header/footer above. Running elements
+    // are re-laid-out per page because page sizes can vary.
     if (watermarkNode) {
       const wGeos = await runTaffyLayout(watermarkNode, pageWidth, pageHeight, fonts);
       await drawNode(watermarkNode, page, pageHeight, wGeos, fonts, doc, resolver, {}, namedDests);
@@ -135,6 +129,7 @@ export async function writePdf(
   }
 
   addOutline(doc, document, pdfPages);
+  addXmpMetadata(doc, document);
 
   return doc.save();
 }

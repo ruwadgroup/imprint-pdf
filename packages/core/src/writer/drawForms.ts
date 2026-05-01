@@ -13,22 +13,15 @@ import type {
 import { parseColor, toPt } from './color.js';
 import { pdfY } from './coords.js';
 
-// PDF spec §12.7.3.1, table 227 (Tx) / §12.7.4.2.1, table 229 (Btn) /
-// §12.7.4.4.1, table 231 (Ch). Bit positions are 1-indexed in the spec.
-const FF_REQUIRED = 1 << 1; // bit 2: Required
-const FF_MULTILINE = 1 << 12; // bit 13: Multiline (Tx)
-const FF_RADIO = 1 << 15; // bit 16: Radio (Btn)
-const FF_PUSHBUTTON = 1 << 16; // bit 17: Pushbutton (Btn)
-const FF_COMBO = 1 << 17; // bit 18: Combo (Ch)
+// Field-flag bits, PDF §12.7.3.1 / §12.7.4.2.1 / §12.7.4.4.1.
+const FF_REQUIRED = 1 << 1;
+const FF_MULTILINE = 1 << 12;
+const FF_RADIO = 1 << 15;
+const FF_PUSHBUTTON = 1 << 16;
+const FF_COMBO = 1 << 17;
 
-/**
- * Default-appearance string for a form widget (PDF spec §12.7.3.3). The format
- * is a tiny PDF content-stream snippet: font/size selector, then a colour op.
- *
- * We always emit Helvetica because embedding the user's font into the
- * widget's own resource dictionary is a separate, much bigger problem; viewers
- * fall back to Helvetica anyway when the named font isn't available.
- */
+// Default-appearance string per PDF §12.7.3.3. Always Helvetica — embedding
+// custom fonts into a widget's own resource dict is a separate problem.
 function buildDA(style: ResolvedStyle): string {
   const fontSize = toPt(style.fontSize, 12);
   const color = parseColor(style.color as string | undefined);
@@ -139,9 +132,7 @@ export function drawRadioGroup(
   const options = props.options ?? [];
   if (options.length === 0) return;
 
-  // Radio groups are modeled as a single field with N child widgets (PDF spec
-  // §12.7.4.2.3). The parent owns the value and the field flags; only the
-  // children get on-page Rects and annotations.
+  // PDF §12.7.4.2.3: parent field owns value + flags, children own Rects.
   const groupDict = doc.context.obj({
     FT: PDFName.of('Btn'),
     Ff: doc.context.obj(FF_RADIO),
@@ -161,8 +152,7 @@ export function drawRadioGroup(
 
   for (let i = 0; i < options.length; i++) {
     const opt = options[i]!;
-    // i=0 is the first (topmost) option in document order; PDF y goes up,
-    // so the first option sits at the highest y-coordinate.
+    // First option sits at the top; PDF y is up, so it gets the highest y.
     const optCenterY = pdfYPos + height - (i + 0.5) * optH;
     const ry = optCenterY - radioSize / 2;
 
@@ -193,9 +183,7 @@ export function drawDropdown(
   const props = node.props;
   const options = props.options ?? [];
 
-  // PDF Choice fields (§12.7.4.4): each option is [exportValue, displayValue].
-  // Exporting separately from display lets form data stay stable when labels
-  // get translated or rephrased.
+  // PDF §12.7.4.4: each option is `[exportValue, displayValue]`.
   const optArr = doc.context.obj([]) as PDFArray;
   for (const opt of options) {
     const pair = PDFArray.withContext(doc.context);

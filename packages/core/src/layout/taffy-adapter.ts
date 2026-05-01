@@ -153,8 +153,8 @@ function toTaffyStyle(style: ResolvedStyle, containerWidth: number): Style {
   const isFlex = display === 'flex' || display === 'inline-flex';
   if (display === 'grid') s.display = Display.Grid;
   else if (display === 'none') s.display = Display.None;
-  // Taffy's Display.Block doesn't propagate available width into leaf measure callbacks;
-  // flex-column with alignItems:Stretch does, so we emulate block via flex (same trick Yoga uses).
+  // Taffy's Block doesn't propagate available width into leaf measure callbacks;
+  // emulate it via flex-column + alignItems:Stretch (Yoga uses the same trick).
   else s.display = Display.Flex;
 
   const pos = style.position ?? 'static';
@@ -202,11 +202,8 @@ function toTaffyStyle(style: ResolvedStyle, containerWidth: number): Style {
   else if (jc === 'space-evenly') s.justifyContent = JustifyContent.SpaceEvenly;
   else s.justifyContent = JustifyContent.FlexStart;
 
-  // Track whether `flex` shorthand has already established a basis. The
-  // shorthand `flex: 1` expands to `1 1 0%`; longhand `flex-basis` should
-  // override that, but absence of longhand must not silently revert to `auto`
-  // — otherwise `flex-1` columns size to their content instead of sharing
-  // available width equally.
+  // `flex: 1` expands to `1 1 0%`; preserve the 0 basis when no longhand
+  // flex-basis follows, so `flex-1` columns share width equally.
   let basisSetByShorthand = false;
   if (style.flex !== undefined) {
     const f = typeof style.flex === 'number' ? style.flex : parseFloat(String(style.flex));
@@ -311,9 +308,7 @@ function toTaffyStyle(style: ResolvedStyle, containerWidth: number): Style {
 interface LeafContext {
   node: PdfNode;
   fixed?: boolean;
-  /** Font family inherited from the nearest styled ancestor; text leaves
-   *  consult this when their own style.fontFamily is unset, so the measure
-   *  pass uses the same font the writer will eventually draw with. */
+  /** Carries an ancestor's font-family down so text measure agrees with draw. */
   inheritedFontFamily?: string;
 }
 
@@ -331,8 +326,6 @@ function buildNode(
 ): BuildResult {
   const isLeafFixed = node.type === 'image' || node.type === 'svg' || node.type === 'chart';
 
-  // CSS font-family inherits; carry the nearest non-empty value down so a
-  // <Text> deep inside a Page with fontFamily set still measures correctly.
   const ownFamily = (node.style.fontFamily as string | undefined) ?? undefined;
   const passDownFamily = ownFamily ?? inheritedFontFamily;
 
@@ -391,8 +384,7 @@ function extractGeometries(
     contentHeight: layout.contentHeight,
   });
 
-  // Taffy already folds the parent's padding into each child's layout.x/y; adding
-  // paddingLeft/Top to absX/absY would double-count it.
+  // Taffy already folds parent padding into child layout.x/y.
   for (const child of result.children) {
     extractGeometries(child, tree, absX, absY, geometries);
   }
@@ -421,9 +413,8 @@ async function layoutPage(
   fontMetrics: Map<string, LoadedFont> = new Map(),
 ): Promise<void> {
   const tree = new TaffyTree();
-  // Taffy rounds to whole pixels by default — fine for screens, wrong for PDF.
-  // We measure text in fractional points; rounding the container down past an
-  // intrinsic text width forces the line breaker to wrap on the second pass.
+  // PDF measures in fractional points; Taffy's pixel rounding would cause
+  // line-breaker disagreement between layout and draw.
   tree.disableRounding();
 
   const rootStyle = toTaffyStyle(pageNode.style, pageW);
@@ -500,7 +491,6 @@ async function layoutPage(
 
   geometries.set(pageNode.id, makePageGeo(pageW, pageH));
 
-  // Root sits at (0,0); each child's layout.x/y already includes the root's padding.
   for (const child of rootResult.children) {
     extractGeometries(child, tree, 0, 0, geometries);
   }

@@ -17,16 +17,8 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } {
   };
 }
 
-/**
- * OKLCH → sRGB. Three-step pipeline: polar OKLCH → cartesian Oklab → linear
- * RGB → sRGB with gamma. The constants come straight from Björn Ottosson's
- * Oklab spec (https://bottosson.github.io/posts/oklab/) and the published
- * Oklab→linear-sRGB matrix.
- *
- * Negative outputs (out-of-gamut colors) get clamped to [0, 1] before gamma —
- * the more sophisticated answer is gamut-mapping, but for print-style
- * documents nobody picks colors so saturated they need it.
- */
+// OKLCH → sRGB via Oklab. Constants from Ottosson's Oklab spec
+// (https://bottosson.github.io/posts/oklab/). Out-of-gamut channels clamp.
 function oklchToRgb(l: number, c: number, h: number): { r: number; g: number; b: number } {
   const hRad = (h * Math.PI) / 180;
   const a = c * Math.cos(hRad);
@@ -123,10 +115,7 @@ export function parseColor(colorStr: string | undefined): Color | undefined {
     return rgb(r, g, b);
   }
 
-  // CSS Color 4 device-cmyk(): both fractional (0–1) and percent forms are
-  // legal, sometimes interleaved. We capture each number alongside its `%`
-  // suffix (or absence) and divide accordingly, matching the spec rather than
-  // assuming one or the other.
+  // CSS Color 4 device-cmyk() — fractional and percent forms can interleave.
   const deviceCmyk = colorStr.match(
     /device-cmyk\(\s*(\d*\.?\d+)(%?)\s+(\d*\.?\d+)(%?)\s+(\d*\.?\d+)(%?)\s+(\d*\.?\d+)(%?)\s*\)/,
   );
@@ -140,8 +129,7 @@ export function parseColor(colorStr: string | undefined): Color | undefined {
     );
   }
 
-  // cmyk() from print pipelines is conventionally 0–100; CSS device-cmyk()
-  // is 0–1. Different syntaxes, different conventions — keep them separate.
+  // print-pipeline cmyk() is 0–100; CSS device-cmyk() above is 0–1.
   const cmykFn = colorStr.match(
     /cmyk\(\s*(\d*\.?\d+)%?\s*,\s*(\d*\.?\d+)%?\s*,\s*(\d*\.?\d+)%?\s*,\s*(\d*\.?\d+)%?\s*\)/,
   );
@@ -157,7 +145,7 @@ export function parseColor(colorStr: string | undefined): Color | undefined {
   const gray = colorStr.match(/gr(?:ay|ayscale)\(\s*(\d*\.?\d+)%?\s*\)/);
   if (gray) {
     const v = parseFloat(gray[1]!);
-    // Accept both `gray(50%)` and `gray(0.5)`. >1 is unambiguously percentage.
+    // Accept both `gray(50%)` and `gray(0.5)`.
     return grayscale(v > 1 ? v / 100 : v);
   }
 

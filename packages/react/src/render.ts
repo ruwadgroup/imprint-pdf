@@ -1,11 +1,16 @@
 import type { DocumentNode, RenderOptions } from '@imprint/core';
 import {
+  applyImprintVariants,
   clearCompiledClassMap,
+  clearHyphenator,
+  clearSvgRasterizer,
   collectClassNames,
   createAssetResolver,
   loadFontMetricsOnly,
   runLayout,
   setCompiledClassMap,
+  setHyphenator,
+  setSvgRasterizer,
   writePdf,
 } from '@imprint/core';
 import type { ReactElement } from 'react';
@@ -17,10 +22,8 @@ export async function renderToBuffer(
 ): Promise<Uint8Array> {
   const resolver = options.assetResolver ?? createAssetResolver();
 
-  // Tailwind needs the full set of class candidates up front to know what to
-  // emit. We can't get them without reconciling, and we can't resolve styles
-  // without Tailwind — so we reconcile twice: once dry to harvest classes,
-  // then again with the compiled class map populated.
+  // Two-pass reconcile to break the Tailwind ↔ resolved-style cycle: dry
+  // pass to harvest class names, then reconcile again with the compiled map.
   if (options.tailwind) {
     const { runTailwind } = await import('@imprint/tailwind');
     const dryRoot = buildPdfNodeTree(element);
@@ -46,13 +49,19 @@ export async function renderToBuffer(
         `[imprint] renderToBuffer: root element must be <Document> (got type="${rootNode.type}"). Wrap your content in <Document>.`,
       );
     }
-    const documentNode = rootNode as DocumentNode;
+    // Fold page-* / imprint-* variants into each node's style before layout.
+    const documentNode = applyImprintVariants(rootNode as DocumentNode);
+
+    if (options.hyphenate) setHyphenator(options.hyphenate);
+    if (options.svgRasterizer) setSvgRasterizer(options.svgRasterizer);
 
     const fontMetrics = await loadFontMetricsOnly(options.fonts ?? [], resolver);
     const geometries = await runLayout(documentNode, 0, 0, fontMetrics);
     return writePdf(documentNode, geometries, options.fonts ?? [], resolver);
   } finally {
     if (options.tailwind) clearCompiledClassMap();
+    clearHyphenator();
+    clearSvgRasterizer();
   }
 }
 
