@@ -1,4 +1,4 @@
-import { PDFArray, PDFDict, PDFDocument, PDFName, PDFRef } from 'pdf-lib';
+import { PDFArray, PDFDict, PDFDocument, PDFName, PDFRawStream, PDFRef } from 'pdf-lib';
 
 export interface PageInfo {
   index: number;
@@ -11,9 +11,14 @@ export interface PageInfo {
 /**
  * Structural assertions ("N pages", "Link on page 2") without needing pdfjs.
  */
-export async function inspect(
-  pdf: Uint8Array,
-): Promise<{ pages: PageInfo[]; pageCount: number; hasOutline: boolean; hasAcroForm: boolean }> {
+export async function inspect(pdf: Uint8Array): Promise<{
+  pages: PageInfo[];
+  pageCount: number;
+  hasOutline: boolean;
+  hasAcroForm: boolean;
+  hasMetadata: boolean;
+  metadataXmp: string | undefined;
+}> {
   const doc = await PDFDocument.load(pdf);
   const pages: PageInfo[] = doc.getPages().map((page, index) => {
     const annots = page.node.lookup(PDFName.of('Annots'));
@@ -37,5 +42,16 @@ export async function inspect(
   });
   const hasOutline = doc.catalog.get(PDFName.of('Outlines')) !== undefined;
   const hasAcroForm = doc.catalog.get(PDFName.of('AcroForm')) !== undefined;
-  return { pages, pageCount: pages.length, hasOutline, hasAcroForm };
+
+  let hasMetadata = false;
+  let metadataXmp: string | undefined;
+  const metadataRef = doc.catalog.get(PDFName.of('Metadata'));
+  if (metadataRef) {
+    hasMetadata = true;
+    const stream = metadataRef instanceof PDFRef ? doc.context.lookup(metadataRef) : metadataRef;
+    if (stream instanceof PDFRawStream) {
+      metadataXmp = new TextDecoder().decode(stream.contents);
+    }
+  }
+  return { pages, pageCount: pages.length, hasOutline, hasAcroForm, hasMetadata, metadataXmp };
 }
