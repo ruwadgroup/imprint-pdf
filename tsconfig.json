@@ -14,6 +14,7 @@
     { "path": "./packages/print" },
     { "path": "./packages/sign" },
     { "path": "./packages/ua" },
-    { "path": "./packages/eslint-plugin" }
+    { "path": "./packages/eslint" },
+    { "path": "./packages/testing" }
   ]
 }

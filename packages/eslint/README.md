@@ -1,17 +1,17 @@
-# @imprint/eslint-plugin
+# @imprint/eslint
 
 ESLint rules for [Imprint](https://github.com/tamimbinhakim/imprint) — catch
 problems at write time before they reach the renderer.
 
 ```bash
-pnpm add -D @imprint/eslint-plugin
+pnpm add -D @imprint/eslint
 ```
 
 ## Setup
 
 ```js
 // eslint.config.mjs
-import imprint from '@imprint/eslint-plugin';
+import imprint from '@imprint/eslint';
 
 export default [imprint.configs.recommended];
 ```
@@ -19,7 +19,7 @@ export default [imprint.configs.recommended];
 Or enable individual rules:
 
 ```js
-import imprint from '@imprint/eslint-plugin';
+import imprint from '@imprint/eslint';
 
 export default [
   {

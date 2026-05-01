@@ -3,6 +3,7 @@ import { describe, it } from 'vitest';
 import { noDynamicClassWithoutSafelist } from '../no-dynamic-class-without-safelist.js';
 import { noHoverVariants } from '../no-hover-variants.js';
 import { noMissingAlt } from '../no-missing-alt.js';
+import { noPagedIncompatible } from '../no-paged-incompatible.js';
 import { noUnsupportedCss } from '../no-unsupported-css.js';
 import { requirePageInDocument } from '../require-page-in-document.js';
 
@@ -95,6 +96,22 @@ tester.run('no-missing-alt', noMissingAlt, {
       code: inDoc('<Page><div><Image src="photo.jpg" /></div></Page>'),
       errors: [{ messageId: 'missingAlt' }],
     },
+  ],
+});
+
+tester.run('no-paged-incompatible', noPagedIncompatible, {
+  valid: [
+    { code: outside('<div className="h-screen" />') },
+    { code: inDoc('<div className="h-full min-h-full" />') },
+    { code: inDoc('<div className="md:flex sm:p-4" />') },
+  ],
+  invalid: [
+    { code: inDoc('<div className="h-screen" />'), errors: [{ messageId: 'viewport' }] },
+    { code: inDoc('<div className="min-h-dvh" />'), errors: [{ messageId: 'viewport' }] },
+    { code: inDoc('<div className="h-[50vh]" />'), errors: [{ messageId: 'viewport' }] },
+    { code: inDoc('<div className="@container" />'), errors: [{ messageId: 'container' }] },
+    { code: inDoc('<div className="@md:flex" />'), errors: [{ messageId: 'container' }] },
+    { code: inDoc('<div className="dark:text-white" />'), errors: [{ messageId: 'runtime' }] },
   ],
 });
 
