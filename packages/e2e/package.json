@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@imprint/core": "workspace:*",
-    "@imprint/google-fonts": "workspace:*",
+    "@imprint/font": "workspace:*",
     "@imprint/react": "workspace:*",
     "@imprint/tailwind": "workspace:*",
     "pdf-lib": "1.17.1",

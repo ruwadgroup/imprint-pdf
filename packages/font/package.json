@@ -1,17 +1,17 @@
 {
-  "name": "@imprint/google-fonts",
+  "name": "@imprint/font",
   "version": "0.1.0",
-  "description": "Google Fonts loader for Imprint PDF generation.",
-  "license": "BSL-1.1",
+  "description": "Font loaders for imprint — Google Fonts, Bunny Fonts, Fontsource, and local files. Returns FontDeclaration[] for renderToBuffer.",
+  "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tamimbinhakim/imprint.git",
-    "directory": "packages/google-fonts"
+    "directory": "packages/font"
   },
-  "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/google-fonts#readme",
+  "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/font#readme",
   "bugs": "https://github.com/tamimbinhakim/imprint/issues",
-  "keywords": ["pdf", "google-fonts", "fonts", "imprint"],
+  "keywords": ["pdf", "fonts", "google-fonts", "bunny-fonts", "fontsource", "imprint"],
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -28,15 +28,27 @@
         "default": "./dist/index.cjs"
       }
     },
+    "./hyphen": {
+      "types": "./dist/hyphen.d.ts",
+      "import": {
+        "types": "./dist/hyphen.d.ts",
+        "default": "./dist/hyphen.js"
+      },
+      "require": {
+        "types": "./dist/hyphen.d.cts",
+        "default": "./dist/hyphen.cjs"
+      }
+    },
     "./package.json": "./package.json"
   },
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": ["dist", "data", "README.md", "LICENSE"],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "codegen": "tsx scripts/codegen-hyphen.ts",
     "clean": "rm -rf dist .turbo *.tsbuildinfo"
   },
   "dependencies": {

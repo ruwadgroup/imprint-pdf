@@ -9,14 +9,14 @@
  * with the original character count).
  */
 
-import { googleFont } from '@imprint/google-fonts';
+import { googleProvider, loadFont } from '@imprint/font';
 import { Document, Page } from '@imprint/react';
 import { describe, expect, it } from 'vitest';
 import { extractText, render } from '../../src/helpers/index.js';
 
 describe('layout/draw parity', () => {
   it('text wrapping is consistent across labels with the same intended layout', async () => {
-    const fonts = await googleFont('Outfit', { weights: [400] });
+    const fonts = await loadFont(googleProvider(), 'Outfit', { weights: [400] });
 
     // Mix of letter shapes that historically jittered: wide caps (M, W, D),
     // narrow caps (I, J), with the same trailing year string.

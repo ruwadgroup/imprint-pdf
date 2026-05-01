@@ -1,6 +1,6 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { googleFont } from '@imprint/google-fonts';
+import { googleProvider, loadFont } from '@imprint/font';
 import { renderToBuffer } from '@imprint/react';
 import { invoice } from './data/invoice.js';
 import { report } from './data/report.js';
@@ -37,7 +37,7 @@ mkdirSync(OUT_DIR, { recursive: true });
 console.log('\n  imprint pdf-test\n');
 
 // Load Outfit from Google Fonts once; all templates share the same font set.
-const fonts = await googleFont('Outfit', { weights: [400, 600, 700] });
+const fonts = await loadFont(googleProvider(), 'Outfit', { weights: [400, 600, 700] });
 
 for (const { name, element } of templates) {
   const start = performance.now();

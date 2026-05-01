@@ -10,14 +10,14 @@
  * Fix: layoutPage calls `tree.disableRounding()`. This test pins that.
  */
 
-import { googleFont } from '@imprint/google-fonts';
+import { googleProvider, loadFont } from '@imprint/font';
 import { Document, Page } from '@imprint/react';
 import { describe, expect, it } from 'vitest';
 import { extractText, render } from '../../src/helpers/index.js';
 
 describe('Taffy rounding stays disabled', () => {
   it('preserves fractional intrinsic widths so single-line text does not wrap', async () => {
-    const fonts = await googleFont('Outfit', { weights: [400] });
+    const fonts = await loadFont(googleProvider(), 'Outfit', { weights: [400] });
 
     const pdf = await render(
       <Document>
@@ -51,7 +51,7 @@ describe('Taffy rounding stays disabled', () => {
   it('handles a row of mixed-width labels without flooring widths', async () => {
     // Each label has a slightly different intrinsic width. With pixel rounding
     // enabled, the borderline ones would shed a sub-pixel and wrap.
-    const fonts = await googleFont('Outfit', { weights: [400] });
+    const fonts = await loadFont(googleProvider(), 'Outfit', { weights: [400] });
     const labels = ['MMW', 'MMM', 'WWW', 'mmm', 'iii'];
 
     const pdf = await render(

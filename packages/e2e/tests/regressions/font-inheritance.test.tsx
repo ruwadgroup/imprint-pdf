@@ -9,7 +9,7 @@
  * stayed on one line in the same equal-width flex columns.
  */
 
-import { googleFont } from '@imprint/google-fonts';
+import { googleProvider, loadFont } from '@imprint/font';
 import { Document, Page } from '@imprint/react';
 import { describe, expect, it } from 'vitest';
 import { extractText, render } from '../../src/helpers/index.js';
@@ -18,7 +18,7 @@ const MONTHS = ['Oct 2024', 'Nov 2024', 'Dec 2024', 'Jan 2025', 'Feb 2025', 'Mar
 
 describe('font-family inherits during layout', () => {
   it('all equal-length month labels render on a single line under a flex-1 row', async () => {
-    const fonts = await googleFont('Outfit', { weights: [400, 700] });
+    const fonts = await loadFont(googleProvider(), 'Outfit', { weights: [400, 700] });
 
     const pdf = await render(
       <Document>
@@ -58,7 +58,7 @@ describe('font-family inherits during layout', () => {
   it('inherits fontFamily across multiple wrapping levels', async () => {
     // The Page sets fontFamily, then a div, then another, then the text.
     // Each level should pass the family through.
-    const fonts = await googleFont('Outfit', { weights: [400] });
+    const fonts = await loadFont(googleProvider(), 'Outfit', { weights: [400] });
 
     const pdf = await render(
       <Document>

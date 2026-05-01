@@ -9,7 +9,7 @@
 
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { googleFont } from '@imprint/google-fonts';
+import { googleProvider, loadFont } from '@imprint/font';
 import { describe, expect, it } from 'vitest';
 import { invoice } from '../../../../examples/pdf-test/src/data/invoice.js';
 import { report } from '../../../../examples/pdf-test/src/data/report.js';
@@ -43,7 +43,7 @@ describe('example templates render end-to-end', () => {
   });
 
   it('renders the quarterly-report template with Outfit and bookmarks', async () => {
-    const fonts = await googleFont('Outfit', { weights: [400, 600, 700] });
+    const fonts = await loadFont(googleProvider(), 'Outfit', { weights: [400, 600, 700] });
     const pdf = await render(<Report data={report} />, {
       fonts,
       tailwind: { projectRoot: PDF_TEST_ROOT },
