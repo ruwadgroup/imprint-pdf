@@ -8,15 +8,15 @@ The free, MIT-spirited, semver-stable surface. Everything you need to ship
 beautiful invoices, contracts, statements, tickets, certificates, resumes, and
 reports.
 
-| Package                  | License        |
-| ------------------------ | -------------- |
-| `@imprint/core`          | **Apache-2.0** |
-| `@imprint/react`         | **Apache-2.0** |
-| `@imprint/tailwind`      | **Apache-2.0** |
-| `@imprint/cli`           | **Apache-2.0** |
-| `@imprint/next`          | **Apache-2.0** |
-| `@imprint/vite`          | **Apache-2.0** |
-| `@imprint/eslint-plugin` | **Apache-2.0** |
+| Package             | License        |
+| ------------------- | -------------- |
+| `@imprint/core`     | **Apache-2.0** |
+| `@imprint/react`    | **Apache-2.0** |
+| `@imprint/tailwind` | **Apache-2.0** |
+| `@imprint/cli`      | **Apache-2.0** |
+| `@imprint/next`     | **Apache-2.0** |
+| `@imprint/vite`     | **Apache-2.0** |
+| `@imprint/eslint`   | **Apache-2.0** |
 
 Apache-2.0 (not MIT) for the explicit patent grant — essential when the source
 touches font tech and PDF parsing.

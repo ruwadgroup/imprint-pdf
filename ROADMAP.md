@@ -37,18 +37,23 @@ milestone matters to you.
 - [x] `@imprint/vite` — Tailwind plugin
 - [ ] `imprint dev` — live preview server with element inspector
 - [x] `examples/next-app`, `examples/vite-react` end-to-end
-- [ ] Custom Tailwind variants — `imprint:cmyk-…`, `imprint:bleed-…`,
-      `page:first`, `page:left`, `page:right`
+- [x] Custom Tailwind variants — `page-first:`, `page-left:`, `page-right:`
+      (runtime-applied), `imprint-bleed:`, `imprint-cmyk:` (registered; runtime
+      activates with the BSL print pipeline)
 
 ## v0.3 — Typography depth
 
 - [x] Knuth–Plass paragraph breaking
-- [ ] Auto hyphenation for 12 languages
-- [ ] Variable font support (axis controls in Tailwind theme)
+- [x] Auto hyphenation for 12 languages (en-us, en-gb, de, fr, es, it, pt, nl,
+      da, sv, nb, fi)
+- [x] Variable font support (`font-variation-settings`, `font-stretch` axes)
 - [x] Latin, Greek, Cyrillic shaping with HarfBuzz
-- [ ] Arabic, Hebrew shaping (bidi reorder shipped; full GSUB pending)
-- [ ] Devanagari, Thai, CJK shaping + vertical writing mode
-- [ ] Plass-style two-pass page breaking (widows / orphans / footnotes)
+- [x] Arabic, Hebrew shaping (bidi reorder + script-aware GSUB)
+- [x] Devanagari, Thai, CJK shaping + vertical writing mode
+- [x] Plass-style two-pass page breaking (widows / orphans; footnotes deferred
+      to v0.4)
+- [x] `@imprint/font` — Google Fonts, Bunny Fonts, Fontsource, and local
+      providers behind a single `loadFont(provider, family, opts)` API
 
 ## v0.4 — Forms + charts + drawing
 
@@ -58,26 +63,31 @@ milestone matters to you.
 - [x] File attachments via `Document.props.embeds`
 - [x] CSS `transform`, per-corner `border-radius`, `box-shadow`,
       `background-image`, `object-position`, `aspect-ratio`
-- [ ] `<Chart>` adapters for Recharts, Visx, ECharts, Observable Plot
-- [ ] Vector SVG → PDF (basic embedding works; gradients, masks, clipping paths
-      pending)
-- [ ] resvg WASM fallback for filters and complex masks
-- [ ] `examples/cloudflare-worker` end-to-end with sub-100 ms cold benchmark
-      verified
+- [x] `@imprint/chart` adapter — SSR Recharts / Visx / Observable Plot / ECharts
+      to SVG, embed via `<Svg>`
+- [x] Vector SVG → PDF — shapes, paths (M/L/H/V/C/S/Q/T/A/Z incl.
+      arc-to-Bezier), linear / radial gradients via PDF Type 2/3 shading dicts,
+      `clip-path` via `W`/`W*`, transforms, opacity
+- [x] `@imprint/svg-rasterize` — opt-in resvg WASM fallback for SVGs that use
+      `<filter>`, soft `<mask>`, or `<foreignObject>`
+- [x] `examples/cloudflare-worker` end-to-end — `wrangler.toml` +
+      `scripts/bench.ts` reporting cold and warm `p50/p95/p99`
+- [ ] cloudflare-worker sub-100 ms cold benchmark verified on a real deploy
 
 ## v0.5 — Linting + type safety + testing
 
-- [x] `@imprint/eslint-plugin` (initial rule set)
-- [ ] Codegen'd page-size unions, font unions
-- [ ] Editor diagnostics for Tailwind classes that resolve to paged-incompatible
-      CSS
+- [x] `@imprint/eslint` — flat-config plugin with `no-unsupported-css`,
+      `no-missing-alt`, `no-dynamic-class-without-safelist`,
+      `no-hover-variants`, `no-paged-incompatible`, `require-page-in-document`
+- [x] Codegen'd page-size + font unions — `PageSize` derived from `PAGE_SIZES`;
+      `HYPHEN_LANGUAGES` regenerated from `data/hyphen/`
 - [x] `@imprint/e2e` — end-to-end test harness with PDF text extraction,
       structural inspection, and visual snapshot infrastructure
-- [ ] `@imprint/testing` — Vitest / Jest matcher `toMatchPdfSnapshot()` for
+- [x] `@imprint/testing` — Vitest / Jest matcher `toMatchPdfSnapshot()` for
       visual regression testing in user projects
 - [x] `<Bookmark>` component + named destinations
 - [x] Document metadata API — title, author, subject, keywords
-- [ ] XMP metadata (required for PDF/A and enterprise DMS ingestion)
+- [x] XMP metadata (required for PDF/A and enterprise DMS ingestion)
 - [x] Internal cross-references — named destinations and `<a href="#id">`
       within-document links
 

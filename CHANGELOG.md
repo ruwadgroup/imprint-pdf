@@ -9,6 +9,41 @@ about what's covered by semver, see [`STABILITY.md`](STABILITY.md).
 
 ## Unreleased
 
+### Vector graphics
+
+- Native SVG → PDF emitter. Inline `<svg src="…">` markup is parsed and
+  emitted as PDF path / shading operators rather than rasterized. Covers
+  `<rect>`, `<circle>`, `<ellipse>`, `<line>`, `<polyline>`, `<polygon>`,
+  `<path>` (M/L/H/V/C/S/Q/T/A/Z, with arcs converted to cubic Béziers),
+  CSS-style `transform`, `clip-path: url(#id)` via the PDF clip operator,
+  and linear / radial gradients via Type 2 / Type 3 shading dictionaries
+  (multi-stop gradients use a stitched Type 3 function).
+- New `@imprint/svg-rasterize` — opt-in resvg-WASM fallback for SVGs that
+  use `<filter>`, soft `<mask>`, or `<foreignObject>`. Wire it via
+  `renderToBuffer(<Doc/>, { svgRasterizer: rasterize })` and the writer
+  switches to PNG embedding only for the elements that need it.
+- New `@imprint/chart` adapter — `<Chart>` SSRs any SVG-emitting React
+  chart library (Recharts, Visx, etc.) and embeds the result via `<Svg>`.
+  Helpers `renderObservablePlot()` and `renderECharts()` cover the
+  non-React libraries.
+
+### Tooling
+
+- Codegen for the public `PageSize` and `HyphenLanguage` unions. Page
+  sizes are derived from `PAGE_SIZES` in `layout/units.ts` so adding a
+  size in one place updates the type. `HYPHEN_LANGUAGES` is regenerated
+  from filenames in `data/hyphen/` via `pnpm --filter @imprint/font codegen`.
+- New ESLint rule `imprint/no-paged-incompatible` flags Tailwind classes
+  that resolve to viewport-bound sizing (`h-screen`, `min-h-dvh`,
+  `[50vh]`), container queries (`@container`, `@md:`), or runtime-only
+  variants (`dark:`, `motion-safe:`).
+
+### Examples
+
+- `examples/cloudflare-worker` now ships a `wrangler.toml` (with
+  `nodejs_compat`) and a `bench` script that reports cold + warm
+  `p50/p95/p99` against a deployed or local worker.
+
 ### Public API
 
 - **Removed** `<View>` and `<Text>` from `@imprint/react`. Use HTML elements
@@ -52,6 +87,57 @@ about what's covered by semver, see [`STABILITY.md`](STABILITY.md).
   extraction (`pdfjs-dist`), structural inspection (`pdf-lib`), and visual
   snapshot infrastructure (`pdftoppm` + `pixelmatch`). Seeded with regression
   tests for the layout/draw parity issues fixed in this round.
+- New `@imprint/testing` package — `toMatchPdfSnapshot()` matcher for Vitest
+  and Jest. Wraps the same `pdftoppm` + `pixelmatch` engine used by
+  `@imprint/e2e` and stores baselines under `__pdf_snapshots__/` next to the
+  test file. Honors `vitest -u` / `jest --updateSnapshot` and
+  `UPDATE_PDF_SNAPSHOTS=1`.
+
+### Typography
+
+- **Renamed** `@imprint/google-fonts` to `@imprint/font` and replaced the
+  single `googleFont()` entry point with a provider abstraction:
+  `googleProvider`, `bunnyProvider`, `fontsourceProvider`, `localProvider`.
+  Use `loadFont(provider, family, options)` or call `provider.load(...)`
+  directly. No back-compat shim — the old import path is removed.
+- **Added** Liang's hyphenation algorithm with patterns bundled for 12
+  languages. `import { loadHyphenator } from '@imprint/font/hyphen'` and
+  pass the result through `renderToBuffer({ hyphenate })`. Knuth–Plass
+  uses the result as discretionary breakpoints with TeX's standard
+  hyphen penalty.
+- **Added** variable-font support. `font-variation-settings` plus the
+  derived `font-weight` / `font-stretch` axes flow through to HarfBuzz's
+  `setVariations` so paragraph metrics see the requested axis values.
+- **Added** script-aware shaping. Text is split into per-script runs
+  before shaping so Arabic / Devanagari / Thai / CJK each engage the
+  right HarfBuzz GSUB engine.
+- **Added** vertical writing mode (`writing-mode: vertical-rl` /
+  `vertical-lr`). Glyphs rotate 90° at draw time; HarfBuzz shapes with
+  TTB direction so vertical metrics (vert / vrt2) are used.
+- **Added** Plass two-pass page breaking. `breakPages(blocks,
+  { pageHeight })` returns a sequence of page assignments minimizing
+  total demerits with widow / orphan penalties and `keepWithNext` /
+  `keepWithPrev` / `pageBreakBefore` controls.
+
+### Tailwind variants
+
+- **Added** `@imprint/tailwind/preset` — registers `page-first:`,
+  `page-left:`, `page-right:`, `imprint-bleed:`, `imprint-cmyk:` as Tailwind
+  v4 custom variants. Import alongside `tailwindcss` in your stylesheet.
+- The reconciler now folds variant classes into a per-node `variants` map
+  instead of dropping the prefix. A pre-layout pass merges the matching
+  variant into each node's `style` based on its page position (page 1 is
+  recto/right, page 2 is verso/left, etc.). `imprint-bleed` activates when
+  `<Page bleed={n}>` is set; `imprint-cmyk` is wired through but is a no-op
+  until the BSL `@imprint/print` pipeline ships.
+
+### Document metadata
+
+- **Added** XMP `/Metadata` stream to documents that set any of `title`,
+  `author`, `subject`, `keywords`, or `lang`. Mirrors the Info dictionary in
+  Dublin Core / `xmp:` / `pdf:` / `xmpMM:` namespaces with a `DocumentID` and
+  `InstanceID` per packet — required for PDF/A-2b and routinely consumed by
+  enterprise DMS systems for ingestion.
 
 ### Tooling
 

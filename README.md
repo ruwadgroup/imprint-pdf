@@ -255,7 +255,7 @@ imprint is **open core**.
 | ------------------------------------------------------ | --------------------------------------------- |
 | `@imprint/core`, `@imprint/react`, `@imprint/tailwind` | **Apache-2.0**                                |
 | `@imprint/cli`, `@imprint/next`, `@imprint/vite`       | **Apache-2.0**                                |
-| `@imprint/eslint-plugin`                               | **Apache-2.0**                                |
+| `@imprint/eslint`                                      | **Apache-2.0**                                |
 | `@imprint/print`, `@imprint/sign`, `@imprint/ua`       | **BSL 1.1**, reverts to Apache-2.0 in 4 years |
 
 The Apache surface is everything you need to ship beautiful invoices, contracts,
@@ -279,7 +279,7 @@ See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full workflow and
 ## License
 
 `@imprint/core`, `@imprint/react`, `@imprint/tailwind`, `@imprint/cli`,
-`@imprint/next`, `@imprint/vite`, `@imprint/eslint-plugin`: **Apache-2.0** ©
+`@imprint/next`, `@imprint/vite`, `@imprint/eslint`: **Apache-2.0** ©
 [Tamim Bin Hakim](https://github.com/tamimbinhakim) and contributors.
 
 `@imprint/print`, `@imprint/sign`, `@imprint/ua`: **Business Source License

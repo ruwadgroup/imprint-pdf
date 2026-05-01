@@ -8,8 +8,8 @@ authors:
     family-names: Bin Hakim
     email: tamimbinhakim.work@gmail.com
     affiliation: Independent
-repository-code: "https://github.com/tamimbinhakim/imprint"
-url: "https://github.com/tamimbinhakim/imprint"
+repository-code: 'https://github.com/tamimbinhakim/imprint'
+url: 'https://github.com/tamimbinhakim/imprint'
 abstract: >-
   Chromium-free, isomorphic React + Tailwind PDF library for TypeScript. Real
   Tailwind via the Tailwind v4 Oxide compiler, real typography via HarfBuzz +

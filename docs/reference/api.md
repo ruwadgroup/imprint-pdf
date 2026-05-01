@@ -124,10 +124,10 @@ Enables the PDF/UA-1 structure tree, marked content, alt text, and language
 propagation. No new public API — all via JSX props (`alt`, `aria-label`,
 `lang`).
 
-## `@imprint/eslint-plugin`
+## `@imprint/eslint`
 
 ```js
-import imprint from '@imprint/eslint-plugin';
+import imprint from '@imprint/eslint';
 // imprint.configs.recommended
 // imprint.rules['no-unsupported-css']
 // imprint.rules['no-missing-alt']

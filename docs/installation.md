@@ -65,12 +65,12 @@ pnpm add @imprint/print @imprint/sign @imprint/ua
 
 ## Optional tooling
 
-| Package                  | Use it for                                               |
-| ------------------------ | -------------------------------------------------------- |
-| `@imprint/eslint-plugin` | Catch unsupported CSS and missing alt text at write time |
+| Package           | Use it for                                               |
+| ----------------- | -------------------------------------------------------- |
+| `@imprint/eslint` | Catch unsupported CSS and missing alt text at write time |
 
 ```bash
-pnpm add -D @imprint/eslint-plugin
+pnpm add -D @imprint/eslint
 ```
 
 ## Initialise

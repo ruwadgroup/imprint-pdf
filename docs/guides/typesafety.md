@@ -68,11 +68,11 @@ import { Document, Page } from '@imprint/react';
 
 ## ESLint plugin
 
-The `@imprint/eslint-plugin` catches PDF-specific errors before TypeScript does:
+The `@imprint/eslint` catches PDF-specific errors before TypeScript does:
 
 - `imprint/no-unsupported-css` — warns on CSS properties that have no PDF
   output.
 - `imprint/no-missing-alt` — errors on `<Image>` without `alt`.
 - `imprint/no-hover-variants` — warns on `hover:`, `focus:`, `active:`.
 
-See the [ESLint plugin README](../../packages/eslint-plugin/README.md).
+See the [ESLint plugin README](../../packages/eslint/README.md).

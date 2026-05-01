@@ -41,7 +41,7 @@ PDF byte stream, with each stage isolated, testable, and swappable.
 ├──────────────────────────────────────────────────────────────────┤
 │  Tooling                                                         │
 │  ├─ @imprint/cli            (render, dev preview, init, validate)│
-│  └─ @imprint/eslint-plugin  (lint rules for PDF authoring)       │
+│  └─ @imprint/eslint  (lint rules for PDF authoring)       │
 ├──────────────────────────────────────────────────────────────────┤
 │  Enterprise (BSL 1.1)                                            │
 │  ├─ @imprint/print  (PDF/X-4, CMYK, ICC via lcms2 WASM)          │

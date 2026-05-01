@@ -70,9 +70,9 @@ don't let users opt into worse output by default.
 ## Open core and BSL
 
 The Apache-2.0 core (`@imprint/core`, `@imprint/react`, `@imprint/tailwind`,
-`@imprint/cli`, `@imprint/next`, `@imprint/vite`, `@imprint/eslint-plugin`)
-exists to get PDF generation right in the hands of every JavaScript developer,
-no purchase required.
+`@imprint/cli`, `@imprint/next`, `@imprint/vite`, `@imprint/eslint`) exists to
+get PDF generation right in the hands of every JavaScript developer, no purchase
+required.
 
 The BSL enterprise packages (`@imprint/print`, `@imprint/sign`, `@imprint/ua`)
 exist because regulated enterprises — print shops, fintech, healthcare, EU EAA
