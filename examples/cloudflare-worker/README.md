@@ -1,47 +1,47 @@
 # example — cloudflare-worker
 
 Cloudflare Worker demo for [Imprint](https://github.com/tamimbinhakim/imprint).
-Generates a PDF invoice on the edge in under 100 ms cold start.
+Renders a tailwind-styled PDF receipt on the edge.
 
 ```bash
 pnpm --filter @imprint/example-cloudflare-worker dev
 # → http://localhost:8787
+
+pnpm --filter @imprint/example-cloudflare-worker deploy
+# → https://imprint-cloudflare-worker.<account>.workers.dev
 ```
 
-## What's demonstrated
-
-- **`src/index.ts`** — a Cloudflare Worker that accepts `GET /invoice/:id`,
-  renders an `<Invoice>` component with `renderToStream`, and returns the PDF
-  with `content-type: application/pdf`.
-- **`src/templates/Invoice.tsx`** — an invoice component that uses Tailwind
-  classes and runs identically on the Worker and in Node.
-- **`wrangler.toml`** — WASM asset configuration so Imprint's WASM modules are
-  bundled as static assets (the pattern from Satori's `standalone` build).
-
-## Key pattern
-
-```ts
-// src/index.ts
-import { renderToStream } from '@imprint/react/standalone';
-import wasm from '@imprint/react/imprint.wasm';
-
-export default {
-  async fetch(req: Request): Promise<Response> {
-    const stream = await renderToStream(<Invoice />, { wasm });
-    return new Response(stream, {
-      headers: { 'content-type': 'application/pdf' },
-    });
-  },
-};
-```
-
-## Structure
+## Layout
 
 ```
 examples/cloudflare-worker/
-├── src/
-│   ├── index.ts
-│   └── templates/Invoice.tsx
-├── imprint.config.ts
-└── wrangler.toml
+├── src/index.tsx       # Receipt component + fetch handler
+├── scripts/bench.ts    # Latency benchmark
+└── wrangler.toml       # Worker config (nodejs_compat enabled)
 ```
+
+## Bench
+
+```bash
+# Local (wrangler dev must be running):
+pnpm --filter @imprint/example-cloudflare-worker bench http://localhost:8787
+
+# Deployed:
+pnpm --filter @imprint/example-cloudflare-worker bench \
+  https://imprint-cloudflare-worker.<account>.workers.dev
+
+# Force a true cold start by waiting through the isolate-eviction window:
+BENCH_COLD=true pnpm --filter @imprint/example-cloudflare-worker bench <url>
+```
+
+The bench reports cold + warm `p50 / p95 / p99`. The roadmap target is sub-100
+ms warm; cold-start depends on whether Cloudflare keeps your isolate hot and is
+outside your direct control beyond keeping the bundle small.
+
+## Notes
+
+- `compatibility_flags = ["nodejs_compat"]` is required — pdf-lib uses `Buffer`
+  and a small handful of other Node built-ins.
+- The standalone build (`@imprint/react/standalone`) is currently a thin
+  re-export of `@imprint/react`. The dedicated WASM-bundled standalone path
+  arrives with the `@imprint/print` enterprise tier.

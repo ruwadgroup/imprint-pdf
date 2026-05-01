@@ -1,0 +1,9 @@
+name = "imprint-cloudflare-worker"
+main = "src/index.tsx"
+compatibility_date = "2025-04-01"
+
+# pdf-lib uses Buffer + a handful of other Node built-ins.
+compatibility_flags = ["nodejs_compat"]
+
+[build]
+command = ""
