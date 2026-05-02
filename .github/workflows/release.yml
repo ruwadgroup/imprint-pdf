@@ -45,9 +45,17 @@ jobs:
 
       - uses: jetli/wasm-pack-action@v0.4.0
         with:
-          version: latest
+          version: v0.13.1
 
       - run: pnpm install --frozen-lockfile
+
+      # Pin the npm auth token into ~/.npmrc so pnpm publish (invoked transitively
+      # by `changeset publish`) picks it up. setup-node writes a userconfig file
+      # that pnpm doesn't always honor, so we write the token explicitly.
+      - name: Configure npm auth
+        run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> "$HOME/.npmrc"
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create Release Pull Request or Publish
         uses: changesets/action@v1
@@ -59,4 +67,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
