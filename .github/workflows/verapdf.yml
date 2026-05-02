@@ -41,8 +41,9 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build packages (fixture script imports @imprint/core/dist)
-        # Call turbo directly so --filter targets turbo, not package scripts.
-        run: pnpm exec turbo run build --filter='!@imprint/icu-wasm' --filter='!@imprint/taffy-wasm'
+        # Build only what generate-fixtures.ts needs + their deps.
+        # `...` postfix means "this package and everything it depends on".
+        run: pnpm exec turbo run build --filter='@imprint/print...' --filter='@imprint/ua...'
 
       - name: Generate fixture PDFs
         run: pnpm --filter @imprint/print generate:fixtures

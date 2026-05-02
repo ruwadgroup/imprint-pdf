@@ -31,10 +31,11 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # Skip the WASM packages — they need a Rust + wasm-pack toolchain
-      # that's not installed on the GH runners and have no JS consumers yet.
-      # Call turbo directly so --filter goes to turbo, not the package scripts.
-      - run: pnpm exec turbo run build --filter='!@imprint/icu-wasm' --filter='!@imprint/taffy-wasm'
+      # Skip the WASM packages (need a Rust + wasm-pack toolchain not on
+      # the runners) and the examples (transitively pull @imprint/tailwind's
+      # Node-only createRequire path into a browser bundle — separate bug).
+      # Call turbo directly so --filter targets turbo, not package scripts.
+      - run: pnpm exec turbo run build --filter='!@imprint/icu-wasm' --filter='!@imprint/taffy-wasm' --filter='!@imprint/example-*'
 
       - run: pnpm typecheck
 
