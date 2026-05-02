@@ -1,16 +1,16 @@
 {
-  "name": "@imprint/tailwind",
+  "name": "@imprint-pdf/tailwind",
   "version": "0.1.0",
   "description": "Vite, Webpack, and Bun plugins for compile-time Tailwind v4 extraction, plus the runtime Oxide WASM fallback.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tamimbinhakim/imprint.git",
+    "url": "git+https://github.com/tamimbinhakim/imprint-pdf.git",
     "directory": "packages/tailwind"
   },
-  "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/tailwind#readme",
-  "bugs": "https://github.com/tamimbinhakim/imprint/issues",
+  "homepage": "https://github.com/tamimbinhakim/imprint-pdf/tree/main/packages/tailwind#readme",
+  "bugs": "https://github.com/tamimbinhakim/imprint-pdf/issues",
   "keywords": [
     "tailwind",
     "pdf",
@@ -88,7 +88,7 @@
     "clean": "rm -rf dist .turbo *.tsbuildinfo"
   },
   "dependencies": {
-    "@imprint/core": "workspace:*"
+    "@imprint-pdf/core": "workspace:*"
   },
   "peerDependencies": {
     "tailwindcss": ">=4.0.0",

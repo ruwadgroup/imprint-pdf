@@ -11,7 +11,7 @@ vulnerability is exploitable in production and the fix is non-breaking.
 **Do not open a public issue.** Use one of:
 
 1. **Preferred:** GitHub's
-   [private security advisory](https://github.com/tamimbinhakim/imprint/security/advisories/new).
+   [private security advisory](https://github.com/tamimbinhakim/imprint-pdf/security/advisories/new).
 2. Email **tamimbinhakim.work@gmail.com** with the subject `[imprint security]`.
 
 Include:
@@ -33,8 +33,8 @@ within **7 days** for confirmed issues.
   / CPU.
 - **PDF/UA / PDF/X conformance bypass.** Output that claims a conformance level
   but fails veraPDF.
-- **Signature forgery.** Any path that produces a `@imprint/sign` signature that
-  a downstream verifier accepts despite being malformed.
+- **Signature forgery.** Any path that produces a `@imprint-pdf/sign` signature
+  that a downstream verifier accepts despite being malformed.
 - **Supply-chain risks.** Lockfile, dependency, install scripts, WASM artifact
   tampering.
 - **ESLint plugin rule bypasses** that disable safety checks.

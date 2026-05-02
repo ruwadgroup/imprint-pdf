@@ -1,10 +1,11 @@
 # example — vite-react
 
-Vite + React SPA demo for [Imprint](https://github.com/tamimbinhakim/imprint).
-Generates PDFs entirely in the browser — no server required.
+Vite + React SPA demo for
+[Imprint](https://github.com/tamimbinhakim/imprint-pdf). Generates PDFs entirely
+in the browser — no server required.
 
 ```bash
-pnpm --filter @imprint/example-vite-react dev
+pnpm --filter @imprint-pdf/example-vite-react dev
 ```
 
 ## What's demonstrated

@@ -1,10 +1,10 @@
 # example — next-app
 
 Next.js 15 App Router demo for
-[Imprint](https://github.com/tamimbinhakim/imprint).
+[Imprint](https://github.com/tamimbinhakim/imprint-pdf).
 
 ```bash
-pnpm --filter @imprint/example-next-app dev
+pnpm --filter @imprint-pdf/example-next-app dev
 ```
 
 ## What's demonstrated

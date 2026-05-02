@@ -69,12 +69,12 @@ don't let users opt into worse output by default.
 
 ## One license, no surprises
 
-Every package is Apache-2.0. The engine (`@imprint/core`, `@imprint/react`,
-`@imprint/tailwind`, `@imprint/cli`, `@imprint/next`, `@imprint/vite`,
-`@imprint/eslint`) and the enterprise surface (`@imprint/print`,
-`@imprint/sign`, `@imprint/ua`) all ship under the same permissive license — no
-time-bombed source, no commercial seat requirement, no friction for production
-deployment.
+Every package is Apache-2.0. The engine (`@imprint-pdf/core`,
+`@imprint-pdf/react`, `@imprint-pdf/tailwind`, `@imprint-pdf/cli`,
+`@imprint-pdf/next`, `@imprint-pdf/vite`, `@imprint-pdf/eslint`) and the
+enterprise surface (`@imprint-pdf/print`, `@imprint-pdf/sign`,
+`@imprint-pdf/ua`) all ship under the same permissive license — no time-bombed
+source, no commercial seat requirement, no friction for production deployment.
 
 Why not BSL or open-core gating? It made the Apache-2.0 surface feel partial and
 the BSL surface feel hostile. Regulated enterprises — print shops, fintech,
@@ -83,4 +83,4 @@ they shouldn't pay a license tax to use them. Sponsorship and paid support fund
 the work instead.
 
 If something here is wrong for you,
-[open an issue](https://github.com/tamimbinhakim/imprint/issues).
+[open an issue](https://github.com/tamimbinhakim/imprint-pdf/issues).

@@ -1,16 +1,16 @@
 {
-  "name": "@imprint/core",
+  "name": "@imprint-pdf/core",
   "version": "0.1.0",
   "description": "Framework-free PDF IR types, layout primitives, asset resolution, and Tailwind CSS processing for Imprint.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tamimbinhakim/imprint.git",
+    "url": "git+https://github.com/tamimbinhakim/imprint-pdf.git",
     "directory": "packages/core"
   },
-  "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/core#readme",
-  "bugs": "https://github.com/tamimbinhakim/imprint/issues",
+  "homepage": "https://github.com/tamimbinhakim/imprint-pdf/tree/main/packages/core#readme",
+  "bugs": "https://github.com/tamimbinhakim/imprint-pdf/issues",
   "keywords": [
     "pdf",
     "react",

@@ -1,7 +1,7 @@
 # CLI reference
 
 ```bash
-pnpm add -D @imprint/cli
+pnpm add -D @imprint-pdf/cli
 npx imprint --help
 ```
 
@@ -69,7 +69,7 @@ without a full reload. Uses the same Vite plugin integration as your app build.
 
 Validate a PDF file against a conformance profile using veraPDF.
 
-Requires `@imprint/print` or `@imprint/ua` and Java 11+ on `PATH`.
+Requires `@imprint-pdf/print` or `@imprint-pdf/ua` and Java 11+ on `PATH`.
 
 ```bash
 imprint validate <pdf> --profile <profile>

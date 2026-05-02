@@ -1,16 +1,16 @@
 {
-  "name": "@imprint/react",
+  "name": "@imprint-pdf/react",
   "version": "0.1.0",
   "description": "React components and reconciler for Imprint — Document, Page, View, Text, Image, Svg, Form, and chart adapters.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tamimbinhakim/imprint.git",
+    "url": "git+https://github.com/tamimbinhakim/imprint-pdf.git",
     "directory": "packages/react"
   },
-  "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/react#readme",
-  "bugs": "https://github.com/tamimbinhakim/imprint/issues",
+  "homepage": "https://github.com/tamimbinhakim/imprint-pdf/tree/main/packages/react#readme",
+  "bugs": "https://github.com/tamimbinhakim/imprint-pdf/issues",
   "keywords": [
     "pdf",
     "react",
@@ -73,20 +73,20 @@
     "clean": "rm -rf dist .turbo *.tsbuildinfo"
   },
   "dependencies": {
-    "@imprint/core": "workspace:*",
+    "@imprint-pdf/core": "workspace:*",
     "react-reconciler": "catalog:"
   },
   "peerDependencies": {
-    "@imprint/tailwind": "workspace:*",
+    "@imprint-pdf/tailwind": "workspace:*",
     "react": ">=18.0.0"
   },
   "peerDependenciesMeta": {
-    "@imprint/tailwind": {
+    "@imprint-pdf/tailwind": {
       "optional": true
     }
   },
   "devDependencies": {
-    "@imprint/tailwind": "workspace:*",
+    "@imprint-pdf/tailwind": "workspace:*",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-reconciler": "catalog:",

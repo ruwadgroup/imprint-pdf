@@ -1,17 +1,17 @@
-# @imprint/next
+# @imprint-pdf/next
 
 Next.js App Router integration for
-[Imprint](https://github.com/tamimbinhakim/imprint).
+[Imprint](https://github.com/tamimbinhakim/imprint-pdf).
 
 ```bash
-pnpm add @imprint/next @imprint/react @imprint/core
+pnpm add @imprint-pdf/next @imprint-pdf/react @imprint-pdf/core
 ```
 
 ## Plugin
 
 ```ts
 // next.config.ts
-import { withImprint } from '@imprint/next/plugin';
+import { withImprint } from '@imprint-pdf/next/plugin';
 
 export default withImprint()({
   // your Next.js config
@@ -20,11 +20,11 @@ export default withImprint()({
 
 The plugin wires up:
 
-- Compile-time Tailwind extraction via `@imprint/tailwind/webpack`
+- Compile-time Tailwind extraction via `@imprint-pdf/tailwind/webpack`
 - `asyncWebAssembly` + `layers` webpack experiments and a `webassembly/async`
   rule for `.wasm` files (required by the renderer)
-- `serverExternalPackages` entries for `@imprint/react` and `@imprint/core` so
-  Next.js doesn't bundle their server-only internals
+- `serverExternalPackages` entries for `@imprint-pdf/react` and
+  `@imprint-pdf/core` so Next.js doesn't bundle their server-only internals
 
 ## Route handler
 
@@ -32,7 +32,7 @@ The canonical pattern for PDF generation in Next.js App Router:
 
 ```ts
 // app/api/invoice/[id]/route.ts
-import { renderToServer } from '@imprint/next';
+import { renderToServer } from '@imprint-pdf/next';
 import { Invoice } from '@/templates/Invoice';
 import { getInvoice } from '@/lib/db';
 
@@ -56,7 +56,7 @@ export async function GET(
 Or use `createPdfResponse` to skip the header boilerplate:
 
 ```ts
-import { createPdfResponse } from '@imprint/next';
+import { createPdfResponse } from '@imprint-pdf/next';
 
 return createPdfResponse(<Invoice data={data} />, {
   filename: `invoice-${id}.pdf`,
@@ -72,7 +72,7 @@ with shared font / Tailwind config.
 
 ```tsx
 // app/invoice/[id]/page.tsx
-import { getImprintConfig } from '@imprint/next';
+import { getImprintConfig } from '@imprint-pdf/next';
 import { PreviewFrame } from '@/components/PreviewFrame';
 
 export default async function InvoicePage({
@@ -95,12 +95,12 @@ build:
 // app/api/invoice/[id]/route.ts
 export const runtime = 'edge';
 
-import { renderToEdge } from '@imprint/next';
+import { renderToEdge } from '@imprint-pdf/next';
 ```
 
 ## Exports
 
-| Entry                  | Purpose                                                                   |
-| ---------------------- | ------------------------------------------------------------------------- |
-| `@imprint/next`        | `renderToServer`, `renderToEdge`, `createPdfResponse`, `getImprintConfig` |
-| `@imprint/next/plugin` | `withImprint` Next.js plugin wrapper                                      |
+| Entry                      | Purpose                                                                   |
+| -------------------------- | ------------------------------------------------------------------------- |
+| `@imprint-pdf/next`        | `renderToServer`, `renderToEdge`, `createPdfResponse`, `getImprintConfig` |
+| `@imprint-pdf/next/plugin` | `withImprint` Next.js plugin wrapper                                      |

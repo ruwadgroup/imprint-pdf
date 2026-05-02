@@ -1,17 +1,17 @@
-# @imprint/eslint
+# @imprint-pdf/eslint
 
-ESLint rules for [Imprint](https://github.com/tamimbinhakim/imprint) — catch
+ESLint rules for [Imprint](https://github.com/tamimbinhakim/imprint-pdf) — catch
 problems at write time before they reach the renderer.
 
 ```bash
-pnpm add -D @imprint/eslint
+pnpm add -D @imprint-pdf/eslint
 ```
 
 ## Setup
 
 ```js
 // eslint.config.mjs
-import imprint from '@imprint/eslint';
+import imprint from '@imprint-pdf/eslint';
 
 export default [imprint.configs.recommended];
 ```
@@ -19,7 +19,7 @@ export default [imprint.configs.recommended];
 Or enable individual rules:
 
 ```js
-import imprint from '@imprint/eslint';
+import imprint from '@imprint-pdf/eslint';
 
 export default [
   {

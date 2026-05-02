@@ -1,10 +1,10 @@
-# @imprint/react
+# @imprint-pdf/react
 
 React components and custom reconciler for
-[Imprint](https://github.com/tamimbinhakim/imprint).
+[Imprint](https://github.com/tamimbinhakim/imprint-pdf).
 
 ```bash
-pnpm add @imprint/react @imprint/core
+pnpm add @imprint-pdf/react @imprint-pdf/core
 ```
 
 ## Components
@@ -59,22 +59,22 @@ Recognised: `<div>`, `<span>`, `<p>`, `<h1>`–`<h6>`, `<ul>`, `<ol>`, `<li>`,
 
 ### Forms (AcroForms)
 
-| Component      | Description                                     |
-| -------------- | ----------------------------------------------- |
-| `<Form>`       | AcroForm container.                             |
-| `<TextField>`  | Single or multi-line text input.                |
-| `<Checkbox>`   | Boolean field.                                  |
-| `<RadioGroup>` | Mutually exclusive option set.                  |
-| `<Dropdown>`   | Select / combobox.                              |
-| `<Signature>`  | Signature widget (signing via `@imprint/sign`). |
-| `<Button>`     | Push button — submit, reset, or JS action.      |
+| Component      | Description                                         |
+| -------------- | --------------------------------------------------- |
+| `<Form>`       | AcroForm container.                                 |
+| `<TextField>`  | Single or multi-line text input.                    |
+| `<Checkbox>`   | Boolean field.                                      |
+| `<RadioGroup>` | Mutually exclusive option set.                      |
+| `<Dropdown>`   | Select / combobox.                                  |
+| `<Signature>`  | Signature widget (signing via `@imprint-pdf/sign`). |
+| `<Button>`     | Push button — submit, reset, or JS action.          |
 
 ## API
 
 ### `renderToBuffer`
 
 ```tsx
-import { renderToBuffer, Document, Page } from '@imprint/react';
+import { renderToBuffer, Document, Page } from '@imprint-pdf/react';
 
 const bytes = await renderToBuffer(
   <Document title="Hello">
@@ -91,7 +91,7 @@ Returns `Uint8Array`. Works on Node, Bun, and browser.
 ### `renderToStream`
 
 ```ts
-import { renderToStream } from '@imprint/react/standalone';
+import { renderToStream } from '@imprint-pdf/react/standalone';
 ```
 
 Returns `ReadableStream<Uint8Array>`. Designed for Cloudflare Workers and Vercel
@@ -99,7 +99,7 @@ Edge Functions where you import WASM as a static asset.
 
 ## Subpath entries
 
-| Entry                       | Purpose                                         |
-| --------------------------- | ----------------------------------------------- |
-| `@imprint/react`            | All components + `renderToBuffer`               |
-| `@imprint/react/standalone` | `renderToStream` + manual WASM loading for edge |
+| Entry                           | Purpose                                         |
+| ------------------------------- | ----------------------------------------------- |
+| `@imprint-pdf/react`            | All components + `renderToBuffer`               |
+| `@imprint-pdf/react/standalone` | `renderToStream` + manual WASM loading for edge |

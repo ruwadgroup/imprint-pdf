@@ -1,16 +1,16 @@
 # Cookbook — CI validation (PDF/UA, PDF/X)
 
 Run veraPDF in CI to certify that every generated PDF passes PDF/UA-1 or PDF/X-4
-conformance. Requires `@imprint/print` or `@imprint/ua`.
+conformance. Requires `@imprint-pdf/print` or `@imprint-pdf/ua`.
 
 ## Setup
 
 ```bash
-pnpm add -D @imprint/cli
+pnpm add -D @imprint-pdf/cli
 ```
 
-`@imprint/cli` ships a Node wrapper around veraPDF. Java 11+ must be installed
-on the CI runner.
+`@imprint-pdf/cli` ships a Node wrapper around veraPDF. Java 11+ must be
+installed on the CI runner.
 
 ## Validate a single file
 
@@ -64,8 +64,8 @@ jobs:
 
 ```ts
 // scripts/render-test-pdfs.ts
-import { renderToBuffer } from '@imprint/react';
-import '@imprint/ua';
+import { renderToBuffer } from '@imprint-pdf/react';
+import '@imprint-pdf/ua';
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { Invoice } from '../src/templates/Invoice';
 import { Report } from '../src/templates/Report';

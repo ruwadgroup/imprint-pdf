@@ -1,12 +1,12 @@
 // ---------------------------------------------------------------------------
-// @imprint/next/plugin — Next.js config wrapper
+// @imprint-pdf/next/plugin — Next.js config wrapper
 //
 // Wraps the user's next.config.ts to inject WASM support, the Imprint webpack
 // plugin, and optional serverExternalPackages tweaks.
 //
 // Usage:
 //   // next.config.ts
-//   import { withImprint } from '@imprint/next/plugin'
+//   import { withImprint } from '@imprint-pdf/next/plugin'
 //
 //   export default withImprint({
 //     fonts: [{ family: 'Inter', src: './public/fonts/Inter.ttf' }],
@@ -77,10 +77,10 @@ export function withImprint(pluginOptions: ImprintPluginOptions = {}) {
     // -------------------------------------------------------------------
     serverExternalPackages: [
       ...(nextConfig.serverExternalPackages ?? []),
-      // @imprint/react may pull in native bindings — exclude from
+      // @imprint-pdf/react may pull in native bindings — exclude from
       // server-side bundling so Node can require them directly.
-      '@imprint/react',
-      '@imprint/core',
+      '@imprint-pdf/react',
+      '@imprint-pdf/core',
     ],
 
     // -------------------------------------------------------------------
@@ -104,18 +104,18 @@ export function withImprint(pluginOptions: ImprintPluginOptions = {}) {
 
       // 3. Add ImprintWebpackPlugin for Tailwind class extraction.
       //    We use a dynamic require here so that webpack itself remains an
-      //    optional peer dependency of @imprint/next — it is only resolved
+      //    optional peer dependency of @imprint-pdf/next — it is only resolved
       //    at build time when the user's Next.js project has it installed.
       try {
         // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const { ImprintWebpackPlugin } = require('@imprint/tailwind/webpack') as {
+        const { ImprintWebpackPlugin } = require('@imprint-pdf/tailwind/webpack') as {
           ImprintWebpackPlugin: new (
             opts: ImprintTailwindConfig,
           ) => { apply(compiler: unknown): void };
         };
         config.plugins ??= [];
         // Build options object, omitting undefined values to satisfy
-        // exactOptionalPropertyTypes in @imprint/tailwind.
+        // exactOptionalPropertyTypes in @imprint-pdf/tailwind.
         const twOpts: ImprintTailwindConfig = {};
         if (pluginOptions.tailwind?.config !== undefined)
           twOpts.config = pluginOptions.tailwind.config;
@@ -131,9 +131,9 @@ export function withImprint(pluginOptions: ImprintPluginOptions = {}) {
           console.info('[imprint] ImprintWebpackPlugin registered');
         }
       } catch (err) {
-        // @imprint/tailwind might not be installed — degrade gracefully
+        // @imprint-pdf/tailwind might not be installed — degrade gracefully
         if (pluginOptions.debug) {
-          console.warn('[imprint] Could not load @imprint/tailwind/webpack:', String(err));
+          console.warn('[imprint] Could not load @imprint-pdf/tailwind/webpack:', String(err));
         }
       }
 
@@ -141,7 +141,7 @@ export function withImprint(pluginOptions: ImprintPluginOptions = {}) {
       config.resolve ??= {};
       config.resolve.alias ??= {};
       const alias = config.resolve.alias as Record<string, string>;
-      alias['virtual:imprint-classes'] = require.resolve('@imprint/tailwind/runtime');
+      alias['virtual:imprint-classes'] = require.resolve('@imprint-pdf/tailwind/runtime');
 
       // 5. Call the user's own webpack config last so they can override
       if (typeof nextConfig.webpack === 'function') {

@@ -1,7 +1,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { googleProvider, loadFont } from '@imprint/font';
-import { renderToBuffer } from '@imprint/react';
+import { googleProvider, loadFont } from '@imprint-pdf/font';
+import { renderToBuffer } from '@imprint-pdf/react';
 import { invoice } from './data/invoice.js';
 import { report } from './data/report.js';
 import { salesOrder } from './data/salesOrder.js';

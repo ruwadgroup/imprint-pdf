@@ -1,5 +1,5 @@
-import type { RenderOptions } from '@imprint/core';
-import { renderToBuffer } from '@imprint/react';
+import type { RenderOptions } from '@imprint-pdf/core';
+import { renderToBuffer } from '@imprint-pdf/react';
 import type { ReactElement } from 'react';
 
 export type RenderArgs = RenderOptions & { tailwindRoot?: string };

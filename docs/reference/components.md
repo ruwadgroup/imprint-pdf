@@ -5,16 +5,16 @@ All component props. Every component also accepts `className` (Tailwind) and
 
 ## `<Document>`
 
-| Prop           | Type                                      | Default | Description                                   |
-| -------------- | ----------------------------------------- | ------- | --------------------------------------------- |
-| `title`        | `string`                                  | —       | PDF title metadata.                           |
-| `author`       | `string`                                  | —       | Author metadata.                              |
-| `subject`      | `string`                                  | —       | Subject metadata.                             |
-| `keywords`     | `string[]`                                | —       | Keywords metadata.                            |
-| `lang`         | `string`                                  | `'en'`  | BCP-47 language. Required for PDF/UA.         |
-| `intent`       | `'PDF/X-4' \| 'PDF/A-2b' \| …`            | —       | Output intent. Requires `@imprint/print`.     |
-| `outputIntent` | `{ profile: string; condition?: string }` | —       | ICC output intent. Requires `@imprint/print`. |
-| `embeds`       | `EmbedSpec[]`                             | —       | Attached files (PDF/A-3 / ZUGFeRD).           |
+| Prop           | Type                                      | Default | Description                                       |
+| -------------- | ----------------------------------------- | ------- | ------------------------------------------------- |
+| `title`        | `string`                                  | —       | PDF title metadata.                               |
+| `author`       | `string`                                  | —       | Author metadata.                                  |
+| `subject`      | `string`                                  | —       | Subject metadata.                                 |
+| `keywords`     | `string[]`                                | —       | Keywords metadata.                                |
+| `lang`         | `string`                                  | `'en'`  | BCP-47 language. Required for PDF/UA.             |
+| `intent`       | `'PDF/X-4' \| 'PDF/A-2b' \| …`            | —       | Output intent. Requires `@imprint-pdf/print`.     |
+| `outputIntent` | `{ profile: string; condition?: string }` | —       | ICC output intent. Requires `@imprint-pdf/print`. |
+| `embeds`       | `EmbedSpec[]`                             | —       | Attached files (PDF/A-3 / ZUGFeRD).               |
 
 ## `<Page>`
 
@@ -123,11 +123,11 @@ No props. Render as inline text — resolved at draw time.
 
 ## `<Signature>`
 
-| Prop          | Type     | Default  | Description                                            |
-| ------------- | -------- | -------- | ------------------------------------------------------ |
-| `name`        | `string` | required | Field name.                                            |
-| `certificate` | `string` | —        | PEM certificate. Requires `@imprint/sign`. Enterprise. |
-| `privateKey`  | `string` | —        | PEM private key. Requires `@imprint/sign`. Enterprise. |
+| Prop          | Type     | Default  | Description                                                |
+| ------------- | -------- | -------- | ---------------------------------------------------------- |
+| `name`        | `string` | required | Field name.                                                |
+| `certificate` | `string` | —        | PEM certificate. Requires `@imprint-pdf/sign`. Enterprise. |
+| `privateKey`  | `string` | —        | PEM private key. Requires `@imprint-pdf/sign`. Enterprise. |
 
 ## `<Button>`
 

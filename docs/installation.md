@@ -9,11 +9,11 @@
 ## Core install
 
 ```bash
-pnpm add @imprint/react @imprint/core
-pnpm add -D @imprint/cli
+pnpm add @imprint-pdf/react @imprint-pdf/core
+pnpm add -D @imprint-pdf/cli
 ```
 
-`@imprint/cli` is a dev dependency — it runs when you develop locally or
+`@imprint-pdf/cli` is a dev dependency — it runs when you develop locally or
 validate in CI. The runtime packages go into your production bundle.
 
 ## Framework adapters
@@ -23,29 +23,29 @@ Install the one that matches your setup, alongside the core packages above.
 ### Next.js (App Router, Edge Runtime)
 
 ```bash
-pnpm add @imprint/next
+pnpm add @imprint-pdf/next
 ```
 
 ### Vite (SPA, SSR via Vike, Astro)
 
 ```bash
-pnpm add -D @imprint/vite
+pnpm add -D @imprint-pdf/vite
 ```
 
 ### Cloudflare Workers / Vercel Edge
 
-No dedicated package. Use `@imprint/react/standalone` — see the
+No dedicated package. Use `@imprint-pdf/react/standalone` — see the
 [Cloudflare guide](frameworks/cloudflare.md).
 
 ### Bun
 
-No dedicated package. `@imprint/react` works natively with Bun's WASM support —
-see the [Bun guide](frameworks/bun.md).
+No dedicated package. `@imprint-pdf/react` works natively with Bun's WASM
+support — see the [Bun guide](frameworks/bun.md).
 
 ## Tailwind
 
 ```bash
-pnpm add -D @imprint/tailwind tailwindcss
+pnpm add -D @imprint-pdf/tailwind tailwindcss
 ```
 
 ## Optional enterprise packages
@@ -53,24 +53,24 @@ pnpm add -D @imprint/tailwind tailwindcss
 Apache-2.0 like the rest. Install only when you need the surface — the core
 packages render full invoices and reports without them.
 
-| Package          | Use it for                                           |
-| ---------------- | ---------------------------------------------------- |
-| `@imprint/print` | PDF/X-4, CMYK, ICC profiles, PDF/A, bleed/trim/marks |
-| `@imprint/sign`  | PKCS#7 detached digital signatures                   |
-| `@imprint/ua`    | Tagged PDF / PDF/UA-1 accessibility                  |
+| Package              | Use it for                                           |
+| -------------------- | ---------------------------------------------------- |
+| `@imprint-pdf/print` | PDF/X-4, CMYK, ICC profiles, PDF/A, bleed/trim/marks |
+| `@imprint-pdf/sign`  | PKCS#7 detached digital signatures                   |
+| `@imprint-pdf/ua`    | Tagged PDF / PDF/UA-1 accessibility                  |
 
 ```bash
-pnpm add @imprint/print @imprint/sign @imprint/ua
+pnpm add @imprint-pdf/print @imprint-pdf/sign @imprint-pdf/ua
 ```
 
 ## Optional tooling
 
-| Package           | Use it for                                               |
-| ----------------- | -------------------------------------------------------- |
-| `@imprint/eslint` | Catch unsupported CSS and missing alt text at write time |
+| Package               | Use it for                                               |
+| --------------------- | -------------------------------------------------------- |
+| `@imprint-pdf/eslint` | Catch unsupported CSS and missing alt text at write time |
 
 ```bash
-pnpm add -D @imprint/eslint
+pnpm add -D @imprint-pdf/eslint
 ```
 
 ## Initialise
@@ -88,9 +88,9 @@ surface.
 
 ## Version matrix
 
-| @imprint/\* | React | Next.js | Vite | Tailwind CSS | Node |
-| ----------- | ----- | ------- | ---- | ------------ | ---- |
-| 0.x         | ≥18   | ≥14     | ≥5   | ≥4.0         | ≥20  |
+| @imprint-pdf/\* | React | Next.js | Vite | Tailwind CSS | Node |
+| --------------- | ----- | ------- | ---- | ------------ | ---- |
+| 0.x             | ≥18   | ≥14     | ≥5   | ≥4.0         | ≥20  |
 
 ## Next
 

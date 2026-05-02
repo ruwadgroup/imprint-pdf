@@ -1,12 +1,12 @@
-import type { RenderOptions } from '@imprint/core';
+import type { RenderOptions } from '@imprint-pdf/core';
 import type { ReactElement } from 'react';
 
 export async function renderToServer(
   element: ReactElement,
   options?: RenderOptions,
 ): Promise<Uint8Array> {
-  // dynamic import keeps @imprint/react out of the client bundle
-  const { renderToBuffer } = await import('@imprint/react');
+  // dynamic import keeps @imprint-pdf/react out of the client bundle
+  const { renderToBuffer } = await import('@imprint-pdf/react');
   return renderToBuffer(element, options);
 }
 
@@ -19,8 +19,8 @@ export async function renderToEdge(
   element: ReactElement,
   options?: EdgeRenderOptions,
 ): Promise<ReadableStream<Uint8Array>> {
-  // @imprint/react/standalone is a self-contained build for v8 isolate environments
-  const { renderToStream } = await import('@imprint/react/standalone');
+  // @imprint-pdf/react/standalone is a self-contained build for v8 isolate environments
+  const { renderToStream } = await import('@imprint-pdf/react/standalone');
   return renderToStream(element, options);
 }
 
@@ -86,4 +86,4 @@ export async function createPdfResponse(
   });
 }
 
-export type { RenderOptions } from '@imprint/core';
+export type { RenderOptions } from '@imprint-pdf/core';

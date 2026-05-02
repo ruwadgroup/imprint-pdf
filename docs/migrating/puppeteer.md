@@ -52,7 +52,7 @@ await browser.close();
 ### After (Imprint)
 
 ```ts
-import { renderToBuffer } from '@imprint/react';
+import { renderToBuffer } from '@imprint-pdf/react';
 import { Invoice } from './templates/Invoice';
 
 const pdf = await renderToBuffer(<Invoice data={invoiceData} />);

@@ -6,7 +6,7 @@ Loading local fonts, Google Fonts, variable fonts, and system-style fallbacks.
 
 ```ts
 // imprint.config.ts
-import { defineConfig } from '@imprint/core/config';
+import { defineConfig } from '@imprint-pdf/core/config';
 
 export default defineConfig({
   fonts: [

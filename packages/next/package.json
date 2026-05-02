@@ -1,16 +1,16 @@
 {
-  "name": "@imprint/next",
+  "name": "@imprint-pdf/next",
   "version": "0.1.0",
   "description": "Next.js App Router integration for Imprint — route handlers, RSC helpers, and the withImprint plugin.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tamimbinhakim/imprint.git",
+    "url": "git+https://github.com/tamimbinhakim/imprint-pdf.git",
     "directory": "packages/next"
   },
-  "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/next#readme",
-  "bugs": "https://github.com/tamimbinhakim/imprint/issues",
+  "homepage": "https://github.com/tamimbinhakim/imprint-pdf/tree/main/packages/next#readme",
+  "bugs": "https://github.com/tamimbinhakim/imprint-pdf/issues",
   "keywords": [
     "pdf",
     "next",
@@ -63,8 +63,8 @@
     "clean": "rm -rf dist .turbo *.tsbuildinfo"
   },
   "dependencies": {
-    "@imprint/core": "workspace:*",
-    "@imprint/react": "workspace:*"
+    "@imprint-pdf/core": "workspace:*",
+    "@imprint-pdf/react": "workspace:*"
   },
   "peerDependencies": {
     "next": ">=14.0.0"

@@ -116,13 +116,13 @@ importers:
 
   examples/bun-server:
     dependencies:
-      '@imprint/core':
+      '@imprint-pdf/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@imprint/react':
+      '@imprint-pdf/react':
         specifier: workspace:*
         version: link:../../packages/react
-      '@imprint/tailwind':
+      '@imprint-pdf/tailwind':
         specifier: workspace:*
         version: link:../../packages/tailwind
     devDependencies:
@@ -141,13 +141,13 @@ importers:
 
   examples/cloudflare-worker:
     dependencies:
-      '@imprint/core':
+      '@imprint-pdf/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@imprint/react':
+      '@imprint-pdf/react':
         specifier: workspace:*
         version: link:../../packages/react
-      '@imprint/tailwind':
+      '@imprint-pdf/tailwind':
         specifier: workspace:*
         version: link:../../packages/tailwind
     devDependencies:
@@ -172,16 +172,16 @@ importers:
 
   examples/next-app:
     dependencies:
-      '@imprint/core':
+      '@imprint-pdf/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@imprint/next':
+      '@imprint-pdf/next':
         specifier: workspace:*
         version: link:../../packages/next
-      '@imprint/react':
+      '@imprint-pdf/react':
         specifier: workspace:*
         version: link:../../packages/react
-      '@imprint/tailwind':
+      '@imprint-pdf/tailwind':
         specifier: workspace:*
         version: link:../../packages/tailwind
       next:
@@ -209,16 +209,16 @@ importers:
 
   examples/pdf-test:
     dependencies:
-      '@imprint/core':
+      '@imprint-pdf/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@imprint/font':
+      '@imprint-pdf/font':
         specifier: workspace:*
         version: link:../../packages/font
-      '@imprint/react':
+      '@imprint-pdf/react':
         specifier: workspace:*
         version: link:../../packages/react
-      '@imprint/tailwind':
+      '@imprint-pdf/tailwind':
         specifier: workspace:*
         version: link:../../packages/tailwind
       react:
@@ -243,16 +243,16 @@ importers:
 
   examples/vite-react:
     dependencies:
-      '@imprint/core':
+      '@imprint-pdf/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@imprint/react':
+      '@imprint-pdf/react':
         specifier: workspace:*
         version: link:../../packages/react
-      '@imprint/tailwind':
+      '@imprint-pdf/tailwind':
         specifier: workspace:*
         version: link:../../packages/tailwind
-      '@imprint/vite':
+      '@imprint-pdf/vite':
         specifier: workspace:*
         version: link:../../packages/vite
       react:
@@ -283,19 +283,19 @@ importers:
 
   packages/bench:
     dependencies:
-      '@imprint/core':
+      '@imprint-pdf/core':
         specifier: workspace:*
         version: link:../core
-      '@imprint/print':
+      '@imprint-pdf/print':
         specifier: workspace:*
         version: link:../print
-      '@imprint/react':
+      '@imprint-pdf/react':
         specifier: workspace:*
         version: link:../react
-      '@imprint/sign':
+      '@imprint-pdf/sign':
         specifier: workspace:*
         version: link:../sign
-      '@imprint/ua':
+      '@imprint-pdf/ua':
         specifier: workspace:*
         version: link:../ua
     devDependencies:
@@ -329,7 +329,7 @@ importers:
 
   packages/chart:
     dependencies:
-      '@imprint/react':
+      '@imprint-pdf/react':
         specifier: workspace:*
         version: link:../react
     devDependencies:
@@ -360,10 +360,10 @@ importers:
 
   packages/cli:
     dependencies:
-      '@imprint/core':
+      '@imprint-pdf/core':
         specifier: workspace:*
         version: link:../core
-      '@imprint/react':
+      '@imprint-pdf/react':
         specifier: workspace:*
         version: link:../react
       cac:
@@ -428,16 +428,16 @@ importers:
 
   packages/e2e:
     dependencies:
-      '@imprint/core':
+      '@imprint-pdf/core':
         specifier: workspace:*
         version: link:../core
-      '@imprint/font':
+      '@imprint-pdf/font':
         specifier: workspace:*
         version: link:../font
-      '@imprint/react':
+      '@imprint-pdf/react':
         specifier: workspace:*
         version: link:../react
-      '@imprint/tailwind':
+      '@imprint-pdf/tailwind':
         specifier: workspace:*
         version: link:../tailwind
       pdf-lib:
@@ -495,7 +495,7 @@ importers:
 
   packages/font:
     dependencies:
-      '@imprint/core':
+      '@imprint-pdf/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -516,10 +516,10 @@ importers:
 
   packages/next:
     dependencies:
-      '@imprint/core':
+      '@imprint-pdf/core':
         specifier: workspace:*
         version: link:../core
-      '@imprint/react':
+      '@imprint-pdf/react':
         specifier: workspace:*
         version: link:../react
     devDependencies:
@@ -547,17 +547,17 @@ importers:
 
   packages/print:
     dependencies:
-      '@imprint/core':
+      '@imprint-pdf/core':
         specifier: workspace:*
         version: link:../core
-      '@imprint/react':
+      '@imprint-pdf/react':
         specifier: workspace:*
         version: link:../react
       pdf-lib:
         specifier: 'catalog:'
         version: 1.17.1
     devDependencies:
-      '@imprint/ua':
+      '@imprint-pdf/ua':
         specifier: workspace:*
         version: link:../ua
       '@types/node':
@@ -578,14 +578,14 @@ importers:
 
   packages/react:
     dependencies:
-      '@imprint/core':
+      '@imprint-pdf/core':
         specifier: workspace:*
         version: link:../core
       react-reconciler:
         specifier: 'catalog:'
         version: 0.33.0(react@19.2.5)
     devDependencies:
-      '@imprint/tailwind':
+      '@imprint-pdf/tailwind':
         specifier: workspace:*
         version: link:../tailwind
       '@types/node':
@@ -612,10 +612,10 @@ importers:
 
   packages/sign:
     dependencies:
-      '@imprint/core':
+      '@imprint-pdf/core':
         specifier: workspace:*
         version: link:../core
-      '@imprint/react':
+      '@imprint-pdf/react':
         specifier: workspace:*
         version: link:../react
       node-forge:
@@ -667,7 +667,7 @@ importers:
 
   packages/tailwind:
     dependencies:
-      '@imprint/core':
+      '@imprint-pdf/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -729,10 +729,10 @@ importers:
 
   packages/ua:
     dependencies:
-      '@imprint/core':
+      '@imprint-pdf/core':
         specifier: workspace:*
         version: link:../core
-      '@imprint/react':
+      '@imprint-pdf/react':
         specifier: workspace:*
         version: link:../react
       pdf-lib:
@@ -757,10 +757,10 @@ importers:
 
   packages/vite:
     dependencies:
-      '@imprint/core':
+      '@imprint-pdf/core':
         specifier: workspace:*
         version: link:../core
-      '@imprint/tailwind':
+      '@imprint-pdf/tailwind':
         specifier: workspace:*
         version: link:../tailwind
     devDependencies:

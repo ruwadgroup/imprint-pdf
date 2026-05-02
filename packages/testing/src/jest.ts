@@ -62,7 +62,7 @@ const matcher = function toMatchPdfSnapshot(
 };
 
 // Side-effecting register-on-import so users only need
-// `import '@imprint/testing/jest'` in setupFilesAfterEach.
+// `import '@imprint-pdf/testing/jest'` in setupFilesAfterEach.
 const e = (globalThis as { expect?: JestExpect }).expect;
 if (e && typeof e.extend === 'function') {
   e.extend({ toMatchPdfSnapshot: matcher });

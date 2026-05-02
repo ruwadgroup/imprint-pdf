@@ -1,16 +1,16 @@
 {
-  "name": "@imprint/font",
+  "name": "@imprint-pdf/font",
   "version": "0.1.0",
   "description": "Font loaders for imprint — Google Fonts, Bunny Fonts, Fontsource, and local files. Returns FontDeclaration[] for renderToBuffer.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tamimbinhakim/imprint.git",
+    "url": "git+https://github.com/tamimbinhakim/imprint-pdf.git",
     "directory": "packages/font"
   },
-  "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/font#readme",
-  "bugs": "https://github.com/tamimbinhakim/imprint/issues",
+  "homepage": "https://github.com/tamimbinhakim/imprint-pdf/tree/main/packages/font#readme",
+  "bugs": "https://github.com/tamimbinhakim/imprint-pdf/issues",
   "keywords": ["pdf", "fonts", "google-fonts", "bunny-fonts", "fontsource", "imprint"],
   "type": "module",
   "main": "./dist/index.cjs",
@@ -52,7 +52,7 @@
     "clean": "rm -rf dist .turbo *.tsbuildinfo"
   },
   "dependencies": {
-    "@imprint/core": "workspace:*"
+    "@imprint-pdf/core": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "catalog:",

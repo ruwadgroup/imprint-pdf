@@ -6,10 +6,10 @@
  * (not inside the measured loop) using node-forge.
  */
 
-import { printIntent } from '@imprint/print';
-import { renderToBuffer } from '@imprint/react';
-import { signWithByteRange } from '@imprint/sign';
-import { taggedPdf } from '@imprint/ua';
+import { printIntent } from '@imprint-pdf/print';
+import { renderToBuffer } from '@imprint-pdf/react';
+import { signWithByteRange } from '@imprint-pdf/sign';
+import { taggedPdf } from '@imprint-pdf/ua';
 import forge from 'node-forge';
 import React from 'react';
 import { InvoiceDoc } from '../fixtures/invoice.js';

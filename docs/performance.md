@@ -3,7 +3,7 @@
 Numbers measured on Apple Silicon M2 / Node 22 unless noted. Reproduce locally:
 
 ```bash
-pnpm --filter @imprint/core bench
+pnpm --filter @imprint-pdf/core bench
 ```
 
 ## Edge cold start
@@ -36,12 +36,12 @@ ms per paragraph in practice.
 
 ## Bundle size (browser)
 
-| Build target                              | Gzipped  |
-| ----------------------------------------- | -------- |
-| `@imprint/react` default (Flex + Knuth)   | ~800 KB  |
-| With CSS Grid (Taffy full build)          | ~850 KB  |
-| With runtime Tailwind Oxide WASM fallback | +~350 KB |
-| `@imprint/react/standalone` (CF Workers)  | ~750 KB  |
+| Build target                                 | Gzipped  |
+| -------------------------------------------- | -------- |
+| `@imprint-pdf/react` default (Flex + Knuth)  | ~800 KB  |
+| With CSS Grid (Taffy full build)             | ~850 KB  |
+| With runtime Tailwind Oxide WASM fallback    | +~350 KB |
+| `@imprint-pdf/react/standalone` (CF Workers) | ~750 KB  |
 
 Tree-shaking removes feature flags you don't import. An invoice-only client that
 uses only Flexbox and skips the Oxide fallback is ~600 KB gzipped.
@@ -61,10 +61,10 @@ embedded. The full 12 MB font is never in the PDF.
 
 ```bash
 # Renderer benchmarks
-pnpm --filter @imprint/core bench
+pnpm --filter @imprint-pdf/core bench
 
 # Cold start on Workers (requires wrangler)
-pnpm --filter @imprint/example-cloudflare-worker deploy --dry-run
+pnpm --filter @imprint-pdf/example-cloudflare-worker deploy --dry-run
 ```
 
 ## Methodology notes

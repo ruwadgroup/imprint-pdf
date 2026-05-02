@@ -1,4 +1,4 @@
-import type { ComputedGeometry, DocumentNode, PdfNode, RenderOptions } from '@imprint/core';
+import type { ComputedGeometry, DocumentNode, PdfNode, RenderOptions } from '@imprint-pdf/core';
 import {
   applyImprintVariants,
   clearCompiledClassMap,
@@ -12,7 +12,7 @@ import {
   setHyphenator,
   setSvgRasterizer,
   writePdf,
-} from '@imprint/core';
+} from '@imprint-pdf/core';
 import type { ReactElement } from 'react';
 import { buildPdfNodeTree } from './reconciler.js';
 
@@ -31,7 +31,7 @@ async function renderInternal(
   // Two-pass reconcile to break the Tailwind ↔ resolved-style cycle: dry
   // pass to harvest class names, then reconcile again with the compiled map.
   if (options.tailwind) {
-    const { runTailwind } = await import('@imprint/tailwind');
+    const { runTailwind } = await import('@imprint-pdf/tailwind');
     const dryRoot = buildPdfNodeTree(element);
     const classes = collectClassNames(dryRoot);
     if (classes.size > 0) {

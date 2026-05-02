@@ -1,4 +1,4 @@
-import { Bookmark, Document, Link, Page } from '@imprint/react';
+import { Bookmark, Document, Link, Page } from '@imprint-pdf/react';
 import { describe, expect, it } from 'vitest';
 import { inspect, render } from '../../src/helpers/index.js';
 

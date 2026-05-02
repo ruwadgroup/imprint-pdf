@@ -5,7 +5,7 @@ is optional — Imprint applies sensible defaults so a minimal config is usually
 enough:
 
 ```ts
-import { defineConfig } from '@imprint/core/config';
+import { defineConfig } from '@imprint-pdf/core/config';
 
 export default defineConfig({
   fonts: [{ family: 'Inter', src: './public/fonts/Inter.woff2' }],
@@ -98,7 +98,7 @@ typography: {
 
 ```ts
 output: {
-  intent?: 'PDF/X-4' | 'PDF/X-4p' | 'PDF/A-2b' | 'PDF/A-3'; // Enterprise @imprint/print
+  intent?: 'PDF/X-4' | 'PDF/X-4p' | 'PDF/A-2b' | 'PDF/A-3'; // Enterprise @imprint-pdf/print
   outputIntent?: {
     profile: string;            // ICC profile name or path
     condition?: string;         // printing condition
@@ -120,7 +120,7 @@ assets: {
 ## Full example
 
 ```ts
-import { defineConfig } from '@imprint/core/config';
+import { defineConfig } from '@imprint-pdf/core/config';
 
 export default defineConfig({
   fonts: [

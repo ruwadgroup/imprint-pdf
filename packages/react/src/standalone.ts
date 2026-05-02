@@ -1,4 +1,4 @@
-import type { RenderOptions } from '@imprint/core';
+import type { RenderOptions } from '@imprint-pdf/core';
 import type { ReactElement } from 'react';
 
 export interface StandaloneRenderOptions extends RenderOptions {

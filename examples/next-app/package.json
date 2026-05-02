@@ -1,5 +1,5 @@
 {
-  "name": "@imprint/example-next-app",
+  "name": "@imprint-pdf/example-next-app",
   "version": "0.0.0",
   "private": true,
   "description": "Imprint example — Next.js App Router with RSC and an API route that streams a PDF.",
@@ -9,10 +9,10 @@
     "start": "next start"
   },
   "dependencies": {
-    "@imprint/core": "workspace:*",
-    "@imprint/next": "workspace:*",
-    "@imprint/react": "workspace:*",
-    "@imprint/tailwind": "workspace:*",
+    "@imprint-pdf/core": "workspace:*",
+    "@imprint-pdf/next": "workspace:*",
+    "@imprint-pdf/react": "workspace:*",
+    "@imprint-pdf/tailwind": "workspace:*",
     "next": "^15.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

@@ -1,4 +1,4 @@
-import type { DocumentNode } from '@imprint/core';
+import type { DocumentNode } from '@imprint-pdf/core';
 import { PDFArray, PDFDocument, PDFName } from 'pdf-lib';
 import { describe, expect, it } from 'vitest';
 import { parseBleed } from './bleed.js';

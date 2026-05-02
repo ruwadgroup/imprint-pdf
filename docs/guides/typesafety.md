@@ -11,15 +11,15 @@ All components ship strict TypeScript types:
 // TypeScript error — 'invalid' is not a valid size
 <Page size="invalid" />
 
-// TypeScript error — bleed requires @imprint/print
+// TypeScript error — bleed requires @imprint-pdf/print
 // (surfaced via a branded type on the prop)
 <Page bleed="3mm" />
 ```
 
 ## `defineConfig` is type-preserving
 
-The `defineConfig` helper from `@imprint/core/config` returns the input type,
-not a widened `AutotranslateConfig`. Your IDE autocompletes every field.
+The `defineConfig` helper from `@imprint-pdf/core/config` returns the input
+type, not a widened `AutotranslateConfig`. Your IDE autocompletes every field.
 
 ```ts
 // ✓ Autocompletes; errors on unknown fields
@@ -54,7 +54,7 @@ be a type error.
 // tsconfig.json
 {
   "compilerOptions": {
-    "jsxImportSource": "@imprint/react"
+    "jsxImportSource": "@imprint-pdf/react"
   }
 }
 ```
@@ -62,13 +62,13 @@ be a type error.
 Or per-file:
 
 ```tsx
-/** @jsxImportSource @imprint/react */
-import { Document, Page } from '@imprint/react';
+/** @jsxImportSource @imprint-pdf/react */
+import { Document, Page } from '@imprint-pdf/react';
 ```
 
 ## ESLint plugin
 
-The `@imprint/eslint` catches PDF-specific errors before TypeScript does:
+The `@imprint-pdf/eslint` catches PDF-specific errors before TypeScript does:
 
 - `imprint/no-unsupported-css` — warns on CSS properties that have no PDF
   output.

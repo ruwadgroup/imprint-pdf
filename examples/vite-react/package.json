@@ -1,5 +1,5 @@
 {
-  "name": "@imprint/example-vite-react",
+  "name": "@imprint-pdf/example-vite-react",
   "version": "0.0.0",
   "private": true,
   "description": "Imprint example — Vite + React SPA that generates PDFs in the browser.",
@@ -9,10 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@imprint/core": "workspace:*",
-    "@imprint/react": "workspace:*",
-    "@imprint/tailwind": "workspace:*",
-    "@imprint/vite": "workspace:*",
+    "@imprint-pdf/core": "workspace:*",
+    "@imprint-pdf/react": "workspace:*",
+    "@imprint-pdf/tailwind": "workspace:*",
+    "@imprint-pdf/vite": "workspace:*",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

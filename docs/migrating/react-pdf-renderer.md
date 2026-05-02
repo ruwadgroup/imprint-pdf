@@ -19,13 +19,13 @@ deliberate improvements.
 
 ```bash
 pnpm remove @react-pdf/renderer react-pdf-tailwind
-pnpm add @imprint/react @imprint/core
-pnpm add -D @imprint/tailwind tailwindcss
+pnpm add @imprint-pdf/react @imprint-pdf/core
+pnpm add -D @imprint-pdf/tailwind tailwindcss
 ```
 
 ## Component renames
 
-| `@react-pdf/renderer` | `@imprint/react`                  |
+| `@react-pdf/renderer` | `@imprint-pdf/react`              |
 | --------------------- | --------------------------------- |
 | `Document`            | `Document`                        |
 | `Page`                | `Page`                            |
@@ -70,7 +70,7 @@ export function Invoice() {
 ### After (Imprint)
 
 ```tsx
-import { View } from '@imprint/react';
+import { View } from '@imprint-pdf/react';
 
 export function Invoice() {
   return (
@@ -95,7 +95,7 @@ const buffer = await ReactPDF.renderToBuffer(<Doc />);
 ### After
 
 ```ts
-import { renderToBuffer, renderToStream } from '@imprint/react';
+import { renderToBuffer, renderToStream } from '@imprint-pdf/react';
 
 const buffer = await renderToBuffer(<Doc />);
 const stream = await renderToStream(<Doc />);

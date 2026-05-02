@@ -1,16 +1,16 @@
 {
-  "name": "@imprint/sign",
+  "name": "@imprint-pdf/sign",
   "version": "0.1.0",
   "description": "PKCS#7 detached digital signatures for Imprint PDFs.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tamimbinhakim/imprint.git",
+    "url": "git+https://github.com/tamimbinhakim/imprint-pdf.git",
     "directory": "packages/sign"
   },
-  "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/sign#readme",
-  "bugs": "https://github.com/tamimbinhakim/imprint/issues",
+  "homepage": "https://github.com/tamimbinhakim/imprint-pdf/tree/main/packages/sign#readme",
+  "bugs": "https://github.com/tamimbinhakim/imprint-pdf/issues",
   "keywords": [
     "pdf",
     "digital-signature",
@@ -52,8 +52,8 @@
     "clean": "rm -rf dist .turbo *.tsbuildinfo"
   },
   "dependencies": {
-    "@imprint/core": "workspace:*",
-    "@imprint/react": "workspace:*",
+    "@imprint-pdf/core": "workspace:*",
+    "@imprint-pdf/react": "workspace:*",
     "node-forge": "catalog:",
     "pdf-lib": "catalog:"
   },

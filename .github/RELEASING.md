@@ -37,5 +37,6 @@ pnpm changeset pre exit
 
 - CI green on `main`
 - `pnpm audit` clean
-- veraPDF validation examples pass for `@imprint/print` and `@imprint/ua`
+- veraPDF validation examples pass for `@imprint-pdf/print` and
+  `@imprint-pdf/ua`
 - CHANGELOG entries make sense to an end-user

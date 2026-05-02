@@ -1,16 +1,16 @@
 {
-  "name": "@imprint/eslint",
+  "name": "@imprint-pdf/eslint",
   "version": "0.1.0",
   "description": "ESLint rules for Imprint — catch unsupported CSS properties, missing alt text, and unsafe dynamic class names at write time.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tamimbinhakim/imprint.git",
+    "url": "git+https://github.com/tamimbinhakim/imprint-pdf.git",
     "directory": "packages/eslint"
   },
-  "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/eslint#readme",
-  "bugs": "https://github.com/tamimbinhakim/imprint/issues",
+  "homepage": "https://github.com/tamimbinhakim/imprint-pdf/tree/main/packages/eslint#readme",
+  "bugs": "https://github.com/tamimbinhakim/imprint-pdf/issues",
   "keywords": [
     "eslint",
     "pdf",

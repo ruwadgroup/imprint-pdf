@@ -2,7 +2,7 @@
  * Competitor suite — same 1-page invoice rendered by the two real
  * React-based competitors:
  *
- *   1. Imprint              (@imprint/react — JSX, real CSS, real layout)
+ *   1. Imprint              (@imprint-pdf/react — JSX, real CSS, real layout)
  *   2. @react-pdf/renderer  (JSX, custom StyleSheet DSL, no real CSS)
  *
  * Imperative libraries (pdfkit / pdf-lib / jsPDF) and template-based ones
@@ -14,7 +14,7 @@
  * load unless this suite runs.
  */
 
-import { renderToBuffer } from '@imprint/react';
+import { renderToBuffer } from '@imprint-pdf/react';
 import React from 'react';
 import { INVOICE_DATA, InvoiceDoc } from '../fixtures/invoice.js';
 import { type BenchResult, bench } from '../runner.js';

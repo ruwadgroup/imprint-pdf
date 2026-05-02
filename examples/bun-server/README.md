@@ -1,10 +1,11 @@
 # example — bun-server
 
-Bun HTTP server demo for [Imprint](https://github.com/tamimbinhakim/imprint).
-Uses Bun's native WASM support for fast cold starts.
+Bun HTTP server demo for
+[Imprint](https://github.com/tamimbinhakim/imprint-pdf). Uses Bun's native WASM
+support for fast cold starts.
 
 ```bash
-pnpm --filter @imprint/example-bun-server dev
+pnpm --filter @imprint-pdf/example-bun-server dev
 # → http://localhost:3000
 ```
 

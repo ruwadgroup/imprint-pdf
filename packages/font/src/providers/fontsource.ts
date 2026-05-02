@@ -1,4 +1,4 @@
-import type { FontDeclaration } from '@imprint/core';
+import type { FontDeclaration } from '@imprint-pdf/core';
 import type { FontProvider, LoadFontOptions } from '../types.js';
 
 export interface FontsourceProviderOptions {

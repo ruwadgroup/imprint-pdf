@@ -8,5 +8,5 @@ export default defineConfig({
   clean: true,
   splitting: false,
   treeshake: true,
-  external: ['react', 'react-dom', 'react-dom/server', '@imprint/react'],
+  external: ['react', 'react-dom', 'react-dom/server', '@imprint-pdf/react'],
 });

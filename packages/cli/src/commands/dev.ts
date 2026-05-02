@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs';
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import type { ComputedGeometry, DocumentNode, PdfNode, ResolvedStyle } from '@imprint/core';
+import type { ComputedGeometry, DocumentNode, PdfNode, ResolvedStyle } from '@imprint-pdf/core';
 import type { ElementType, ReactElement } from 'react';
 import { INSPECTOR_HTML } from './dev-inspector-html.js';
 
@@ -81,7 +81,7 @@ async function buildArtifacts(absFile: string): Promise<RenderArtifacts> {
   }
 
   const { createElement } = await import('react');
-  const { renderForInspector } = await import('@imprint/react');
+  const { renderForInspector } = await import('@imprint-pdf/react');
 
   const element = createElement(Component, {}) as ReactElement;
   const result = await renderForInspector(element);

@@ -1,4 +1,4 @@
-import type { ResolvedStyle } from '@imprint/core';
+import type { ResolvedStyle } from '@imprint-pdf/core';
 
 const PROP_MAP: Partial<Record<string, keyof ResolvedStyle>> = {
   display: 'display',

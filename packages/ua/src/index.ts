@@ -1,11 +1,11 @@
 /**
- * @imprint/ua — Tagged PDF / PDF/UA-1 (ISO 14289-1) support.
+ * @imprint-pdf/ua — Tagged PDF / PDF/UA-1 (ISO 14289-1) support.
  *
  * Plug into `renderToBuffer` via `taggedPdf()`:
  *
  * ```ts
- * import { renderToBuffer } from '@imprint/react';
- * import { taggedPdf } from '@imprint/ua';
+ * import { renderToBuffer } from '@imprint-pdf/react';
+ * import { taggedPdf } from '@imprint-pdf/ua';
  *
  * const pdf = await renderToBuffer(<Document lang="en">…</Document>, {
  *   postProcess: [taggedPdf()],
@@ -15,7 +15,7 @@
  * Licensed under the Apache License, Version 2.0.
  */
 
-import type { PdfPostProcessHook } from '@imprint/core';
+import type { PdfPostProcessHook } from '@imprint-pdf/core';
 import type { PDFDocument, PDFPage } from 'pdf-lib';
 import { applyStructTree } from './struct-tree.js';
 

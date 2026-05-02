@@ -1,7 +1,7 @@
-# @imprint/ua
+# @imprint-pdf/ua
 
 Tagged PDF and PDF/UA-1 accessible output for
-[Imprint](https://github.com/tamimbinhakim/imprint).
+[Imprint](https://github.com/tamimbinhakim/imprint-pdf).
 
 Mandated by the EU European Accessibility Act (EAA, in force June 2025) and US
 Section 508. This package makes Imprint's output machine-verifiable against
@@ -10,7 +10,7 @@ PDF/UA-1 (ISO 14289-1).
 **License: Apache-2.0.** See [`LICENSING.md`](../../LICENSING.md).
 
 ```bash
-pnpm add @imprint/ua
+pnpm add @imprint-pdf/ua
 ```
 
 ## What it adds
@@ -30,8 +30,8 @@ pnpm add @imprint/ua
 ### Wire up the `postProcess` hook
 
 ```ts
-import { renderToBuffer } from '@imprint/react';
-import { taggedPdf } from '@imprint/ua';
+import { renderToBuffer } from '@imprint-pdf/react';
+import { taggedPdf } from '@imprint-pdf/ua';
 
 const pdf = await renderToBuffer(
   <Document lang="en-US" title="Q1 Report">
@@ -47,7 +47,7 @@ const pdf = await renderToBuffer(
 ### Validate the IR before rendering
 
 ```ts
-import { validateUA } from '@imprint/ua';
+import { validateUA } from '@imprint-pdf/ua';
 
 const result = validateUA(documentNode);
 if (!result.valid) {

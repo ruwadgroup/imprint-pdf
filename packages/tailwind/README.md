@@ -1,14 +1,14 @@
-# @imprint/tailwind
+# @imprint-pdf/tailwind
 
 Real Tailwind v4 integration for
-[Imprint](https://github.com/tamimbinhakim/imprint).
+[Imprint](https://github.com/tamimbinhakim/imprint-pdf).
 
 Not a subset. Not a DSL. The actual Tailwind v4 Oxide compiler — your plugins,
 your `@theme`, your arbitrary values (`text-[#bada55]`, `mt-[3.7mm]`), all
 resolved the same way they are in the browser.
 
 ```bash
-pnpm add -D @imprint/tailwind tailwindcss
+pnpm add -D @imprint-pdf/tailwind tailwindcss
 ```
 
 ## How it works
@@ -29,7 +29,7 @@ handles the rest. Mirrors how Tailwind v4 itself works in the playground.
 ```ts
 // vite.config.ts
 import { defineConfig } from 'vite';
-import { imprintTailwind } from '@imprint/tailwind/vite';
+import { imprintTailwind } from '@imprint-pdf/tailwind/vite';
 
 export default defineConfig({
   plugins: [imprintTailwind()],
@@ -40,7 +40,7 @@ export default defineConfig({
 
 ```ts
 // next.config.ts
-import { withImprintTailwind } from '@imprint/tailwind/webpack';
+import { withImprintTailwind } from '@imprint-pdf/tailwind/webpack';
 
 export default withImprintTailwind()({
   // next config
@@ -64,7 +64,7 @@ imprintTailwind({ stylesheet: './src/styles/pdf.css' });
 ```css
 /* src/app.css */
 @import 'tailwindcss';
-@import '@imprint/tailwind/preset';
+@import '@imprint-pdf/tailwind/preset';
 
 @theme {
   --font-sans: 'Inter', sans-serif;
@@ -82,14 +82,14 @@ v4 compatibility directive:
 
 ## Imprint-specific Tailwind variants
 
-| Variant                                    | Description                                |
-| ------------------------------------------ | ------------------------------------------ |
-| `print:`                                   | Always active (unlike the browser).        |
-| `page-first:`, `page-left:`, `page-right:` | CSS Paged Media analogues.                 |
-| `imprint:cmyk-[c_m_y_k]`                   | CMYK colour (Enterprise `@imprint/print`). |
-| `imprint:bleed-[size]`                     | Bleed area.                                |
-| `imprint:spot-[Pantone-185-C]`             | Spot colour.                               |
-| `imprint:overprint`                        | PDF overprint flag.                        |
+| Variant                                    | Description                                    |
+| ------------------------------------------ | ---------------------------------------------- |
+| `print:`                                   | Always active (unlike the browser).            |
+| `page-first:`, `page-left:`, `page-right:` | CSS Paged Media analogues.                     |
+| `imprint:cmyk-[c_m_y_k]`                   | CMYK colour (Enterprise `@imprint-pdf/print`). |
+| `imprint:bleed-[size]`                     | Bleed area.                                    |
+| `imprint:spot-[Pantone-185-C]`             | Spot colour.                                   |
+| `imprint:overprint`                        | PDF overprint flag.                            |
 
 ## What gets dropped
 

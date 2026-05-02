@@ -8,7 +8,7 @@ Wrap your Recharts tree in `<Chart>`. Imprint renders it to SVG server-side and
 converts the output to PDF vector operators.
 
 ```tsx
-import { Chart } from '@imprint/react';
+import { Chart } from '@imprint-pdf/react';
 import {
   BarChart,
   Bar,
@@ -48,7 +48,7 @@ static display.
 ## Visx
 
 ```tsx
-import { Chart } from '@imprint/react';
+import { Chart } from '@imprint-pdf/react';
 import { LinePath } from '@visx/shape';
 import { scaleLinear } from '@visx/scale';
 import { AxisBottom, AxisLeft } from '@visx/axis';

@@ -8,7 +8,7 @@ for paged, justified text. Here's what's in it and how to use it.
 Declare fonts in `imprint.config.ts`:
 
 ```ts
-import { defineConfig } from '@imprint/core/config';
+import { defineConfig } from '@imprint-pdf/core/config';
 
 export default defineConfig({
   fonts: [

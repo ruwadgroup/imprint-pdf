@@ -6,7 +6,7 @@ A one-page certificate of completion with decorative borders and custom fonts.
 
 ```tsx
 // src/templates/Certificate.tsx
-import { Document, Page, Image } from '@imprint/react';
+import { Document, Page, Image } from '@imprint-pdf/react';
 
 interface CertificateProps {
   cert: {

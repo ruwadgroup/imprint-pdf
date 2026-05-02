@@ -1,4 +1,4 @@
-import { buildXmpPacket } from '@imprint/core';
+import { buildXmpPacket } from '@imprint-pdf/core';
 import type { PDFDocument } from 'pdf-lib';
 import { PDFArray, PDFDict, PDFHexString, PDFName, PDFRawStream, PDFString } from 'pdf-lib';
 

@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
-import type { ResolvedStyle } from '@imprint/core';
+import type { ResolvedStyle } from '@imprint-pdf/core';
 import { parseCssToStyleMap } from './css-to-styles.js';
 import type { ImprintTailwindOptions } from './index.js';
 

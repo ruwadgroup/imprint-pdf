@@ -1,4 +1,4 @@
-import { Document, Footer, Header, Page, Watermark } from '@imprint/react';
+import { Document, Footer, Header, Page, Watermark } from '@imprint-pdf/react';
 import { describe, expect, it } from 'vitest';
 import { extractText, inspect, render } from '../../src/helpers/index.js';
 

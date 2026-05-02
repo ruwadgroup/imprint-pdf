@@ -1,4 +1,4 @@
-import { Document, Page, renderToBuffer } from '@imprint/react';
+import { Document, Page, renderToBuffer } from '@imprint-pdf/react';
 
 // ---------------------------------------------------------------------------
 // Invoice template

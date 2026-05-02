@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs';
 import { extname, isAbsolute, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import type { FontDeclaration } from '@imprint/core';
+import type { FontDeclaration } from '@imprint-pdf/core';
 import type { FontProvider } from '../types.js';
 
 export interface LocalFontFile {

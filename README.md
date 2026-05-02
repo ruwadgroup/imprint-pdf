@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="https://github.com/tamimbinhakim/imprint">
+  <a href="https://github.com/tamimbinhakim/imprint-pdf">
     <img src="assets/banner-0.1.0.png" alt="imprint — real Tailwind, real React, real typography. PDFs anywhere — no Chromium, ever." width="100%" />
   </a>
 
@@ -26,7 +26,7 @@ Workers. No Chromium. Ever.
 > placeholder until 1.0 — see [`docs/naming.md`](docs/naming.md).
 
 ```tsx
-import { renderToBuffer, Document, Page } from '@imprint/react';
+import { renderToBuffer, Document, Page } from '@imprint-pdf/react';
 
 const pdf = await renderToBuffer(
   <Document>
@@ -106,8 +106,8 @@ Full documentation lives in [`docs/`](docs/):
 ## Installation
 
 ```bash
-pnpm add @imprint/react @imprint/core
-pnpm add -D @imprint/cli @imprint/tailwind
+pnpm add @imprint-pdf/react @imprint-pdf/core
+pnpm add -D @imprint-pdf/cli @imprint-pdf/tailwind
 npx imprint init
 ```
 
@@ -116,7 +116,7 @@ npx imprint init
 Configure `imprint.config.ts`:
 
 ```ts
-import { defineConfig } from '@imprint/core/config';
+import { defineConfig } from '@imprint-pdf/core/config';
 
 export default defineConfig({
   fonts: ['Inter', 'JetBrains Mono'],
@@ -128,7 +128,7 @@ export default defineConfig({
 Author your PDF as a React component:
 
 ```tsx
-import { Document, Page } from '@imprint/react';
+import { Document, Page } from '@imprint-pdf/react';
 
 export function Invoice({ data }: { data: InvoiceData }) {
   return (
@@ -145,14 +145,14 @@ export function Invoice({ data }: { data: InvoiceData }) {
 Render anywhere:
 
 ```ts
-import { renderToBuffer } from '@imprint/react';
+import { renderToBuffer } from '@imprint-pdf/react';
 const pdf = await renderToBuffer(<Invoice data={data} />);
 ```
 
 ```ts
 // Cloudflare Worker
-import { renderToStream } from '@imprint/react/standalone';
-import wasm from '@imprint/react/imprint.wasm';
+import { renderToStream } from '@imprint-pdf/react/standalone';
+import wasm from '@imprint-pdf/react/imprint.wasm';
 
 export default {
   async fetch(req: Request) {
@@ -218,13 +218,13 @@ Chromium, ever.**
 
 ## Benchmarks
 
-Measured with [`@imprint/bench`](packages/bench) on an Apple M-series laptop
+Measured with [`@imprint-pdf/bench`](packages/bench) on an Apple M-series laptop
 (Node 20, 30 runs, 5 warmup), rendering the same 1-page invoice through every
 JSX-driven library.
 
 | Library                             |       mean | p95     | p99     |  Output |
 | ----------------------------------- | ---------: | ------- | ------- | ------: |
-| **`@imprint/react`**                | **4.3 ms** | 5.2 ms  | 5.8 ms  |  6.2 KB |
+| **`@imprint-pdf/react`**            | **4.3 ms** | 5.2 ms  | 5.8 ms  |  6.2 KB |
 | `@react-pdf/renderer`               |    13.7 ms | 15.6 ms | 16.8 ms |  3.3 KB |
 | Puppeteer (warm, browser reused)    |    50.6 ms | 51.1 ms | 51.1 ms | 46.9 KB |
 | Puppeteer (cold, launch per render) |     473 ms | 494 ms  | 494 ms  | 46.9 KB |
@@ -258,10 +258,10 @@ on ergonomics while making it look slow on µs-per-glyph.
 - [`examples/bun-server`](examples/bun-server) — Bun + Hono PDF endpoint
 
 ```bash
-pnpm --filter @imprint/example-next-app dev
-pnpm --filter @imprint/example-vite-react dev
-pnpm --filter @imprint/example-cloudflare-worker dev
-pnpm --filter @imprint/example-bun-server dev
+pnpm --filter @imprint-pdf/example-next-app dev
+pnpm --filter @imprint-pdf/example-vite-react dev
+pnpm --filter @imprint-pdf/example-cloudflare-worker dev
+pnpm --filter @imprint-pdf/example-bun-server dev
 ```
 
 ## Status

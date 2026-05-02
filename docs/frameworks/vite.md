@@ -1,12 +1,12 @@
 # Vite
 
-Vite + React SPA and SSR support via the `@imprint/vite` plugin.
+Vite + React SPA and SSR support via the `@imprint-pdf/vite` plugin.
 
 ## Install
 
 ```bash
-pnpm add @imprint/react @imprint/core
-pnpm add -D @imprint/vite @imprint/tailwind tailwindcss vite
+pnpm add @imprint-pdf/react @imprint-pdf/core
+pnpm add -D @imprint-pdf/vite @imprint-pdf/tailwind tailwindcss vite
 ```
 
 ## Setup
@@ -15,7 +15,7 @@ pnpm add -D @imprint/vite @imprint/tailwind tailwindcss vite
 // vite.config.ts
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { imprint } from '@imprint/vite';
+import { imprint } from '@imprint-pdf/vite';
 
 export default defineConfig({
   plugins: [
@@ -32,7 +32,7 @@ export default defineConfig({
 
 ```tsx
 // src/App.tsx
-import { renderToBuffer } from '@imprint/react';
+import { renderToBuffer } from '@imprint-pdf/react';
 import { Invoice } from './templates/Invoice';
 
 async function downloadPdf() {
@@ -70,8 +70,8 @@ template, the preview reloads without a full rebuild.
 ## SSR (Vike, Astro)
 
 For SSR frameworks built on Vite, `renderToBuffer` runs on the server path
-normally — no special config needed. Add `@imprint/vite` to the Vite plugin list
-and use `renderToBuffer` in your server route.
+normally — no special config needed. Add `@imprint-pdf/vite` to the Vite plugin
+list and use `renderToBuffer` in your server route.
 
 ## Virtual font module
 

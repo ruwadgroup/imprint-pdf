@@ -7,7 +7,7 @@ import {
   RadioGroup,
   Signature,
   TextField,
-} from '@imprint/react';
+} from '@imprint-pdf/react';
 import { describe, expect, it } from 'vitest';
 import { inspect, render } from '../../src/helpers/index.js';
 

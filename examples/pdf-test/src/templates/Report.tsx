@@ -1,4 +1,4 @@
-import { Bookmark, Document, Page } from '@imprint/react';
+import { Bookmark, Document, Page } from '@imprint-pdf/react';
 import type { ReportData } from '../data/report.js';
 
 function fmtUSD(n: number) {

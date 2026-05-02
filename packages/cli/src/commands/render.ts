@@ -67,7 +67,7 @@ async function renderFile(
     }
 
     const { createElement } = await import('react');
-    const { renderToBuffer } = await import('@imprint/react');
+    const { renderToBuffer } = await import('@imprint-pdf/react');
 
     const element = createElement(Component, props) as ReactElement;
     const pdf = await renderToBuffer(element);

@@ -18,11 +18,11 @@ about what's covered by semver, see [`STABILITY.md`](STABILITY.md).
   CSS-style `transform`, `clip-path: url(#id)` via the PDF clip operator,
   and linear / radial gradients via Type 2 / Type 3 shading dictionaries
   (multi-stop gradients use a stitched Type 3 function).
-- New `@imprint/svg-rasterize` — opt-in resvg-WASM fallback for SVGs that
+- New `@imprint-pdf/svg-rasterize` — opt-in resvg-WASM fallback for SVGs that
   use `<filter>`, soft `<mask>`, or `<foreignObject>`. Wire it via
   `renderToBuffer(<Doc/>, { svgRasterizer: rasterize })` and the writer
   switches to PNG embedding only for the elements that need it.
-- New `@imprint/chart` adapter — `<Chart>` SSRs any SVG-emitting React
+- New `@imprint-pdf/chart` adapter — `<Chart>` SSRs any SVG-emitting React
   chart library (Recharts, Visx, etc.) and embeds the result via `<Svg>`.
   Helpers `renderObservablePlot()` and `renderECharts()` cover the
   non-React libraries.
@@ -32,7 +32,7 @@ about what's covered by semver, see [`STABILITY.md`](STABILITY.md).
 - Codegen for the public `PageSize` and `HyphenLanguage` unions. Page
   sizes are derived from `PAGE_SIZES` in `layout/units.ts` so adding a
   size in one place updates the type. `HYPHEN_LANGUAGES` is regenerated
-  from filenames in `data/hyphen/` via `pnpm --filter @imprint/font codegen`.
+  from filenames in `data/hyphen/` via `pnpm --filter @imprint-pdf/font codegen`.
 - New ESLint rule `imprint/no-paged-incompatible` flags Tailwind classes
   that resolve to viewport-bound sizing (`h-screen`, `min-h-dvh`,
   `[50vh]`), container queries (`@container`, `@md:`), or runtime-only
@@ -46,7 +46,7 @@ about what's covered by semver, see [`STABILITY.md`](STABILITY.md).
 
 ### Public API
 
-- **Removed** `<View>` and `<Text>` from `@imprint/react`. Use HTML elements
+- **Removed** `<View>` and `<Text>` from `@imprint-pdf/react`. Use HTML elements
   directly (`<div>`, `<span>`, `<p>`, `<h1>`–`<h6>`, `<a>`, `<img>`, `<table>`,
   `<ul>`, `<ol>`, `<li>`, `<section>`, `<article>`, `<aside>`, `<header>`,
   `<footer>`, `<main>`, `<nav>`, `<figure>`, `<figcaption>`, `<blockquote>`,
@@ -83,25 +83,25 @@ about what's covered by semver, see [`STABILITY.md`](STABILITY.md).
 
 ### Testing
 
-- New `@imprint/e2e` package — end-to-end test harness with PDF text
+- New `@imprint-pdf/e2e` package — end-to-end test harness with PDF text
   extraction (`pdfjs-dist`), structural inspection (`pdf-lib`), and visual
   snapshot infrastructure (`pdftoppm` + `pixelmatch`). Seeded with regression
   tests for the layout/draw parity issues fixed in this round.
-- New `@imprint/testing` package — `toMatchPdfSnapshot()` matcher for Vitest
+- New `@imprint-pdf/testing` package — `toMatchPdfSnapshot()` matcher for Vitest
   and Jest. Wraps the same `pdftoppm` + `pixelmatch` engine used by
-  `@imprint/e2e` and stores baselines under `__pdf_snapshots__/` next to the
+  `@imprint-pdf/e2e` and stores baselines under `__pdf_snapshots__/` next to the
   test file. Honors `vitest -u` / `jest --updateSnapshot` and
   `UPDATE_PDF_SNAPSHOTS=1`.
 
 ### Typography
 
-- **Renamed** `@imprint/google-fonts` to `@imprint/font` and replaced the
+- **Renamed** `@imprint-pdf/google-fonts` to `@imprint-pdf/font` and replaced the
   single `googleFont()` entry point with a provider abstraction:
   `googleProvider`, `bunnyProvider`, `fontsourceProvider`, `localProvider`.
   Use `loadFont(provider, family, options)` or call `provider.load(...)`
   directly. No back-compat shim — the old import path is removed.
 - **Added** Liang's hyphenation algorithm with patterns bundled for 12
-  languages. `import { loadHyphenator } from '@imprint/font/hyphen'` and
+  languages. `import { loadHyphenator } from '@imprint-pdf/font/hyphen'` and
   pass the result through `renderToBuffer({ hyphenate })`. Knuth–Plass
   uses the result as discretionary breakpoints with TeX's standard
   hyphen penalty.
@@ -121,7 +121,7 @@ about what's covered by semver, see [`STABILITY.md`](STABILITY.md).
 
 ### Tailwind variants
 
-- **Added** `@imprint/tailwind/preset` — registers `page-first:`,
+- **Added** `@imprint-pdf/tailwind/preset` — registers `page-first:`,
   `page-left:`, `page-right:`, `imprint-bleed:`, `imprint-cmyk:` as Tailwind
   v4 custom variants. Import alongside `tailwindcss` in your stylesheet.
 - The reconciler now folds variant classes into a per-node `variants` map
@@ -129,7 +129,7 @@ about what's covered by semver, see [`STABILITY.md`](STABILITY.md).
   variant into each node's `style` based on its page position (page 1 is
   recto/right, page 2 is verso/left, etc.). `imprint-bleed` activates when
   `<Page bleed={n}>` is set; `imprint-cmyk` is wired through but is a no-op
-  until the BSL `@imprint/print` pipeline ships.
+  until the BSL `@imprint-pdf/print` pipeline ships.
 
 ### Document metadata
 

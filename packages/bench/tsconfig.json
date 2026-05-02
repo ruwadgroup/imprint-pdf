@@ -5,11 +5,11 @@
     "noEmit": true,
     "types": ["node", "react"],
     "paths": {
-      "@imprint/core": ["../core/src/index.ts"],
-      "@imprint/react": ["../react/src/index.ts"],
-      "@imprint/print": ["../print/src/index.ts"],
-      "@imprint/sign": ["../sign/src/index.ts"],
-      "@imprint/ua": ["../ua/src/index.ts"]
+      "@imprint-pdf/core": ["../core/src/index.ts"],
+      "@imprint-pdf/react": ["../react/src/index.ts"],
+      "@imprint-pdf/print": ["../print/src/index.ts"],
+      "@imprint-pdf/sign": ["../sign/src/index.ts"],
+      "@imprint-pdf/ua": ["../ua/src/index.ts"]
     }
   },
   "include": ["src"]

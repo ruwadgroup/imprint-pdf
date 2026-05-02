@@ -7,7 +7,7 @@ becomes ~50 KB in the output PDF. This is done via HarfBuzz's subsetter API.
 
 ```ts
 // imprint.config.ts
-import { defineConfig } from '@imprint/core/config';
+import { defineConfig } from '@imprint-pdf/core/config';
 
 export default defineConfig({
   fonts: [

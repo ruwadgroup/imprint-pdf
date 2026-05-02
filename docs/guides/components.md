@@ -16,19 +16,19 @@ Root component. Required. Carries document-level metadata and config.
   subject="Invoice"
   keywords={['invoice', 'acme']}
   lang="en-US"
-  intent="PDF/X-4" // Enterprise — @imprint/print
+  intent="PDF/X-4" // Enterprise — @imprint-pdf/print
   outputIntent={{ profile: 'FOGRA39', condition: 'ISO Coated v3' }}
 >
   {/* <Page> children */}
 </Document>
 ```
 
-| Prop     | Type                           | Default | Description                               |
-| -------- | ------------------------------ | ------- | ----------------------------------------- |
-| `title`  | `string`                       | —       | PDF document title (XMP + DocInfo).       |
-| `author` | `string`                       | —       | Author field.                             |
-| `lang`   | `string` (BCP-47)              | `'en'`  | Document language. Required for PDF/UA.   |
-| `intent` | `'PDF/X-4' \| 'PDF/A-2b' \| …` | —       | Output intent. Requires `@imprint/print`. |
+| Prop     | Type                           | Default | Description                                   |
+| -------- | ------------------------------ | ------- | --------------------------------------------- |
+| `title`  | `string`                       | —       | PDF document title (XMP + DocInfo).           |
+| `author` | `string`                       | —       | Author field.                                 |
+| `lang`   | `string` (BCP-47)              | `'en'`  | Document language. Required for PDF/UA.       |
+| `intent` | `'PDF/X-4' \| 'PDF/A-2b' \| …` | —       | Output intent. Requires `@imprint-pdf/print`. |
 
 ### `<Page>`
 
@@ -45,12 +45,12 @@ decide which content goes on which page unless you want explicit control.
 >
 ```
 
-| Prop          | Type                         | Default      | Description                                 |
-| ------------- | ---------------------------- | ------------ | ------------------------------------------- |
-| `size`        | `'A4' \| 'Letter' \| [w, h]` | `'A4'`       | Page dimensions. Custom: `[210, 297]` (mm). |
-| `orientation` | `'portrait' \| 'landscape'`  | `'portrait'` |                                             |
-| `bleed`       | `string` (CSS length)        | —            | Bleed area. Enterprise (`@imprint/print`).  |
-| `marks`       | `string`                     | —            | Trim/registration marks.                    |
+| Prop          | Type                         | Default      | Description                                    |
+| ------------- | ---------------------------- | ------------ | ---------------------------------------------- |
+| `size`        | `'A4' \| 'Letter' \| [w, h]` | `'A4'`       | Page dimensions. Custom: `[210, 297]` (mm).    |
+| `orientation` | `'portrait' \| 'landscape'`  | `'portrait'` |                                                |
+| `bleed`       | `string` (CSS length)        | —            | Bleed area. Enterprise (`@imprint-pdf/print`). |
+| `marks`       | `string`                     | —            | Trim/registration marks.                       |
 
 ### Containers — use HTML
 

@@ -17,7 +17,7 @@ import {
   TextField,
   Checkbox,
   Signature,
-} from '@imprint/react';
+} from '@imprint-pdf/react';
 
 export function ApplicationForm() {
   return (
@@ -127,7 +127,7 @@ Single-line or multi-line text input.
 ### `<Signature>`
 
 Widget for a drawn digital signature. For cryptographic PKCS#7 signing, add the
-`certificate` and `privateKey` props (requires `@imprint/sign`).
+`certificate` and `privateKey` props (requires `@imprint-pdf/sign`).
 
 ```tsx
 <Signature name="director" className="h-24 w-full border-b border-gray-400" />

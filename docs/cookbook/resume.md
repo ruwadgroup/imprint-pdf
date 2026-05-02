@@ -13,7 +13,7 @@ A clean, single-page resume with a sidebar layout using CSS Grid.
 
 ```tsx
 // src/templates/Resume.tsx
-import { Document, Page } from '@imprint/react';
+import { Document, Page } from '@imprint-pdf/react';
 
 interface ResumeProps {
   data: {

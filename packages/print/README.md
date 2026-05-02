@@ -1,12 +1,12 @@
-# @imprint/print
+# @imprint-pdf/print
 
 Enterprise print-ready output for
-[Imprint](https://github.com/tamimbinhakim/imprint).
+[Imprint](https://github.com/tamimbinhakim/imprint-pdf).
 
 **License: Apache-2.0.** See [`LICENSING.md`](../../LICENSING.md).
 
 ```bash
-pnpm add @imprint/print
+pnpm add @imprint-pdf/print
 ```
 
 ## What it adds
@@ -27,8 +27,8 @@ pnpm add @imprint/print
 Pass `printIntent()` as a `postProcess` hook to `renderToBuffer`:
 
 ```ts
-import { renderToBuffer } from '@imprint/react';
-import { printIntent } from '@imprint/print';
+import { renderToBuffer } from '@imprint-pdf/react';
+import { printIntent } from '@imprint-pdf/print';
 import fogra39 from './icc/FOGRA39.icc'; // Uint8Array
 
 const pdf = await renderToBuffer(element, {
@@ -51,7 +51,7 @@ const pdf = await renderToBuffer(element, {
 ## PDF/A-3 + factur-X / ZUGFeRD
 
 ```ts
-import { printIntent } from '@imprint/print';
+import { printIntent } from '@imprint-pdf/print';
 
 const pdf = await renderToBuffer(element, {
   postProcess: [

@@ -15,7 +15,7 @@ A single-page A4 invoice with:
 
 ```tsx
 // src/templates/Invoice.tsx
-import { Document, Page, Image, Svg } from '@imprint/react';
+import { Document, Page, Image, Svg } from '@imprint-pdf/react';
 
 interface LineItem {
   description: string;
@@ -162,7 +162,7 @@ export function Invoice({ invoice }: InvoiceProps) {
 ## Usage
 
 ```ts
-import { renderToBuffer } from '@imprint/react';
+import { renderToBuffer } from '@imprint-pdf/react';
 import { Invoice } from './templates/Invoice';
 
 const pdf = await renderToBuffer(

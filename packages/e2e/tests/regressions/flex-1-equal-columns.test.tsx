@@ -7,7 +7,7 @@
  * sharing space equally.
  */
 
-import { Document, Page } from '@imprint/react';
+import { Document, Page } from '@imprint-pdf/react';
 import { describe, expect, it } from 'vitest';
 import { extractText, render } from '../../src/helpers/index.js';
 

@@ -11,7 +11,7 @@ The `<Chart>` component wraps any charting library that produces SVG and
 converts the output to PDF vectors.
 
 ```tsx
-import { Chart } from '@imprint/react';
+import { Chart } from '@imprint-pdf/react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid } from 'recharts';
 
 const data = [
@@ -85,7 +85,7 @@ import logoSvg from './logo.svg?raw';
 
 ## CMYK charts (Enterprise)
 
-With `@imprint/print`, colors in charts that use Tailwind's OKLCH values are
+With `@imprint-pdf/print`, colors in charts that use Tailwind's OKLCH values are
 converted to CMYK automatically via lcms2. For explicit CMYK in chart code, use
 the CSS `imprint:cmyk-[c_m_y_k]` custom property or pass pre-computed CMYK
 values to your chart color props.

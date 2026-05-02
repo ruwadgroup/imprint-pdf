@@ -4,7 +4,7 @@
  * document size.
  */
 
-import { renderToBuffer } from '@imprint/react';
+import { renderToBuffer } from '@imprint-pdf/react';
 import React from 'react';
 import { ReportDoc } from '../fixtures/report.js';
 import { type BenchResult, bench } from '../runner.js';

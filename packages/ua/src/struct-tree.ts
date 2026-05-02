@@ -1,4 +1,4 @@
-import type { DocumentNode, PdfNode } from '@imprint/core';
+import type { DocumentNode, PdfNode } from '@imprint-pdf/core';
 import type { PDFDocument, PDFPage, PDFRef } from 'pdf-lib';
 import { PDFArray, PDFDict, PDFHexString, PDFName, PDFNumber, PDFString } from 'pdf-lib';
 import { HTML_TO_ROLE, type StructureRole } from './roles.js';

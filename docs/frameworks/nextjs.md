@@ -6,15 +6,15 @@ Runtime, and the `withImprint` plugin.
 ## Install
 
 ```bash
-pnpm add @imprint/next @imprint/react @imprint/core
-pnpm add -D @imprint/tailwind tailwindcss
+pnpm add @imprint-pdf/next @imprint-pdf/react @imprint-pdf/core
+pnpm add -D @imprint-pdf/tailwind tailwindcss
 ```
 
 ## Plugin
 
 ```ts
 // next.config.ts
-import { withImprint } from '@imprint/next/plugin';
+import { withImprint } from '@imprint-pdf/next/plugin';
 
 export default withImprint()({
   // your Next.js config
@@ -23,17 +23,17 @@ export default withImprint()({
 
 `withImprint()` does three things:
 
-1. Wires `@imprint/tailwind/webpack` for compile-time class extraction.
+1. Wires `@imprint-pdf/tailwind/webpack` for compile-time class extraction.
 2. Enables the `asyncWebAssembly` and `layers` webpack experiments and adds a
    `webassembly/async` rule for `.wasm` files (required by the renderer).
-3. Adds `@imprint/react` and `@imprint/core` to `serverExternalPackages` so
-   Next.js doesn't bundle their server-only internals.
+3. Adds `@imprint-pdf/react` and `@imprint-pdf/core` to `serverExternalPackages`
+   so Next.js doesn't bundle their server-only internals.
 
 ## Route handler (Node runtime)
 
 ```ts
 // app/api/invoice/[id]/route.ts
-import { renderToServer } from '@imprint/next';
+import { renderToServer } from '@imprint-pdf/next';
 import { Invoice } from '@/templates/Invoice';
 import { getInvoice } from '@/lib/db';
 
@@ -61,7 +61,7 @@ export async function GET(
 // app/api/invoice/[id]/route.ts
 export const runtime = 'edge';
 
-import { renderToEdge } from '@imprint/next';
+import { renderToEdge } from '@imprint-pdf/next';
 import { Invoice } from '@/templates/Invoice';
 
 export async function GET(
@@ -84,7 +84,7 @@ separate "streaming mode" to enable.
 
 ```tsx
 // app/invoice/[id]/page.tsx
-import { getImprintConfig } from '@imprint/next';
+import { getImprintConfig } from '@imprint-pdf/next';
 
 export default async function InvoicePage({
   params,
@@ -108,7 +108,7 @@ a `Response` with the right `Content-Type`, `Content-Length`, and
 `Content-Disposition` headers for you:
 
 ```ts
-import { createPdfResponse } from '@imprint/next';
+import { createPdfResponse } from '@imprint-pdf/next';
 
 export async function GET(
   _req: Request,
@@ -161,7 +161,7 @@ export async function GET(
 
 ```ts
 // imprint.config.ts (project root)
-import { defineConfig } from '@imprint/core/config';
+import { defineConfig } from '@imprint-pdf/core/config';
 
 export default defineConfig({
   fonts: [{ family: 'Inter', src: './public/fonts/Inter.woff2' }],

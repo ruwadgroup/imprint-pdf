@@ -14,7 +14,7 @@ PR.
 ## Setup
 
 ```bash
-git clone https://github.com/tamimbinhakim/imprint.git
+git clone https://github.com/tamimbinhakim/imprint-pdf.git
 cd imprint
 pnpm install
 pnpm build
@@ -31,17 +31,17 @@ pnpm wasm:build
 
 ```bash
 pnpm dev                                # watch every package
-pnpm --filter @imprint/core dev         # watch one
-pnpm --filter @imprint/core test        # test one
+pnpm --filter @imprint-pdf/core dev         # watch one
+pnpm --filter @imprint-pdf/core test        # test one
 ```
 
 Examples are wired via `workspace:*`:
 
 ```bash
-pnpm --filter @imprint/example-next-app dev
-pnpm --filter @imprint/example-vite-react dev
-pnpm --filter @imprint/example-cloudflare-worker dev
-pnpm --filter @imprint/example-bun-server dev
+pnpm --filter @imprint-pdf/example-next-app dev
+pnpm --filter @imprint-pdf/example-vite-react dev
+pnpm --filter @imprint-pdf/example-cloudflare-worker dev
+pnpm --filter @imprint-pdf/example-bun-server dev
 ```
 
 ## Code style

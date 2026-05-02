@@ -1,16 +1,16 @@
 {
-  "name": "@imprint/vite",
+  "name": "@imprint-pdf/vite",
   "version": "0.1.0",
   "description": "Vite plugin for Imprint — compile-time Tailwind extraction, HMR, and virtual font modules.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tamimbinhakim/imprint.git",
+    "url": "git+https://github.com/tamimbinhakim/imprint-pdf.git",
     "directory": "packages/vite"
   },
-  "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/vite#readme",
-  "bugs": "https://github.com/tamimbinhakim/imprint/issues",
+  "homepage": "https://github.com/tamimbinhakim/imprint-pdf/tree/main/packages/vite#readme",
+  "bugs": "https://github.com/tamimbinhakim/imprint-pdf/issues",
   "keywords": [
     "vite",
     "pdf",
@@ -51,8 +51,8 @@
     "clean": "rm -rf dist .turbo *.tsbuildinfo"
   },
   "dependencies": {
-    "@imprint/core": "workspace:*",
-    "@imprint/tailwind": "workspace:*"
+    "@imprint-pdf/core": "workspace:*",
+    "@imprint-pdf/tailwind": "workspace:*"
   },
   "peerDependencies": {
     "vite": ">=5.0.0"

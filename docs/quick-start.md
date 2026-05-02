@@ -5,8 +5,8 @@ Five minutes from empty project to a real PDF.
 ## 1. Install
 
 ```bash
-pnpm add @imprint/react @imprint/core
-pnpm add -D @imprint/cli @imprint/tailwind tailwindcss
+pnpm add @imprint-pdf/react @imprint-pdf/core
+pnpm add -D @imprint-pdf/cli @imprint-pdf/tailwind tailwindcss
 ```
 
 ## 2. Initialise
@@ -22,7 +22,7 @@ conventional locations — no extra wiring required:
 ```css
 /* src/app.css */
 @import 'tailwindcss';
-@import '@imprint/tailwind/preset';
+@import '@imprint-pdf/tailwind/preset';
 
 @theme {
   --font-sans: 'Inter', sans-serif;
@@ -32,7 +32,7 @@ conventional locations — no extra wiring required:
 The generated `imprint.config.ts` only needs your fonts:
 
 ```ts
-import { defineConfig } from '@imprint/core/config';
+import { defineConfig } from '@imprint-pdf/core/config';
 
 export default defineConfig({
   fonts: [{ family: 'Inter', src: './public/fonts/Inter.woff2' }],
@@ -46,7 +46,7 @@ export default defineConfig({
 
 ```tsx
 // src/templates/Invoice.tsx
-import { Document, Page } from '@imprint/react';
+import { Document, Page } from '@imprint-pdf/react';
 
 interface InvoiceProps {
   invoice: { id: string; customer: string; total: number };
@@ -82,7 +82,7 @@ export function Invoice({ invoice }: InvoiceProps) {
 
 ```ts
 // src/generate.ts
-import { renderToBuffer } from '@imprint/react';
+import { renderToBuffer } from '@imprint-pdf/react';
 import { Invoice } from './templates/Invoice';
 import { writeFileSync } from 'node:fs';
 
@@ -102,7 +102,7 @@ open out/invoice.pdf
 
 ```ts
 // app/api/invoice/[id]/route.ts
-import { renderToServer } from '@imprint/next';
+import { renderToServer } from '@imprint-pdf/next';
 import { Invoice } from '@/templates/Invoice';
 import { getInvoice } from '@/lib/db';
 
@@ -124,7 +124,7 @@ export async function GET(
 
 ```ts
 // src/App.tsx
-import { renderToBuffer } from '@imprint/react';
+import { renderToBuffer } from '@imprint-pdf/react';
 import { Invoice } from './templates/Invoice';
 
 async function download() {
@@ -147,7 +147,7 @@ Hot-reloads when you save. Uses the same pipeline as production.
 
 ## 6. Validate (Enterprise)
 
-If you have `@imprint/ua` or `@imprint/print`:
+If you have `@imprint-pdf/ua` or `@imprint-pdf/print`:
 
 ```bash
 npx imprint validate ./out/invoice.pdf --profile pdf-ua-1

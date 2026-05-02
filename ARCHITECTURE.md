@@ -35,22 +35,22 @@ PDF byte stream, with each stage isolated, testable, and swappable.
 │  ├─ examples/cloudflare-worker, examples/bun-server              │
 ├──────────────────────────────────────────────────────────────────┤
 │  Framework adapters                                              │
-│  ├─ @imprint/react      (reconciler, components, RSC helpers)    │
-│  ├─ @imprint/next       (route handler, edge build)              │
-│  ├─ @imprint/vite       (Tailwind + asset plugin, HMR preview)   │
-│  └─ @imprint/tailwind   (compile-time + runtime Oxide bridge)    │
+│  ├─ @imprint-pdf/react      (reconciler, components, RSC helpers)    │
+│  ├─ @imprint-pdf/next       (route handler, edge build)              │
+│  ├─ @imprint-pdf/vite       (Tailwind + asset plugin, HMR preview)   │
+│  └─ @imprint-pdf/tailwind   (compile-time + runtime Oxide bridge)    │
 ├──────────────────────────────────────────────────────────────────┤
 │  Tooling                                                         │
-│  ├─ @imprint/cli            (render, dev preview, init, validate)│
-│  └─ @imprint/eslint  (lint rules for PDF authoring)       │
+│  ├─ @imprint-pdf/cli            (render, dev preview, init, validate)│
+│  └─ @imprint-pdf/eslint  (lint rules for PDF authoring)       │
 ├──────────────────────────────────────────────────────────────────┤
 │  Enterprise surface (Apache-2.0)                                 │
-│  ├─ @imprint/print  (PDF/X-4, CMYK, ICC via lcms2 WASM)          │
-│  ├─ @imprint/sign   (PKCS#7 detached signatures)                 │
-│  └─ @imprint/ua     (PDF/UA-1 tagged PDF, structure tree)        │
+│  ├─ @imprint-pdf/print  (PDF/X-4, CMYK, ICC via lcms2 WASM)          │
+│  ├─ @imprint-pdf/sign   (PKCS#7 detached signatures)                 │
+│  └─ @imprint-pdf/ua     (PDF/UA-1 tagged PDF, structure tree)        │
 ├──────────────────────────────────────────────────────────────────┤
 │  Core                                                            │
-│  └─ @imprint/core                                                │
+│  └─ @imprint-pdf/core                                                │
 │     ├─ PdfNode IR                                                │
 │     ├─ Layout pass (Taffy WASM)                                  │
 │     ├─ Inline layout + Knuth–Plass + Plass page breaker          │
@@ -61,14 +61,14 @@ PDF byte stream, with each stage isolated, testable, and swappable.
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-Dependencies flow downward only. `@imprint/core` has no workspace deps.
+Dependencies flow downward only. `@imprint-pdf/core` has no workspace deps.
 
 ## Pipeline
 
 ### 1. Authoring
 
 ```tsx
-import { Document, Page } from '@imprint/react';
+import { Document, Page } from '@imprint-pdf/react';
 
 export function Invoice({ data }: { data: InvoiceData }) {
   return (
@@ -102,7 +102,7 @@ explicit semantics — no DOM speculation.
 
 ### 3. Style resolution
 
-`@imprint/tailwind` runs the **real Tailwind v4 Oxide compiler**:
+`@imprint-pdf/tailwind` runs the **real Tailwind v4 Oxide compiler**:
 
 - **Compile-time** — Vite / Webpack / Bun plugin extracts classes, pre-resolves
   into a static CSS map. Zero runtime cost.
@@ -162,7 +162,7 @@ globally. This is what TeX does and what every browser still does _not_ do.
 | v1    | `imprint-pdf` (Rust → WASM) | CMYK, ICC, PDF/X-4, PDF/UA-1, PKCS#7 |
 
 The writer is gated behind a tree-shakeable subpath. The Apache-licensed core
-ships only the JS writer; `@imprint/print` opts into the Rust writer.
+ships only the JS writer; `@imprint-pdf/print` opts into the Rust writer.
 
 Streaming: the writer emits objects sequentially and supports
 `pipe(WritableStream)` (Node) and `ReadableStream` (Web). For very large

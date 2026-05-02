@@ -1,4 +1,4 @@
-import { Document, Page } from '@imprint/react';
+import { Document, Page } from '@imprint-pdf/react';
 import type { SalesOrderData } from '../data/salesOrder.js';
 
 const fmt = (n: number) => (n < 0 ? '-$' : '$') + Math.abs(n).toFixed(2);

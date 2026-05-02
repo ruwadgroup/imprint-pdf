@@ -1,5 +1,5 @@
 {
-  "name": "@imprint/pdf-test",
+  "name": "@imprint-pdf/pdf-test",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -9,10 +9,10 @@
     "generate:watch": "tsx watch src/index.tsx"
   },
   "dependencies": {
-    "@imprint/core": "workspace:*",
-    "@imprint/font": "workspace:*",
-    "@imprint/react": "workspace:*",
-    "@imprint/tailwind": "workspace:*",
+    "@imprint-pdf/core": "workspace:*",
+    "@imprint-pdf/font": "workspace:*",
+    "@imprint-pdf/react": "workspace:*",
+    "@imprint-pdf/tailwind": "workspace:*",
     "react": "catalog:",
     "tailwindcss": "^4.0.0"
   },

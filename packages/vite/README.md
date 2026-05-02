@@ -1,10 +1,10 @@
-# @imprint/vite
+# @imprint-pdf/vite
 
-Vite plugin for [Imprint](https://github.com/tamimbinhakim/imprint) —
+Vite plugin for [Imprint](https://github.com/tamimbinhakim/imprint-pdf) —
 compile-time Tailwind extraction and HMR in the `imprint dev` preview server.
 
 ```bash
-pnpm add -D @imprint/vite vite
+pnpm add -D @imprint-pdf/vite vite
 ```
 
 ## Setup
@@ -13,7 +13,7 @@ pnpm add -D @imprint/vite vite
 // vite.config.ts
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { imprint } from '@imprint/vite';
+import { imprint } from '@imprint-pdf/vite';
 
 export default defineConfig({
   plugins: [
@@ -30,8 +30,8 @@ export default defineConfig({
 
 - Runs Tailwind v4 Oxide over your source files at build time and injects the
   resolved CSS map into the Imprint render pipeline.
-- Provides a virtual `@imprint/virtual/fonts` module so font files are imported
-  cleanly without `fs` calls in browser builds.
+- Provides a virtual `@imprint-pdf/virtual/fonts` module so font files are
+  imported cleanly without `fs` calls in browser builds.
 - Integrates with `vite --watch` for HMR — change a template, the `imprint dev`
   preview reloads instantly.
 - Handles WASM asset copying and `?url` imports for the standalone Cloudflare

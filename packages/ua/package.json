@@ -1,16 +1,16 @@
 {
-  "name": "@imprint/ua",
+  "name": "@imprint-pdf/ua",
   "version": "0.1.0",
   "description": "Tagged PDF and PDF/UA-1 accessible output for Imprint — structure tree, alt text, language attributes, veraPDF validation.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tamimbinhakim/imprint.git",
+    "url": "git+https://github.com/tamimbinhakim/imprint-pdf.git",
     "directory": "packages/ua"
   },
-  "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/ua#readme",
-  "bugs": "https://github.com/tamimbinhakim/imprint/issues",
+  "homepage": "https://github.com/tamimbinhakim/imprint-pdf/tree/main/packages/ua#readme",
+  "bugs": "https://github.com/tamimbinhakim/imprint-pdf/issues",
   "keywords": [
     "pdf-ua",
     "accessibility",
@@ -53,8 +53,8 @@
     "clean": "rm -rf dist .turbo *.tsbuildinfo"
   },
   "dependencies": {
-    "@imprint/core": "workspace:*",
-    "@imprint/react": "workspace:*",
+    "@imprint-pdf/core": "workspace:*",
+    "@imprint-pdf/react": "workspace:*",
     "pdf-lib": "catalog:"
   },
   "devDependencies": {

@@ -9,7 +9,7 @@ hand-curated subset. If a class works in Tailwind, it works in Imprint.
 
 ```ts
 // vite.config.ts
-import { imprint } from '@imprint/vite';
+import { imprint } from '@imprint-pdf/vite';
 
 export default defineConfig({
   plugins: [imprint()],
@@ -26,7 +26,7 @@ Your `app.css` is the standard Tailwind v4 CSS-first stylesheet:
 ```css
 /* src/app.css */
 @import 'tailwindcss';
-@import '@imprint/tailwind/preset';
+@import '@imprint-pdf/tailwind/preset';
 
 @theme {
   --font-sans: 'Inter', sans-serif;
@@ -38,7 +38,7 @@ Your `app.css` is the standard Tailwind v4 CSS-first stylesheet:
 
 ```ts
 // next.config.ts
-import { withImprint } from '@imprint/next/plugin';
+import { withImprint } from '@imprint-pdf/next/plugin';
 
 export default withImprint()({
   /* next config */
@@ -62,17 +62,17 @@ export default withImprint()({
 ## Imprint-specific variants
 
 These are added via the Imprint Tailwind plugin (auto-loaded by
-`@imprint/tailwind`):
+`@imprint-pdf/tailwind`):
 
-| Variant                        | Description                                                  |
-| ------------------------------ | ------------------------------------------------------------ |
-| `page-first:`                  | Applies only on the first page.                              |
-| `page-left:`                   | Applies on left-hand (even) pages.                           |
-| `page-right:`                  | Applies on right-hand (odd) pages.                           |
-| `imprint:cmyk-[c_m_y_k]`       | CMYK colour. Values 0–1 each. Enterprise (`@imprint/print`). |
-| `imprint:spot-[Pantone-185-C]` | Named spot colour. Enterprise.                               |
-| `imprint:overprint`            | PDF overprint flag.                                          |
-| `imprint:bleed-[3mm]`          | Bleed area size for this element.                            |
+| Variant                        | Description                                                      |
+| ------------------------------ | ---------------------------------------------------------------- |
+| `page-first:`                  | Applies only on the first page.                                  |
+| `page-left:`                   | Applies on left-hand (even) pages.                               |
+| `page-right:`                  | Applies on right-hand (odd) pages.                               |
+| `imprint:cmyk-[c_m_y_k]`       | CMYK colour. Values 0–1 each. Enterprise (`@imprint-pdf/print`). |
+| `imprint:spot-[Pantone-185-C]` | Named spot colour. Enterprise.                                   |
+| `imprint:overprint`            | PDF overprint flag.                                              |
+| `imprint:bleed-[3mm]`          | Bleed area size for this element.                                |
 
 ## What gets dropped
 
@@ -114,7 +114,7 @@ Imprint at the same stylesheet:
 ```css
 /* src/app.css (shared) */
 @import 'tailwindcss';
-@import '@imprint/tailwind/preset';
+@import '@imprint-pdf/tailwind/preset';
 
 @theme {
   --font-sans: 'Inter', sans-serif;
@@ -124,7 +124,7 @@ Imprint at the same stylesheet:
 
 ```ts
 // imprint.config.ts
-import { defineConfig } from '@imprint/core/config';
+import { defineConfig } from '@imprint-pdf/core/config';
 
 export default defineConfig({
   // tailwind.stylesheet auto-detects ./src/app.css — no extra config needed.

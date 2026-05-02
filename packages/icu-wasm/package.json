@@ -1,16 +1,16 @@
 {
-  "name": "@imprint/icu-wasm",
+  "name": "@imprint-pdf/icu-wasm",
   "version": "0.1.0",
   "description": "ICU4X segmentation and bidi (Rust→WASM, minimal slice) for Imprint",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tamimbinhakim/imprint.git",
+    "url": "git+https://github.com/tamimbinhakim/imprint-pdf.git",
     "directory": "packages/icu-wasm"
   },
-  "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/icu-wasm#readme",
-  "bugs": "https://github.com/tamimbinhakim/imprint/issues",
+  "homepage": "https://github.com/tamimbinhakim/imprint-pdf/tree/main/packages/icu-wasm#readme",
+  "bugs": "https://github.com/tamimbinhakim/imprint-pdf/issues",
   "type": "module",
   "main": "./pkg/imprint_icu.js",
   "types": "./src/index.ts",

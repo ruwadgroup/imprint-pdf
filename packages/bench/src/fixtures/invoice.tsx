@@ -6,7 +6,7 @@
  * can read the same values without any React dependency.
  */
 
-import { Document, Page } from '@imprint/react';
+import { Document, Page } from '@imprint-pdf/react';
 import type React from 'react';
 
 export interface LineItem {

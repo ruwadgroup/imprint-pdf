@@ -1,4 +1,4 @@
-import type { FontDeclaration } from '@imprint/core';
+import type { FontDeclaration } from '@imprint-pdf/core';
 
 // Google Fonts and Bunny Fonts emit one `@font-face` per unicode-range
 // subset, with `latin` always last. The last block per (family,weight,style)

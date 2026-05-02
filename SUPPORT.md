@@ -19,7 +19,7 @@ The [README](README.md) covers install, quick-start, and a feature overview. The
 ## Bugs
 
 Open a
-[GitHub issue](https://github.com/tamimbinhakim/imprint/issues/new/choose).
+[GitHub issue](https://github.com/tamimbinhakim/imprint-pdf/issues/new/choose).
 Please include:
 
 - Affected package(s) and version(s)
@@ -33,7 +33,7 @@ Issues without a reproduction are usually closed.
 ## Questions
 
 For questions, design discussion, or "how do I…" prompts, use
-[GitHub Discussions](https://github.com/tamimbinhakim/imprint/discussions).
+[GitHub Discussions](https://github.com/tamimbinhakim/imprint-pdf/discussions).
 Discussions stay searchable, so future users with the same question can find the
 answer.
 
@@ -45,15 +45,15 @@ answer.
 ## Feature requests
 
 File a
-[feature request issue](https://github.com/tamimbinhakim/imprint/issues/new/choose)
+[feature request issue](https://github.com/tamimbinhakim/imprint-pdf/issues/new/choose)
 explaining the use case and what you've already tried. Pre-1.0 the API moves
 quickly; the [roadmap](ROADMAP.md) shows what's planned.
 
 ## Enterprise support
 
-`@imprint/print`, `@imprint/sign`, `@imprint/ua` are Apache-2.0 like the rest of
-the project. For sponsored priority support, security review, or an SLA, contact
-**enterprise@imprint.dev**.
+`@imprint-pdf/print`, `@imprint-pdf/sign`, `@imprint-pdf/ua` are Apache-2.0 like
+the rest of the project. For sponsored priority support, security review, or an
+SLA, contact **enterprise@imprint.dev**.
 
 ## Contributing
 

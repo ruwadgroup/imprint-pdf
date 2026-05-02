@@ -1,16 +1,16 @@
 {
-  "name": "@imprint/print",
+  "name": "@imprint-pdf/print",
   "version": "0.1.0",
   "description": "Enterprise PDF/X-4, CMYK, ICC profile, spot color, bleed/trim, and PDF/A output for Imprint.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tamimbinhakim/imprint.git",
+    "url": "git+https://github.com/tamimbinhakim/imprint-pdf.git",
     "directory": "packages/print"
   },
-  "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/print#readme",
-  "bugs": "https://github.com/tamimbinhakim/imprint/issues",
+  "homepage": "https://github.com/tamimbinhakim/imprint-pdf/tree/main/packages/print#readme",
+  "bugs": "https://github.com/tamimbinhakim/imprint-pdf/issues",
   "keywords": [
     "pdf-x",
     "cmyk",
@@ -54,12 +54,12 @@
     "clean": "rm -rf dist .turbo *.tsbuildinfo"
   },
   "dependencies": {
-    "@imprint/core": "workspace:*",
-    "@imprint/react": "workspace:*",
+    "@imprint-pdf/core": "workspace:*",
+    "@imprint-pdf/react": "workspace:*",
     "pdf-lib": "catalog:"
   },
   "devDependencies": {
-    "@imprint/ua": "workspace:*",
+    "@imprint-pdf/ua": "workspace:*",
     "@types/node": "catalog:",
     "tsup": "catalog:",
     "tsx": "catalog:",

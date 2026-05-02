@@ -1,4 +1,4 @@
-import { Svg } from '@imprint/react';
+import { Svg } from '@imprint-pdf/react';
 import type { ReactElement, ReactNode } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 

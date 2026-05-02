@@ -1,4 +1,4 @@
-import { Document, Page } from '@imprint/react';
+import { Document, Page } from '@imprint-pdf/react';
 
 interface InvoiceData {
   id: string;

@@ -12,7 +12,7 @@ export async function runInit(options: { ts: boolean }) {
   //   - outDir: 'out'
   //   - tailwind.stylesheet: auto-detected from src/app.css, src/globals.css, …
   const content = options.ts
-    ? `import { defineConfig } from '@imprint/core/config'
+    ? `import { defineConfig } from '@imprint-pdf/core/config'
 
 export default defineConfig({
   fonts: [
@@ -20,7 +20,7 @@ export default defineConfig({
   ],
 })
 `
-    : `const { defineConfig } = require('@imprint/core/config')
+    : `const { defineConfig } = require('@imprint-pdf/core/config')
 
 module.exports = defineConfig({
   fonts: [

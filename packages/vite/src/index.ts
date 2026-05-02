@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// @imprint/vite — Vite plugin
+// @imprint-pdf/vite — Vite plugin
 //
 // Composes the Tailwind extraction plugin, a virtual font module plugin, and
 // an HMR plugin that triggers full page reload when a .pdf.tsx file changes.
@@ -7,8 +7,8 @@
 
 import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
-import type { ImprintTailwindOptions } from '@imprint/tailwind';
-import { imprintTailwind } from '@imprint/tailwind/vite';
+import type { ImprintTailwindOptions } from '@imprint-pdf/tailwind';
+import { imprintTailwind } from '@imprint-pdf/tailwind/vite';
 import type { Plugin } from 'vite';
 
 // ---------------------------------------------------------------------------
@@ -157,7 +157,7 @@ function imprintHmr(): Plugin {
  *
  * @example
  * // vite.config.ts
- * import { imprint } from '@imprint/vite'
+ * import { imprint } from '@imprint-pdf/vite'
  *
  * export default {
  *   plugins: [
@@ -172,6 +172,6 @@ export function imprint(options: ImprintViteOptions = {}): Plugin[] {
   return [imprintTailwind(options), imprintFonts(options), imprintFontsList(options), imprintHmr()];
 }
 
-export type { ImprintTailwindOptions } from '@imprint/tailwind';
+export type { ImprintTailwindOptions } from '@imprint-pdf/tailwind';
 // Named re-exports for consumers who want individual plugins
-export { imprintTailwind } from '@imprint/tailwind/vite';
+export { imprintTailwind } from '@imprint-pdf/tailwind/vite';

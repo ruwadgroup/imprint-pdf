@@ -2,7 +2,7 @@
 
 Typed exports per package.
 
-## `@imprint/core`
+## `@imprint-pdf/core`
 
 ### Runtime
 
@@ -29,7 +29,7 @@ Typed exports per package.
 `ResolvedStyle`, `ComputedGeometry`, `FontDeclaration`, `AssetResolver`,
 `ImprintConfig`, `ImprintConfigInput`, `RenderOptions`.
 
-## `@imprint/react`
+## `@imprint-pdf/react`
 
 ### Render functions
 
@@ -44,7 +44,7 @@ renderToStream(element: ReactElement, options?: RenderOptions): Promise<Readable
 `PageNumber`, `TotalPages`, `Form`, `TextField`, `Checkbox`, `RadioGroup`,
 `Dropdown`, `Signature`, `Button`, `Chart`.
 
-### `@imprint/react/server`
+### `@imprint-pdf/react/server`
 
 ```ts
 renderToServer(element: ReactElement, options?: RenderOptions): Promise<Uint8Array>
@@ -54,7 +54,7 @@ renderToStream(element: ReactElement, options?: RenderOptions): Promise<Readable
 `renderToServer` is an alias for `renderToBuffer` re-exported under a name that
 reads better in server code paths.
 
-### `@imprint/react/standalone`
+### `@imprint-pdf/react/standalone`
 
 Self-contained build for v8-isolate runtimes (Cloudflare Workers, Vercel Edge,
 Bun). Both functions accept an optional pre-compiled `WebAssembly.Module` so
@@ -72,7 +72,7 @@ renderToStream(
 ): Promise<ReadableStream<Uint8Array>>
 ```
 
-## `@imprint/next`
+## `@imprint-pdf/next`
 
 ```ts
 renderToServer(element: ReactElement, options?: RenderOptions): Promise<Uint8Array>
@@ -87,31 +87,31 @@ createPdfResponse(
 getImprintConfig(): Promise<ImprintConfig>
 ```
 
-### `@imprint/next/plugin`
+### `@imprint-pdf/next/plugin`
 
 ```ts
 withImprint(options?: ImprintPluginOptions): (nextConfig: NextConfig) => NextConfig
 ```
 
-## `@imprint/tailwind`
+## `@imprint-pdf/tailwind`
 
-### `@imprint/tailwind/vite`
+### `@imprint-pdf/tailwind/vite`
 
 ```ts
 imprintTailwind(options?: ImprintTailwindOptions): Plugin
 ```
 
-### `@imprint/tailwind/webpack`
+### `@imprint-pdf/tailwind/webpack`
 
 ```ts
 withImprintTailwind(options?: ImprintTailwindOptions): (config: WebpackConfig) => WebpackConfig
 ```
 
-## `@imprint/print` (Enterprise)
+## `@imprint-pdf/print` (Enterprise)
 
 ```ts
 // Import side-effect registers the print writer
-import '@imprint/print';
+import '@imprint-pdf/print';
 ```
 
 New `<Document>` props: `intent`, `outputIntent`.  
@@ -119,10 +119,10 @@ New `<Page>` props: `bleed`, `marks`.
 New Tailwind variants: `imprint:cmyk-[…]`, `imprint:spot-[…]`,
 `imprint:overprint`.
 
-## `@imprint/sign` (Enterprise)
+## `@imprint-pdf/sign` (Enterprise)
 
 ```ts
-import '@imprint/sign';
+import '@imprint-pdf/sign';
 
 signBuffer(
   pdf: Uint8Array,
@@ -133,21 +133,21 @@ signBuffer(
 `SignOptions`:
 `{ certificate: string; privateKey: string; reason?: string; location?: string; tsaUrl?: string }`.
 
-## `@imprint/ua` (Enterprise)
+## `@imprint-pdf/ua` (Enterprise)
 
 ```ts
 // Import side-effect registers the tagged-PDF writer
-import '@imprint/ua';
+import '@imprint-pdf/ua';
 ```
 
 Enables the PDF/UA-1 structure tree, marked content, alt text, and language
 propagation. No new public API — all via JSX props (`alt`, `aria-label`,
 `lang`).
 
-## `@imprint/eslint`
+## `@imprint-pdf/eslint`
 
 ```js
-import imprint from '@imprint/eslint';
+import imprint from '@imprint-pdf/eslint';
 // imprint.configs.recommended
 // imprint.rules['no-unsupported-css']
 // imprint.rules['no-missing-alt']

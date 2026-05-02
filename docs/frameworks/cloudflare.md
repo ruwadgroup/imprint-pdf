@@ -1,7 +1,7 @@
 # Cloudflare Workers
 
 Imprint generates PDFs on Cloudflare Workers in under 100 ms cold start. No
-dedicated package — use `@imprint/react/standalone` directly.
+dedicated package — use `@imprint-pdf/react/standalone` directly.
 
 ## The standalone build
 
@@ -11,8 +11,8 @@ is bundled with the Worker.
 
 ```ts
 // src/index.ts
-import { renderToStream } from '@imprint/react/standalone';
-import wasm from '@imprint/react/imprint.wasm';
+import { renderToStream } from '@imprint-pdf/react/standalone';
+import wasm from '@imprint-pdf/react/imprint.wasm';
 import React from 'react';
 import { Invoice } from './templates/Invoice';
 
@@ -44,7 +44,7 @@ compatibility_date = "2024-01-01"
 
 # Required for WASM modules
 [wasm_modules]
-IMPRINT_WASM = "./node_modules/@imprint/react/dist/imprint.wasm"
+IMPRINT_WASM = "./node_modules/@imprint-pdf/react/dist/imprint.wasm"
 ```
 
 ## Fonts on Workers

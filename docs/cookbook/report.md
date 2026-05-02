@@ -22,7 +22,7 @@ import {
   Chart,
   PageNumber,
   TotalPages,
-} from '@imprint/react';
+} from '@imprint-pdf/react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
 interface ReportProps {

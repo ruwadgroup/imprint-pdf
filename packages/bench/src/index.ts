@@ -1,5 +1,5 @@
 /**
- * @imprint/bench — CLI entry point
+ * @imprint-pdf/bench — CLI entry point
  *
  * Usage:
  *   pnpm bench                          run all suites

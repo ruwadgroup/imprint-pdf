@@ -9,7 +9,7 @@
  * file can remain a plain .ts file without a JSX transform.
  */
 
-import { Document, Page, renderToBuffer } from '@imprint/react';
+import { Document, Page, renderToBuffer } from '@imprint-pdf/react';
 import React from 'react';
 import { type BenchResult, bench } from '../runner.js';
 

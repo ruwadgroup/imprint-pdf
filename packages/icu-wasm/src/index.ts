@@ -15,7 +15,7 @@ export async function init(): Promise<void> {
 }
 
 function getModule(): WasmModule {
-  if (!wasmModule) throw new Error('@imprint/icu-wasm: call init() before use');
+  if (!wasmModule) throw new Error('@imprint-pdf/icu-wasm: call init() before use');
   return wasmModule;
 }
 

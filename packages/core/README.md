@@ -1,13 +1,13 @@
-# @imprint/core
+# @imprint-pdf/core
 
 Framework-free PDF IR, layout types, asset resolution, and Tailwind CSS
-processing for [Imprint](https://github.com/tamimbinhakim/imprint).
+processing for [Imprint](https://github.com/tamimbinhakim/imprint-pdf).
 
 Zero React. Zero filesystem in the runtime path. Runs on Node, Bun, Cloudflare
 Workers, Vercel Edge, and the browser.
 
 ```bash
-pnpm add @imprint/core
+pnpm add @imprint-pdf/core
 ```
 
 ## What's in here
@@ -26,16 +26,16 @@ pnpm add @imprint/core
 
 ## Subpath entries
 
-| Entry                  | Purpose                                                     |
-| ---------------------- | ----------------------------------------------------------- |
-| `@imprint/core`        | PdfNode IR, CSS normaliser, hashing, shared types           |
-| `@imprint/core/config` | `defineConfig`, `parseConfig`, Zod schema, all config types |
-| `@imprint/core/assets` | `AssetResolver`, built-in `fetchResolver`, `fsResolver`     |
+| Entry                      | Purpose                                                     |
+| -------------------------- | ----------------------------------------------------------- |
+| `@imprint-pdf/core`        | PdfNode IR, CSS normaliser, hashing, shared types           |
+| `@imprint-pdf/core/config` | `defineConfig`, `parseConfig`, Zod schema, all config types |
+| `@imprint-pdf/core/assets` | `AssetResolver`, built-in `fetchResolver`, `fsResolver`     |
 
 ## Quick start
 
 ```ts
-import { defineConfig } from '@imprint/core/config';
+import { defineConfig } from '@imprint-pdf/core/config';
 
 export default defineConfig({
   fonts: [{ family: 'Inter', src: './public/fonts/Inter.woff2' }],
@@ -45,7 +45,7 @@ export default defineConfig({
 
 ## Design notes
 
-- `@imprint/core` has **no workspace dependencies**. It is the leaf node.
+- `@imprint-pdf/core` has **no workspace dependencies**. It is the leaf node.
 - CSS properties unsupported by the PDF model are **silently dropped** by
   default; pass `{ strict: true }` to `renderToBuffer` to surface them as
   errors.

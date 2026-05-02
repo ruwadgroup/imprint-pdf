@@ -1,4 +1,4 @@
-import { renderToServer } from '@imprint/next';
+import { renderToServer } from '@imprint-pdf/next';
 import { Invoice } from '@/templates/invoice';
 
 export const dynamic = 'force-dynamic';

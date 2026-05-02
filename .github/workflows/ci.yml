@@ -32,10 +32,10 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       # Skip the WASM packages (need a Rust + wasm-pack toolchain not on
-      # the runners) and the examples (transitively pull @imprint/tailwind's
+      # the runners) and the examples (transitively pull @imprint-pdf/tailwind's
       # Node-only createRequire path into a browser bundle — separate bug).
       # Call turbo directly so --filter targets turbo, not package scripts.
-      - run: pnpm exec turbo run build --filter='!@imprint/icu-wasm' --filter='!@imprint/taffy-wasm' --filter='!@imprint/example-*'
+      - run: pnpm exec turbo run build --filter='!@imprint-pdf/icu-wasm' --filter='!@imprint-pdf/taffy-wasm' --filter='!@imprint-pdf/example-*'
 
       - run: pnpm typecheck
 

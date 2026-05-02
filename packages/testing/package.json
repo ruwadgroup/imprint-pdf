@@ -1,16 +1,16 @@
 {
-  "name": "@imprint/testing",
+  "name": "@imprint-pdf/testing",
   "version": "0.1.0",
   "description": "Vitest / Jest matchers for imprint — toMatchPdfSnapshot for visual regression testing of rendered PDFs.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tamimbinhakim/imprint.git",
+    "url": "git+https://github.com/tamimbinhakim/imprint-pdf.git",
     "directory": "packages/testing"
   },
-  "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/testing#readme",
-  "bugs": "https://github.com/tamimbinhakim/imprint/issues",
+  "homepage": "https://github.com/tamimbinhakim/imprint-pdf/tree/main/packages/testing#readme",
+  "bugs": "https://github.com/tamimbinhakim/imprint-pdf/issues",
   "keywords": [
     "pdf",
     "imprint",

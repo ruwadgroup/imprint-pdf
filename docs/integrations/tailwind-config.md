@@ -12,7 +12,7 @@ both outputs.
 ```css
 /* src/app.css (shared) */
 @import 'tailwindcss';
-@import '@imprint/tailwind/preset';
+@import '@imprint-pdf/tailwind/preset';
 
 @theme {
   --font-sans: 'Inter', sans-serif;
@@ -29,7 +29,7 @@ both outputs.
 
 ```ts
 // imprint.config.ts
-import { defineConfig } from '@imprint/core/config';
+import { defineConfig } from '@imprint-pdf/core/config';
 
 export default defineConfig({
   // tailwind.stylesheet auto-detects ./src/app.css — no extra config needed.

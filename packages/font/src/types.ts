@@ -1,4 +1,4 @@
-import type { FontDeclaration } from '@imprint/core';
+import type { FontDeclaration } from '@imprint-pdf/core';
 
 export interface LoadFontOptions {
   weights?: number[];

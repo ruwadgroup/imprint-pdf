@@ -421,15 +421,15 @@ export interface RenderOptions {
   svgRasterizer?: SvgRasterizer;
   /**
    * Hooks invoked after the document tree has been drawn but before the PDF
-   * is serialized. Used by `@imprint/print` (output intents, marks, page
-   * boxes) and `@imprint/ua` (structure tree) to mutate the in-memory pdf-lib
+   * is serialized. Used by `@imprint-pdf/print` (output intents, marks, page
+   * boxes) and `@imprint-pdf/ua` (structure tree) to mutate the in-memory pdf-lib
    * `PDFDocument`. Hooks receive the document, the original IR, and the page
    * objects in render order.
    */
   postProcess?: PdfPostProcessHook[];
   /**
    * Hooks invoked on the serialized bytes returned by `PDFDocument.save()`.
-   * Used by `@imprint/sign` (PKCS#7 detached signatures) and the encryption
+   * Used by `@imprint-pdf/sign` (PKCS#7 detached signatures) and the encryption
    * pass to rewrite or append to the final byte stream.
    */
   postBytes?: PdfPostBytesHook[];
@@ -442,9 +442,9 @@ export type SvgRasterizer = (
 
 /**
  * Mutates an in-flight pdf-lib `PDFDocument`. Imported as `unknown` from
- * `@imprint/core` to avoid a hard `pdf-lib` dependency on the typings of every
- * downstream package — concrete packages (`@imprint/print`, `@imprint/sign`,
- * `@imprint/ua`) re-cast to `PDFDocument`.
+ * `@imprint-pdf/core` to avoid a hard `pdf-lib` dependency on the typings of every
+ * downstream package — concrete packages (`@imprint-pdf/print`, `@imprint-pdf/sign`,
+ * `@imprint-pdf/ua`) re-cast to `PDFDocument`.
  */
 export type PdfPostProcessHook = (ctx: PdfPostProcessContext) => Promise<void> | void;
 

@@ -4,7 +4,7 @@ import { afterAll, describe, expect, it } from 'vitest';
 import { runDev } from './dev.js';
 
 // Write fixtures inside the cli package so module resolution can climb up
-// to the workspace's node_modules (react / @imprint/react). System tmpdir
+// to the workspace's node_modules (react / @imprint-pdf/react). System tmpdir
 // has no node_modules and ESM imports would fail.
 const FIXTURE_ROOT = join(__dirname, '..', '..', '.test-tmp');
 mkdirSync(FIXTURE_ROOT, { recursive: true });
@@ -57,12 +57,12 @@ describe('imprint dev', () => {
     const dir = mkdtempSync(join(FIXTURE_ROOT, 'dev-'));
     const fixture = join(dir, 'fixture.mjs');
     // Single-page Document so layout has something to chew on.
-    // Imports @imprint/react via workspace resolution.
+    // Imports @imprint-pdf/react via workspace resolution.
     writeFileSync(
       fixture,
       `
         import { createElement } from 'react';
-        import { Document, Page } from '@imprint/react';
+        import { Document, Page } from '@imprint-pdf/react';
         export default function Doc() {
           return createElement(
             Document,

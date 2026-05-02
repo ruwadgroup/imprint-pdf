@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-describe('@imprint/cli exports', () => {
+describe('@imprint-pdf/cli exports', () => {
   it('exports all expected commands', async () => {
     const mod = await import('./index.js');
     expect(typeof mod.runDev).toBe('function');

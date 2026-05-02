@@ -78,7 +78,7 @@ export async function init(): Promise<void> {
 }
 
 function getModule(): WasmModule {
-  if (!wasmModule) throw new Error('@imprint/taffy-wasm: call init() before using the engine');
+  if (!wasmModule) throw new Error('@imprint-pdf/taffy-wasm: call init() before using the engine');
   return wasmModule;
 }
 

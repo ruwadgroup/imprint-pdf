@@ -1,16 +1,16 @@
 {
-  "name": "@imprint/taffy-wasm",
+  "name": "@imprint-pdf/taffy-wasm",
   "version": "0.1.0",
   "description": "Taffy CSS layout engine (Rust→WASM) for Imprint",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tamimbinhakim/imprint.git",
+    "url": "git+https://github.com/tamimbinhakim/imprint-pdf.git",
     "directory": "packages/taffy-wasm"
   },
-  "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/taffy-wasm#readme",
-  "bugs": "https://github.com/tamimbinhakim/imprint/issues",
+  "homepage": "https://github.com/tamimbinhakim/imprint-pdf/tree/main/packages/taffy-wasm#readme",
+  "bugs": "https://github.com/tamimbinhakim/imprint-pdf/issues",
   "type": "module",
   "main": "./pkg/imprint_taffy.js",
   "types": "./src/index.ts",

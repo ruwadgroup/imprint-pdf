@@ -5,13 +5,13 @@
   "description": "Chromium-free, isomorphic React + Tailwind PDF library. Type-correct, standards-compliant, ships everywhere.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
-  "homepage": "https://github.com/tamimbinhakim/imprint#readme",
+  "homepage": "https://github.com/tamimbinhakim/imprint-pdf#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tamimbinhakim/imprint.git"
+    "url": "git+https://github.com/tamimbinhakim/imprint-pdf.git"
   },
   "bugs": {
-    "url": "https://github.com/tamimbinhakim/imprint/issues"
+    "url": "https://github.com/tamimbinhakim/imprint-pdf/issues"
   },
   "type": "module",
   "packageManager": "pnpm@10.12.4",
@@ -32,14 +32,14 @@
     "format:check": "biome format . && prettier --check \"**/*.{md,yml,yaml,json}\" --ignore-path .prettierignore",
     "typecheck": "turbo run typecheck",
     "wasm:build": "turbo run wasm:build",
-    "bench": "pnpm --filter @imprint/bench bench",
-    "bench:all": "pnpm --filter @imprint/bench bench:all",
-    "bench:competitors": "pnpm --filter @imprint/bench bench:competitors",
-    "bench:complexity": "pnpm --filter @imprint/bench bench:complexity",
-    "bench:pipeline": "pnpm --filter @imprint/bench bench:pipeline",
-    "bench:features": "pnpm --filter @imprint/bench bench:features",
-    "bench:chromium": "pnpm --filter @imprint/bench bench:chromium",
-    "verapdf:fixtures": "pnpm --filter @imprint/print generate:fixtures",
+    "bench": "pnpm --filter @imprint-pdf/bench bench",
+    "bench:all": "pnpm --filter @imprint-pdf/bench bench:all",
+    "bench:competitors": "pnpm --filter @imprint-pdf/bench bench:competitors",
+    "bench:complexity": "pnpm --filter @imprint-pdf/bench bench:complexity",
+    "bench:pipeline": "pnpm --filter @imprint-pdf/bench bench:pipeline",
+    "bench:features": "pnpm --filter @imprint-pdf/bench bench:features",
+    "bench:chromium": "pnpm --filter @imprint-pdf/bench bench:chromium",
+    "verapdf:fixtures": "pnpm --filter @imprint-pdf/print generate:fixtures",
     "verapdf:ci": "bash scripts/verapdf.sh",
     "clean": "turbo run clean && rm -rf node_modules",
     "changeset": "changeset",

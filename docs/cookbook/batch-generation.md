@@ -16,7 +16,7 @@ They do not benefit from Node.js event loop concurrency. For true parallelism:
 ```ts
 // src/worker.ts (run in a worker thread)
 import { parentPort, workerData } from 'node:worker_threads';
-import { renderToBuffer } from '@imprint/react';
+import { renderToBuffer } from '@imprint-pdf/react';
 import { Invoice } from './templates/Invoice';
 
 const pdf = await renderToBuffer(<Invoice data={workerData} />);

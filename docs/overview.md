@@ -7,7 +7,7 @@ and the browser — with the same code path.
 ## What you write
 
 ```tsx
-import { renderToBuffer, Document, Page } from '@imprint/react';
+import { renderToBuffer, Document, Page } from '@imprint-pdf/react';
 
 const pdf = await renderToBuffer(
   <Document>
@@ -33,7 +33,7 @@ React JSX (your component)
    ▼  Custom reconciler (react-reconciler)
 PdfNode IR tree
    │
-   ▼  @imprint/tailwind (Oxide v4 compiler)
+   ▼  @imprint-pdf/tailwind (Oxide v4 compiler)
 Resolved style map (Lightning CSS AST)
    │
    ▼  Layout engine (Taffy WASM — Block + Flexbox + CSS Grid)

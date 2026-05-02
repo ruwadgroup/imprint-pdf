@@ -5,13 +5,13 @@ body:
   - type: markdown
     attributes:
       value: |
-        **Before opening:** search existing issues and check the [FAQ](https://github.com/tamimbinhakim/imprint/blob/main/docs/faq.md).
+        **Before opening:** search existing issues and check the [FAQ](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/faq.md).
 
   - type: input
     id: version
     attributes:
       label: Imprint version(s)
-      placeholder: "@imprint/react@0.1.0, @imprint/core@0.1.0"
+      placeholder: "@imprint-pdf/react@0.1.0, @imprint-pdf/core@0.1.0"
     validations:
       required: true
 

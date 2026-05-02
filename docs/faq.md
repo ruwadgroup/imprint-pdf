@@ -10,7 +10,7 @@ properties that have no PDF output: `hover:`, `focus:`, `transition-*`,
 Pass `{ strict: true }` to `renderToBuffer` to get warnings for dropped
 properties instead of silent drops.
 
-## What's the difference between `@imprint/react` and `@react-pdf/renderer`?
+## What's the difference between `@imprint-pdf/react` and `@react-pdf/renderer`?
 
 The main differences:
 
@@ -76,8 +76,8 @@ documents authored as React components, not converted web pages.
 ## What's the licensing for the enterprise packages?
 
 Apache-2.0, like the rest of the project. There's no time-bombed source and no
-commercial seat requirement — `@imprint/print`, `@imprint/sign`, and
-`@imprint/ua` ship under the same license as the engine. See
+commercial seat requirement — `@imprint-pdf/print`, `@imprint-pdf/sign`, and
+`@imprint-pdf/ua` ship under the same license as the engine. See
 [`LICENSING.md`](../LICENSING.md) for the full list and sponsorship contact.
 
 ## Does Imprint render existing HTML or web pages?
@@ -94,8 +94,8 @@ system.
 
 ## Can I generate a PDF/A file for archiving?
 
-PDF/A-2b and PDF/A-3 are provided by `@imprint/print`. PDF/A-3 supports embedded
-attachments — used for factur-X and ZUGFeRD e-invoicing.
+PDF/A-2b and PDF/A-3 are provided by `@imprint-pdf/print`. PDF/A-3 supports
+embedded attachments — used for factur-X and ZUGFeRD e-invoicing.
 
 ## How does streaming work?
 

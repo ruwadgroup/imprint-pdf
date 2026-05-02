@@ -3,18 +3,18 @@
 All packages in this repository are licensed under the **Apache License, Version
 2.0**.
 
-| Package             | License    |
-| ------------------- | ---------- |
-| `@imprint/core`     | Apache-2.0 |
-| `@imprint/react`    | Apache-2.0 |
-| `@imprint/tailwind` | Apache-2.0 |
-| `@imprint/cli`      | Apache-2.0 |
-| `@imprint/next`     | Apache-2.0 |
-| `@imprint/vite`     | Apache-2.0 |
-| `@imprint/eslint`   | Apache-2.0 |
-| `@imprint/print`    | Apache-2.0 |
-| `@imprint/sign`     | Apache-2.0 |
-| `@imprint/ua`       | Apache-2.0 |
+| Package                 | License    |
+| ----------------------- | ---------- |
+| `@imprint-pdf/core`     | Apache-2.0 |
+| `@imprint-pdf/react`    | Apache-2.0 |
+| `@imprint-pdf/tailwind` | Apache-2.0 |
+| `@imprint-pdf/cli`      | Apache-2.0 |
+| `@imprint-pdf/next`     | Apache-2.0 |
+| `@imprint-pdf/vite`     | Apache-2.0 |
+| `@imprint-pdf/eslint`   | Apache-2.0 |
+| `@imprint-pdf/print`    | Apache-2.0 |
+| `@imprint-pdf/sign`     | Apache-2.0 |
+| `@imprint-pdf/ua`       | Apache-2.0 |
 
 Apache-2.0 (not MIT) for the explicit patent grant — important when the source
 touches font technology and PDF parsing.

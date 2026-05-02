@@ -1,5 +1,5 @@
 /**
- * @imprint/print — print-ready PDF output for Imprint.
+ * @imprint-pdf/print — print-ready PDF output for Imprint.
  *
  * Adds the catalog entries, output intents, and page geometry that a
  * commercial press RIP needs: PDF/X-4 conformance, ICC output profiles,
@@ -9,8 +9,8 @@
  * Plug into `renderToBuffer` via `printIntent({...})`:
  *
  * ```ts
- * import { renderToBuffer } from '@imprint/react';
- * import { printIntent } from '@imprint/print';
+ * import { renderToBuffer } from '@imprint-pdf/react';
+ * import { printIntent } from '@imprint-pdf/print';
  *
  * const pdf = await renderToBuffer(element, {
  *   postProcess: [printIntent({
@@ -26,7 +26,7 @@
  * Licensed under the Apache License, Version 2.0.
  */
 
-import type { PdfPostProcessHook } from '@imprint/core';
+import type { PdfPostProcessHook } from '@imprint-pdf/core';
 import type { PDFDocument, PDFPage } from 'pdf-lib';
 import { PDFName, PDFString } from 'pdf-lib';
 import { type BleedBox, parseBleed } from './bleed.js';

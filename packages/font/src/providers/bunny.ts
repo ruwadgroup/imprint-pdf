@@ -1,4 +1,4 @@
-import type { FontDeclaration } from '@imprint/core';
+import type { FontDeclaration } from '@imprint-pdf/core';
 import { buildFamilyParam, parseFontFaces } from '../css.js';
 import type { FontProvider, LoadFontOptions } from '../types.js';
 

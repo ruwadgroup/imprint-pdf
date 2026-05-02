@@ -75,6 +75,6 @@ export function Invoice({ name, amount }: { name: string; amount: number }) {
 
 ```bash
 pnpm remove pdfme
-pnpm add @imprint/react @imprint/core
-pnpm add -D @imprint/cli @imprint/tailwind tailwindcss
+pnpm add @imprint-pdf/react @imprint-pdf/core
+pnpm add -D @imprint-pdf/cli @imprint-pdf/tailwind tailwindcss
 ```

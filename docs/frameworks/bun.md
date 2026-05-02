@@ -5,15 +5,15 @@ Imprint works natively with Bun's WASM support and `Bun.serve`.
 ## Install
 
 ```bash
-bun add @imprint/react @imprint/core
-bun add -d @imprint/tailwind tailwindcss
+bun add @imprint-pdf/react @imprint-pdf/core
+bun add -d @imprint-pdf/tailwind tailwindcss
 ```
 
 ## HTTP server
 
 ```ts
 // src/index.ts
-import { renderToBuffer } from '@imprint/react';
+import { renderToBuffer } from '@imprint-pdf/react';
 import { Invoice } from './templates/Invoice';
 
 Bun.serve({
@@ -49,7 +49,7 @@ bun run --watch src/index.ts
 ## WASM in Bun
 
 Bun loads WASM natively — no `WebAssembly.instantiateStreaming` ceremony. The
-`@imprint/react` package detects the Bun runtime and uses the appropriate
+`@imprint-pdf/react` package detects the Bun runtime and uses the appropriate
 loading path automatically.
 
 ## Batch generation
@@ -58,7 +58,7 @@ Bun's multi-threading via `Worker` makes batch generation practical:
 
 ```ts
 // worker.ts
-import { renderToBuffer } from '@imprint/react';
+import { renderToBuffer } from '@imprint-pdf/react';
 import { Invoice } from './templates/Invoice';
 
 self.onmessage = async ({ data }) => {

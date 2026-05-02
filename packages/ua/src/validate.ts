@@ -1,4 +1,4 @@
-import type { DocumentNode, PdfNode } from '@imprint/core';
+import type { DocumentNode, PdfNode } from '@imprint-pdf/core';
 
 export interface UAValidationResult {
   valid: boolean;

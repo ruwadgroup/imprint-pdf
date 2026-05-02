@@ -1,5 +1,5 @@
 {
-  "name": "@imprint/bench",
+  "name": "@imprint-pdf/bench",
   "version": "0.0.0",
   "private": true,
   "description": "Benchmark suite for Imprint PDF generation",
@@ -14,11 +14,11 @@
     "bench:chromium": "tsx src/index.ts --suite chromium"
   },
   "dependencies": {
-    "@imprint/core": "workspace:*",
-    "@imprint/react": "workspace:*",
-    "@imprint/print": "workspace:*",
-    "@imprint/sign": "workspace:*",
-    "@imprint/ua": "workspace:*"
+    "@imprint-pdf/core": "workspace:*",
+    "@imprint-pdf/react": "workspace:*",
+    "@imprint-pdf/print": "workspace:*",
+    "@imprint-pdf/sign": "workspace:*",
+    "@imprint-pdf/ua": "workspace:*"
   },
   "devDependencies": {
     "@react-pdf/renderer": "*",

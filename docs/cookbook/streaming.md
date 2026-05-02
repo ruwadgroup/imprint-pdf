@@ -7,7 +7,7 @@ pages are still being generated.
 ## `renderToStream`
 
 ```ts
-import { renderToStream } from '@imprint/react';
+import { renderToStream } from '@imprint-pdf/react';
 
 const stream = await renderToStream(<LargeReport data={data} />);
 
@@ -23,8 +23,8 @@ page, followed by the cross-reference table when all pages are complete.
 ## Cloudflare Workers
 
 ```ts
-import { renderToStream } from '@imprint/react/standalone';
-import wasm from '@imprint/react/imprint.wasm';
+import { renderToStream } from '@imprint-pdf/react/standalone';
+import wasm from '@imprint-pdf/react/imprint.wasm';
 
 const stream = await renderToStream(<Report data={data} />, { wasm });
 return new Response(stream, { headers: { 'content-type': 'application/pdf' } });
@@ -33,7 +33,7 @@ return new Response(stream, { headers: { 'content-type': 'application/pdf' } });
 ## Piping to a file (Node.js)
 
 ```ts
-import { renderToStream } from '@imprint/react';
+import { renderToStream } from '@imprint-pdf/react';
 import { createWriteStream } from 'node:fs';
 import { Writable } from 'node:stream';
 

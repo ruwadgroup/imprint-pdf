@@ -15,7 +15,7 @@ Wrap your Recharts tree in `<Chart>`. No additional configuration needed —
 Imprint detects Recharts components and renders them to SVG server-side.
 
 ```tsx
-import { Chart } from '@imprint/react';
+import { Chart } from '@imprint-pdf/react';
 import {
   LineChart,
   Line,

@@ -1,5 +1,5 @@
 /**
- * @imprint/sign — PKCS#7 detached signatures and AES-256 encryption for
+ * @imprint-pdf/sign — PKCS#7 detached signatures and AES-256 encryption for
  * Imprint PDFs.
  *
  * Two signing modes are provided:

@@ -6,7 +6,7 @@
  * rendered (default 10).
  */
 
-import { Document, Page } from '@imprint/react';
+import { Document, Page } from '@imprint-pdf/react';
 import type React from 'react';
 
 const LOREM =

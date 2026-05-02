@@ -1,5 +1,5 @@
-import type { PdfNode, PdfNodeType, ResolvedStyle, VariantStyles } from '@imprint/core';
-import { resolveStylesWithVariants, shortHash } from '@imprint/core';
+import type { PdfNode, PdfNodeType, ResolvedStyle, VariantStyles } from '@imprint-pdf/core';
+import { resolveStylesWithVariants, shortHash } from '@imprint-pdf/core';
 import { createContext, type ReactElement } from 'react';
 import ReactReconciler from 'react-reconciler';
 import { DefaultEventPriority, LegacyRoot } from 'react-reconciler/constants.js';

@@ -1,13 +1,14 @@
 # example — cloudflare-worker
 
-Cloudflare Worker demo for [Imprint](https://github.com/tamimbinhakim/imprint).
-Renders a tailwind-styled PDF receipt on the edge.
+Cloudflare Worker demo for
+[Imprint](https://github.com/tamimbinhakim/imprint-pdf). Renders a
+tailwind-styled PDF receipt on the edge.
 
 ```bash
-pnpm --filter @imprint/example-cloudflare-worker dev
+pnpm --filter @imprint-pdf/example-cloudflare-worker dev
 # → http://localhost:8787
 
-pnpm --filter @imprint/example-cloudflare-worker deploy
+pnpm --filter @imprint-pdf/example-cloudflare-worker deploy
 # → https://imprint-cloudflare-worker.<account>.workers.dev
 ```
 
@@ -24,18 +25,18 @@ examples/cloudflare-worker/
 
 ```bash
 # Local (wrangler dev must be running):
-pnpm --filter @imprint/example-cloudflare-worker bench http://localhost:8787
+pnpm --filter @imprint-pdf/example-cloudflare-worker bench http://localhost:8787
 
 # Deployed (1 cold + 20 warm):
-pnpm --filter @imprint/example-cloudflare-worker bench \
+pnpm --filter @imprint-pdf/example-cloudflare-worker bench \
   https://imprint-cloudflare-worker.<account>.workers.dev
 
 # More cold samples (waits through the eviction window between each):
-pnpm --filter @imprint/example-cloudflare-worker bench <url> --cold-runs 5
+pnpm --filter @imprint-pdf/example-cloudflare-worker bench <url> --cold-runs 5
 
 # CI / verification: fail non-zero if any cold sample exceeds N ms,
 # write machine-readable results to bench-results.json:
-pnpm --filter @imprint/example-cloudflare-worker bench:verify <url>
+pnpm --filter @imprint-pdf/example-cloudflare-worker bench:verify <url>
 ```
 
 `bench:verify` runs `--cold-runs 5 --max-cold-ms 100 --out bench-results.json`.
@@ -63,6 +64,6 @@ your direct control beyond keeping the bundle small.
 
 - `compatibility_flags = ["nodejs_compat"]` is required — pdf-lib uses `Buffer`
   and a small handful of other Node built-ins.
-- The standalone build (`@imprint/react/standalone`) is currently a thin
-  re-export of `@imprint/react`. The dedicated WASM-bundled standalone path
-  arrives with the `@imprint/print` enterprise tier.
+- The standalone build (`@imprint-pdf/react/standalone`) is currently a thin
+  re-export of `@imprint-pdf/react`. The dedicated WASM-bundled standalone path
+  arrives with the `@imprint-pdf/print` enterprise tier.

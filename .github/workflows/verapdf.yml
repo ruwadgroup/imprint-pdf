@@ -40,13 +40,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build packages (fixture script imports @imprint/core/dist)
+      - name: Build packages (fixture script imports @imprint-pdf/core/dist)
         # Build only what generate-fixtures.ts needs + their deps.
         # `...` postfix means "this package and everything it depends on".
-        run: pnpm exec turbo run build --filter='@imprint/print...' --filter='@imprint/ua...'
+        run: pnpm exec turbo run build --filter='@imprint-pdf/print...' --filter='@imprint-pdf/ua...'
 
       - name: Generate fixture PDFs
-        run: pnpm --filter @imprint/print generate:fixtures
+        run: pnpm --filter @imprint-pdf/print generate:fixtures
 
       - name: Install veraPDF CLI
         run: bash scripts/verapdf-install.sh

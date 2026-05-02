@@ -1,4 +1,4 @@
-import { Document, Page, renderToBuffer } from '@imprint/react';
+import { Document, Page, renderToBuffer } from '@imprint-pdf/react';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 

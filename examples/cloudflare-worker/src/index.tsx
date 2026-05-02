@@ -1,9 +1,9 @@
-// @imprint/example-cloudflare-worker
+// @imprint-pdf/example-cloudflare-worker
 // Cloudflare Worker that renders PDFs using the standalone WASM build of Imprint.
 // Deploy with: wrangler deploy
 
-import { Document, Page } from '@imprint/react';
-import { renderToStream } from '@imprint/react/standalone';
+import { Document, Page } from '@imprint-pdf/react';
+import { renderToStream } from '@imprint-pdf/react/standalone';
 
 // ---------------------------------------------------------------------------
 // Receipt template

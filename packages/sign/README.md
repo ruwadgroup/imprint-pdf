@@ -1,12 +1,12 @@
-# @imprint/sign
+# @imprint-pdf/sign
 
 PKCS#7 detached digital signatures and AES-256 encryption for
-[Imprint](https://github.com/tamimbinhakim/imprint) PDFs.
+[Imprint](https://github.com/tamimbinhakim/imprint-pdf) PDFs.
 
 **License: Apache-2.0.** See [`LICENSING.md`](../../LICENSING.md).
 
 ```bash
-pnpm add @imprint/sign
+pnpm add @imprint-pdf/sign
 ```
 
 ## What it adds
@@ -27,7 +27,7 @@ pnpm add @imprint/sign
 ### Standard ByteRange signature
 
 ```ts
-import { signWithByteRange } from '@imprint/sign';
+import { signWithByteRange } from '@imprint-pdf/sign';
 
 const signed = await signWithByteRange(pdfBytes, {
   certificate: certPem, // PEM string
@@ -41,7 +41,7 @@ const signed = await signWithByteRange(pdfBytes, {
 ### Encrypt before delivery
 
 ```ts
-import { encryptDocument } from '@imprint/sign';
+import { encryptDocument } from '@imprint-pdf/sign';
 
 const encrypted = await encryptDocument(pdfBytes, {
   ownerPassword: 'secret',
@@ -53,7 +53,7 @@ const encrypted = await encryptDocument(pdfBytes, {
 ### Inspect a certificate
 
 ```ts
-import { parseCertificate } from '@imprint/sign';
+import { parseCertificate } from '@imprint-pdf/sign';
 
 const info = parseCertificate(certPem);
 console.log(info.subject, info.sha256Thumbprint, info.notAfter);
@@ -62,7 +62,7 @@ console.log(info.subject, info.sha256Thumbprint, info.notAfter);
 ### Trailer-comment signature (in-house only)
 
 ```ts
-import { signBuffer } from '@imprint/sign';
+import { signBuffer } from '@imprint-pdf/sign';
 
 const signed = await signBuffer(pdfBytes, {
   certificate: certPem,

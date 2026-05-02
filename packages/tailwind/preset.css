@@ -1,5 +1,5 @@
 /*
- * @imprint/tailwind preset — registers the page-position and print-pipeline
+ * @imprint-pdf/tailwind preset — registers the page-position and print-pipeline
  * variants used by imprint. Each variant is a passthrough; imprint's
  * resolver is the one that decides whether a variant is active for a given
  * page based on its position (or output pipeline). Tailwind only needs to
@@ -8,7 +8,7 @@
  * Usage in your app stylesheet:
  *
  *   @import "tailwindcss";
- *   @import "@imprint/tailwind/preset";
+ *   @import "@imprint-pdf/tailwind/preset";
  */
 
 @custom-variant page-first {

@@ -1,5 +1,5 @@
 {
-  "name": "@imprint/example-bun-server",
+  "name": "@imprint-pdf/example-bun-server",
   "version": "0.0.0",
   "private": true,
   "description": "Imprint example — Bun HTTP server that generates PDFs using Bun's native WASM support.",
@@ -8,9 +8,9 @@
     "start": "bun run src/index.tsx"
   },
   "dependencies": {
-    "@imprint/core": "workspace:*",
-    "@imprint/react": "workspace:*",
-    "@imprint/tailwind": "workspace:*"
+    "@imprint-pdf/core": "workspace:*",
+    "@imprint-pdf/react": "workspace:*",
+    "@imprint-pdf/tailwind": "workspace:*"
   },
   "devDependencies": {
     "@types/bun": "^1.0.0",

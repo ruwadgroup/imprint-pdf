@@ -1,16 +1,16 @@
 {
-  "name": "@imprint/svg-rasterize",
+  "name": "@imprint-pdf/svg-rasterize",
   "version": "0.1.0",
   "description": "resvg-WASM rasterizer for SVG → PNG, used as a fallback path for SVGs with filters/masks/foreignObject in imprint.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tamimbinhakim/imprint.git",
+    "url": "git+https://github.com/tamimbinhakim/imprint-pdf.git",
     "directory": "packages/svg-rasterize"
   },
-  "homepage": "https://github.com/tamimbinhakim/imprint/tree/main/packages/svg-rasterize#readme",
-  "bugs": "https://github.com/tamimbinhakim/imprint/issues",
+  "homepage": "https://github.com/tamimbinhakim/imprint-pdf/tree/main/packages/svg-rasterize#readme",
+  "bugs": "https://github.com/tamimbinhakim/imprint-pdf/issues",
   "keywords": ["pdf", "svg", "resvg", "wasm", "rasterize", "imprint"],
   "type": "module",
   "main": "./dist/index.cjs",

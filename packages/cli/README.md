@@ -1,9 +1,9 @@
-# @imprint/cli
+# @imprint-pdf/cli
 
-Command-line tools for [Imprint](https://github.com/tamimbinhakim/imprint).
+Command-line tools for [Imprint](https://github.com/tamimbinhakim/imprint-pdf).
 
 ```bash
-pnpm add -D @imprint/cli
+pnpm add -D @imprint-pdf/cli
 ```
 
 ## Commands
@@ -52,7 +52,7 @@ Endpoints:
 
 The fixture file must be loadable by Node directly (`.js` / `.mjs`) or via a
 TypeScript loader (e.g.
-`node --import tsx ./node_modules/@imprint/cli/dist/bin.js dev …`).
+`node --import tsx ./node_modules/@imprint-pdf/cli/dist/bin.js dev …`).
 
 ### `imprint validate`
 
@@ -62,8 +62,8 @@ Validate a PDF against PDF/X-4 or PDF/UA-1 using veraPDF.
 imprint validate ./out/invoice.pdf --profile pdf-ua-1
 ```
 
-Requires `@imprint/print` or `@imprint/ua`. Exits non-zero on failure — wire it
-into your CI pipeline.
+Requires `@imprint-pdf/print` or `@imprint-pdf/ua`. Exits non-zero on failure —
+wire it into your CI pipeline.
 
 ```bash
 # In CI
@@ -83,7 +83,7 @@ npx imprint init
 
 ```ts
 // imprint.config.ts
-import { defineConfig } from '@imprint/core/config';
+import { defineConfig } from '@imprint-pdf/core/config';
 
 export default defineConfig({
   fonts: [
