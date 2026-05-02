@@ -1,9 +1,30 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 import type { ResolvedStyle } from '@imprint/core';
 import { parseCssToStyleMap } from './css-to-styles.js';
 import type { ImprintTailwindOptions } from './index.js';
+
+// Conventional locations for a Tailwind v4 entry stylesheet. First match wins.
+const STYLESHEET_AUTO_PATHS = [
+  'src/app.css',
+  'src/globals.css',
+  'src/index.css',
+  'src/styles.css',
+  'src/styles/app.css',
+  'src/styles/globals.css',
+  'app/globals.css',
+  'app/app.css',
+  'styles/app.css',
+  'styles/globals.css',
+];
+
+function autoDetectStylesheet(projectRoot: string): string | undefined {
+  for (const rel of STYLESHEET_AUTO_PATHS) {
+    if (existsSync(path.join(projectRoot, rel))) return rel;
+  }
+  return undefined;
+}
 
 // Tailwind v4 programmatic surface — pinned by the `tailwindcss>=4` peer dep.
 interface TailwindV4 {
@@ -50,8 +71,9 @@ export async function runTailwind(
       return { content: '', base };
     }
 
-    const inputCss = options.stylesheet
-      ? `@import "${path.resolve(projectRoot, options.stylesheet)}";`
+    const stylesheet = options.stylesheet ?? autoDetectStylesheet(projectRoot);
+    const inputCss = stylesheet
+      ? `@import "${path.resolve(projectRoot, stylesheet)}";`
       : '@import "tailwindcss";';
 
     const { build } = await tw.compile(inputCss, { base: projectRoot, loadStylesheet });

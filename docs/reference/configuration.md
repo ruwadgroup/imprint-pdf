@@ -1,10 +1,29 @@
 # Configuration
 
-All configuration lives in `imprint.config.ts` at the project root.
+All configuration lives in `imprint.config.ts` at the project root. Every field
+is optional — Imprint applies sensible defaults so a minimal config is usually
+enough:
 
 ```ts
 import { defineConfig } from '@imprint/core/config';
 
+export default defineConfig({
+  fonts: [{ family: 'Inter', src: './public/fonts/Inter.woff2' }],
+});
+```
+
+Built-in defaults:
+
+| Field                 | Default                                                                                                                                                                     |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `fonts`               | `[]` — only Imprint's built-in fallbacks are available until you add entries                                                                                                |
+| `tailwind.stylesheet` | Auto-detected from `src/app.css`, `src/globals.css`, `src/index.css`, `src/styles.css`, `src/styles/{app,globals}.css`, `app/{app,globals}.css`, `styles/{app,globals}.css` |
+| `outDir`              | `'out'`                                                                                                                                                                     |
+| `debug`               | `false`                                                                                                                                                                     |
+
+The full surface — overridable when you need it:
+
+```ts
 export default defineConfig({
   fonts: [],
   tailwind: {},
@@ -33,13 +52,33 @@ fonts: [
 
 ## `tailwind`
 
+Imprint runs **Tailwind v4**, which is configured CSS-first. Point Imprint at
+the same stylesheet your web app uses and your design tokens, plugins, and
+custom variants resolve identically in PDFs.
+
 ```ts
-tailwind: {
-  config?: string;              // path to tailwind.config.ts (auto-detected)
-  runtimeFallback?: boolean;    // enable Oxide WASM for dynamic classes (default: false)
-  strict?: boolean;             // warn on dropped CSS properties (default: false)
+tailwind?: {
+  stylesheet?: string;          // path to your Tailwind v4 CSS entry (auto-detected if omitted)
+  config?: string;              // legacy: path to a Tailwind v3 tailwind.config.ts (compat shim)
 }
 ```
+
+`tailwind.stylesheet` is auto-detected — Imprint scans the conventional
+locations listed above and uses the first match. Most projects don't need to set
+it explicitly. If nothing matches, Imprint falls back to a bare
+`@import "tailwindcss";` so the build still succeeds (without your theme).
+
+The `config` field is a backwards-compatibility shim for projects still on a
+Tailwind v3 JS config — prefer the v4-native approach by referencing your JS
+config from CSS via `@config`:
+
+```css
+/* src/app.css */
+@import 'tailwindcss';
+@config '../tailwind.config.ts';
+```
+
+Then pass `stylesheet: './src/app.css'`.
 
 ## `typography`
 
@@ -100,9 +139,7 @@ export default defineConfig({
   ],
 
   tailwind: {
-    config: './tailwind.config.ts',
-    runtimeFallback: false,
-    strict: true,
+    stylesheet: './src/app.css',
   },
 
   typography: {

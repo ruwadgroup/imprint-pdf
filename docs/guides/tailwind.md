@@ -12,8 +12,26 @@ hand-curated subset. If a class works in Tailwind, it works in Imprint.
 import { imprint } from '@imprint/vite';
 
 export default defineConfig({
-  plugins: [imprint({ tailwind: { config: './tailwind.config.ts' } })],
+  plugins: [imprint()],
 });
+```
+
+That's it — `tailwind.stylesheet` is auto-detected from `src/app.css`,
+`src/globals.css`, and a few other conventional locations. Pass
+`{ tailwind: { stylesheet: './path/to/your.css' } }` only if your CSS entry
+lives somewhere unusual.
+
+Your `app.css` is the standard Tailwind v4 CSS-first stylesheet:
+
+```css
+/* src/app.css */
+@import 'tailwindcss';
+@import '@imprint/tailwind/preset';
+
+@theme {
+  --font-sans: 'Inter', sans-serif;
+  --color-brand: #0f172a;
+}
 ```
 
 ### Next.js
@@ -90,18 +108,18 @@ correctly by the PDF layout engine.
 
 ## Sharing your design system
 
-Point both your web and PDF Tailwind configs at the same tokens:
+Tailwind v4 is configured CSS-first via `@theme`. Point both your web app and
+Imprint at the same stylesheet:
 
-```ts
-// tailwind.config.ts (shared)
-export default {
-  theme: {
-    extend: {
-      fontFamily: { sans: ['Inter', 'sans-serif'] },
-      colors: { brand: '#0F172A' },
-    },
-  },
-};
+```css
+/* src/app.css (shared) */
+@import 'tailwindcss';
+@import '@imprint/tailwind/preset';
+
+@theme {
+  --font-sans: 'Inter', sans-serif;
+  --color-brand: #0f172a;
+}
 ```
 
 ```ts
@@ -109,6 +127,14 @@ export default {
 import { defineConfig } from '@imprint/core/config';
 
 export default defineConfig({
-  tailwind: { config: './tailwind.config.ts' }, // same file
+  // tailwind.stylesheet auto-detects ./src/app.css — no extra config needed.
 });
+```
+
+If you still have a Tailwind v3 `tailwind.config.ts`, reference it from your CSS
+via the v4 compatibility directive:
+
+```css
+@import 'tailwindcss';
+@config '../tailwind.config.ts';
 ```

@@ -18,7 +18,8 @@ pnpm --filter @imprint/example-next-app dev
 - **`components/Report.tsx`** — multi-page financial report with running headers
   and a `<table>`.
 - **`next.config.ts`** — `withImprint()` plugin wiring.
-- **`tailwind.config.ts`** — shared design tokens.
+- **`app/globals.css`** — Tailwind v4 stylesheet with shared `@theme` design
+  tokens (consumed by both the app and Imprint).
 
 ## Structure
 
@@ -28,12 +29,12 @@ examples/next-app/
 │   ├── api/
 │   │   └── invoice/[id]/
 │   │       └── route.ts
+│   ├── globals.css
 │   └── page.tsx
 ├── components/
 │   ├── Invoice.tsx
 │   └── Report.tsx
 ├── public/fonts/
 ├── imprint.config.ts
-├── next.config.ts
-└── tailwind.config.ts
+└── next.config.ts
 ```

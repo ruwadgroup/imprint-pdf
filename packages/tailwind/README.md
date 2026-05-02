@@ -49,11 +49,35 @@ export default withImprintTailwind()({
 
 ## Custom Tailwind config
 
-Pass the path to your `tailwind.config.ts` — Imprint inherits your entire design
-system:
+Tailwind v4 is configured CSS-first. Imprint auto-detects your stylesheet from
+conventional locations — `src/app.css`, `src/globals.css`, `src/index.css`,
+`src/styles{,/app,/globals}.css`, `app/{app,globals}.css`, and
+`styles/{app,globals}.css` — and uses the first match. Your `@theme` tokens,
+`@plugin` directives, and custom variants are inherited identically.
+
+Override only when your CSS entry lives somewhere unusual:
 
 ```ts
-imprintTailwind({ config: './tailwind.config.ts' });
+imprintTailwind({ stylesheet: './src/styles/pdf.css' });
+```
+
+```css
+/* src/app.css */
+@import 'tailwindcss';
+@import '@imprint/tailwind/preset';
+
+@theme {
+  --font-sans: 'Inter', sans-serif;
+  --color-brand: #0f172a;
+}
+```
+
+Still on a Tailwind v3 `tailwind.config.ts`? Reference it from your CSS via the
+v4 compatibility directive:
+
+```css
+@import 'tailwindcss';
+@config '../tailwind.config.ts';
 ```
 
 ## Imprint-specific Tailwind variants

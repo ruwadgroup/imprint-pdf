@@ -27,14 +27,24 @@ The main differences:
 - **Edge runtime.** Imprint runs on Cloudflare Workers; `@react-pdf/renderer` is
   incompatible with edge runtimes.
 
-## Can I use my existing `tailwind.config.ts`?
+## Can I share my Tailwind config between web and PDF?
 
-Yes. Point `@imprint/tailwind` at your config file and your entire design system
-— colors, spacing, fonts, plugins — resolves identically in PDFs.
+Yes — and you usually don't have to wire it up at all. Imprint runs Tailwind v4,
+which is configured CSS-first, and auto-detects your stylesheet from
+`src/app.css`, `src/globals.css`, `app/globals.css`, and similar conventional
+locations. The same `app.css` your web app uses gives Imprint your colors,
+spacing, fonts, plugins, and `@theme` tokens for free.
+
+If your CSS entry lives somewhere unusual, point Imprint at it explicitly:
 
 ```ts
-imprintTailwind({ config: './tailwind.config.ts' });
+imprintTailwind({ stylesheet: './src/styles/pdf.css' });
 ```
+
+If you still have a Tailwind v3 `tailwind.config.ts`, reference it from your CSS
+via `@config './tailwind.config.ts';` — Tailwind v4 reads it as a compatibility
+shim. See the
+[Tailwind config integration guide](integrations/tailwind-config.md).
 
 ## Does it run in the browser?
 

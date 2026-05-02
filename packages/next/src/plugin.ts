@@ -10,7 +10,8 @@
 //
 //   export default withImprint({
 //     fonts: [{ family: 'Inter', src: './public/fonts/Inter.ttf' }],
-//     tailwind: { config: './tailwind.config.ts' },
+//     // tailwind.stylesheet is auto-detected from src/app.css, app/globals.css,
+//     // etc. — only set it explicitly if your CSS entry lives elsewhere.
 //   })(nextConfig)
 // ---------------------------------------------------------------------------
 

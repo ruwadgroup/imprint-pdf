@@ -43,7 +43,8 @@ export default defineConfig({
 imprint({
   config?: string;           // path to imprint.config.ts (default: auto-detect)
   tailwind?: {
-    config?: string;         // path to tailwind.config.ts
+    stylesheet?: string;     // Tailwind v4 CSS entry. Auto-detected from src/app.css,
+                             // src/globals.css, app/globals.css, etc.
     runtimeFallback?: boolean; // enable Oxide WASM fallback for dynamic classes (default: false)
   };
   wasm?: {

@@ -79,8 +79,12 @@ pnpm add -D @imprint/eslint
 npx imprint init
 ```
 
-Writes `imprint.config.ts` to your project root. Edit `fonts` and `tailwind` for
-your project — see [Configuration](reference/configuration.md).
+Writes a minimal `imprint.config.ts` to your project root. Imprint applies
+sensible defaults — your Tailwind v4 stylesheet is auto-detected from
+`src/app.css`, `src/globals.css`, `app/globals.css`, and similar conventional
+locations, and `outDir` defaults to `out`. Add a `fonts` entry once you have
+fonts to embed. See [Configuration](reference/configuration.md) for the full
+surface.
 
 ## Version matrix
 

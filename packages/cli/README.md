@@ -90,6 +90,6 @@ export default defineConfig({
     { family: 'Inter', src: './public/fonts/Inter.woff2' },
     { family: 'JetBrains Mono', src: './public/fonts/JetBrainsMono.woff2' },
   ],
-  tailwind: { config: './tailwind.config.ts' },
+  // tailwind.stylesheet auto-detects src/app.css, src/globals.css, etc.
 });
 ```

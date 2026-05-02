@@ -15,16 +15,32 @@ pnpm add -D @imprint/cli @imprint/tailwind tailwindcss
 npx imprint init
 ```
 
-Edit the generated `imprint.config.ts`:
+Create a Tailwind v4 stylesheet (CSS-first config). Imprint auto-detects it at
+`src/app.css`, `src/globals.css`, `app/globals.css`, and a few other
+conventional locations — no extra wiring required:
+
+```css
+/* src/app.css */
+@import 'tailwindcss';
+@import '@imprint/tailwind/preset';
+
+@theme {
+  --font-sans: 'Inter', sans-serif;
+}
+```
+
+The generated `imprint.config.ts` only needs your fonts:
 
 ```ts
 import { defineConfig } from '@imprint/core/config';
 
 export default defineConfig({
   fonts: [{ family: 'Inter', src: './public/fonts/Inter.woff2' }],
-  tailwind: { config: './tailwind.config.ts' },
 });
 ```
+
+> If your stylesheet lives somewhere unconventional, set
+> `tailwind: { stylesheet: './path/to/your.css' }` explicitly.
 
 ## 3. Write a component
 
@@ -92,9 +108,10 @@ import { getInvoice } from '@/lib/db';
 
 export async function GET(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> },
 ) {
-  const data = await getInvoice(params.id);
+  const { id } = await params;
+  const data = await getInvoice(id);
   const pdf = await renderToServer(<Invoice invoice={data} />);
 
   return new Response(pdf, {

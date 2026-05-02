@@ -33,19 +33,15 @@ export default defineConfig({
 });
 ```
 
-Then register in Tailwind:
+Then register in your Tailwind v4 stylesheet:
 
-```ts
-// tailwind.config.ts
-export default {
-  theme: {
-    extend: {
-      fontFamily: {
-        sans: ['Inter', 'sans-serif'],
-      },
-    },
-  },
-};
+```css
+/* src/app.css */
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Inter', sans-serif;
+}
 ```
 
 ## Variable fonts
@@ -99,10 +95,11 @@ fonts: [
 ],
 ```
 
-```ts
-// tailwind.config.ts
-fontFamily: {
-  sans: ['Inter', 'Noto Sans Arabic', 'Noto Sans CJK SC', 'Noto Sans JP', 'sans-serif'],
+```css
+/* src/app.css */
+@theme {
+  --font-sans:
+    'Inter', 'Noto Sans Arabic', 'Noto Sans CJK SC', 'Noto Sans JP', sans-serif;
 }
 ```
 

@@ -9,10 +9,10 @@ Most PDF libraries treat PDF output as a separate discipline. You write a
 stylesheet the library invented (`StyleSheet.create`), you learn what subset of
 CSS it supports, and you maintain two styling systems forever.
 
-We do it the other way. Your `tailwind.config.ts` IS the PDF styling system. The
-Tailwind classes you already know produce exactly the CSS that produces exactly
-the PDF layout. Move a component, rename a token, add a plugin — the PDF
-follows.
+We do it the other way. Your Tailwind v4 stylesheet — `app.css` with `@theme`
+and `@plugin` directives — IS the PDF styling system. The Tailwind classes you
+already know produce exactly the CSS that produces exactly the PDF layout. Move
+a component, rename a token, add a plugin — the PDF follows.
 
 ## Why no Chromium
 

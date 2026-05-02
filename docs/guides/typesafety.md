@@ -25,7 +25,7 @@ not a widened `AutotranslateConfig`. Your IDE autocompletes every field.
 // ✓ Autocompletes; errors on unknown fields
 export default defineConfig({
   fonts: [{ family: 'Inter', src: './fonts/Inter.woff2' }],
-  tailwind: { config: './tailwind.config.ts' },
+  // tailwind.stylesheet auto-detects src/app.css, src/globals.css, etc.
   typography: {
     hyphenation: { en: true },
   },

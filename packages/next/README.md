@@ -21,8 +21,10 @@ export default withImprint()({
 The plugin wires up:
 
 - Compile-time Tailwind extraction via `@imprint/tailwind/webpack`
-- `.woff2` font imports
-- WASM loading configuration for the standalone edge build
+- `asyncWebAssembly` + `layers` webpack experiments and a `webassembly/async`
+  rule for `.wasm` files (required by the renderer)
+- `serverExternalPackages` entries for `@imprint/react` and `@imprint/core` so
+  Next.js doesn't bundle their server-only internals
 
 ## Route handler
 
@@ -36,29 +38,51 @@ import { getInvoice } from '@/lib/db';
 
 export async function GET(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> },
 ) {
-  const data = await getInvoice(params.id);
+  const { id } = await params;
+  const data = await getInvoice(id);
   const pdf = await renderToServer(<Invoice data={data} />);
 
   return new Response(pdf, {
     headers: {
       'content-type': 'application/pdf',
-      'content-disposition': `attachment; filename="invoice-${params.id}.pdf"`,
+      'content-disposition': `attachment; filename="invoice-${id}.pdf"`,
     },
   });
 }
 ```
 
+Or use `createPdfResponse` to skip the header boilerplate:
+
+```ts
+import { createPdfResponse } from '@imprint/next';
+
+return createPdfResponse(<Invoice data={data} />, {
+  filename: `invoice-${id}.pdf`,
+  disposition: 'attachment',
+});
+```
+
 ## RSC helper
+
+`getImprintConfig()` reads `imprint.config.{ts,js,mjs,cjs}` from the project
+root from a Server Component, so a Client Component can do the actual render
+with shared font / Tailwind config.
 
 ```tsx
 // app/invoice/[id]/page.tsx
-import { getT } from '@imprint/next';
+import { getImprintConfig } from '@imprint/next';
 import { PreviewFrame } from '@/components/PreviewFrame';
 
-export default async function InvoicePage({ params }) {
-  return <PreviewFrame invoiceId={params.id} />;
+export default async function InvoicePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const config = await getImprintConfig();
+  return <PreviewFrame invoiceId={id} imprintConfig={config} />;
 }
 ```
 
@@ -76,7 +100,7 @@ import { renderToEdge } from '@imprint/next';
 
 ## Exports
 
-| Entry                  | Purpose                              |
-| ---------------------- | ------------------------------------ |
-| `@imprint/next`        | `renderToServer`, `getImprintConfig` |
-| `@imprint/next/plugin` | `withImprint` Next.js plugin wrapper |
+| Entry                  | Purpose                                                                   |
+| ---------------------- | ------------------------------------------------------------------------- |
+| `@imprint/next`        | `renderToServer`, `renderToEdge`, `createPdfResponse`, `getImprintConfig` |
+| `@imprint/next/plugin` | `withImprint` Next.js plugin wrapper                                      |

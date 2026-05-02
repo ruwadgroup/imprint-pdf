@@ -8,6 +8,9 @@ export async function runInit(options: { ts: boolean }) {
     return;
   }
 
+  // Sensible defaults handle the rest:
+  //   - outDir: 'out'
+  //   - tailwind.stylesheet: auto-detected from src/app.css, src/globals.css, …
   const content = options.ts
     ? `import { defineConfig } from '@imprint/core/config'
 
@@ -15,10 +18,6 @@ export default defineConfig({
   fonts: [
     // { family: 'Inter', src: './public/fonts/Inter.woff2' },
   ],
-  tailwind: {
-    config: './tailwind.config.ts',
-  },
-  outDir: 'out',
 })
 `
     : `const { defineConfig } = require('@imprint/core/config')
@@ -27,10 +26,6 @@ module.exports = defineConfig({
   fonts: [
     // { family: 'Inter', src: './public/fonts/Inter.woff2' },
   ],
-  tailwind: {
-    config: './tailwind.config.js',
-  },
-  outDir: 'out',
 })
 `;
 

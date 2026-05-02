@@ -2,41 +2,29 @@
 
 Sharing your design system between your web app and PDF templates.
 
-## Single config, two targets
+## Single stylesheet, two targets
 
-The recommended approach is one `tailwind.config.ts` used by both your web app
-(browser) and Imprint (PDF). Design tokens, font families, colors, and spacing
-scales apply identically in both outputs.
+Imprint runs **Tailwind v4**, which is configured CSS-first. The recommended
+approach is one `app.css` used by both your web app (browser) and Imprint (PDF).
+Design tokens, font families, colors, and spacing scales apply identically in
+both outputs.
 
-```ts
-// tailwind.config.ts (shared)
-import type { Config } from 'tailwindcss';
+```css
+/* src/app.css (shared) */
+@import 'tailwindcss';
+@import '@imprint/tailwind/preset';
 
-export default {
-  content: [
-    './src/**/*.{ts,tsx}',
-    // Imprint scans the same source files — no extra config needed
-  ],
-  theme: {
-    extend: {
-      fontFamily: {
-        sans: ['Inter', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
-      },
-      colors: {
-        brand: {
-          50: '#f0f9ff',
-          500: '#0ea5e9',
-          900: '#0c4a6e',
-        },
-      },
-      spacing: {
-        page: '48pt',
-        section: '32pt',
-      },
-    },
-  },
-} satisfies Config;
+@theme {
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --color-brand-50: #f0f9ff;
+  --color-brand-500: #0ea5e9;
+  --color-brand-900: #0c4a6e;
+
+  --spacing-page: 48pt;
+  --spacing-section: 32pt;
+}
 ```
 
 ```ts
@@ -44,9 +32,7 @@ export default {
 import { defineConfig } from '@imprint/core/config';
 
 export default defineConfig({
-  tailwind: {
-    config: './tailwind.config.ts', // same file
-  },
+  // tailwind.stylesheet auto-detects ./src/app.css — no extra config needed.
   fonts: [
     { family: 'Inter', src: './public/fonts/Inter.woff2' },
     { family: 'JetBrains Mono', src: './public/fonts/JetBrainsMono.woff2' },
@@ -54,36 +40,38 @@ export default defineConfig({
 });
 ```
 
-## Shared design tokens with CSS variables
+Imprint scans for your stylesheet in conventional locations — `src/app.css`,
+`src/globals.css`, `src/index.css`, `src/styles{,/app,/globals}.css`,
+`app/{app,globals}.css`, and `styles/{app,globals}.css` — and uses the first
+match. Set `tailwind.stylesheet` explicitly only when your CSS entry lives
+somewhere unusual. If nothing matches, Imprint falls back to a bare
+`@import "tailwindcss";` so the build still succeeds (without your theme).
 
-Tailwind v4's `@theme` directive lets you define tokens as CSS variables.
-Imprint resolves `@theme` tokens the same way the browser does:
+## `@theme` tokens
 
-```css
-/* src/styles/tokens.css */
-@theme {
-  --color-brand-50: oklch(97% 0.02 220);
-  --color-brand-500: oklch(62% 0.18 220);
-  --color-brand-900: oklch(28% 0.12 220);
-  --font-sans: 'Inter', sans-serif;
-  --spacing-page: 48pt;
-}
-```
+Tailwind v4's `@theme` directive defines tokens as CSS variables. Imprint
+resolves them the same way the browser does, so `text-brand-900`, `p-section`,
+and `font-sans` all work in PDFs:
 
 ```tsx
-<Page className="p-[var(--spacing-page)] text-brand-900">…</Page>
+<Page className="p-section font-sans text-brand-900">…</Page>
+```
+
+You can also use the variables directly in arbitrary values:
+
+```tsx
+<div className="p-[var(--spacing-page)]" />
 ```
 
 ## Plugins
 
-Tailwind plugins declared in `tailwind.config.ts` work in Imprint too:
+Tailwind v4 loads plugins via the `@plugin` directive in your stylesheet, not
+via a JS `plugins` array. They work the same way in Imprint:
 
-```ts
-import typography from '@tailwindcss/typography';
-
-export default {
-  plugins: [typography],
-} satisfies Config;
+```css
+/* src/app.css */
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
 ```
 
 ```tsx
@@ -105,3 +93,20 @@ defaults:
 // Hide navigation elements that have no PDF meaning
 <nav className="print:hidden">…</nav>
 ```
+
+## Migrating from a `tailwind.config.ts` (v3)
+
+If you have a Tailwind v3 JS config, you have two options:
+
+1. **Port it to `@theme`** — recommended. Move `theme.extend.colors`,
+   `fontFamily`, `spacing`, etc. into `@theme` blocks in your CSS file.
+2. **Use the `@config` compatibility directive** — Tailwind v4 still reads a v3
+   JS config when you reference it from CSS:
+
+   ```css
+   @import 'tailwindcss';
+   @config '../tailwind.config.ts';
+   ```
+
+   Then point Imprint at this stylesheet via `tailwind.stylesheet`. This is a
+   migration shim; new tokens should go in `@theme`.

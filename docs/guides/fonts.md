@@ -42,22 +42,18 @@ export default defineConfig({
 
 ## Using fonts
 
-Apply fonts via Tailwind's `font-*` utilities after registering the `fontFamily`
-in your `tailwind.config.ts`:
+Apply fonts via Tailwind's `font-*` utilities after registering them as `@theme`
+tokens in your Tailwind v4 stylesheet:
 
-```ts
-// tailwind.config.ts
-export default {
-  theme: {
-    extend: {
-      fontFamily: {
-        sans: ['Inter', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
-        arabic: ['Noto Sans Arabic', 'sans-serif'],
-      },
-    },
-  },
-};
+```css
+/* src/app.css */
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-arabic: 'Noto Sans Arabic', sans-serif;
+}
 ```
 
 ```tsx
@@ -69,11 +65,11 @@ export default {
 ## Fallback stack
 
 Imprint resolves a font stack left-to-right. The first family that contains a
-glyph for a given codepoint wins. Declare fallbacks in your Tailwind config:
+glyph for a given codepoint wins. Declare fallbacks in your `@theme` block:
 
-```ts
-fontFamily: {
-  sans: ['Inter', 'Noto Sans', 'sans-serif'],
+```css
+@theme {
+  --font-sans: 'Inter', 'Noto Sans', sans-serif;
 }
 ```
 

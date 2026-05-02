@@ -20,10 +20,10 @@ import { imprint } from '@imprint/vite';
 export default defineConfig({
   plugins: [
     react(),
-    imprint({
-      config: './imprint.config.ts',
-      tailwind: { config: './tailwind.config.ts' },
-    }),
+    imprint(),
+    // imprint() works with no options — `tailwind.stylesheet` is auto-detected
+    // (src/app.css, src/globals.css, …). Override only when you need to:
+    //   imprint({ tailwind: { stylesheet: './src/styles/pdf.css' } })
   ],
 });
 ```

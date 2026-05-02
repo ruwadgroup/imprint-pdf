@@ -39,7 +39,7 @@ import { defineConfig } from '@imprint/core/config';
 
 export default defineConfig({
   fonts: [{ family: 'Inter', src: './public/fonts/Inter.woff2' }],
-  tailwind: { config: './tailwind.config.ts' },
+  // tailwind.stylesheet auto-detects src/app.css, src/globals.css, etc.
 });
 ```
 

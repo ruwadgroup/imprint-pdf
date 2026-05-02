@@ -48,14 +48,27 @@ renderToStream(element: ReactElement, options?: RenderOptions): Promise<Readable
 
 ```ts
 renderToServer(element: ReactElement, options?: RenderOptions): Promise<Uint8Array>
+renderToStream(element: ReactElement, options?: RenderOptions): Promise<ReadableStream<Uint8Array>>
 ```
+
+`renderToServer` is an alias for `renderToBuffer` re-exported under a name that
+reads better in server code paths.
 
 ### `@imprint/react/standalone`
 
+Self-contained build for v8-isolate runtimes (Cloudflare Workers, Vercel Edge,
+Bun). Both functions accept an optional pre-compiled `WebAssembly.Module` so
+hosts can avoid re-instantiating per request.
+
 ```ts
+renderToBuffer(
+  element: ReactElement,
+  options?: RenderOptions & { wasm?: WebAssembly.Module }
+): Promise<Uint8Array>
+
 renderToStream(
   element: ReactElement,
-  options: RenderOptions & { wasm: WebAssembly.Module }
+  options?: RenderOptions & { wasm?: WebAssembly.Module }
 ): Promise<ReadableStream<Uint8Array>>
 ```
 
@@ -64,6 +77,13 @@ renderToStream(
 ```ts
 renderToServer(element: ReactElement, options?: RenderOptions): Promise<Uint8Array>
 renderToEdge(element: ReactElement, options?: RenderOptions & { wasm?: WebAssembly.Module }): Promise<ReadableStream<Uint8Array>>
+createPdfResponse(
+  element: ReactElement,
+  options?: RenderOptions & {
+    filename?: string;             // default: 'document.pdf'
+    disposition?: 'inline' | 'attachment'; // default: 'inline'
+  }
+): Promise<Response>
 getImprintConfig(): Promise<ImprintConfig>
 ```
 
