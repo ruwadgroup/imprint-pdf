@@ -1,6 +1,6 @@
 {
   "name": "@imprint-pdf/bench",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "description": "Benchmark suite for imprint-pdf PDF generation",
   "type": "module",
