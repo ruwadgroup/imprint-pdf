@@ -11,7 +11,7 @@ body:
     id: version
     attributes:
       label: Imprint version(s)
-      placeholder: "@imprint-pdf/react@0.1.0, @imprint-pdf/core@0.1.0"
+      placeholder: "@imprint-pdf/react@1.0.0-alpha, @imprint-pdf/core@1.0.0-alpha"
     validations:
       required: true
 

@@ -1,6 +1,6 @@
 {
   "name": "@imprint-pdf/eslint",
-  "version": "0.1.0",
+  "version": "1.0.0-alpha",
   "description": "ESLint rules for Imprint — catch unsupported CSS properties, missing alt text, and unsafe dynamic class names at write time.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",

@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://github.com/tamimbinhakim/imprint-pdf">
-    <img src="assets/banner-0.1.0.png" alt="imprint — real Tailwind, real React, real typography. PDFs anywhere — no Chromium, ever." width="100%" />
+    <img src="assets/banner-1.0.0-alpha.png" alt="imprint — real Tailwind, real React, real typography. PDFs anywhere — no Chromium, ever." width="100%" />
   </a>
 
 <br />
@@ -11,7 +11,7 @@
 [![Code style: Biome](https://img.shields.io/badge/code_style-biome-60a5fa.svg)](https://biomejs.dev/)
 [![pnpm](https://img.shields.io/badge/pnpm-monorepo-f69220.svg?logo=pnpm&logoColor=white)](https://pnpm.io/)
 [![Conventional Commits](https://img.shields.io/badge/conventional_commits-1.0.0-fa6673.svg)](https://www.conventionalcommits.org)
-[![Status: 0.1.0-alpha](https://img.shields.io/badge/status-0.1.0--alpha-red.svg)](#status)
+[![Status: 1.0.0-alpha](https://img.shields.io/badge/status-1.0.0--alpha-red.svg)](#status)
 
 Author PDFs as React components, styled with **real Tailwind classes**. Run them
 anywhere JavaScript runs — Node, Bun, the browser, Vercel Edge, Cloudflare
@@ -21,7 +21,7 @@ Workers. No Chromium. Ever.
 
 <!-- prettier-ignore -->
 > [!WARNING]
-> imprint is in **0.1.0-alpha**. The public API will move. Pin exact
+> imprint is in **1.0.0-alpha**. The public API will move. Pin exact
 > versions if anything depends on it. The name "imprint" is itself a
 > placeholder until 1.0 — see [`docs/naming.md`](docs/naming.md).
 
@@ -266,12 +266,12 @@ pnpm --filter @imprint-pdf/example-bun-server dev
 
 ## Status
 
-**0.1.0-alpha.** Nothing is stable yet. The architecture is settled
+**1.0.0-alpha.** Nothing is stable yet. The architecture is settled
 ([`ARCHITECTURE.md`](ARCHITECTURE.md)); the API isn't.
 
 | Phase    | Versions        | What it means                                  |
 | -------- | --------------- | ---------------------------------------------- |
-| Alpha    | `0.1.0-alpha.x` | Anything can change in any release.            |
+| Alpha    | `1.0.0-alpha.x` | Anything can change in any release.            |
 | Beta     | `1.0.0-beta.x`  | Public API frozen modulo bugs. Soak before GA. |
 | 1.0      | `1.0.0`         | First stable release. Semver from here on.     |
 | Post-1.0 | `1.x.y+`        | Backwards-compatible features and fixes.       |

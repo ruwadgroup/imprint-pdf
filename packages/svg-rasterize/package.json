@@ -1,6 +1,6 @@
 {
   "name": "@imprint-pdf/svg-rasterize",
-  "version": "0.1.0",
+  "version": "1.0.0-alpha",
   "description": "resvg-WASM rasterizer for SVG → PNG, used as a fallback path for SVGs with filters/masks/foreignObject in imprint.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
