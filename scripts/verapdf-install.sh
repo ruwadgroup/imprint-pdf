@@ -4,15 +4,16 @@
 # `pnpm verapdf:ci` invocations can validate fixture PDFs against PDF/A and
 # PDF/UA profiles.
 #
-# Pinned to the latest 1.x release because veraPDF's profile semantics
-# change between minor versions and we want CI to stay deterministic.
+# veraPDF stopped publishing version-pinned installer ZIPs at the canonical
+# software.verapdf.org/releases path; the only stable URL today is the
+# unversioned rolling installer. We log the resolved version after install
+# so CI runs are still auditable.
 
 set -euo pipefail
 
-VERSION="${VERAPDF_VERSION:-1.26.5}"
 INSTALL_DIR="${VERAPDF_DIR:-tools/verapdf}"
-TARBALL="verapdf-installer-${VERSION}.zip"
-URL="https://software.verapdf.org/releases/verapdf-installer-${VERSION}.zip"
+TARBALL="verapdf-installer.zip"
+URL="https://software.verapdf.org/releases/verapdf-installer.zip"
 
 if command -v verapdf >/dev/null 2>&1; then
   echo "veraPDF already on \$PATH — skipping install"
@@ -52,3 +53,4 @@ java -jar verapdf-install.jar ../install.xml
 
 echo "$INSTALL_DEST/verapdf" >> "$GITHUB_PATH"
 echo "veraPDF installed at $INSTALL_DEST"
+"$INSTALL_DEST/verapdf" --version || true

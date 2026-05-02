@@ -48,7 +48,7 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
-    "test": "vitest",
+    "test": "vitest run --passWithNoTests",
     "test:ci": "vitest run --coverage",
     "clean": "rm -rf dist .turbo *.tsbuildinfo"
   },

@@ -23,7 +23,7 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "test": "turbo run test",
-    "test:ci": "turbo run test -- --run --passWithNoTests",
+    "test:ci": "turbo run test",
     "test:visual": "turbo run test:visual",
     "test:goldens:update": "turbo run test:goldens:update",
     "lint": "biome check .",
