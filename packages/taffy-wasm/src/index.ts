@@ -99,23 +99,23 @@ export class TaffyEngineWrapper {
   }
 
   newWithChildren(style: TaffyStyle, children: bigint[]): bigint {
-    return this.#raw.newWithChildren(style, children.map(Number)) as bigint;
+    return this.#raw.newWithChildren(style, BigUint64Array.from(children)) as bigint;
   }
 
   computeLayout(root: bigint, width: number, height: number): void {
-    this.#raw.computeLayout(Number(root), width, height);
+    this.#raw.computeLayout(root, width, height);
   }
 
   computeLayoutWithMeasure(root: bigint, width: number, height: number, measure: MeasureFn): void {
-    this.#raw.computeLayoutWithMeasure(Number(root), width, height, measure);
+    this.#raw.computeLayoutWithMeasure(root, width, height, measure);
   }
 
   getLayout(node: bigint): TaffyLayout {
-    return this.#raw.getLayout(Number(node)) as TaffyLayout;
+    return this.#raw.getLayout(node) as TaffyLayout;
   }
 
   freeNode(node: bigint): void {
-    this.#raw.freeNode(Number(node));
+    this.#raw.freeNode(node);
   }
 
   clear(): void {
