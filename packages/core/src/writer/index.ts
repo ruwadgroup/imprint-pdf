@@ -13,12 +13,21 @@ import type {
   PageDefaults,
   PageNode,
   PdfNode,
+  PdfPostBytesHook,
+  PdfPostProcessHook,
   WatermarkNode,
 } from '../types.js';
 import { loadFonts } from '../typography/fonts.js';
 import { drawNode } from './drawNode.js';
 import { addOutline } from './outline.js';
 import { addXmpMetadata } from './xmp.js';
+
+export interface WritePdfOptions {
+  /** Hooks invoked with the live `PDFDocument` before serialization. */
+  postProcess?: PdfPostProcessHook[];
+  /** Hooks invoked on the serialized byte buffer. */
+  postBytes?: PdfPostBytesHook[];
+}
 
 function collectBookmarks(node: PdfNode, result: BookmarkNode[] = []): BookmarkNode[] {
   if (node.type === 'bookmark') result.push(node as BookmarkNode);
@@ -51,6 +60,7 @@ export async function writePdf(
   geometries: Map<string, ComputedGeometry>,
   fontDeclarations: FontDeclaration[],
   resolver: AssetResolver,
+  options: WritePdfOptions = {},
 ): Promise<Uint8Array> {
   const doc = await PDFDocument.create();
   const fonts = await loadFonts(doc, fontDeclarations, resolver);
@@ -131,5 +141,17 @@ export async function writePdf(
   addOutline(doc, document, pdfPages);
   addXmpMetadata(doc, document);
 
-  return doc.save();
+  if (options.postProcess?.length) {
+    for (const hook of options.postProcess) {
+      await hook({ doc, document, pages: pdfPages, geometries });
+    }
+  }
+
+  let bytes = await doc.save();
+  if (options.postBytes?.length) {
+    for (const hook of options.postBytes) {
+      bytes = await hook(bytes);
+    }
+  }
+  return bytes;
 }

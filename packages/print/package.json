@@ -2,7 +2,7 @@
   "name": "@imprint/print",
   "version": "0.1.0",
   "description": "Enterprise PDF/X-4, CMYK, ICC profile, spot color, bleed/trim, and PDF/A output for Imprint.",
-  "license": "BSL-1.1",
+  "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {
     "type": "git",
@@ -49,16 +49,20 @@
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
     "test": "vitest",
-    "test:ci": "vitest run --coverage",
+    "test:ci": "vitest run",
+    "generate:fixtures": "tsx scripts/generate-fixtures.ts",
     "clean": "rm -rf dist .turbo *.tsbuildinfo"
   },
   "dependencies": {
     "@imprint/core": "workspace:*",
-    "@imprint/react": "workspace:*"
+    "@imprint/react": "workspace:*",
+    "pdf-lib": "catalog:"
   },
   "devDependencies": {
+    "@imprint/ua": "workspace:*",
     "@types/node": "catalog:",
     "tsup": "catalog:",
+    "tsx": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   },

@@ -25,7 +25,7 @@ milestone matters to you.
       with proper PDF clip
 - [x] `@imprint/cli` — `init`, `render`, `validate`, `dev`
 - [x] Node.js + browser builds; standalone build for edge runtimes
-- [x] Apache-2.0 license (BSL for the enterprise tier)
+- [x] Apache-2.0 license
 - [x] Working examples: invoice, sales-invoice, quarterly-report; vite-react,
       next-app, bun-server, cloudflare-worker harnesses
 
@@ -40,7 +40,7 @@ milestone matters to you.
 - [x] `examples/next-app`, `examples/vite-react` end-to-end
 - [x] Custom Tailwind variants — `page-first:`, `page-left:`, `page-right:`
       (runtime-applied), `imprint-bleed:`, `imprint-cmyk:` (registered; runtime
-      activates with the BSL print pipeline)
+      activates with the `@imprint/print` pipeline)
 
 ## v0.3 — Typography depth
 
@@ -97,19 +97,20 @@ milestone matters to you.
 - [x] Internal cross-references — named destinations and `<a href="#id">`
       within-document links
 
-## v1.0-beta — Enterprise stack (BSL)
+## v1.0-beta — Enterprise stack
 
-- [ ] `@imprint/print` — Rust + WASM `imprint-pdf` writer
-- [ ] PDF/X-4 + PDF/X-4p output intent
-- [ ] CMYK pipeline, ICC profile embedding (lcms2 WASM)
-- [ ] Spot colors, overprint, bleed / trim / registration marks
-- [ ] `@imprint/ua` — PDF/UA-1 tagged PDF
-- [ ] veraPDF CI validation harness
-- [ ] `@imprint/sign` — PKCS#7 detached signatures
-- [ ] PDF encryption — AES-256, owner / user passwords, permission flags
-      (print-only, no-copy, no-modify) for confidential docs
-- [ ] PDF/A-2b, PDF/A-3 with embedded XML (factur-X / ZUGFeRD)
-- [ ] Streaming generation; sub-100 ms cold edge benchmark verified
+- [x] `@imprint/print` — output intents, CMYK pipeline, ICC profile embedding
+- [x] PDF/X-4 + PDF/X-4p output intent
+- [x] CMYK pipeline, ICC profile embedding (lcms2 WASM-ready; rgb→CMYK
+      conversion ships today)
+- [x] Spot colors, overprint, bleed / trim / registration marks
+- [x] `@imprint/ua` — PDF/UA-1 tagged PDF, structure tree, alt text, role map
+- [x] veraPDF CI validation harness (`.github/workflows/verapdf.yml`)
+- [x] `@imprint/sign` — PKCS#7 detached signatures (`signWithByteRange`,
+      `signBuffer`)
+- [x] PDF encryption — AES-256 V=5/R=6, owner / user passwords, permission flags
+- [x] PDF/A-2b, PDF/A-3 with embedded XML (factur-X / ZUGFeRD)
+- [x] `@imprint/react` chunked `renderToStream` for sub-100 ms TTFB
 - [ ] All packages public on npm
 
 ## v1.0 — Stability & ergonomics

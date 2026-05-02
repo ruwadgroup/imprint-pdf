@@ -2,7 +2,7 @@
   "name": "@imprint/ua",
   "version": "0.1.0",
   "description": "Tagged PDF and PDF/UA-1 accessible output for Imprint — structure tree, alt text, language attributes, veraPDF validation.",
-  "license": "BSL-1.1",
+  "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {
     "type": "git",
@@ -54,12 +54,14 @@
   },
   "dependencies": {
     "@imprint/core": "workspace:*",
-    "@imprint/react": "workspace:*"
+    "@imprint/react": "workspace:*",
+    "pdf-lib": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",
     "tsup": "catalog:",
     "typescript": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
     "vitest": "catalog:"
   },
   "engines": {

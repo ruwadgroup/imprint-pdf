@@ -87,7 +87,7 @@ imprintTailwind(options?: ImprintTailwindOptions): Plugin
 withImprintTailwind(options?: ImprintTailwindOptions): (config: WebpackConfig) => WebpackConfig
 ```
 
-## `@imprint/print` (Enterprise, BSL)
+## `@imprint/print` (Enterprise)
 
 ```ts
 // Import side-effect registers the print writer
@@ -99,7 +99,7 @@ New `<Page>` props: `bleed`, `marks`.
 New Tailwind variants: `imprint:cmyk-[…]`, `imprint:spot-[…]`,
 `imprint:overprint`.
 
-## `@imprint/sign` (Enterprise, BSL)
+## `@imprint/sign` (Enterprise)
 
 ```ts
 import '@imprint/sign';
@@ -113,7 +113,7 @@ signBuffer(
 `SignOptions`:
 `{ certificate: string; privateKey: string; reason?: string; location?: string; tsaUrl?: string }`.
 
-## `@imprint/ua` (Enterprise, BSL)
+## `@imprint/ua` (Enterprise)
 
 ```ts
 // Import side-effect registers the tagged-PDF writer

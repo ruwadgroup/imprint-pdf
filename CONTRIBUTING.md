@@ -140,15 +140,6 @@ public API, CI / dev-tooling tweaks.
    Windows, plus the visual regression suite.
 6. A maintainer reviews. Approved → squash-merge.
 
-## Working on `@imprint/print`, `@imprint/sign`, `@imprint/ua`
-
-These packages are **BSL 1.1 licensed** (see [`LICENSE-BSL`](LICENSE-BSL)).
-Contributions are welcome under the same Developer Certificate of Origin as the
-Apache packages, but contributors agree their changes are relicensed by the
-maintainer to Apache-2.0 at the BSL change date (4 years from release).
-
-If you're not comfortable with that, contribute to the Apache packages only.
-
 ## Releasing
 
 Maintainers only. See [`.github/RELEASING.md`](.github/RELEASING.md).

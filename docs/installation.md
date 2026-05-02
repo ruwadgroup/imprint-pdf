@@ -50,8 +50,8 @@ pnpm add -D @imprint/tailwind tailwindcss
 
 ## Optional enterprise packages
 
-These are [BSL-licensed](../LICENSING.md). A commercial license is required for
-production use.
+Apache-2.0 like the rest. Install only when you need the surface — the core
+packages render full invoices and reports without them.
 
 | Package          | Use it for                                           |
 | ---------------- | ---------------------------------------------------- |

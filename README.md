@@ -7,7 +7,6 @@
 <br />
 
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-[![License: BSL 1.1](https://img.shields.io/badge/enterprise-BSL%201.1-orange.svg)](LICENSE-BSL)
 [![TypeScript](https://img.shields.io/badge/typescript-strict-blue.svg?logo=typescript&logoColor=white)](tsconfig.base.json)
 [![Code style: Biome](https://img.shields.io/badge/code_style-biome-60a5fa.svg)](https://biomejs.dev/)
 [![pnpm](https://img.shields.io/badge/pnpm-monorepo-f69220.svg?logo=pnpm&logoColor=white)](https://pnpm.io/)
@@ -217,6 +216,38 @@ For the full design, see [`ARCHITECTURE.md`](ARCHITECTURE.md).
 The one-liner: **Real Tailwind. Real React. Real typography. PDF anywhere — no
 Chromium, ever.**
 
+## Benchmarks
+
+Measured with [`@imprint/bench`](packages/bench) on an Apple M-series laptop
+(Node 20, 30 runs, 5 warmup), rendering the same 1-page invoice through every
+JSX-driven library.
+
+| Library                             |       mean | p95     | p99     |  Output |
+| ----------------------------------- | ---------: | ------- | ------- | ------: |
+| **`@imprint/react`**                | **4.3 ms** | 5.2 ms  | 5.8 ms  |  6.2 KB |
+| `@react-pdf/renderer`               |    13.7 ms | 15.6 ms | 16.8 ms |  3.3 KB |
+| Puppeteer (warm, browser reused)    |    50.6 ms | 51.1 ms | 51.1 ms | 46.9 KB |
+| Puppeteer (cold, launch per render) |     473 ms | 494 ms  | 494 ms  | 46.9 KB |
+
+- **3.15× faster than `@react-pdf/renderer`** on the only fair head-to-head
+  comparison (both consume JSX, both run a layout pass).
+- **~12× faster than warm Chromium**, **~110× faster than cold Chromium** — the
+  cold number is what serverless functions actually pay, plus the 200 MB binary
+  download.
+
+Reproduce locally:
+
+```bash
+pnpm bench                    # runs competitors + complexity + pipeline + features
+pnpm bench:chromium           # opt-in, downloads Chromium on first run
+pnpm bench:all                # everything, including chromium
+```
+
+Imperative libraries (`pdfkit`, `pdf-lib`, `jsPDF`) and template-based ones
+(`pdfme`) are intentionally excluded from the head-to-head — they're a different
+paradigm (no layout engine, no React) and the comparison would flatter Imprint
+on ergonomics while making it look slow on µs-per-glyph.
+
 ## Examples
 
 - [`examples/next-app`](examples/next-app) — Next.js App Router + RSC + edge
@@ -249,19 +280,10 @@ See [`STABILITY.md`](STABILITY.md) for the full contract.
 
 ## Licensing
 
-imprint is **open core**.
-
-| Package                                                | License                                       |
-| ------------------------------------------------------ | --------------------------------------------- |
-| `@imprint/core`, `@imprint/react`, `@imprint/tailwind` | **Apache-2.0**                                |
-| `@imprint/cli`, `@imprint/next`, `@imprint/vite`       | **Apache-2.0**                                |
-| `@imprint/eslint`                                      | **Apache-2.0**                                |
-| `@imprint/print`, `@imprint/sign`, `@imprint/ua`       | **BSL 1.1**, reverts to Apache-2.0 in 4 years |
-
-The Apache surface is everything you need to ship beautiful invoices, contracts,
-and reports. The BSL surface is what regulated enterprises buy anyway: PDF/X-4
-with CMYK + ICC, PDF/UA-1 tagged PDF, PKCS#7 signing, factur-X / ZUGFeRD. See
-[`LICENSING.md`](LICENSING.md).
+Every package is **Apache-2.0** — the engine, the React layer, the Tailwind
+compiler, the CLI/integrations, _and_ the enterprise surface (PDF/X-4 with
+CMYK + ICC, PDF/UA-1 tagged PDF, PKCS#7 signing, factur-X / ZUGFeRD). No
+commercial seats, no time-bombed source. See [`LICENSING.md`](LICENSING.md).
 
 ## Contributing
 
@@ -278,9 +300,5 @@ See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full workflow and
 
 ## License
 
-`@imprint/core`, `@imprint/react`, `@imprint/tailwind`, `@imprint/cli`,
-`@imprint/next`, `@imprint/vite`, `@imprint/eslint`: **Apache-2.0** ©
-[Tamim Bin Hakim](https://github.com/tamimbinhakim) and contributors.
-
-`@imprint/print`, `@imprint/sign`, `@imprint/ua`: **Business Source License
-1.1** — see [`LICENSE-BSL`](LICENSE-BSL).
+**Apache-2.0** © [Tamim Bin Hakim](https://github.com/tamimbinhakim) and
+contributors — applies to every package in the repository.

@@ -65,10 +65,10 @@ documents authored as React components, not converted web pages.
 
 ## What's the licensing for the enterprise packages?
 
-`@imprint/print`, `@imprint/sign`, and `@imprint/ua` are BSL 1.1 (Business
-Source License). Commercial use in production requires a license. The code
-reverts to Apache-2.0 after four years. See [`LICENSING.md`](../LICENSING.md)
-for details and the commercial license contact.
+Apache-2.0, like the rest of the project. There's no time-bombed source and no
+commercial seat requirement — `@imprint/print`, `@imprint/sign`, and
+`@imprint/ua` ship under the same license as the engine. See
+[`LICENSING.md`](../LICENSING.md) for the full list and sponsorship contact.
 
 ## Does Imprint render existing HTML or web pages?
 
@@ -84,8 +84,8 @@ system.
 
 ## Can I generate a PDF/A file for archiving?
 
-PDF/A-2b and PDF/A-3 are provided by `@imprint/print` (BSL). PDF/A-3 supports
-embedded attachments — used for factur-X and ZUGFeRD e-invoicing.
+PDF/A-2b and PDF/A-3 are provided by `@imprint/print`. PDF/A-3 supports embedded
+attachments — used for factur-X and ZUGFeRD e-invoicing.
 
 ## How does streaming work?
 

@@ -1,0 +1,58 @@
+name: veraPDF
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "packages/print/**"
+      - "packages/ua/**"
+      - "packages/sign/**"
+      - "packages/core/**"
+      - "fixtures/verapdf/**"
+      - "scripts/verapdf*.sh"
+      - ".github/workflows/verapdf.yml"
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: verapdf-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: PDF/A + PDF/UA validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate fixture PDFs
+        run: pnpm --filter @imprint/print generate:fixtures
+
+      - name: Install veraPDF CLI
+        run: bash scripts/verapdf-install.sh
+
+      - name: Validate PDF/A-2B fixtures
+        run: bash scripts/verapdf.sh pdfa-2b 'fixtures/verapdf/pdfa-2b/*.pdf'
+
+      - name: Validate PDF/A-3B fixtures
+        run: bash scripts/verapdf.sh pdfa-3b 'fixtures/verapdf/pdfa-3b/*.pdf'
+
+      - name: Validate PDF/UA-1 fixtures
+        run: bash scripts/verapdf.sh ua-1 'fixtures/verapdf/ua-1/*.pdf'

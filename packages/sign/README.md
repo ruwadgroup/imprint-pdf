@@ -1,10 +1,9 @@
 # @imprint/sign
 
-PKCS#7 detached digital signatures for
+PKCS#7 detached digital signatures and AES-256 encryption for
 [Imprint](https://github.com/tamimbinhakim/imprint) PDFs.
 
-**License: Business Source License 1.1.** Reverts to Apache-2.0 after four
-years. See [`LICENSING.md`](../../LICENSING.md).
+**License: Apache-2.0.** See [`LICENSING.md`](../../LICENSING.md).
 
 ```bash
 pnpm add @imprint/sign
@@ -12,48 +11,62 @@ pnpm add @imprint/sign
 
 ## What it adds
 
-- PKCS#7 detached signatures (`/SubFilter /adbe.pkcs7.detached`).
-- Signature widget authoring via the `<Signature>` component in
-  `@imprint/react`.
-- Self-signed and CA-issued certificate support via `node-forge` (Node) or a
-  Rust `rustls-pkcs7` WASM port (browser / edge).
-- Visible signature appearance (image + text) or invisible signature.
-- Timestamp support (RFC 3161).
+- **ISO 32000-2 §12.8 `/ByteRange` signatures** accepted by Acrobat, Foxit,
+  Apple Preview, and EU eIDAS validators (`signWithByteRange`).
+- **Trailer-comment signatures** for in-house verification pipelines
+  (`signBuffer` — simpler but not readable by third-party tools).
+- **AES-256 V=5/R=6 encryption** with owner/user passwords and per-flag
+  permissions — the only PDF encryption mode considered cryptographically sound
+  by ISO 32000-2 (`encryptDocument`).
+- **Certificate inspection** — subject, issuer, serial, expiry, SHA-256
+  thumbprint (`parseCertificate`).
+- **RFC 3161 timestamp authority** support (optional; non-fatal on failure).
 
 ## Usage
 
-```tsx
-import '@imprint/sign'; // registers the signing writer
+### Standard ByteRange signature
 
-const pdf = await renderToBuffer(
-  <Document>
-    <Page>
-      <Form>
-        <Signature
-          name="director"
-          certificate={certPem}
-          privateKey={keyPem}
-          appearance={{ image: logoUrl, text: 'Signed by Acme Corp' }}
-          className="mt-8 h-24 border-b border-gray-300"
-        />
-      </Form>
-    </Page>
-  </Document>,
-);
+```ts
+import { signWithByteRange } from '@imprint/sign';
+
+const signed = await signWithByteRange(pdfBytes, {
+  certificate: certPem, // PEM string
+  privateKey: keyPem, // PEM string
+  reason: 'Document approved',
+  location: 'Berlin, Germany',
+  tsaUrl: 'https://freetsa.org/tsr', // optional RFC 3161 TSA
+});
 ```
 
-## Signing after render
+### Encrypt before delivery
 
-For cases where the signing key lives on a separate HSM or signing service,
-`@imprint/sign` also exposes `signBuffer` to apply a signature to an already-
-rendered PDF:
+```ts
+import { encryptDocument } from '@imprint/sign';
+
+const encrypted = await encryptDocument(pdfBytes, {
+  ownerPassword: 'secret',
+  userPassword: '', // empty = open without prompt
+  permissions: { print: true, modify: false, copy: false, annotate: true },
+});
+```
+
+### Inspect a certificate
+
+```ts
+import { parseCertificate } from '@imprint/sign';
+
+const info = parseCertificate(certPem);
+console.log(info.subject, info.sha256Thumbprint, info.notAfter);
+```
+
+### Trailer-comment signature (in-house only)
 
 ```ts
 import { signBuffer } from '@imprint/sign';
 
-const signed = await signBuffer(unsignedPdf, {
+const signed = await signBuffer(pdfBytes, {
   certificate: certPem,
   privateKey: keyPem,
-  reason: 'Document approved',
 });
+// output contains %IMPRINT_SIG_BEGIN … %IMPRINT_SIG_END
 ```

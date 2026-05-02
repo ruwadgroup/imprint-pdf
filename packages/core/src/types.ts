@@ -419,9 +419,44 @@ export interface RenderOptions {
   hyphenate?: (word: string) => string[];
   /** Raster fallback for SVGs that use `<filter>`, soft `<mask>`, or `<foreignObject>`. */
   svgRasterizer?: SvgRasterizer;
+  /**
+   * Hooks invoked after the document tree has been drawn but before the PDF
+   * is serialized. Used by `@imprint/print` (output intents, marks, page
+   * boxes) and `@imprint/ua` (structure tree) to mutate the in-memory pdf-lib
+   * `PDFDocument`. Hooks receive the document, the original IR, and the page
+   * objects in render order.
+   */
+  postProcess?: PdfPostProcessHook[];
+  /**
+   * Hooks invoked on the serialized bytes returned by `PDFDocument.save()`.
+   * Used by `@imprint/sign` (PKCS#7 detached signatures) and the encryption
+   * pass to rewrite or append to the final byte stream.
+   */
+  postBytes?: PdfPostBytesHook[];
 }
 
 export type SvgRasterizer = (
   svg: string,
   options: { width: number; height: number },
 ) => Promise<Uint8Array>;
+
+/**
+ * Mutates an in-flight pdf-lib `PDFDocument`. Imported as `unknown` from
+ * `@imprint/core` to avoid a hard `pdf-lib` dependency on the typings of every
+ * downstream package — concrete packages (`@imprint/print`, `@imprint/sign`,
+ * `@imprint/ua`) re-cast to `PDFDocument`.
+ */
+export type PdfPostProcessHook = (ctx: PdfPostProcessContext) => Promise<void> | void;
+
+export interface PdfPostProcessContext {
+  /** The pdf-lib `PDFDocument` (typed as `unknown` here to keep the dependency optional). */
+  doc: unknown;
+  /** The fully reconciled IR root used to draw the document. */
+  document: DocumentNode;
+  /** pdf-lib `PDFPage[]` in document order, indexable alongside `document.children` page nodes. */
+  pages: unknown[];
+  /** Per-node geometry map produced by the layout pass. */
+  geometries: Map<string, ComputedGeometry>;
+}
+
+export type PdfPostBytesHook = (bytes: Uint8Array) => Promise<Uint8Array> | Uint8Array;

@@ -2,7 +2,7 @@
   "name": "@imprint/taffy-wasm",
   "version": "0.1.0",
   "description": "Taffy CSS layout engine (Rust→WASM) for Imprint",
-  "license": "BSL-1.1",
+  "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {
     "type": "git",

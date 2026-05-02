@@ -51,9 +51,9 @@ quickly; the [roadmap](ROADMAP.md) shows what's planned.
 
 ## Enterprise support
 
-`@imprint/print`, `@imprint/sign`, `@imprint/ua` (BSL 1.1) ship with priority
-support, security review, and an SLA. Contact **enterprise@imprint.dev** for
-terms.
+`@imprint/print`, `@imprint/sign`, `@imprint/ua` are Apache-2.0 like the rest of
+the project. For sponsored priority support, security review, or an SLA, contact
+**enterprise@imprint.dev**.
 
 ## Contributing
 

@@ -67,20 +67,20 @@ produces measurably better output. It is `O(n)` practical with a cutoff and
 benchmarks at under 1 ms per paragraph. The quality is the brand promise. We
 don't let users opt into worse output by default.
 
-## Open core and BSL
+## One license, no surprises
 
-The Apache-2.0 core (`@imprint/core`, `@imprint/react`, `@imprint/tailwind`,
-`@imprint/cli`, `@imprint/next`, `@imprint/vite`, `@imprint/eslint`) exists to
-get PDF generation right in the hands of every JavaScript developer, no purchase
-required.
+Every package is Apache-2.0. The engine (`@imprint/core`, `@imprint/react`,
+`@imprint/tailwind`, `@imprint/cli`, `@imprint/next`, `@imprint/vite`,
+`@imprint/eslint`) and the enterprise surface (`@imprint/print`,
+`@imprint/sign`, `@imprint/ua`) all ship under the same permissive license — no
+time-bombed source, no commercial seat requirement, no friction for production
+deployment.
 
-The BSL enterprise packages (`@imprint/print`, `@imprint/sign`, `@imprint/ua`)
-exist because regulated enterprises — print shops, fintech, healthcare, EU EAA
-compliance — need PDF/X, PDF/UA, PKCS#7 signatures, and someone to call when
-something breaks. BSL 1.1 prevents cloud vendors from reselling Imprint as a
-managed service without contributing back; it reverts to Apache-2.0 after four
-years.
+Why not BSL or open-core gating? It made the Apache-2.0 surface feel partial and
+the BSL surface feel hostile. Regulated enterprises — print shops, fintech,
+healthcare, EU EAA compliance — need PDF/X, PDF/UA, and PKCS#7 signatures, and
+they shouldn't pay a license tax to use them. Sponsorship and paid support fund
+the work instead.
 
 If something here is wrong for you,
-[open an issue](https://github.com/tamimbinhakim/imprint/issues). The commercial
-terms bend; the technical philosophy stays.
+[open an issue](https://github.com/tamimbinhakim/imprint/issues).

@@ -2,7 +2,7 @@
   "name": "@imprint/sign",
   "version": "0.1.0",
   "description": "PKCS#7 detached digital signatures for Imprint PDFs.",
-  "license": "BSL-1.1",
+  "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {
     "type": "git",
@@ -54,13 +54,15 @@
   "dependencies": {
     "@imprint/core": "workspace:*",
     "@imprint/react": "workspace:*",
-    "node-forge": "catalog:"
+    "node-forge": "catalog:",
+    "pdf-lib": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",
     "@types/node-forge": "catalog:",
     "tsup": "catalog:",
     "typescript": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
     "vitest": "catalog:"
   },
   "engines": {

@@ -1,0 +1,37 @@
+{
+  "name": "@imprint/bench",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Benchmark suite for Imprint PDF generation",
+  "type": "module",
+  "scripts": {
+    "bench": "tsx src/index.ts",
+    "bench:all": "tsx src/index.ts --suite all",
+    "bench:competitors": "tsx src/index.ts --suite competitors",
+    "bench:complexity": "tsx src/index.ts --suite complexity",
+    "bench:pipeline": "tsx src/index.ts --suite pipeline",
+    "bench:features": "tsx src/index.ts --suite features",
+    "bench:chromium": "tsx src/index.ts --suite chromium"
+  },
+  "dependencies": {
+    "@imprint/core": "workspace:*",
+    "@imprint/react": "workspace:*",
+    "@imprint/print": "workspace:*",
+    "@imprint/sign": "workspace:*",
+    "@imprint/ua": "workspace:*"
+  },
+  "devDependencies": {
+    "@react-pdf/renderer": "*",
+    "@types/node": "catalog:",
+    "@types/node-forge": "catalog:",
+    "node-forge": "catalog:",
+    "puppeteer": "*",
+    "react": "catalog:",
+    "@types/react": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

@@ -18,22 +18,7 @@ limitations under the License.
 
 ================================================================================
 
-This LICENSE applies to:
-  - @imprint/core
-  - @imprint/react
-  - @imprint/tailwind
-  - @imprint/cli
-  - @imprint/next
-  - @imprint/vite
-  - @imprint/eslint
-  - examples/*
-  - docs/*
-
-The packages listed below are licensed separately under the Business
-Source License 1.1 (see LICENSE-BSL):
-  - @imprint/print
-  - @imprint/sign
-  - @imprint/ua
+This LICENSE applies to all packages in this repository.
 
 ================================================================================
 

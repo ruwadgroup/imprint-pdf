@@ -64,8 +64,8 @@ Uint8Array | ReadableStream
   - Grid. `@react-pdf/renderer`, Satori, and Forme do not have Grid.
 - **AcroForms in JSX.** Declarative `<TextField>`, `<Signature>`, etc. that
   produce real PDF form fields — not screenshots of form-like UI.
-- **Open core.** `@imprint/core` and `@imprint/react` are Apache-2.0. PDF/X,
-  PDF/UA, and signing are BSL enterprise packages.
+- **Apache-2.0 throughout.** Engine, React layer, Tailwind compiler, and the
+  PDF/X, PDF/UA, and signing surface all ship under one permissive license.
 
 ## How it compares
 

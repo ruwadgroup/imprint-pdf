@@ -50,6 +50,9 @@ export type {
   PageSize,
   PdfNode,
   PdfNodeType,
+  PdfPostBytesHook,
+  PdfPostProcessContext,
+  PdfPostProcessHook,
   RadioGroupNode,
   RadioGroupProps,
   RadioOption,
@@ -77,6 +80,7 @@ export { scriptOf, splitByScript } from './typography/script.js';
 export type { MeasureTextOptions, TextLine, TextMetrics } from './typography/text.js';
 export { measureText } from './typography/text.js';
 export { deriveAxesFromStyle, parseVariationSettings } from './typography/variations.js';
+export type { WritePdfOptions } from './writer/index.js';
 export { writePdf } from './writer/index.js';
 export {
   clearSvgRasterizer,
@@ -84,3 +88,5 @@ export {
   needsRasterization,
   setSvgRasterizer,
 } from './writer/svg/rasterize-slot.js';
+export type { XmpInput } from './writer/xmp.js';
+export { addXmpMetadata, buildXmpPacket } from './writer/xmp.js';

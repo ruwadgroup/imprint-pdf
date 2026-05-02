@@ -1,7 +1,7 @@
 # Cookbook — CI validation (PDF/UA, PDF/X)
 
 Run veraPDF in CI to certify that every generated PDF passes PDF/UA-1 or PDF/X-4
-conformance. Requires `@imprint/print` or `@imprint/ua` (BSL).
+conformance. Requires `@imprint/print` or `@imprint/ua`.
 
 ## Setup
 
