@@ -23,14 +23,19 @@ fi
 mkdir -p "$INSTALL_DIR"
 cd "$INSTALL_DIR"
 
-if [ ! -d "verapdf-installer" ]; then
-  echo "→ downloading $URL"
-  curl -fsSL -o "$TARBALL" "$URL"
-  unzip -q "$TARBALL"
-fi
+echo "→ downloading $URL"
+curl -fsSL -o "$TARBALL" "$URL"
+unzip -oq "$TARBALL"
 
-# The downloaded archive ships an interactive installer; we run it in
-# `auto` mode with a one-line config so CI never blocks on a prompt.
+# The current installer ships in a versioned directory like
+# `verapdf-greenfield-1.30.1/` with the IzPack jar named
+# `verapdf-izpack-installer-<version>.jar`. Resolve both dynamically so
+# we don't break again when veraPDF bumps the version.
+SRC_DIR="$(find . -maxdepth 1 -type d -name 'verapdf-*' | head -n1)"
+INSTALLER_JAR="$(find "$SRC_DIR" -maxdepth 1 -name 'verapdf-izpack-installer-*.jar' | head -n1)"
+
+# The installer is interactive by default; run it in `auto` mode with a
+# one-line config so CI never blocks on a prompt.
 INSTALL_DEST="$(pwd)/install"
 cat > install.xml <<EOF
 <AutomatedInstallation langpack="eng">
@@ -48,9 +53,8 @@ cat > install.xml <<EOF
 </AutomatedInstallation>
 EOF
 
-cd verapdf-installer-*/
-java -jar verapdf-install.jar ../install.xml
+java -jar "$INSTALLER_JAR" install.xml
 
-echo "$INSTALL_DEST/verapdf" >> "$GITHUB_PATH"
+echo "$INSTALL_DEST" >> "$GITHUB_PATH"
 echo "veraPDF installed at $INSTALL_DEST"
 "$INSTALL_DEST/verapdf" --version || true
