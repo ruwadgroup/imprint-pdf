@@ -49,11 +49,12 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # Pin the npm auth token into ~/.npmrc so pnpm publish (invoked transitively
-      # by `changeset publish`) picks it up. setup-node writes a userconfig file
-      # that pnpm doesn't always honor, so we write the token explicitly.
+      # `setup-node` writes a userconfig at $RUNNER_TEMP/.npmrc and sets
+      # NPM_CONFIG_USERCONFIG to point at it. `npm config set --location=user`
+      # writes to that same file (rather than $HOME/.npmrc, which npm ignores
+      # when NPM_CONFIG_USERCONFIG is set).
       - name: Configure npm auth
-        run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> "$HOME/.npmrc"
+        run: npm config set //registry.npmjs.org/:_authToken="${NPM_TOKEN}" --location=user
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
