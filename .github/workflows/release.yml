@@ -1,8 +1,11 @@
 name: Release
 
+# Manual trigger only for now — re-enable `push: branches: [main]` once
+# the repo's "Allow GitHub Actions to create and approve pull requests"
+# setting is on, otherwise the changesets PR step always errors with
+# `HttpError: GitHub Actions is not permitted to create or approve PRs`.
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
