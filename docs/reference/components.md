@@ -18,13 +18,13 @@ All component props. Every component also accepts `className` (Tailwind) and
 
 ## `<Page>`
 
-| Prop          | Type                         | Default      | Description                          |
-| ------------- | ---------------------------- | ------------ | ------------------------------------ |
-| `size`        | `'A4' \| 'Letter' \| [w, h]` | `'A4'`       | Page size. Custom: `[mm_w, mm_h]`.   |
-| `sizeUnit`    | `'mm' \| 'pt' \| 'in'`       | `'mm'`       | Unit for custom size tuple.          |
-| `orientation` | `'portrait' \| 'landscape'`  | `'portrait'` | Page orientation.                    |
-| `bleed`       | `string`                     | —            | Bleed area. Enterprise.              |
-| `marks`       | `string`                     | —            | Trim/registration marks. Enterprise. |
+| Prop          | Type                         | Default      | Description                        |
+| ------------- | ---------------------------- | ------------ | ---------------------------------- |
+| `size`        | `'A4' \| 'Letter' \| [w, h]` | `'A4'`       | Page size. Custom: `[mm_w, mm_h]`. |
+| `sizeUnit`    | `'mm' \| 'pt' \| 'in'`       | `'mm'`       | Unit for custom size tuple.        |
+| `orientation` | `'portrait' \| 'landscape'`  | `'portrait'` | Page orientation.                  |
+| `bleed`       | `string`                     | —            | Bleed area.                        |
+| `marks`       | `string`                     | —            | Trim/registration marks.           |
 
 ## HTML containers
 
@@ -123,11 +123,11 @@ No props. Render as inline text — resolved at draw time.
 
 ## `<Signature>`
 
-| Prop          | Type     | Default  | Description                                                |
-| ------------- | -------- | -------- | ---------------------------------------------------------- |
-| `name`        | `string` | required | Field name.                                                |
-| `certificate` | `string` | —        | PEM certificate. Requires `@imprint-pdf/sign`. Enterprise. |
-| `privateKey`  | `string` | —        | PEM private key. Requires `@imprint-pdf/sign`. Enterprise. |
+| Prop          | Type     | Default  | Description                                    |
+| ------------- | -------- | -------- | ---------------------------------------------- |
+| `name`        | `string` | required | Field name.                                    |
+| `certificate` | `string` | —        | PEM certificate. Requires `@imprint-pdf/sign`. |
+| `privateKey`  | `string` | —        | PEM private key. Requires `@imprint-pdf/sign`. |
 
 ## `<Button>`
 

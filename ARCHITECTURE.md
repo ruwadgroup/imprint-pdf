@@ -20,8 +20,8 @@ glyph runs → PDF byte stream, with each stage isolated, testable, and swappabl
 4. **Vector everywhere.** Charts arrive as SVG and stay as PDF vector ops.
    Rasterizing for print is a sin.
 5. **One license, no surprises.** Every package is Apache-2.0 — engine,
-   adapters, and the print / accessibility / signing surface that regulated
-   enterprises need. Sponsorship funds the work; the source never time-bombs.
+   adapters, and the print / accessibility / signing add-ons that regulated
+   industries need. Sponsorship funds the work; the source never time-bombs.
 6. **Layered, not monolithic.** Each layer has its own package and its own
    tests. The layout pass doesn't know about PDF; the writer doesn't know about
    React.
@@ -44,7 +44,7 @@ glyph runs → PDF byte stream, with each stage isolated, testable, and swappabl
 │  ├─ @imprint-pdf/cli            (render, dev preview, init, validate)│
 │  └─ @imprint-pdf/eslint  (lint rules for PDF authoring)       │
 ├──────────────────────────────────────────────────────────────────┤
-│  Enterprise surface (Apache-2.0)                                 │
+│  Compliance & print add-ons (Apache-2.0)                         │
 │  ├─ @imprint-pdf/print  (PDF/X-4, CMYK, ICC via lcms2 WASM)          │
 │  ├─ @imprint-pdf/sign   (PKCS#7 detached signatures)                 │
 │  └─ @imprint-pdf/ua     (PDF/UA-1 tagged PDF, structure tree)        │
@@ -151,8 +151,8 @@ globally. This is what TeX does and what every browser still does _not_ do.
   radial gradients become PDF Type 2/3 shadings; SVG masks become PDF soft
   masks; clip paths become clipping paths. Filters and complex masks fall
   through to **resvg** rasterization.
-- **CMYK (Enterprise)** — lcms2 (Little CMS) compiled to WASM converts sRGB →
-  CMYK against the user's ICC profile.
+- **CMYK** — lcms2 (Little CMS) compiled to WASM converts sRGB → CMYK against
+  the user's ICC profile.
 
 ### 6. PDF writing
 
@@ -219,16 +219,16 @@ incremental cost of PDF object writing.
 
 ## Trade-offs explicitly chosen
 
-| Decision                                         | Alternative                            | Why                                                                   |
-| ------------------------------------------------ | -------------------------------------- | --------------------------------------------------------------------- |
-| Taffy (Rust → WASM) over Yoga                    | Yoga is mature, smaller                | We need CSS Grid; Taffy is the only mature open option that ships it  |
-| HarfBuzz tiny-build over opentype.js             | opentype.js is JS-only, smaller        | Real complex-script shaping is non-negotiable for international users |
-| `pdf-lib` v0 → custom Rust writer v1             | Stay on `pdf-lib` forever              | `pdf-lib` will not ship CMYK / PDF-X / PDF-UA; Enterprise needs them  |
-| Real Tailwind compiler (Oxide) over a translator | Translator (à la `react-pdf-tailwind`) | The translator is exactly what we are differentiating against         |
-| Knuth–Plass enabled by default                   | Greedy line breaker                    | Output quality is the brand promise; Plass is fast enough             |
-| AcroForms only, no XFA                           | Both                                   | XFA is deprecated in PDF 2.0 and disallowed in PDF/A                  |
-| Apache-2.0 across the board                      | Open core / BSL split                  | One license keeps adoption frictionless; sponsorship funds the work   |
-| `react-reconciler` over a fork                   | Fork React's reconciler                | One file, well-documented, and `@react-pdf` / Ink prove the pattern   |
+| Decision                                         | Alternative                            | Why                                                                           |
+| ------------------------------------------------ | -------------------------------------- | ----------------------------------------------------------------------------- |
+| Taffy (Rust → WASM) over Yoga                    | Yoga is mature, smaller                | We need CSS Grid; Taffy is the only mature open option that ships it          |
+| HarfBuzz tiny-build over opentype.js             | opentype.js is JS-only, smaller        | Real complex-script shaping is non-negotiable for international users         |
+| `pdf-lib` v0 → custom Rust writer v1             | Stay on `pdf-lib` forever              | `pdf-lib` will not ship CMYK / PDF-X / PDF-UA; the print/UA add-ons need them |
+| Real Tailwind compiler (Oxide) over a translator | Translator (à la `react-pdf-tailwind`) | The translator is exactly what we are differentiating against                 |
+| Knuth–Plass enabled by default                   | Greedy line breaker                    | Output quality is the brand promise; Plass is fast enough                     |
+| AcroForms only, no XFA                           | Both                                   | XFA is deprecated in PDF 2.0 and disallowed in PDF/A                          |
+| Apache-2.0 across the board                      | Open core / BSL split                  | One license keeps adoption frictionless; sponsorship funds the work           |
+| `react-reconciler` over a fork                   | Fork React's reconciler                | One file, well-documented, and `@react-pdf` / Ink prove the pattern           |
 
 ## Open questions
 

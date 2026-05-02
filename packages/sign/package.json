@@ -15,8 +15,7 @@
     "pdf",
     "digital-signature",
     "pkcs7",
-    "imprint",
-    "enterprise"
+    "imprint"
   ],
   "type": "module",
   "main": "./dist/index.cjs",

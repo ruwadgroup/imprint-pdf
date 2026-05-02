@@ -40,7 +40,7 @@ export async function runValidate(file: string, options: { profile?: string }): 
     console.log(
       `\n⚠ Profile validation (${options.profile}) requires @imprint-pdf/ua or @imprint-pdf/print`,
     );
-    console.log('  Install the appropriate enterprise package for full compliance validation.');
+    console.log('  Install the appropriate add-on package for full compliance validation.');
     console.log('  e.g.: npm install @imprint-pdf/ua  (for PDF/UA-1)');
     console.log('        npm install @imprint-pdf/print (for PDF/X-4, PDF/A-2b)');
   }

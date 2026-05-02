@@ -145,7 +145,7 @@ npx imprint dev src/templates/Invoice.tsx
 
 Hot-reloads when you save. Uses the same pipeline as production.
 
-## 6. Validate (Enterprise)
+## 6. Validate
 
 If you have `@imprint-pdf/ua` or `@imprint-pdf/print`:
 

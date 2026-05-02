@@ -66,4 +66,4 @@ your direct control beyond keeping the bundle small.
   and a small handful of other Node built-ins.
 - The standalone build (`@imprint-pdf/react/standalone`) is currently a thin
   re-export of `@imprint-pdf/react`. The dedicated WASM-bundled standalone path
-  arrives with the `@imprint-pdf/print` enterprise tier.
+  arrives alongside the `@imprint-pdf/print` add-on.

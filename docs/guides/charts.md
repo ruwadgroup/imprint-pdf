@@ -83,7 +83,7 @@ import logoSvg from './logo.svg?raw';
 - Text inside SVG → converted to glyph paths so no font embedding is needed for
   chart labels.
 
-## CMYK charts (Enterprise)
+## CMYK charts
 
 With `@imprint-pdf/print`, colors in charts that use Tailwind's OKLCH values are
 converted to CMYK automatically via lcms2. For explicit CMYK in chart code, use

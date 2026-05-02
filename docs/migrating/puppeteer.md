@@ -15,7 +15,7 @@ Migrate from Chromium-based PDF generation when:
 - **Output quality matters.** Knuth–Plass justification, HarfBuzz shaping, and
   proper page breaking produce measurably better output than browser printing.
 - **PDF/X or PDF/UA is required.** Chromium cannot produce conformant PDF/X-4 or
-  PDF/UA-1. imprint-pdf can (Enterprise).
+  PDF/UA-1. imprint-pdf can.
 - **Memory / cost.** A 200 MB Chromium binary vs. a ~4 MB WASM module.
 
 ## When to stay on Puppeteer

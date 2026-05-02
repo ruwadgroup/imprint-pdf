@@ -65,15 +65,15 @@ export default withImprint()({
 These are added via the imprint-pdf Tailwind plugin (auto-loaded by
 `@imprint-pdf/tailwind`):
 
-| Variant                        | Description                                                      |
-| ------------------------------ | ---------------------------------------------------------------- |
-| `page-first:`                  | Applies only on the first page.                                  |
-| `page-left:`                   | Applies on left-hand (even) pages.                               |
-| `page-right:`                  | Applies on right-hand (odd) pages.                               |
-| `imprint:cmyk-[c_m_y_k]`       | CMYK colour. Values 0–1 each. Enterprise (`@imprint-pdf/print`). |
-| `imprint:spot-[Pantone-185-C]` | Named spot colour. Enterprise.                                   |
-| `imprint:overprint`            | PDF overprint flag.                                              |
-| `imprint:bleed-[3mm]`          | Bleed area size for this element.                                |
+| Variant                        | Description                                             |
+| ------------------------------ | ------------------------------------------------------- |
+| `page-first:`                  | Applies only on the first page.                         |
+| `page-left:`                   | Applies on left-hand (even) pages.                      |
+| `page-right:`                  | Applies on right-hand (odd) pages.                      |
+| `imprint:cmyk-[c_m_y_k]`       | CMYK colour. Values 0–1 each. Via `@imprint-pdf/print`. |
+| `imprint:spot-[Pantone-185-C]` | Named spot colour.                                      |
+| `imprint:overprint`            | PDF overprint flag.                                     |
+| `imprint:bleed-[3mm]`          | Bleed area size for this element.                       |
 
 ## What gets dropped
 

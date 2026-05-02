@@ -98,7 +98,7 @@ typography: {
 
 ```ts
 output: {
-  intent?: 'PDF/X-4' | 'PDF/X-4p' | 'PDF/A-2b' | 'PDF/A-3'; // Enterprise @imprint-pdf/print
+  intent?: 'PDF/X-4' | 'PDF/X-4p' | 'PDF/A-2b' | 'PDF/A-3'; // via @imprint-pdf/print
   outputIntent?: {
     profile: string;            // ICC profile name or path
     condition?: string;         // printing condition

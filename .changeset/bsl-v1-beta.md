@@ -4,7 +4,7 @@
 '@imprint-pdf/ua': minor
 ---
 
-Introduce the three enterprise packages as part of the v1.0-beta milestone.
+Introduce the three optional add-on packages as part of the v1.0-beta milestone.
 
 **@imprint-pdf/print** — `printIntent()` post-process hook for PDF/X-4,
 PDF/X-4p, PDF/A-2b, and PDF/A-3 output. Includes ICC output intent embedding,

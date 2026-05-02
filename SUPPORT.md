@@ -49,11 +49,11 @@ File a
 explaining the use case and what you've already tried. Pre-1.0 the API moves
 quickly; the [roadmap](ROADMAP.md) shows what's planned.
 
-## Enterprise support
+## Sponsored support
 
 `@imprint-pdf/print`, `@imprint-pdf/sign`, `@imprint-pdf/ua` are Apache-2.0 like
 the rest of the project. For sponsored priority support, security review, or an
-SLA, contact **enterprise@imprint.dev**.
+SLA, contact **support@imprint.dev**.
 
 ## Contributing
 

@@ -16,7 +16,7 @@ Root component. Required. Carries document-level metadata and config.
   subject="Invoice"
   keywords={['invoice', 'acme']}
   lang="en-US"
-  intent="PDF/X-4" // Enterprise — @imprint-pdf/print
+  intent="PDF/X-4" // via @imprint-pdf/print
   outputIntent={{ profile: 'FOGRA39', condition: 'ISO Coated v3' }}
 >
   {/* <Page> children */}
@@ -45,12 +45,12 @@ to decide which content goes on which page unless you want explicit control.
 >
 ```
 
-| Prop          | Type                         | Default      | Description                                    |
-| ------------- | ---------------------------- | ------------ | ---------------------------------------------- |
-| `size`        | `'A4' \| 'Letter' \| [w, h]` | `'A4'`       | Page dimensions. Custom: `[210, 297]` (mm).    |
-| `orientation` | `'portrait' \| 'landscape'`  | `'portrait'` |                                                |
-| `bleed`       | `string` (CSS length)        | —            | Bleed area. Enterprise (`@imprint-pdf/print`). |
-| `marks`       | `string`                     | —            | Trim/registration marks.                       |
+| Prop          | Type                         | Default      | Description                                 |
+| ------------- | ---------------------------- | ------------ | ------------------------------------------- |
+| `size`        | `'A4' \| 'Letter' \| [w, h]` | `'A4'`       | Page dimensions. Custom: `[210, 297]` (mm). |
+| `orientation` | `'portrait' \| 'landscape'`  | `'portrait'` |                                             |
+| `bleed`       | `string` (CSS length)        | —            | Bleed area. Via `@imprint-pdf/print`.       |
+| `marks`       | `string`                     | —            | Trim/registration marks.                    |
 
 ### Containers — use HTML
 

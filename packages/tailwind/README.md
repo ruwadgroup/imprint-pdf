@@ -82,14 +82,14 @@ v4 compatibility directive:
 
 ## Imprint-specific Tailwind variants
 
-| Variant                                    | Description                                    |
-| ------------------------------------------ | ---------------------------------------------- |
-| `print:`                                   | Always active (unlike the browser).            |
-| `page-first:`, `page-left:`, `page-right:` | CSS Paged Media analogues.                     |
-| `imprint:cmyk-[c_m_y_k]`                   | CMYK colour (Enterprise `@imprint-pdf/print`). |
-| `imprint:bleed-[size]`                     | Bleed area.                                    |
-| `imprint:spot-[Pantone-185-C]`             | Spot colour.                                   |
-| `imprint:overprint`                        | PDF overprint flag.                            |
+| Variant                                    | Description                             |
+| ------------------------------------------ | --------------------------------------- |
+| `print:`                                   | Always active (unlike the browser).     |
+| `page-first:`, `page-left:`, `page-right:` | CSS Paged Media analogues.              |
+| `imprint:cmyk-[c_m_y_k]`                   | CMYK colour (via `@imprint-pdf/print`). |
+| `imprint:bleed-[size]`                     | Bleed area.                             |
+| `imprint:spot-[Pantone-185-C]`             | Spot colour.                            |
+| `imprint:overprint`                        | PDF overprint flag.                     |
 
 ## What gets dropped
 

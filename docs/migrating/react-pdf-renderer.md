@@ -13,7 +13,7 @@ deliberate improvements.
 | `fontkit` shaping (no OpenType layout)   | HarfBuzz shaping (GSUB/GPOS, ligatures, CJK) |
 | Greedy line breaking                     | Knuth–Plass (default)                        |
 | No AcroForms                             | `<Form>`, `<TextField>`, `<Signature>`, etc. |
-| No PDF/X, no PDF/UA                      | Enterprise packages available                |
+| No PDF/X, no PDF/UA                      | Optional add-on packages available           |
 
 ## Package swap
 

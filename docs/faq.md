@@ -73,7 +73,7 @@ On warm throughput for complex documents with lots of JavaScript, Chromium can
 be faster — it has a JIT for the rendering engine. imprint-pdf's sweet spot is
 paged documents authored as React components, not converted web pages.
 
-## What's the licensing for the enterprise packages?
+## What's the licensing for the optional add-on packages?
 
 Apache-2.0, like the rest of the project. There's no time-bombed source and no
 commercial seat requirement — `@imprint-pdf/print`, `@imprint-pdf/sign`, and

@@ -93,11 +93,11 @@ milestone matters to you.
       visual regression testing in user projects
 - [x] `<Bookmark>` component + named destinations
 - [x] Document metadata API — title, author, subject, keywords
-- [x] XMP metadata (required for PDF/A and enterprise DMS ingestion)
+- [x] XMP metadata (required for PDF/A and DMS ingestion)
 - [x] Internal cross-references — named destinations and `<a href="#id">`
       within-document links
 
-## v1.0-beta — Enterprise stack
+## v1.0-beta — Compliance & print stack
 
 - [x] `@imprint-pdf/print` — output intents, CMYK pipeline, ICC profile
       embedding

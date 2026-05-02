@@ -7,7 +7,7 @@ A multi-page contract PDF with a fillable AcroForm signature section.
 - Cover page with parties and effective date
 - Terms and conditions body (multi-page, auto-broken)
 - Signature page with `<Signature>` and `<Checkbox>` fields
-- Digital PKCS#7 signing via `@imprint-pdf/sign` (optional, Enterprise)
+- Digital PKCS#7 signing via `@imprint-pdf/sign` (optional add-on)
 
 ## Template sketch
 
@@ -117,7 +117,7 @@ export function Contract({ contract }: ContractProps) {
 }
 ```
 
-## Applying a digital signature (Enterprise)
+## Applying a digital signature
 
 ```ts
 import { renderToBuffer } from '@imprint-pdf/react';

@@ -1,7 +1,8 @@
 # @imprint-pdf/print
 
-Enterprise print-ready output for
-[imprint-pdf](https://github.com/tamimbinhakim/imprint-pdf).
+Print-ready output (PDF/X-4, CMYK, ICC profiles, bleed/trim, PDF/A) for
+[imprint-pdf](https://github.com/tamimbinhakim/imprint-pdf). Optional add-on
+package — Apache-2.0 like the rest of the project.
 
 **License: Apache-2.0.** See [`LICENSING.md`](../../LICENSING.md).
 

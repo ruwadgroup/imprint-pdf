@@ -101,8 +101,8 @@ CSS `@page` rules are expressed as `<Page>` and `<Document>` props:
 | ------------------- | ----------------------------------------- |
 | `size: A4 portrait` | `<Page size="A4" orientation="portrait">` |
 | `margin: 20mm`      | `<Page className="p-[20mm]">`             |
-| `marks: trim crop`  | `<Page marks="trim,crop">` (Enterprise)   |
-| `bleed: 3mm`        | `<Page bleed="3mm">` (Enterprise)         |
+| `marks: trim crop`  | `<Page marks="trim,crop">`                |
+| `bleed: 3mm`        | `<Page bleed="3mm">`                      |
 | `:first`            | `page-first:` Tailwind variant            |
 | `:left` / `:right`  | `page-left:` / `page-right:` variants     |
 

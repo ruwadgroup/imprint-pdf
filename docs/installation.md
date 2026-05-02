@@ -48,7 +48,7 @@ support — see the [Bun guide](frameworks/bun.md).
 pnpm add -D @imprint-pdf/tailwind tailwindcss
 ```
 
-## Optional enterprise packages
+## Optional add-on packages
 
 Apache-2.0 like the rest. Install only when you need the surface — the core
 packages render full invoices and reports without them.

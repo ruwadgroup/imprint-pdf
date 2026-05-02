@@ -59,7 +59,8 @@ imprint-pdf is the fourth option. A TypeScript library with a Rust + WASM core
 that uses the **actual Tailwind v4 Oxide compiler**, the **actual HarfBuzz
 shaping engine**, the **actual Knuth–Plass justification algorithm**, and the
 **actual Taffy layout engine** (Block + Flexbox + CSS Grid). Sub-100 ms cold
-starts on Cloudflare Workers. PDF/X-4 + PDF/UA-1 for the enterprise tier.
+starts on Cloudflare Workers. PDF/X-4 + PDF/UA-1 ship as opt-in Apache-2.0
+add-ons — no paywall.
 
 ## Quick features
 
@@ -81,8 +82,8 @@ starts on Cloudflare Workers. PDF/X-4 + PDF/UA-1 for the enterprise tier.
 - **AcroForms in JSX.** `<TextField>`, `<Checkbox>`, `<RadioGroup>`,
   `<Signature>` declared as components. Widget rectangles come from the same
   layout pass that lays out visual text.
-- **Print-grade output (Enterprise).** PDF/X-4 + CMYK + ICC profiles + PDF/UA-1
-  tagged PDF + PKCS#7 signing + factur-X / ZUGFeRD.
+- **Print-grade output.** PDF/X-4 + CMYK + ICC profiles + PDF/UA-1 tagged PDF +
+  PKCS#7 signing + factur-X / ZUGFeRD.
 
 ## Documentation
 
@@ -196,22 +197,22 @@ For the full design, see [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 ## Why imprint-pdf over the alternatives
 
-| Capability                        | `@react-pdf` | Satori | pdfme | Forme | Chromium SaaS | Typst |   imprint-pdf    |
-| --------------------------------- | :----------: | :----: | :---: | :---: | :-----------: | :---: | :--------------: |
-| Real Tailwind classes             |   — (DSL)    | subset |   —   |   ✓   |       ✓       |   —   |      **✓**       |
-| React / JSX components            |      ✓       |   ✓    | part. |   ✓   |       —       |   —   |      **✓**       |
-| Edge runtimes (CF Workers)        |    part.     |   ✓    | part. |   ✓   |       —       |   ✓   |      **✓**       |
-| CSS Grid                          |      —       |   —    |   —   |   ?   |       ✓       |   ✓   |  **✓** (Taffy)   |
-| HarfBuzz-grade shaping            |      —       |   —    |   —   |   ✓   |       ✓       |   ✓   |      **✓**       |
-| Knuth–Plass justification         |      —       |   —    |   —   |   —   |   Prince ≈    |   ✓   |      **✓**       |
-| Variable fonts                    |    part.     |   —    |   —   |   ?   |       ✓       |   ✓   |      **✓**       |
-| Arabic / Indic / Thai / CJK       |     weak     |  weak  | weak  | part. |       ✓       |   ✓   |      **✓**       |
-| Vector charts                     |      —       |   —    |   —   |   ?   |       ✓       |   ✓   |      **✓**       |
-| AcroForms in JSX                  |      —       |  n/a   | tmpl. |   ✓   |       —       |   —   |      **✓**       |
-| PDF/X-4 + CMYK                    |      —       |   —    |   —   | part. |   DocRaptor   | part. | **✓ Enterprise** |
-| PDF/UA-1 tagged PDF               |      —       |   —    |   —   |   ✓   |   DocRaptor   | part. | **✓ Enterprise** |
-| Sub-100 ms edge cold start        |     n/a      |   ✓    | part. |   ✓   |       —       |   ✓   |      **✓**       |
-| Same code: client + edge + server |    part.     |   ✓    |   ✓   |   ✓   |      n/a      |   ✓   |      **✓**       |
+| Capability                        | `@react-pdf` | Satori | pdfme | Forme | Chromium SaaS | Typst |  imprint-pdf  |
+| --------------------------------- | :----------: | :----: | :---: | :---: | :-----------: | :---: | :-----------: |
+| Real Tailwind classes             |   — (DSL)    | subset |   —   |   ✓   |       ✓       |   —   |     **✓**     |
+| React / JSX components            |      ✓       |   ✓    | part. |   ✓   |       —       |   —   |     **✓**     |
+| Edge runtimes (CF Workers)        |    part.     |   ✓    | part. |   ✓   |       —       |   ✓   |     **✓**     |
+| CSS Grid                          |      —       |   —    |   —   |   ?   |       ✓       |   ✓   | **✓** (Taffy) |
+| HarfBuzz-grade shaping            |      —       |   —    |   —   |   ✓   |       ✓       |   ✓   |     **✓**     |
+| Knuth–Plass justification         |      —       |   —    |   —   |   —   |   Prince ≈    |   ✓   |     **✓**     |
+| Variable fonts                    |    part.     |   —    |   —   |   ?   |       ✓       |   ✓   |     **✓**     |
+| Arabic / Indic / Thai / CJK       |     weak     |  weak  | weak  | part. |       ✓       |   ✓   |     **✓**     |
+| Vector charts                     |      —       |   —    |   —   |   ?   |       ✓       |   ✓   |     **✓**     |
+| AcroForms in JSX                  |      —       |  n/a   | tmpl. |   ✓   |       —       |   —   |     **✓**     |
+| PDF/X-4 + CMYK                    |      —       |   —    |   —   | part. |   DocRaptor   | part. |     **✓**     |
+| PDF/UA-1 tagged PDF               |      —       |   —    |   —   |   ✓   |   DocRaptor   | part. |     **✓**     |
+| Sub-100 ms edge cold start        |     n/a      |   ✓    | part. |   ✓   |       —       |   ✓   |     **✓**     |
+| Same code: client + edge + server |    part.     |   ✓    |   ✓   |   ✓   |      n/a      |   ✓   |     **✓**     |
 
 The one-liner: **Real Tailwind. Real React. Real typography. PDF anywhere — no
 Chromium, ever.**
@@ -281,8 +282,8 @@ See [`STABILITY.md`](STABILITY.md) for the full contract.
 ## Licensing
 
 Every package is **Apache-2.0** — the engine, the React layer, the Tailwind
-compiler, the CLI/integrations, _and_ the enterprise surface (PDF/X-4 with
-CMYK + ICC, PDF/UA-1 tagged PDF, PKCS#7 signing, factur-X / ZUGFeRD). No
+compiler, the CLI/integrations, _and_ the compliance & print add-ons (PDF/X-4
+with CMYK + ICC, PDF/UA-1 tagged PDF, PKCS#7 signing, factur-X / ZUGFeRD). No
 commercial seats, no time-bombed source. See [`LICENSING.md`](LICENSING.md).
 
 ## Contributing
