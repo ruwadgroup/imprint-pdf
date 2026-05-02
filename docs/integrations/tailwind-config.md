@@ -4,10 +4,10 @@ Sharing your design system between your web app and PDF templates.
 
 ## Single stylesheet, two targets
 
-Imprint runs **Tailwind v4**, which is configured CSS-first. The recommended
-approach is one `app.css` used by both your web app (browser) and Imprint (PDF).
-Design tokens, font families, colors, and spacing scales apply identically in
-both outputs.
+imprint-pdf runs **Tailwind v4**, which is configured CSS-first. The recommended
+approach is one `app.css` used by both your web app (browser) and imprint-pdf
+(PDF). Design tokens, font families, colors, and spacing scales apply
+identically in both outputs.
 
 ```css
 /* src/app.css (shared) */
@@ -40,16 +40,16 @@ export default defineConfig({
 });
 ```
 
-Imprint scans for your stylesheet in conventional locations — `src/app.css`,
+imprint-pdf scans for your stylesheet in conventional locations — `src/app.css`,
 `src/globals.css`, `src/index.css`, `src/styles{,/app,/globals}.css`,
 `app/{app,globals}.css`, and `styles/{app,globals}.css` — and uses the first
 match. Set `tailwind.stylesheet` explicitly only when your CSS entry lives
-somewhere unusual. If nothing matches, Imprint falls back to a bare
+somewhere unusual. If nothing matches, imprint-pdf falls back to a bare
 `@import "tailwindcss";` so the build still succeeds (without your theme).
 
 ## `@theme` tokens
 
-Tailwind v4's `@theme` directive defines tokens as CSS variables. Imprint
+Tailwind v4's `@theme` directive defines tokens as CSS variables. imprint-pdf
 resolves them the same way the browser does, so `text-brand-900`, `p-section`,
 and `font-sans` all work in PDFs:
 
@@ -66,7 +66,7 @@ You can also use the variables directly in arbitrary values:
 ## Plugins
 
 Tailwind v4 loads plugins via the `@plugin` directive in your stylesheet, not
-via a JS `plugins` array. They work the same way in Imprint:
+via a JS `plugins` array. They work the same way in imprint-pdf:
 
 ```css
 /* src/app.css */
@@ -108,5 +108,5 @@ If you have a Tailwind v3 JS config, you have two options:
    @config '../tailwind.config.ts';
    ```
 
-   Then point Imprint at this stylesheet via `tailwind.stylesheet`. This is a
-   migration shim; new tokens should go in `@theme`.
+   Then point imprint-pdf at this stylesheet via `tailwind.stylesheet`. This is
+   a migration shim; new tokens should go in `@theme`.

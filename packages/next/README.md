@@ -1,7 +1,7 @@
 # @imprint-pdf/next
 
 Next.js App Router integration for
-[Imprint](https://github.com/tamimbinhakim/imprint-pdf).
+[imprint-pdf](https://github.com/tamimbinhakim/imprint-pdf).
 
 ```bash
 pnpm add @imprint-pdf/next @imprint-pdf/react @imprint-pdf/core

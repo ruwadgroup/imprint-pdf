@@ -23,7 +23,7 @@ See [`LICENSE`](LICENSE) for the full text.
 
 ## Commercial support
 
-If Imprint saves you significant engineering time in a commercial product,
+If imprint-pdf saves you significant engineering time in a commercial product,
 consider [sponsoring](https://github.com/sponsors/tamimbinhakim) or reaching out
 about a support contract at
 [tamimbinhakim.work@gmail.com](mailto:tamimbinhakim.work@gmail.com).

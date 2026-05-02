@@ -1,7 +1,7 @@
 {
   "name": "@imprint-pdf/print",
   "version": "1.0.0-alpha",
-  "description": "Enterprise PDF/X-4, CMYK, ICC profile, spot color, bleed/trim, and PDF/A output for Imprint.",
+  "description": "Enterprise PDF/X-4, CMYK, ICC profile, spot color, bleed/trim, and PDF/A output for imprint-pdf.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {

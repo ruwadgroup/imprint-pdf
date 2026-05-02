@@ -1,8 +1,8 @@
 # Cookbook — Streaming PDFs
 
-Imprint can stream pages as they are rendered. The first byte arrives in < 50 ms
-for most documents; the client's PDF viewer can begin rendering while remaining
-pages are still being generated.
+imprint-pdf can stream pages as they are rendered. The first byte arrives in <
+50 ms for most documents; the client's PDF viewer can begin rendering while
+remaining pages are still being generated.
 
 ## `renderToStream`
 

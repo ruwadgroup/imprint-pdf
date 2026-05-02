@@ -1,6 +1,6 @@
 # Type safety
 
-Imprint's JSX surface is fully typed. Every component prop is typed. Nothing
+imprint-pdf's JSX surface is fully typed. Every component prop is typed. Nothing
 accepts `any` where a specific type is expected.
 
 ## Component props
@@ -46,7 +46,7 @@ const stream = await renderToStream(<Invoice data={data} />, { wasm });
 
 ## JSX namespace
 
-Imprint registers its own JSX namespace for the `className`-bearing document
+imprint-pdf registers its own JSX namespace for the `className`-bearing document
 components. Applying `className` to a `<Page>` from a different namespace would
 be a type error.
 

@@ -1,10 +1,10 @@
-# Imprint docs
+# imprint-pdf docs
 
 Real Tailwind. Real React. Real typography. PDF anywhere — no Chromium, ever.
 
 ## Start here
 
-- **[Overview](overview.md)** — what Imprint is and where it fits
+- **[Overview](overview.md)** — what imprint-pdf is and where it fits
 - **[Philosophy](philosophy.md)** — the design decisions and why they were made
 - **[Installation](installation.md)** — packages, peer deps, version matrix
 - **[Quick start](quick-start.md)** — your first PDF in five minutes
@@ -20,8 +20,8 @@ The features, in depth.
 - **[Components](guides/components.md)** — `<Document>`, `<Page>`, `<Image>`,
   `<Svg>`, plus first-class HTML elements (`<div>`, `<span>`, `<p>`,
   `<h1>`–`<h6>`, `<a>`, `<img>`, `<table>`, …)
-- **[Tailwind](guides/tailwind.md)** — how real Tailwind works inside Imprint;
-  variants and dropped properties
+- **[Tailwind](guides/tailwind.md)** — how real Tailwind works inside
+  imprint-pdf; variants and dropped properties
 - **[Typography](guides/typography.md)** — HarfBuzz shaping, Knuth–Plass,
   variable fonts, CJK, Arabic
 - **[Paged layout](guides/paged-layout.md)** — `@page`, `break-before`,

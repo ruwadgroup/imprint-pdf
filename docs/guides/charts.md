@@ -1,7 +1,7 @@
 # Charts and SVG
 
 PDFs are vector-native. Rasterising charts as PNG screenshots and embedding them
-is lossy, blurry at high zoom, and wastes bytes. Imprint converts chart SVG
+is lossy, blurry at high zoom, and wastes bytes. imprint-pdf converts chart SVG
 output directly to PDF content stream operators — perfectly crisp at any zoom
 level, printable at any resolution.
 

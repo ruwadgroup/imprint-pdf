@@ -6,7 +6,7 @@ shift, not just a package swap.
 
 ## Key differences
 
-| pdfme                            | Imprint                                       |
+| pdfme                            | imprint-pdf                                   |
 | -------------------------------- | --------------------------------------------- |
 | JSON template + data merge       | React components + TypeScript props           |
 | Absolute-positioned schemas      | Flowable CSS layout (Flex + Grid + Block)     |
@@ -21,7 +21,7 @@ pdfme's WYSIWYG designer and absolute-positioning model are genuinely better for
 data-fill templates like labels, simple forms, and certificates where designers
 (not engineers) own the layout. If that's your workflow, pdfme is fine.
 
-Migrate to Imprint when:
+Migrate to imprint-pdf when:
 
 - You need real layout (columns, tables, grid)
 - You want Tailwind class-based styling
@@ -56,7 +56,7 @@ Migrate to Imprint when:
 }
 ```
 
-### Imprint equivalent
+### imprint-pdf equivalent
 
 ```tsx
 export function Invoice({ name, amount }: { name: string; amount: number }) {

@@ -103,8 +103,8 @@ fonts: [
 }
 ```
 
-Imprint resolves glyphs from left to right in the font stack — Latin from Inter,
-Arabic from Noto Sans Arabic, etc.
+imprint-pdf resolves glyphs from left to right in the font stack — Latin from
+Inter, Arabic from Noto Sans Arabic, etc.
 
 ## Subsetting
 

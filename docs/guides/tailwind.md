@@ -1,7 +1,8 @@
-# Tailwind in Imprint
+# Tailwind in imprint-pdf
 
-Imprint uses the **actual Tailwind v4 Oxide compiler** — not a translator, not a
-hand-curated subset. If a class works in Tailwind, it works in Imprint.
+imprint-pdf uses the **actual Tailwind v4 Oxide compiler** — not a translator,
+not a hand-curated subset. If a class works in Tailwind, it works in
+imprint-pdf.
 
 ## Setup
 
@@ -52,16 +53,16 @@ export default withImprint()({
    runtime cost.
 
 2. **Runtime fallback** (dynamic classes): If a class name is computed at render
-   time (`className={someVar}`), Imprint falls back to the Oxide WASM module at
-   ~5–20 ms per render. Enable with `tailwind: { runtimeFallback: true }`.
+   time (`className={someVar}`), imprint-pdf falls back to the Oxide WASM module
+   at ~5–20 ms per render. Enable with `tailwind: { runtimeFallback: true }`.
 
 3. **Always on: `print:` variant.** Unlike the browser, where `print:` only
-   fires in print preview, Imprint treats `print:` as always active. Your
+   fires in print preview, imprint-pdf treats `print:` as always active. Your
    print-specific layout applies in every render.
 
 ## Imprint-specific variants
 
-These are added via the Imprint Tailwind plugin (auto-loaded by
+These are added via the imprint-pdf Tailwind plugin (auto-loaded by
 `@imprint-pdf/tailwind`):
 
 | Variant                        | Description                                                      |
@@ -109,7 +110,7 @@ correctly by the PDF layout engine.
 ## Sharing your design system
 
 Tailwind v4 is configured CSS-first via `@theme`. Point both your web app and
-Imprint at the same stylesheet:
+imprint-pdf at the same stylesheet:
 
 ```css
 /* src/app.css (shared) */

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "Imprint PDF template test harness — renders all templates to ./out/ and reports sizes.",
+  "description": "imprint-pdf PDF template test harness — renders all templates to ./out/ and reports sizes.",
   "scripts": {
     "generate": "tsx src/index.tsx",
     "generate:watch": "tsx watch src/index.tsx"

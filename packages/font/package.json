@@ -1,7 +1,7 @@
 {
   "name": "@imprint-pdf/font",
   "version": "1.0.0-alpha",
-  "description": "Font loaders for imprint — Google Fonts, Bunny Fonts, Fontsource, and local files. Returns FontDeclaration[] for renderToBuffer.",
+  "description": "Font loaders for imprint-pdf — Google Fonts, Bunny Fonts, Fontsource, and local files. Returns FontDeclaration[] for renderToBuffer.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {

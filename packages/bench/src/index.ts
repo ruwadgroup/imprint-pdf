@@ -42,8 +42,8 @@ const WARMUP = flagNum('warmup', 5);
 const OUT = flag('out');
 
 const BASELINES: Record<string, string> = {
-  competitors: 'Imprint',
-  complexity: 'Imprint 1p',
+  competitors: 'imprint-pdf',
+  complexity: 'imprint-pdf 1p',
   pipeline: 'core',
   features: 'mixed',
   chromium: 'chromium (warm)',
@@ -74,7 +74,7 @@ async function main(): Promise<void> {
   const allResults: Record<string, BenchResult[]> = {};
 
   console.log(
-    `\n${BOLD}${CYAN}Imprint Benchmark Suite${RESET}  ` +
+    `\n${BOLD}${CYAN}imprint-pdf Benchmark Suite${RESET}  ` +
       `runs=${RUNS}  warmup=${WARMUP}` +
       (SUITE ? `  suite=${SUITE}` : ''),
   );

@@ -1,7 +1,7 @@
 {
   "name": "@imprint-pdf/next",
   "version": "1.0.0-alpha",
-  "description": "Next.js App Router integration for Imprint — route handlers, RSC helpers, and the withImprint plugin.",
+  "description": "Next.js App Router integration for imprint-pdf — route handlers, RSC helpers, and the withImprint plugin.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {

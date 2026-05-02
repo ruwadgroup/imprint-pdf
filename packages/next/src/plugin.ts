@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
 // @imprint-pdf/next/plugin — Next.js config wrapper
 //
-// Wraps the user's next.config.ts to inject WASM support, the Imprint webpack
+// Wraps the user's next.config.ts to inject WASM support, the imprint-pdf webpack
 // plugin, and optional serverExternalPackages tweaks.
 //
 // Usage:
@@ -59,7 +59,7 @@ export interface ImprintPluginOptions {
 // ---------------------------------------------------------------------------
 
 /**
- * Wrap a Next.js config with Imprint build-time support.
+ * Wrap a Next.js config with imprint-pdf build-time support.
  *
  * This adds:
  * - `asyncWebAssembly: true` experiment (required for the PDF renderer)

@@ -15,8 +15,8 @@ pnpm add -D @imprint-pdf/cli @imprint-pdf/tailwind tailwindcss
 npx imprint init
 ```
 
-Create a Tailwind v4 stylesheet (CSS-first config). Imprint auto-detects it at
-`src/app.css`, `src/globals.css`, `app/globals.css`, and a few other
+Create a Tailwind v4 stylesheet (CSS-first config). imprint-pdf auto-detects it
+at `src/app.css`, `src/globals.css`, `app/globals.css`, and a few other
 conventional locations — no extra wiring required:
 
 ```css

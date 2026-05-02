@@ -28,9 +28,9 @@ All component props. Every component also accepts `className` (Tailwind) and
 
 ## HTML containers
 
-Imprint accepts HTML elements directly — no `<View>` or `<Text>` wrapper. They
-share the same `className` and `style` surface as Imprint components and emit
-the same `PdfNode` types.
+imprint-pdf accepts HTML elements directly — no `<View>` or `<Text>` wrapper.
+They share the same `className` and `style` surface as imprint-pdf components
+and emit the same `PdfNode` types.
 
 Recognised: `<div>`, `<span>`, `<p>`, `<h1>`–`<h6>`, `<ul>`, `<ol>`, `<li>`,
 `<table>`, `<thead>`, `<tbody>`, `<tfoot>`, `<tr>`, `<td>`, `<th>`, `<a>` (alias

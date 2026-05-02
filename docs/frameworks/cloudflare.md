@@ -1,6 +1,6 @@
 # Cloudflare Workers
 
-Imprint generates PDFs on Cloudflare Workers in under 100 ms cold start. No
+imprint-pdf generates PDFs on Cloudflare Workers in under 100 ms cold start. No
 dedicated package — use `@imprint-pdf/react/standalone` directly.
 
 ## The standalone build

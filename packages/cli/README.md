@@ -1,6 +1,7 @@
 # @imprint-pdf/cli
 
-Command-line tools for [Imprint](https://github.com/tamimbinhakim/imprint-pdf).
+Command-line tools for
+[imprint-pdf](https://github.com/tamimbinhakim/imprint-pdf).
 
 ```bash
 pnpm add -D @imprint-pdf/cli

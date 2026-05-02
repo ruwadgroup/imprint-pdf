@@ -13,7 +13,7 @@ interface InvoiceProps {
 
 export function Invoice({ invoice }: InvoiceProps) {
   return (
-    <Document title={`Invoice ${invoice.id}`} author="Imprint Example">
+    <Document title={`Invoice ${invoice.id}`} author="imprint-pdf Example">
       <Page size="A4" className="p-12 font-sans bg-white text-gray-900">
         {/* Header */}
         <div className="flex justify-between items-start mb-8">

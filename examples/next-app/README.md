@@ -1,7 +1,7 @@
 # example — next-app
 
 Next.js 15 App Router demo for
-[Imprint](https://github.com/tamimbinhakim/imprint-pdf).
+[imprint-pdf](https://github.com/tamimbinhakim/imprint-pdf).
 
 ```bash
 pnpm --filter @imprint-pdf/example-next-app dev
@@ -19,7 +19,7 @@ pnpm --filter @imprint-pdf/example-next-app dev
   and a `<table>`.
 - **`next.config.ts`** — `withImprint()` plugin wiring.
 - **`app/globals.css`** — Tailwind v4 stylesheet with shared `@theme` design
-  tokens (consumed by both the app and Imprint).
+  tokens (consumed by both the app and imprint-pdf).
 
 ## Structure
 

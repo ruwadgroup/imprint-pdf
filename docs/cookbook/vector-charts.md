@@ -4,8 +4,8 @@ Embedding charts from Recharts, Visx, and D3 as PDF vector graphics.
 
 ## Recharts
 
-Wrap your Recharts tree in `<Chart>`. Imprint renders it to SVG server-side and
-converts the output to PDF vector operators.
+Wrap your Recharts tree in `<Chart>`. imprint-pdf renders it to SVG server-side
+and converts the output to PDF vector operators.
 
 ```tsx
 import { Chart } from '@imprint-pdf/react';

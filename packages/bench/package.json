@@ -2,7 +2,7 @@
   "name": "@imprint-pdf/bench",
   "version": "0.0.0",
   "private": true,
-  "description": "Benchmark suite for Imprint PDF generation",
+  "description": "Benchmark suite for imprint-pdf PDF generation",
   "type": "module",
   "scripts": {
     "bench": "tsx src/index.ts",

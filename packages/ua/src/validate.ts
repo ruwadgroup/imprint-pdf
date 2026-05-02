@@ -14,7 +14,7 @@ interface NodeLike {
 }
 
 /**
- * Walks an Imprint IR tree and reports the conformance issues that PDF/UA-1
+ * Walks an imprint-pdf IR tree and reports the conformance issues that PDF/UA-1
  * (ISO 14289-1) makes a hard requirement: language tag, document title,
  * alt text on every `<Image>` / `<Svg>`, and a `lang` attribute on any text
  * node whose script differs from the document language.

@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://github.com/tamimbinhakim/imprint-pdf">
-    <img src="assets/banner-1.0.0-alpha.png" alt="imprint — real Tailwind, real React, real typography. PDFs anywhere — no Chromium, ever." width="100%" />
+    <img src="assets/banner-1.0.0-alpha.png" alt="imprint-pdf — real Tailwind, real React, real typography. PDFs anywhere — no Chromium, ever." width="100%" />
   </a>
 
 <br />
@@ -21,8 +21,8 @@ Workers. No Chromium. Ever.
 
 <!-- prettier-ignore -->
 > [!WARNING]
-> imprint is in **1.0.0-alpha**. The public API will move. Pin exact
-> versions if anything depends on it. The name "imprint" is itself a
+> imprint-pdf is in **1.0.0-alpha**. The public API will move. Pin exact
+> versions if anything depends on it. The name "imprint-pdf" is itself a
 > placeholder until 1.0 — see [`docs/naming.md`](docs/naming.md).
 
 ```tsx
@@ -44,7 +44,7 @@ const pdf = await renderToBuffer(
 npx imprint render Invoice.tsx --out=invoice.pdf
 ```
 
-## Why imprint
+## Why imprint-pdf
 
 The PDF problem in JavaScript has three bad answers:
 
@@ -55,11 +55,11 @@ The PDF problem in JavaScript has three bad answers:
 3. **`pdf-lib` / `PDFKit` / `jsPDF`** — imperative coordinate-pushing. No layout
    engine. No React. No Tailwind.
 
-imprint is the fourth option. A TypeScript library with a Rust + WASM core that
-uses the **actual Tailwind v4 Oxide compiler**, the **actual HarfBuzz shaping
-engine**, the **actual Knuth–Plass justification algorithm**, and the **actual
-Taffy layout engine** (Block + Flexbox + CSS Grid). Sub-100 ms cold starts on
-Cloudflare Workers. PDF/X-4 + PDF/UA-1 for the enterprise tier.
+imprint-pdf is the fourth option. A TypeScript library with a Rust + WASM core
+that uses the **actual Tailwind v4 Oxide compiler**, the **actual HarfBuzz
+shaping engine**, the **actual Knuth–Plass justification algorithm**, and the
+**actual Taffy layout engine** (Block + Flexbox + CSS Grid). Sub-100 ms cold
+starts on Cloudflare Workers. PDF/X-4 + PDF/UA-1 for the enterprise tier.
 
 ## Quick features
 
@@ -88,7 +88,7 @@ Cloudflare Workers. PDF/X-4 + PDF/UA-1 for the enterprise tier.
 
 Full documentation lives in [`docs/`](docs/):
 
-- **[Overview](docs/overview.md)** — what imprint does and where it fits
+- **[Overview](docs/overview.md)** — what imprint-pdf does and where it fits
 - **[Quick start](docs/quick-start.md)** — render your first PDF in five minutes
 - **[Philosophy](docs/philosophy.md)** — why no Chromium, why real Tailwind, why
   Knuth–Plass
@@ -194,9 +194,9 @@ Source code  →  React reconciler  →  PdfNode IR
 
 For the full design, see [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
-## Why imprint over the alternatives
+## Why imprint-pdf over the alternatives
 
-| Capability                        | `@react-pdf` | Satori | pdfme | Forme | Chromium SaaS | Typst |     imprint      |
+| Capability                        | `@react-pdf` | Satori | pdfme | Forme | Chromium SaaS | Typst |   imprint-pdf    |
 | --------------------------------- | :----------: | :----: | :---: | :---: | :-----------: | :---: | :--------------: |
 | Real Tailwind classes             |   — (DSL)    | subset |   —   |   ✓   |       ✓       |   —   |      **✓**       |
 | React / JSX components            |      ✓       |   ✓    | part. |   ✓   |       —       |   —   |      **✓**       |
@@ -245,8 +245,8 @@ pnpm bench:all                # everything, including chromium
 
 Imperative libraries (`pdfkit`, `pdf-lib`, `jsPDF`) and template-based ones
 (`pdfme`) are intentionally excluded from the head-to-head — they're a different
-paradigm (no layout engine, no React) and the comparison would flatter Imprint
-on ergonomics while making it look slow on µs-per-glyph.
+paradigm (no layout engine, no React) and the comparison would flatter
+imprint-pdf on ergonomics while making it look slow on µs-per-glyph.
 
 ## Examples
 

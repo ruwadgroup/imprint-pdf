@@ -2,7 +2,7 @@
   "name": "@imprint-pdf/example-bun-server",
   "version": "0.0.0",
   "private": true,
-  "description": "Imprint example — Bun HTTP server that generates PDFs using Bun's native WASM support.",
+  "description": "imprint-pdf example — Bun HTTP server that generates PDFs using Bun's native WASM support.",
   "scripts": {
     "dev": "bun run --watch src/index.tsx",
     "start": "bun run src/index.tsx"

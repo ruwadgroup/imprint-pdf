@@ -1,7 +1,7 @@
 # @imprint-pdf/print
 
 Enterprise print-ready output for
-[Imprint](https://github.com/tamimbinhakim/imprint-pdf).
+[imprint-pdf](https://github.com/tamimbinhakim/imprint-pdf).
 
 **License: Apache-2.0.** See [`LICENSING.md`](../../LICENSING.md).
 

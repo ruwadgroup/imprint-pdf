@@ -1,7 +1,7 @@
 {
   "name": "@imprint-pdf/taffy-wasm",
   "version": "1.0.0-alpha",
-  "description": "Taffy CSS layout engine (Rust→WASM) for Imprint",
+  "description": "Taffy CSS layout engine (Rust→WASM) for imprint-pdf",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {

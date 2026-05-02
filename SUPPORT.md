@@ -1,6 +1,6 @@
 # Support
 
-Thanks for using imprint! Here's how to get help.
+Thanks for using imprint-pdf! Here's how to get help.
 
 ## Documentation
 

@@ -1,6 +1,6 @@
 # Bun
 
-Imprint works natively with Bun's WASM support and `Bun.serve`.
+imprint-pdf works natively with Bun's WASM support and `Bun.serve`.
 
 ## Install
 

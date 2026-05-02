@@ -1,7 +1,7 @@
 # Integration — Recharts
 
-Recharts is the most popular React charting library. Imprint renders Recharts
-charts as PDF vector graphics — not rasterized screenshots.
+Recharts is the most popular React charting library. imprint-pdf renders
+Recharts charts as PDF vector graphics — not rasterized screenshots.
 
 ## Install
 
@@ -12,7 +12,7 @@ pnpm add recharts
 ## Setup
 
 Wrap your Recharts tree in `<Chart>`. No additional configuration needed —
-Imprint detects Recharts components and renders them to SVG server-side.
+imprint-pdf detects Recharts components and renders them to SVG server-side.
 
 ```tsx
 import { Chart } from '@imprint-pdf/react';
@@ -79,7 +79,7 @@ All Recharts chart types that produce SVG output work:
   measure. Pass explicit `width` and `height` to the chart root element.
 - **`<Tooltip>`** renders as a static element — hover interactivity has no
   effect. Remove it for cleaner output.
-- **Animations** are disabled automatically in Imprint's SSR context.
+- **Animations** are disabled automatically in imprint-pdf's SSR context.
 - **`<Legend>`** renders as a static positioned element — style it with
   `className` for print.
 - **Custom shapes** via `shape` prop work as long as they produce SVG elements.

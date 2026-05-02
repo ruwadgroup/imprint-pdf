@@ -81,7 +81,7 @@ function App() {
         background: '#f9fafb',
       }}
     >
-      <h1 style={{ fontSize: '1.75rem', fontWeight: 700, margin: 0 }}>Imprint Demo</h1>
+      <h1 style={{ fontSize: '1.75rem', fontWeight: 700, margin: 0 }}>imprint-pdf Demo</h1>
       <p style={{ color: '#6b7280', margin: 0 }}>
         Generate a PDF invoice entirely in the browser — no server needed.
       </p>

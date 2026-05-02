@@ -79,9 +79,9 @@ commit to:
 ## Tailwind plugin
 
 `@imprint-pdf/tailwind` is pinned to a Tailwind major version. Tailwind v4
-support stays compatible across imprint minor releases. A Tailwind v5 adapter
-ships as a separate subpath when v5 lands; the v4 build remains maintained for
-at least 12 months after.
+support stays compatible across imprint-pdf minor releases. A Tailwind v5
+adapter ships as a separate subpath when v5 lands; the v4 build remains
+maintained for at least 12 months after.
 
 ## Provider signatures
 

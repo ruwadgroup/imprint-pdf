@@ -1,13 +1,13 @@
 # Paged layout
 
-PDFs are paged by definition. Imprint implements the CSS Paged Media features
-browsers support only in print-preview mode — and adds Plass-style global page
-breaking that browsers still do not have.
+PDFs are paged by definition. imprint-pdf implements the CSS Paged Media
+features browsers support only in print-preview mode — and adds Plass-style
+global page breaking that browsers still do not have.
 
 ## Automatic page breaking
 
-Imprint breaks pages automatically. You do not need to decide which content goes
-on which page. The Plass two-pass page algorithm:
+imprint-pdf breaks pages automatically. You do not need to decide which content
+goes on which page. The Plass two-pass page algorithm:
 
 1. Runs Knuth–Plass paragraph breaking to get optimal line boxes.
 2. Distributes line boxes across pages using a dynamic-programming cost function
@@ -97,7 +97,7 @@ The `<PageNumber>` and `<TotalPages>` components resolve at render time.
 
 CSS `@page` rules are expressed as `<Page>` and `<Document>` props:
 
-| CSS `@page`         | Imprint equivalent                        |
+| CSS `@page`         | imprint-pdf equivalent                    |
 | ------------------- | ----------------------------------------- |
 | `size: A4 portrait` | `<Page size="A4" orientation="portrait">` |
 | `margin: 20mm`      | `<Page className="p-[20mm]">`             |

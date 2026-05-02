@@ -1,13 +1,13 @@
 # Architecture
 
-imprint is a PDF **toolchain**, not a renderer wrapped around an HTML engine.
-The same data model flows from React source → PdfNode IR → laid-out glyph runs →
-PDF byte stream, with each stage isolated, testable, and swappable.
+imprint-pdf is a PDF **toolchain**, not a renderer wrapped around an HTML
+engine. The same data model flows from React source → PdfNode IR → laid-out
+glyph runs → PDF byte stream, with each stage isolated, testable, and swappable.
 
 ## Design principles
 
 1. **No browser, ever.** A PDF library that needs Chromium is an architectural
-   failure. imprint runs in Node, Bun, the browser, Vercel Edge, Cloudflare
+   failure. imprint-pdf runs in Node, Bun, the browser, Vercel Edge, Cloudflare
    Workers, AWS Lambda, and Deno from the same source — verified by the same
    example app deployed to each.
 2. **Real Tailwind, not a subset.** The actual Tailwind v4 Oxide compiler
@@ -117,7 +117,7 @@ uses) and computed styles are mapped onto the `PdfNode` tree.
 Properties incompatible with paged output (`hover:`, `focus:`, `transition-*`,
 JS animations) are silently dropped, or, in `--strict` mode, surfaced as
 warnings. The `print:` variant is **always active** (unlike a browser, which
-only triggers it in print preview). Imprint adds custom variants:
+only triggers it in print preview). imprint-pdf adds custom variants:
 `imprint:cmyk-…`, `imprint:bleed-…`, `page:first`, `page:left`, `page:right`.
 
 ### 4. Layout pass
@@ -166,7 +166,8 @@ ships only the JS writer; `@imprint-pdf/print` opts into the Rust writer.
 
 Streaming: the writer emits objects sequentially and supports
 `pipe(WritableStream)` (Node) and `ReadableStream` (Web). For very large
-reports, imprint can yield a chunk per page so the first byte ships in <50 ms.
+reports, imprint-pdf can yield a chunk per page so the first byte ships in <50
+ms.
 
 ## Isomorphism
 
@@ -194,7 +195,7 @@ dynamic-load restrictions.
 
 A 4 MB WASM module instantiated on a cold Cloudflare Worker is ≈30–60 ms; on
 Vercel Edge ≈40–100 ms. By comparison, Chromium cold starts are 800–2,000 ms.
-imprint's perf budget:
+imprint-pdf's perf budget:
 
 - **<100 ms cold** for a 1-page A4 invoice on Cloudflare Workers
 - **<25 ms warm** on the same workload
@@ -205,7 +206,7 @@ incremental cost of PDF object writing.
 
 ## Comparison: real Tailwind in PDFs
 
-| Concern                | `@react-pdf` + `react-pdf-tailwind` | imprint                               |
+| Concern                | `@react-pdf` + `react-pdf-tailwind` | imprint-pdf                           |
 | ---------------------- | ----------------------------------- | ------------------------------------- |
 | Engine                 | translator → `StyleSheet` DSL       | actual Tailwind v4 Oxide compiler     |
 | Plugins / presets      | unsupported                         | supported                             |

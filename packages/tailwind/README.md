@@ -1,7 +1,7 @@
 # @imprint-pdf/tailwind
 
 Real Tailwind v4 integration for
-[Imprint](https://github.com/tamimbinhakim/imprint-pdf).
+[imprint-pdf](https://github.com/tamimbinhakim/imprint-pdf).
 
 Not a subset. Not a DSL. The actual Tailwind v4 Oxide compiler — your plugins,
 your `@theme`, your arbitrary values (`text-[#bada55]`, `mt-[3.7mm]`), all
@@ -49,8 +49,8 @@ export default withImprintTailwind()({
 
 ## Custom Tailwind config
 
-Tailwind v4 is configured CSS-first. Imprint auto-detects your stylesheet from
-conventional locations — `src/app.css`, `src/globals.css`, `src/index.css`,
+Tailwind v4 is configured CSS-first. imprint-pdf auto-detects your stylesheet
+from conventional locations — `src/app.css`, `src/globals.css`, `src/index.css`,
 `src/styles{,/app,/globals}.css`, `app/{app,globals}.css`, and
 `styles/{app,globals}.css` — and uses the first match. Your `@theme` tokens,
 `@plugin` directives, and custom variants are inherited identically.

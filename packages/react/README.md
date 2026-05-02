@@ -1,7 +1,7 @@
 # @imprint-pdf/react
 
 React components and custom reconciler for
-[Imprint](https://github.com/tamimbinhakim/imprint-pdf).
+[imprint-pdf](https://github.com/tamimbinhakim/imprint-pdf).
 
 ```bash
 pnpm add @imprint-pdf/react @imprint-pdf/core

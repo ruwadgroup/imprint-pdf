@@ -127,7 +127,7 @@ milestone matters to you.
 
 - PDF/UA-2 + Well-Tagged PDF
 - Math typography (KaTeX → MathML → glyph runs, or embedded `typst-math`)
-- Templates marketplace (paid templates; imprint takes 15–30%)
+- Templates marketplace (paid templates; imprint-pdf takes 15–30%)
 - Visual editor (à la pdfme designer) that round-trips with code
 - AI template generator: "describe your invoice / upload a sample → JSX
   template"

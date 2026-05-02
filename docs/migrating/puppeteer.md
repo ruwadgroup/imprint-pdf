@@ -1,21 +1,21 @@
 # Migrating from Puppeteer / headless Chrome
 
 Puppeteer (or Playwright, Gotenberg, PDFShift, DocRaptor) generates PDFs by
-rendering HTML in Chromium and printing it. Imprint is a different kind of tool
-— it renders React components directly without a browser.
+rendering HTML in Chromium and printing it. imprint-pdf is a different kind of
+tool — it renders React components directly without a browser.
 
 ## When to migrate
 
 Migrate from Chromium-based PDF generation when:
 
-- **Cold start is unacceptable.** Chromium starts in 800–2,000 ms. Imprint
+- **Cold start is unacceptable.** Chromium starts in 800–2,000 ms. imprint-pdf
   starts in 40–100 ms on Cloudflare Workers.
 - **Edge runtime is a requirement.** Chromium cannot run on Cloudflare Workers
-  or Vercel Edge. Imprint can.
+  or Vercel Edge. imprint-pdf can.
 - **Output quality matters.** Knuth–Plass justification, HarfBuzz shaping, and
   proper page breaking produce measurably better output than browser printing.
 - **PDF/X or PDF/UA is required.** Chromium cannot produce conformant PDF/X-4 or
-  PDF/UA-1. Imprint can (Enterprise).
+  PDF/UA-1. imprint-pdf can (Enterprise).
 - **Memory / cost.** A 200 MB Chromium binary vs. a ~4 MB WASM module.
 
 ## When to stay on Puppeteer
@@ -23,7 +23,7 @@ Migrate from Chromium-based PDF generation when:
 Stay on Puppeteer when:
 
 - You're generating PDFs from **existing web pages or arbitrary URLs** you don't
-  control. Imprint renders React component trees, not URLs.
+  control. imprint-pdf renders React component trees, not URLs.
 - Your templates are maintained by designers in HTML/CSS with complex visual
   effects (CSS animations, JS, SVG filters) that you don't want to port.
 - You need **JavaScript execution inside the PDF** (rare; most PDF viewers don't
@@ -49,7 +49,7 @@ const pdf = await page.pdf({ format: 'A4', printBackground: true });
 await browser.close();
 ```
 
-### After (Imprint)
+### After (imprint-pdf)
 
 ```ts
 import { renderToBuffer } from '@imprint-pdf/react';
@@ -60,9 +60,9 @@ const pdf = await renderToBuffer(<Invoice data={invoiceData} />);
 
 ## Performance comparison
 
-| Metric               | Puppeteer (local) | Imprint (Node) | Imprint (Edge) |
-| -------------------- | ----------------- | -------------- | -------------- |
-| Cold start           | ~1,500 ms         | ~30 ms         | ~80 ms         |
-| Warm render (1-page) | ~300 ms           | ~10 ms         | ~20 ms         |
-| Memory (idle)        | ~200 MB           | ~40 MB         | ~8 MB          |
-| Edge runtime         | ✗                 | Node only      | ✓              |
+| Metric               | Puppeteer (local) | imprint-pdf (Node) | imprint-pdf (Edge) |
+| -------------------- | ----------------- | ------------------ | ------------------ |
+| Cold start           | ~1,500 ms         | ~30 ms             | ~80 ms             |
+| Warm render (1-page) | ~300 ms           | ~10 ms             | ~20 ms             |
+| Memory (idle)        | ~200 MB           | ~40 MB             | ~8 MB              |
+| Edge runtime         | ✗                 | Node only          | ✓                  |

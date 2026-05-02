@@ -1,7 +1,7 @@
 {
   "name": "@imprint-pdf/icu-wasm",
   "version": "1.0.0-alpha",
-  "description": "ICU4X segmentation and bidi (Rust→WASM, minimal slice) for Imprint",
+  "description": "ICU4X segmentation and bidi (Rust→WASM, minimal slice) for imprint-pdf",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {

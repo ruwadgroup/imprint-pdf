@@ -1,7 +1,7 @@
 # @imprint-pdf/core
 
 Framework-free PDF IR, layout types, asset resolution, and Tailwind CSS
-processing for [Imprint](https://github.com/tamimbinhakim/imprint-pdf).
+processing for [imprint-pdf](https://github.com/tamimbinhakim/imprint-pdf).
 
 Zero React. Zero filesystem in the runtime path. Runs on Node, Bun, Cloudflare
 Workers, Vercel Edge, and the browser.

@@ -1,6 +1,6 @@
 # Fonts
 
-Imprint embeds only the glyphs your document actually uses. A 12 MB CJK font
+imprint-pdf embeds only the glyphs your document actually uses. A 12 MB CJK font
 becomes ~50 KB in the output PDF. This is done via HarfBuzz's subsetter API.
 
 ## Declaring fonts
@@ -64,8 +64,8 @@ tokens in your Tailwind v4 stylesheet:
 
 ## Fallback stack
 
-Imprint resolves a font stack left-to-right. The first family that contains a
-glyph for a given codepoint wins. Declare fallbacks in your `@theme` block:
+imprint-pdf resolves a font stack left-to-right. The first family that contains
+a glyph for a given codepoint wins. Declare fallbacks in your `@theme` block:
 
 ```css
 @theme {
@@ -73,8 +73,8 @@ glyph for a given codepoint wins. Declare fallbacks in your `@theme` block:
 }
 ```
 
-`sans-serif` and `serif` at the end resolve to Imprint's built-in fallback fonts
-(a minimal Latin+CJK coverage set). These are not embedded by default —
+`sans-serif` and `serif` at the end resolve to imprint-pdf's built-in fallback
+fonts (a minimal Latin+CJK coverage set). These are not embedded by default —
 explicitly declare the font files you want in the PDF.
 
 ## Font formats

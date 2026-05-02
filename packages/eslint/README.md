@@ -1,7 +1,7 @@
 # @imprint-pdf/eslint
 
-ESLint rules for [Imprint](https://github.com/tamimbinhakim/imprint-pdf) — catch
-problems at write time before they reach the renderer.
+ESLint rules for [imprint-pdf](https://github.com/tamimbinhakim/imprint-pdf) —
+catch problems at write time before they reach the renderer.
 
 ```bash
 pnpm add -D @imprint-pdf/eslint
@@ -38,7 +38,7 @@ export default [
 | Rule                                        | Recommended | Description                                                                     |
 | ------------------------------------------- | :---------: | ------------------------------------------------------------------------------- |
 | `imprint/no-unsupported-css`                |    warn     | Warns on CSS properties that have no PDF equivalent (`position: sticky`, etc.). |
-| `imprint/no-missing-alt`                    |    error    | Requires `alt` on `<Image>` and HTML `<img>` inside Imprint documents.          |
+| `imprint/no-missing-alt`                    |    error    | Requires `alt` on `<Image>` and HTML `<img>` inside imprint-pdf documents.      |
 | `imprint/no-dynamic-class-without-safelist` |    warn     | Dynamic class names (`className={x}`) outside a statically-analysable safelist. |
 | `imprint/no-hover-variants`                 |    warn     | `hover:`, `focus:`, `active:` variants have no effect in PDFs.                  |
 | `imprint/require-page-in-document`          |    error    | `<Document>` must contain at least one `<Page>`.                                |

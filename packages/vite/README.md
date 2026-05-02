@@ -1,6 +1,6 @@
 # @imprint-pdf/vite
 
-Vite plugin for [Imprint](https://github.com/tamimbinhakim/imprint-pdf) —
+Vite plugin for [imprint-pdf](https://github.com/tamimbinhakim/imprint-pdf) —
 compile-time Tailwind extraction and HMR in the `imprint dev` preview server.
 
 ```bash
@@ -29,7 +29,7 @@ export default defineConfig({
 ## What it does
 
 - Runs Tailwind v4 Oxide over your source files at build time and injects the
-  resolved CSS map into the Imprint render pipeline.
+  resolved CSS map into the imprint-pdf render pipeline.
 - Provides a virtual `@imprint-pdf/virtual/fonts` module so font files are
   imported cleanly without `fs` calls in browser builds.
 - Integrates with `vite --watch` for HMR — change a template, the `imprint dev`

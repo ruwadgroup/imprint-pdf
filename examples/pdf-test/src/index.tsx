@@ -34,7 +34,7 @@ const templates: Template[] = [
 
 mkdirSync(OUT_DIR, { recursive: true });
 
-console.log('\n  imprint pdf-test\n');
+console.log('\n  imprint-pdf pdf-test\n');
 
 // Load Outfit from Google Fonts once; all templates share the same font set.
 const fonts = await loadFont(googleProvider(), 'Outfit', { weights: [400, 600, 700] });

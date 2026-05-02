@@ -64,10 +64,10 @@ Embedded font + glyph paths in PDF content stream
 The font subset emitted into the PDF contains only the glyphs actually used. A
 12 MB CJK font becomes ~50 KB in output.
 
-## Tailwind in Imprint
+## Tailwind in imprint-pdf
 
-Imprint runs the **actual** Tailwind v4 Oxide compiler — not a translator, not a
-subset. The flow:
+imprint-pdf runs the **actual** Tailwind v4 Oxide compiler — not a translator,
+not a subset. The flow:
 
 1. At build time, the Vite/Webpack plugin runs Oxide over your source files and
    produces a CSS class-to-property map.
@@ -79,7 +79,7 @@ subset. The flow:
 Properties with no PDF analogue are silently dropped: `hover:`, `focus:`,
 `transition-*`, `animation-*`, `position: sticky`, `position: fixed`.
 
-The `print:` variant is always active. Imprint adds its own variants:
+The `print:` variant is always active. imprint-pdf adds its own variants:
 `page-first:`, `page-left:`, `page-right:`, `imprint:cmyk-[…]`, and
 `imprint:spot-[…]`.
 

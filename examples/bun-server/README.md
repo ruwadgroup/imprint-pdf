@@ -1,8 +1,8 @@
 # example — bun-server
 
 Bun HTTP server demo for
-[Imprint](https://github.com/tamimbinhakim/imprint-pdf). Uses Bun's native WASM
-support for fast cold starts.
+[imprint-pdf](https://github.com/tamimbinhakim/imprint-pdf). Uses Bun's native
+WASM support for fast cold starts.
 
 ```bash
 pnpm --filter @imprint-pdf/example-bun-server dev

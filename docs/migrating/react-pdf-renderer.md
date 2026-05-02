@@ -1,12 +1,12 @@
 # Migrating from `@react-pdf/renderer`
 
-`@react-pdf/renderer` and Imprint share the same React reconciler concept and
-similar component names. The migration is mostly mechanical, with a few
+`@react-pdf/renderer` and imprint-pdf share the same React reconciler concept
+and similar component names. The migration is mostly mechanical, with a few
 deliberate improvements.
 
 ## Key differences
 
-| `@react-pdf/renderer`                    | Imprint                                      |
+| `@react-pdf/renderer`                    | imprint-pdf                                  |
 | ---------------------------------------- | -------------------------------------------- |
 | `StyleSheet.create({})` or inline styles | Tailwind classes via `className`             |
 | Flexbox only (Yoga)                      | Block + Flexbox + CSS Grid (Taffy)           |
@@ -67,7 +67,7 @@ export function Invoice() {
 }
 ```
 
-### After (Imprint)
+### After (imprint-pdf)
 
 ```tsx
 import { View } from '@imprint-pdf/react';

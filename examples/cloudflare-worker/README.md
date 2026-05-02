@@ -1,7 +1,7 @@
 # example — cloudflare-worker
 
 Cloudflare Worker demo for
-[Imprint](https://github.com/tamimbinhakim/imprint-pdf). Renders a
+[imprint-pdf](https://github.com/tamimbinhakim/imprint-pdf). Renders a
 tailwind-styled PDF receipt on the edge.
 
 ```bash

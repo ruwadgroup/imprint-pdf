@@ -79,7 +79,7 @@ pnpm add -D @imprint-pdf/eslint
 npx imprint init
 ```
 
-Writes a minimal `imprint.config.ts` to your project root. Imprint applies
+Writes a minimal `imprint.config.ts` to your project root. imprint-pdf applies
 sensible defaults — your Tailwind v4 stylesheet is auto-detected from
 `src/app.css`, `src/globals.css`, `app/globals.css`, and similar conventional
 locations, and `outDir` defaults to `out`. Add a `fonts` entry once you have

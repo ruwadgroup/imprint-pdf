@@ -1,6 +1,6 @@
 # Forms (AcroForms)
 
-Imprint authors interactive PDF forms as JSX. The renderer creates `pdf-lib`
+imprint-pdf authors interactive PDF forms as JSX. The renderer creates `pdf-lib`
 `PDFForm` objects from the same layout pass that computes visual geometry —
 widget rectangles are exact.
 

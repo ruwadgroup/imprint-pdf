@@ -1,7 +1,7 @@
 # Components
 
-Every Imprint component maps to a `PdfNode` in the IR. All accept a `className`
-prop for Tailwind styling and a `style` prop for inline overrides.
+Every imprint-pdf component maps to a `PdfNode` in the IR. All accept a
+`className` prop for Tailwind styling and a `style` prop for inline overrides.
 
 ## Layout
 
@@ -32,8 +32,8 @@ Root component. Required. Carries document-level metadata and config.
 
 ### `<Page>`
 
-A single page. Imprint computes page breaks automatically — you do not need to
-decide which content goes on which page unless you want explicit control.
+A single page. imprint-pdf computes page breaks automatically — you do not need
+to decide which content goes on which page unless you want explicit control.
 
 ```tsx
 <Page
@@ -54,7 +54,7 @@ decide which content goes on which page unless you want explicit control.
 
 ### Containers — use HTML
 
-Imprint doesn't ship a `<View>` or `<Text>` component. Use HTML elements
+imprint-pdf doesn't ship a `<View>` or `<Text>` component. Use HTML elements
 directly — they're first-class and emit the same `PdfNode` types.
 
 ```tsx

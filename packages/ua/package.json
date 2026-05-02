@@ -1,7 +1,7 @@
 {
   "name": "@imprint-pdf/ua",
   "version": "1.0.0-alpha",
-  "description": "Tagged PDF and PDF/UA-1 accessible output for Imprint — structure tree, alt text, language attributes, veraPDF validation.",
+  "description": "Tagged PDF and PDF/UA-1 accessible output for imprint-pdf — structure tree, alt text, language attributes, veraPDF validation.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {

@@ -1,7 +1,7 @@
 /**
  * Standard PDF structure types defined by ISO 32000-2 Table 340.
  *
- * Imprint's reconciler emits HTML elements; `HTML_TO_ROLE` maps them onto
+ * imprint-pdf.s reconciler emits HTML elements; `HTML_TO_ROLE` maps them onto
  * the canonical structure roles a screen reader expects in a tagged PDF.
  */
 export type StructureRole =

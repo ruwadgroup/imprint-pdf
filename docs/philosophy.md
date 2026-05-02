@@ -1,9 +1,9 @@
 # Philosophy
 
-Imprint is built on one belief: **the way you style your web app is the way you
-should style your PDFs**. Tailwind classes, React components, the same design
-tokens. No parallel DSL to maintain, no subset table to memorise, no handoff
-between "web dev" and "PDF generation."
+imprint-pdf is built on one belief: **the way you style your web app is the way
+you should style your PDFs**. Tailwind classes, React components, the same
+design tokens. No parallel DSL to maintain, no subset table to memorise, no
+handoff between "web dev" and "PDF generation."
 
 Most PDF libraries treat PDF output as a separate discipline. You write a
 stylesheet the library invented (`StyleSheet.create`), you learn what subset of
@@ -21,12 +21,12 @@ look like they were typeset.
 
 Specifically:
 
-- Chromium's line-breaker is greedy. Imprint uses Knuth–Plass — the same
+- Chromium's line-breaker is greedy. imprint-pdf uses Knuth–Plass — the same
   algorithm TeX uses. The difference is visible.
 - Chromium cannot run on Cloudflare Workers or Vercel Edge Functions. A 200 MB
   binary does not run in a 128 MB Worker.
-- Chromium cold-starts in 800–2,000 ms. Imprint cold-starts in 40–100 ms on the
-  same edge infrastructure.
+- Chromium cold-starts in 800–2,000 ms. imprint-pdf cold-starts in 40–100 ms on
+  the same edge infrastructure.
 - PDF/X-4, CMYK, spot colors, bleed, and registration marks are not Chromium
   features. Commercial printers need those.
 

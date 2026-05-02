@@ -2,7 +2,7 @@
   "name": "@imprint-pdf/example-vite-react",
   "version": "0.0.0",
   "private": true,
-  "description": "Imprint example — Vite + React SPA that generates PDFs in the browser.",
+  "description": "imprint-pdf example — Vite + React SPA that generates PDFs in the browser.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

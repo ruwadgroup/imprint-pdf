@@ -2,7 +2,7 @@
   "name": "@imprint-pdf/example-next-app",
   "version": "0.0.0",
   "private": true,
-  "description": "Imprint example — Next.js App Router with RSC and an API route that streams a PDF.",
+  "description": "imprint-pdf example — Next.js App Router with RSC and an API route that streams a PDF.",
   "scripts": {
     "dev": "next dev",
     "build": "tsc --noEmit",

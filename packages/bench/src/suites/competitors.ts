@@ -2,11 +2,11 @@
  * Competitor suite — same 1-page invoice rendered by the two real
  * React-based competitors:
  *
- *   1. Imprint              (@imprint-pdf/react — JSX, real CSS, real layout)
+ *   1. imprint-pdf                         (@imprint-pdf/react — JSX, real CSS, real layout)
  *   2. @react-pdf/renderer  (JSX, custom StyleSheet DSL, no real CSS)
  *
  * Imperative libraries (pdfkit / pdf-lib / jsPDF) and template-based ones
- * (pdfme) live in different paradigms — pitting Imprint against a
+ * (pdfme) live in different paradigms — pitting imprint-pdf against a
  * coordinate-pushing API makes the layout engine look like overhead even
  * though the user-facing trade is opposite. Chromium has its own suite.
  *
@@ -151,7 +151,7 @@ async function reactPdfInvoice(): Promise<Uint8Array> {
 export async function runCompetitors(runs: number, warmup: number): Promise<BenchResult[]> {
   const results: BenchResult[] = [];
 
-  results.push(await bench('Imprint', imprintInvoice, runs, warmup));
+  results.push(await bench('imprint-pdf', imprintInvoice, runs, warmup));
   results.push(await bench('@react-pdf/renderer', reactPdfInvoice, runs, warmup));
 
   return results;

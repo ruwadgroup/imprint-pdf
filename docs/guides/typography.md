@@ -1,7 +1,7 @@
 # Typography
 
-Imprint's typography pipeline is categorically better than what browsers provide
-for paged, justified text. Here's what's in it and how to use it.
+imprint-pdf's typography pipeline is categorically better than what browsers
+provide for paged, justified text. Here's what's in it and how to use it.
 
 ## Font loading
 
@@ -46,7 +46,7 @@ Use with Tailwind's `font-variation-settings` or the `font-weight` utilities.
 
 ## Shaping — HarfBuzz
 
-Imprint uses [HarfBuzz](https://harfbuzz.github.io/) (via `harfbuzzjs`, the
+imprint-pdf uses [HarfBuzz](https://harfbuzz.github.io/) (via `harfbuzzjs`, the
 official `-DHB_TINY` WASM build) for shaping. Every OpenType feature is
 available: GSUB/GPOS tables, kerning, ligatures, contextual alternates,
 discretionary ligatures, stylistic sets.

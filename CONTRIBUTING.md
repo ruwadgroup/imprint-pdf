@@ -1,4 +1,4 @@
-# Contributing to imprint
+# Contributing to imprint-pdf
 
 Thanks for considering a contribution! This guide gets you from zero to a merged
 PR.
@@ -150,7 +150,7 @@ Use the issue templates. Provide a minimal reproduction (StackBlitz,
 CodeSandbox, or a small repo) — issues without one get closed.
 
 PDF bugs: please attach the PDF (or a redacted version), the source component,
-and the imprint version. A `pnpm imprint validate <pdf>` report helps.
+and the imprint-pdf version. A `pnpm imprint validate <pdf>` report helps.
 
 ## Security
 
