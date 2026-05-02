@@ -123,7 +123,9 @@ export function matchPdfSnapshot(pdf: Uint8Array, opts: MatchOptions): MatchResu
 
 // `__pdf_snapshots__/<name>.png` mirrors Vitest/Jest's `__snapshots__`
 // convention so baselines live next to the test that produced them.
+// Always emit POSIX separators so snapshot paths are stable across
+// macOS/Linux/Windows runners — Node's fs APIs accept '/' on Windows.
 export function resolveSnapshotPath(testPath: string, name: string): string {
   const safe = name.replace(/[^a-zA-Z0-9_-]+/g, '-');
-  return join(dirname(testPath), '__pdf_snapshots__', `${safe}.png`);
+  return join(dirname(testPath), '__pdf_snapshots__', `${safe}.png`).replace(/\\/g, '/');
 }
