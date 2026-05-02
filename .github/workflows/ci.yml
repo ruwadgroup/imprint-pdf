@@ -33,7 +33,8 @@ jobs:
 
       # Skip the WASM packages — they need a Rust + wasm-pack toolchain
       # that's not installed on the GH runners and have no JS consumers yet.
-      - run: pnpm build -- --filter='!@imprint/icu-wasm' --filter='!@imprint/taffy-wasm'
+      # Call turbo directly so --filter goes to turbo, not the package scripts.
+      - run: pnpm exec turbo run build --filter='!@imprint/icu-wasm' --filter='!@imprint/taffy-wasm'
 
       - run: pnpm typecheck
 
