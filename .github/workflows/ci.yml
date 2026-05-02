@@ -31,7 +31,9 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - run: pnpm build
+      # Skip the WASM packages — they need a Rust + wasm-pack toolchain
+      # that's not installed on the GH runners and have no JS consumers yet.
+      - run: pnpm build -- --filter='!@imprint/icu-wasm' --filter='!@imprint/taffy-wasm'
 
       - run: pnpm typecheck
 

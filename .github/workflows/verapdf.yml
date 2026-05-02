@@ -40,6 +40,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build packages (fixture script imports @imprint/core/dist)
+        run: pnpm build -- --filter='!@imprint/icu-wasm' --filter='!@imprint/taffy-wasm'
+
       - name: Generate fixture PDFs
         run: pnpm --filter @imprint/print generate:fixtures
 
