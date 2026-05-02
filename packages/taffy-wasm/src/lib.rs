@@ -160,8 +160,8 @@ fn parse_single_track(s: &str) -> TrackSizingFunction {
     if s.ends_with('%') {
         if let Ok(n) = s.trim_end_matches('%').parse::<f32>() {
             return TrackSizingFunction::Single(NonRepeatedTrackSizingFunction {
-                min: MinTrackSizingFunction::Percent(n / 100.0),
-                max: MaxTrackSizingFunction::Percent(n / 100.0),
+                min: MinTrackSizingFunction::Fixed(LengthPercentage::Percent(n / 100.0)),
+                max: MaxTrackSizingFunction::Fixed(LengthPercentage::Percent(n / 100.0)),
             });
         }
     }

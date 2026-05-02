@@ -1,4 +1,5 @@
-use icu_bidi::{BidiInfo, Level};
+use unicode_bidi::{BidiInfo, Level};
+use icu_segmenter::options::LineBreakOptions;
 use icu_segmenter::{GraphemeClusterSegmenter, LineSegmenter};
 use wasm_bindgen::prelude::*;
 
@@ -14,7 +15,7 @@ pub fn detect_base_dir(text: &str) -> u8 {
 
 #[wasm_bindgen]
 pub fn line_break_opportunities(text: &str) -> Vec<u32> {
-    let segmenter = LineSegmenter::new_auto();
+    let segmenter = LineSegmenter::new_auto(LineBreakOptions::default());
     segmenter
         .segment_str(text)
         .collect::<Vec<usize>>()

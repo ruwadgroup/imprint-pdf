@@ -29,13 +29,25 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: pnpm
 
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            packages/icu-wasm
+            packages/taffy-wasm
+
+      - uses: jetli/wasm-pack-action@v0.4.0
+        with:
+          version: latest
+
       - run: pnpm install --frozen-lockfile
 
-      # Skip the WASM packages (need a Rust + wasm-pack toolchain not on
-      # the runners) and the examples (transitively pull @imprint-pdf/tailwind's
-      # Node-only createRequire path into a browser bundle — separate bug).
-      # Call turbo directly so --filter targets turbo, not package scripts.
-      - run: pnpm exec turbo run build --filter='!@imprint-pdf/icu-wasm' --filter='!@imprint-pdf/taffy-wasm' --filter='!@imprint-pdf/example-*'
+      # Examples transitively pull @imprint-pdf/tailwind's Node-only createRequire
+      # path into a browser bundle — separate bug, skipped here.
+      - run: pnpm exec turbo run build --filter='!@imprint-pdf/example-*'
 
       - run: pnpm typecheck
 
