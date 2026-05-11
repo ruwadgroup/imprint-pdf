@@ -36,7 +36,13 @@ async function readFileNode(filePath: string): Promise<Uint8Array> {
   // dynamic import so bundlers can tree-shake for browser builds
   const { readFile } = await import('node:fs/promises');
   const buf = await readFile(filePath);
-  return new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength);
+  // `readFile`'s Buffer is typically a view into Node's allocation pool —
+  // `buf.buffer` is the pool, often much larger than the file. Copy into a
+  // fresh ArrayBuffer so downstream WASM consumers (HarfBuzz, fontkit) that
+  // walk `.buffer` don't read pool padding and throw `RangeError`.
+  const bytes = new Uint8Array(buf.byteLength);
+  bytes.set(buf);
+  return bytes;
 }
 
 async function fetchBytes(url: string, fetchFn: typeof globalThis.fetch): Promise<Uint8Array> {

@@ -14,7 +14,16 @@ export interface HbFont {
 }
 
 export function createHbFont(fontBytes: Uint8Array): HbFont {
-  const blob = new HbBlob(fontBytes.buffer as ArrayBuffer);
+  // `Uint8Array` can be a partial view into a larger ArrayBuffer (Node's
+  // Buffer pool, sub-allocations, etc.). HarfBuzz parses every byte of the
+  // ArrayBuffer it's handed and throws `RangeError: Index out of range` when
+  // it walks past the font's actual end. Hand it just the font's slice.
+  const isTight =
+    fontBytes.byteOffset === 0 && fontBytes.byteLength === fontBytes.buffer.byteLength;
+  const ab = isTight
+    ? (fontBytes.buffer as ArrayBuffer)
+    : (fontBytes.slice().buffer as ArrayBuffer);
+  const blob = new HbBlob(ab);
   const face = new HbFace(blob);
   const font = new HbFont2(face);
   font.setScale(face.upem, face.upem);
