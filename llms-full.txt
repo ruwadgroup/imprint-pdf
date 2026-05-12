@@ -1,0 +1,635 @@
+# imprint-pdf — Full LLM Context
+
+> Author PDFs as React components, styled with real Tailwind classes. One `pdf()` function. No Chromium. Runs on Node, Bun, Cloudflare Workers, Vercel Edge, and the browser. Apache-2.0.
+
+This file is a single-shot LLM context: install, API, framework wiring, common patterns, error → fix, type signatures. For a navigable index, see [`llms.txt`](https://github.com/tamimbinhakim/imprint-pdf/blob/main/llms.txt).
+
+---
+
+## Install
+
+```bash
+pnpm add @imprint-pdf/react @imprint-pdf/core tailwindcss
+pnpm add -D @imprint-pdf/cli
+npx imprint init
+```
+
+`imprint init` detects Next.js / Vite / generic Node and wires the rest.
+
+Framework-specific (alongside the core install):
+
+```bash
+pnpm add @imprint-pdf/next        # Next.js (App or Pages Router, any runtime)
+pnpm add -D @imprint-pdf/vite     # Vite (SPA, SSR, Vike, Astro)
+```
+
+Cloudflare Workers / Bun don't need a dedicated package — they import `@imprint-pdf/react/standalone` directly.
+
+### Required peers
+
+- React 18.2+ or 19.x (both reconciler majors bundled, picked at module load)
+- Tailwind CSS v3.4+ or v4.x (auto-detected from installed version)
+- Node 20+ (or Bun ≥ 1.0, Cloudflare Workers, Vercel Edge)
+- `postcss` peer required only when using Tailwind v3
+
+### Optional add-ons
+
+```bash
+pnpm add @imprint-pdf/print     # PDF/X-4, CMYK, ICC, PDF/A, factur-X
+pnpm add @imprint-pdf/sign      # PKCS#7 signing
+pnpm add @imprint-pdf/ua        # PDF/UA-1 tagged PDF / accessibility
+pnpm add -D @imprint-pdf/eslint # Lint rules
+```
+
+---
+
+## The whole API
+
+```ts
+import { pdf } from '@imprint-pdf/react';
+
+// Response (default) — for web framework routes
+pdf(element: ReactElement, options?: PdfOptions & { as?: 'response' }): Promise<Response>;
+
+// Uint8Array — for writing to disk, signing, attaching to email
+pdf(element: ReactElement, options: PdfOptions & { as: 'bytes' }): Promise<Uint8Array>;
+
+// ReadableStream<Uint8Array> — for streaming on edge runtimes
+pdf(element: ReactElement, options: PdfOptions & { as: 'stream' }): Promise<ReadableStream<Uint8Array>>;
+```
+
+`pdf()` overloads narrow the return type by the literal value of `options.as`. The default is `'response'`.
+
+### `PdfOptions`
+
+```ts
+interface PdfOptions extends RenderOptions {
+  /** Output shape — default 'response' */
+  as?: 'response' | 'bytes' | 'stream';
+  /** Content-Disposition filename (response shape only) */
+  filename?: string;
+  /** 'inline' (default) or 'attachment' */
+  disposition?: 'inline' | 'attachment';
+}
+
+interface RenderOptions {
+  fonts?: FontDeclaration[];
+  tailwind?: {
+    config?: string;     // path to tailwind.config.{ts,js,mjs,cjs} (v3)
+    stylesheet?: string; // path to v4 CSS entry
+    projectRoot?: string;
+  };
+  assetResolver?: AssetResolver;
+  postProcess?: PdfPostProcessHook[];  // for @imprint-pdf/print, @imprint-pdf/ua
+  postBytes?: PdfPostBytesHook[];      // for @imprint-pdf/sign
+  hyphenate?: (word: string) => string[];
+  svgRasterizer?: SvgRasterizer;
+  debug?: boolean;
+}
+```
+
+`pdf()` auto-loads `imprint.config.ts` from the project root and merges caller-supplied options on top.
+
+### Three common output shapes
+
+```ts
+// Next.js / Hono / Bun route — returns a Response
+import { pdf } from '@imprint-pdf/next';
+export const GET = () => pdf(<Invoice data={data} />);
+
+// Write to disk — returns Uint8Array
+import { pdf } from '@imprint-pdf/react';
+import { writeFileSync } from 'node:fs';
+const bytes = await pdf(<Invoice data={data} />, { as: 'bytes' });
+writeFileSync('./invoice.pdf', bytes);
+
+// Streaming (large reports, low memory) — returns ReadableStream
+const stream = await pdf(<Report data={data} />, { as: 'stream' });
+return new Response(stream, { headers: { 'content-type': 'application/pdf' } });
+```
+
+---
+
+## Configuration
+
+`imprint.config.ts` lives at the project root. Every field is optional.
+
+```ts
+import { defineConfig } from '@imprint-pdf/core/config';
+
+export default defineConfig({
+  fonts: [
+    { family: 'Inter', src: './public/fonts/Inter.woff2' },
+    { family: 'Inter', src: './public/fonts/Inter-Bold.woff2', weight: 700 },
+    {
+      family: 'Inter Variable',
+      src: './public/fonts/InterVariable.woff2',
+      variable: true,
+      axes: { wght: [100, 900] },
+    },
+  ],
+  tailwind: {
+    // Either is fine; auto-detection covers most setups.
+    stylesheet: './src/app.css',          // → Tailwind v4
+    // config: './tailwind.config.ts',    // → Tailwind v3
+  },
+  typography: {
+    lineBreaking: 'knuth-plass',          // or 'greedy'
+    hyphenation: { en: true, de: true },
+    defaultWidows: 2,
+    defaultOrphans: 2,
+    subset: true,
+  },
+  output: {
+    intent: 'PDF/X-4',                    // requires @imprint-pdf/print
+    outputIntent: { profile: 'FOGRA39' },
+    compress: true,
+    version: '1.7',
+  },
+  assets: {
+    baseUrl: 'https://cdn.acme.com',
+    cacheDir: './.imprint-cache',
+  },
+  outDir: 'out',
+  debug: false,
+});
+```
+
+Auto-detected stylesheet paths (first match wins): `src/app.css`, `src/globals.css`, `src/index.css`, `src/styles.css`, `src/styles/app.css`, `src/styles/globals.css`, `app/globals.css`, `app/app.css`, `styles/app.css`, `styles/globals.css`.
+
+---
+
+## Components
+
+### Document chrome
+
+```tsx
+import {
+  Document, Page, Header, Footer, Watermark, Bookmark,
+  PageNumber, TotalPages,
+} from '@imprint-pdf/react';
+
+<Document title="Q1 Report" author="Acme" lang="en">
+  <Header>
+    <div className="text-xs text-gray-500">Acme — Confidential</div>
+  </Header>
+  <Footer className="flex justify-between text-xs">
+    <span>Q1 2026</span>
+    <span>Page <PageNumber /> of <TotalPages /></span>
+  </Footer>
+  <Watermark className="text-9xl font-bold text-gray-100">DRAFT</Watermark>
+
+  <Page size="A4" orientation="portrait" className="p-12 font-sans">
+    <Bookmark title="Cover" />
+    <h1 className="text-4xl font-bold">Quarterly Report</h1>
+  </Page>
+</Document>
+```
+
+`<PageNumber>` and `<TotalPages>` resolve at draw time. They're inline-flex by default so they work as siblings of text.
+
+### Content (HTML)
+
+Plain HTML elements emit `PdfNode` types with semantic role tags. PDF/UA tagging works automatically.
+
+```tsx
+<div className="flex flex-row gap-4">
+  <h1 className="text-3xl font-bold">Title</h1>
+  <p className="text-base leading-relaxed">Body copy.</p>
+  <ul><li>Item</li></ul>
+  <table><tr><td>cell</td></tr></table>
+</div>
+```
+
+Recognised: `<div>`, `<span>`, `<p>`, `<h1>`–`<h6>`, `<ul>`, `<ol>`, `<li>`, `<table>`, `<thead>`, `<tbody>`, `<tfoot>`, `<tr>`, `<td>`, `<th>`, `<a>`, `<img>`, `<section>`, `<article>`, `<aside>`, `<header>`, `<footer>`, `<main>`, `<nav>`, `<figure>`, `<figcaption>`, `<blockquote>`, `<pre>`, `<code>`, `<strong>`, `<em>`, `<small>`, `<label>`.
+
+### Imprint-specific content
+
+```tsx
+import { Image, Svg, Link, Chart } from '@imprint-pdf/react';
+
+<Image src="./logo.png" alt="Acme logo" className="h-10 w-auto" />
+<Svg src="<svg viewBox='0 0 24 24'>…</svg>" className="h-8 w-8" />
+<Link href="#section-2" className="text-blue-600 underline">Jump</Link>
+<Chart src="<svg>...</svg>" /* Recharts/Visx/ECharts SVG output */ />
+```
+
+### Forms (AcroForms)
+
+```tsx
+import {
+  Form, TextField, Checkbox, RadioGroup, Dropdown,
+  Signature, Button,
+} from '@imprint-pdf/react';
+
+<Form>
+  <TextField name="fullname" required />
+  <TextField name="email" type="email" required />
+  <Checkbox name="terms" required />
+  <RadioGroup name="plan" options={[
+    { value: 'pro', label: 'Pro' },
+    { value: 'team', label: 'Team' },
+  ]} />
+  <Dropdown name="country" options={[/* … */]} />
+  <Signature name="sign1" />
+  <Button name="submit" action="SubmitForm" />
+</Form>
+```
+
+---
+
+## Framework setup
+
+### Next.js (App Router)
+
+```ts
+// next.config.ts
+import { withImprint } from '@imprint-pdf/next/plugin';
+
+export default withImprint()({
+  // your Next config
+});
+```
+
+```ts
+// app/api/invoice/[id]/route.ts
+import { pdf } from '@imprint-pdf/next';
+import { Invoice } from '@/templates/Invoice';
+
+export const dynamic = 'force-dynamic';
+// export const runtime = 'edge';  // ← auto-detected; opt in if you want edge
+
+export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const data = await fetchInvoice(id);
+  return pdf(<Invoice data={data} />, { filename: `invoice-${id}.pdf` });
+}
+```
+
+`pdf()` from `@imprint-pdf/next` auto-detects edge vs Node via `NEXT_RUNTIME` / `globalThis.EdgeRuntime` and dispatches to the right `@imprint-pdf/react` build.
+
+### Vite
+
+```ts
+// vite.config.ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { imprint } from '@imprint-pdf/vite';
+
+export default defineConfig({
+  plugins: [react(), imprint()],
+});
+```
+
+```ts
+// src/App.tsx
+import { pdf } from '@imprint-pdf/react';
+
+async function download() {
+  const response = await pdf(<Invoice data={data} />);
+  window.open(URL.createObjectURL(await response.blob()));
+}
+```
+
+### Bun
+
+```ts
+// src/index.ts
+import { pdf } from '@imprint-pdf/react';
+import { Invoice } from './templates/Invoice';
+
+Bun.serve({
+  port: 3000,
+  fetch: (req) => pdf(<Invoice data={fetchInvoice(req)} />),
+});
+```
+
+### Cloudflare Workers
+
+```ts
+// src/index.ts
+import { pdf } from '@imprint-pdf/react/standalone';
+import wasm from '@imprint-pdf/react/imprint.wasm';
+import { Invoice } from './templates/Invoice';
+
+export default {
+  fetch: () => pdf(<Invoice data={data} />, { wasm }),
+};
+```
+
+```toml
+# wrangler.toml
+[wasm_modules]
+IMPRINT_WASM = "./node_modules/@imprint-pdf/react/dist/imprint.wasm"
+```
+
+---
+
+## Tailwind
+
+imprint-pdf runs the actual Tailwind compiler. Plugins, `@theme` tokens, arbitrary values, OKLCH colors all work. Auto-detects v3 vs v4 from the consumer's installed `tailwindcss`.
+
+### v4 (CSS-first, recommended)
+
+```css
+/* src/app.css */
+@import 'tailwindcss';
+@import '@imprint-pdf/react/preset';
+
+@theme {
+  --font-sans: 'Inter', sans-serif;
+  --color-brand-500: #0ea5e9;
+}
+```
+
+The `@imprint-pdf/react/preset` import registers the page-position variants (`page-first:`, `page-left:`, `page-right:`) so Tailwind knows about them.
+
+### v3 (JS config)
+
+```ts
+// tailwind.config.ts
+import type { Config } from 'tailwindcss';
+export default {
+  content: ['./src/**/*.{ts,tsx}'],
+  theme: { extend: { /* … */ } },
+} satisfies Config;
+```
+
+```ts
+// imprint.config.ts
+export default defineConfig({
+  tailwind: { config: './tailwind.config.ts' },
+});
+```
+
+### Imprint-specific variants
+
+| Variant                        | What it does                                            |
+| ------------------------------ | ------------------------------------------------------- |
+| `page-first:`                  | Applies only on the first page                          |
+| `page-left:`                   | Applies on left-hand (even) pages                       |
+| `page-right:`                  | Applies on right-hand (odd) pages                       |
+| `print:`                       | Always-active (unlike browsers where it's print-preview only) |
+| `imprint:cmyk-[c_m_y_k]`       | CMYK colour. Requires `@imprint-pdf/print`              |
+| `imprint:spot-[Pantone-185-C]` | Named spot colour                                       |
+| `imprint:overprint`            | PDF overprint flag                                      |
+| `imprint:bleed-[3mm]`          | Bleed area size                                         |
+
+### Dropped CSS properties (no PDF analogue)
+
+- Interaction pseudo-classes (`hover:`, `focus:`, `active:`, `focus-visible:`)
+- Position modes (`position: sticky`, `position: fixed`)
+- Overflow/scroll (`overflow: auto`, `overflow: scroll`)
+- Transitions/animations (`transition-*`, `animation-*`, `@keyframes`)
+- Screen pseudo-selectors (`sm:`, `md:`, `lg:` — treated as always-active)
+
+Pass `{ strict: true }` to `pdf()` to get warnings on dropped properties.
+
+---
+
+## Print-grade output (`@imprint-pdf/print`)
+
+```ts
+import { pdf } from '@imprint-pdf/react';
+import { printIntent } from '@imprint-pdf/print';
+import fogra39 from './icc/FOGRA39.icc';
+
+const response = await pdf(<Doc />, {
+  postProcess: [
+    printIntent({
+      intent: 'PDF/X-4',
+      outputIntent: {
+        iccProfile: fogra39,
+        condition: 'ISO Coated v3',
+        conditionIdentifier: 'FOGRA39',
+      },
+      bleed: '3mm',
+      marks: ['trim', 'registration'],
+    }),
+  ],
+});
+```
+
+PDF/A-3 with factur-X / ZUGFeRD attachment:
+
+```ts
+printIntent({
+  intent: 'PDF/A-3B',
+  facturX: { level: 'EN 16931', xml: xmlBytes, filename: 'factur-x.xml' },
+});
+```
+
+---
+
+## Digital signatures (`@imprint-pdf/sign`)
+
+```ts
+import { pdf } from '@imprint-pdf/react';
+import { signBuffer } from '@imprint-pdf/sign';
+
+const unsigned = await pdf(<Contract data={data} />, { as: 'bytes' });
+
+const signed = await signBuffer(unsigned, {
+  certificate: fs.readFileSync('./certs/company.pem', 'utf8'),
+  privateKey: fs.readFileSync('./certs/company.key', 'utf8'),
+  reason: 'Agreement executed',
+  location: 'San Francisco, CA',
+  tsaUrl: 'https://freetsa.org/tsr',
+});
+```
+
+---
+
+## PDF/UA-1 accessibility (`@imprint-pdf/ua`)
+
+```ts
+import { pdf } from '@imprint-pdf/react';
+import { taggedPdf } from '@imprint-pdf/ua';
+
+const response = await pdf(
+  <Document lang="en-US" title="Q1 Report">
+    <Page size="A4" className="p-12">
+      <h1 className="text-3xl font-bold">Accessible PDF</h1>
+      <img src={logoUrl} alt="Acme Corp logo" className="mt-4 h-16" />
+    </Page>
+  </Document>,
+  { postProcess: [taggedPdf()] },
+);
+```
+
+PDF/UA-1 requires `<Document lang="…" title="…">` and `alt` on every image.
+
+---
+
+## Common patterns
+
+### Multi-page with running header/footer + page numbers
+
+```tsx
+<Document>
+  <Header>
+    <div className="flex justify-between text-xs text-gray-400">
+      <span>Acme Corp — Confidential</span>
+      <span>Page <PageNumber /> / <TotalPages /></span>
+    </div>
+  </Header>
+
+  <Page size="A4" className="p-12">{/* page 1 */}</Page>
+  <Page size="A4" className="p-12">{/* page 2 */}</Page>
+</Document>
+```
+
+### Force a page break / avoid breaking inside
+
+```tsx
+<h2 className="break-before-page">Chapter 2</h2>
+<div className="break-inside-avoid">
+  <img …/>
+  <p>Caption</p>
+</div>
+```
+
+### Widows / orphans
+
+```tsx
+<p className="[orphans:3] [widows:3]">Long paragraph…</p>
+```
+
+Or globally:
+
+```ts
+defineConfig({
+  typography: { defaultWidows: 3, defaultOrphans: 3 },
+});
+```
+
+### Variable fonts
+
+```ts
+// imprint.config.ts
+defineConfig({
+  fonts: [{
+    family: 'Inter Variable',
+    src: './public/fonts/InterVariable.woff2',
+    variable: true,
+    axes: { wght: [100, 900], slnt: [-10, 0] },
+  }],
+});
+```
+
+```tsx
+<p className="[font-variation-settings:'wght'_350]">Light text.</p>
+```
+
+### Streaming for large documents
+
+```ts
+const stream = await pdf(<LargeReport pages={100} />, { as: 'stream' });
+return new Response(stream, { headers: { 'content-type': 'application/pdf' } });
+```
+
+First byte in under 50 ms for most documents.
+
+### Batch generation (Node worker thread)
+
+```ts
+// worker.ts
+import { parentPort, workerData } from 'node:worker_threads';
+import { pdf } from '@imprint-pdf/react';
+import { Invoice } from './templates/Invoice';
+
+const bytes = await pdf(<Invoice data={workerData} />, { as: 'bytes' });
+parentPort!.postMessage(bytes, [bytes.buffer]);
+```
+
+---
+
+## CLI
+
+```bash
+npx imprint init                    # detect framework, scaffold config + example
+npx imprint render <file> -o out/   # render a template to disk
+npx imprint dev <file>              # live preview server with HMR (default port 4000)
+npx imprint validate <pdf> --profile pdf-ua-1  # veraPDF validation, exits non-zero on failure
+```
+
+`imprint init` detects Next.js (App / Pages), Vite, or generic Node and writes:
+- `imprint.config.ts`
+- `withImprint` wrap on `next.config.{ts,mjs}` OR `imprint()` plugin in `vite.config.ts`
+- `templates/ExamplePdf.tsx`
+- `app/api/pdf/route.tsx` (Next App), `pages/api/pdf.tsx` (Next Pages), or `src/pdf.ts` (Vite)
+
+---
+
+## Errors and fixes
+
+### `Tailwind compilation failed` / classes resolve to `{}`
+
+Make sure `imprint.config.ts` is at the project root and either `tailwind.stylesheet` (v4) or `tailwind.config` (v3) is set — or that an auto-detectable stylesheet exists at `src/app.css` / `app/globals.css` / etc.
+
+### `RangeError: Index out of range` when loading a font
+
+`@pdf-lib/fontkit@1.1.1`'s WOFF2 decoder rejects some pre-subsetted WOFF2 files (notably Bunny Fonts' Outfit family). Switch to the TTF variant of the font.
+
+### Next 16 / Turbopack renders unstyled
+
+`withImprint()` automatically configures the Turbopack `resolveAlias`. If you've overridden `next.config.ts.turbopack` manually, ensure you preserve `withImprint`'s settings.
+
+### `gstatic` font URL returns 404
+
+Google rotates `fonts.gstatic.com/s/inter/v18/...` slugs (`v15` → `v22`). Use stable hosts:
+- Bunny Fonts: `https://fonts.bunny.net/inter/files/inter-latin-400-normal.woff2`
+- Fontsource via jsdelivr: `https://cdn.jsdelivr.net/npm/@fontsource/inter@5/files/inter-latin-400-normal.woff2`
+- Self-host from `./public/fonts/`
+
+### `<PageNumber />` renders as empty space when used as a sibling of text
+
+Already handled — components default to `display: 'inline-flex'`. If you've explicitly overridden the display value, set it back to `inline-flex` or use it inside a `<span>` parent.
+
+### `npm install @imprint-pdf/tailwind` fails
+
+This package was unpublished. The Tailwind compiler is bundled inside `@imprint-pdf/react`, `@imprint-pdf/next`, and `@imprint-pdf/vite`. Remove `@imprint-pdf/tailwind` from your `package.json`.
+
+---
+
+## Type signatures (quick reference)
+
+```ts
+// @imprint-pdf/react
+export function pdf(element: ReactElement, options?: PdfOptions): Promise<Response | Uint8Array | ReadableStream<Uint8Array>>;
+export function renderToBuffer(element: ReactElement, options?: RenderOptions): Promise<Uint8Array>;
+export function renderToStream(element: ReactElement, options?: RenderOptions): Promise<ReadableStream<Uint8Array>>;
+
+// @imprint-pdf/next
+export function pdf(element: ReactElement, options?: PdfOptions): Promise<Response | Uint8Array | ReadableStream<Uint8Array>>;
+// + @imprint-pdf/next/plugin
+export function withImprint(options?: ImprintPluginOptions): (next: NextConfig) => NextConfig;
+
+// @imprint-pdf/vite
+export function imprint(options?: ImprintViteOptions): Plugin[];
+
+// @imprint-pdf/core/config
+export function defineConfig(config: ImprintConfigInput): ImprintConfig;
+
+// @imprint-pdf/print
+export function printIntent(options: PrintIntentOptions): PdfPostProcessHook;
+
+// @imprint-pdf/sign
+export function signBuffer(pdf: Uint8Array, options: SignOptions): Promise<Uint8Array>;
+
+// @imprint-pdf/ua
+export function taggedPdf(): PdfPostProcessHook;
+export function validateUA(document: DocumentNode): { valid: boolean; errors: string[] };
+```
+
+---
+
+## License
+
+Apache-2.0, every package. Engine, React layer, Tailwind compiler, CLI, integrations, _and_ the compliance & print add-ons (PDF/X-4 + CMYK + ICC, PDF/UA-1 tagged PDF, PKCS#7 signing, factur-X / ZUGFeRD). No commercial seats, no time-bombed source.
+
+---
+
+## Repository
+
+https://github.com/tamimbinhakim/imprint-pdf

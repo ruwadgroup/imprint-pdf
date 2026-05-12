@@ -1,0 +1,100 @@
+# imprint-pdf
+
+> Author PDFs as React components, styled with real Tailwind classes. One `pdf()` function. No Chromium. Runs on Node, Bun, Cloudflare Workers, Vercel Edge, and the browser. Apache-2.0.
+
+imprint-pdf is a TypeScript library for generating PDFs from React component trees. It uses the actual Tailwind v4 Oxide compiler (and Tailwind v3 via PostCSS), the actual HarfBuzz shaping engine, the actual Knuth–Plass justification algorithm, and the actual Taffy layout engine (Block + Flexbox + CSS Grid). The runtime is a custom React reconciler — no DOM, no headless browser, no `StyleSheet.create` DSL.
+
+The single public entry point is `pdf(element, options?)`. It returns a `Response` by default, a `Uint8Array` with `{ as: 'bytes' }`, or a `ReadableStream` with `{ as: 'stream' }`. Same function signature on Node, Bun, the browser, and edge runtimes.
+
+Works on React 18 and React 19 with zero extra config — both reconciler majors are bundled.
+
+## Install
+
+```bash
+pnpm add @imprint-pdf/react @imprint-pdf/core tailwindcss
+pnpm add -D @imprint-pdf/cli
+npx imprint init
+```
+
+`imprint init` detects your framework (Next.js, Vite, generic Node), wires the correct plugin into your config, and scaffolds an example route + template.
+
+## Hello world
+
+```tsx
+import { pdf, Document, Page } from '@imprint-pdf/react';
+
+const response = await pdf(
+  <Document>
+    <Page size="A4" className="p-12 font-sans bg-white">
+      <h1 className="text-3xl font-bold tracking-tight">Hello, PDF</h1>
+      <p className="mt-4 text-base">Real Tailwind. No Chromium.</p>
+    </Page>
+  </Document>,
+);
+```
+
+## Docs
+
+### Getting started
+
+- [Overview](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/overview.md): What the library is, what's in the pipeline, where it fits among alternatives
+- [Quick start](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/quick-start.md): Five-minute walkthrough from empty project to a rendered PDF
+- [Installation](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/installation.md): Package list, peer deps, supported React/Tailwind/Node versions
+- [Concepts](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/concepts.md): IR tree, layout pass, typography pipeline, Tailwind resolver, runtime
+- [Glossary](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/glossary.md): Project-specific terms (`pdf()`, `PdfNode`, `AssetResolver`, `withImprint`, etc.)
+- [Philosophy](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/philosophy.md): Why no Chromium, why real Tailwind, why Knuth–Plass, license stance
+
+### API reference
+
+- [API reference](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/reference/api.md): Every exported function, every overload, every package
+- [Configuration](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/reference/configuration.md): `imprint.config.ts` schema (fonts, tailwind, typography, output, assets)
+- [Components](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/reference/components.md): Every JSX component, props, defaults
+- [CLI](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/reference/cli.md): `imprint init`, `imprint render`, `imprint dev`, `imprint validate`
+
+### Frameworks
+
+- [Next.js](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/frameworks/nextjs.md): App Router, Pages Router, route handlers, Edge Runtime, `withImprint` plugin
+- [Vite](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/frameworks/vite.md): SPA, SSR, virtual modules, HMR for `.pdf.tsx` files
+- [Cloudflare Workers](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/frameworks/cloudflare.md): Standalone WASM build, sub-100 ms cold start
+- [Bun](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/frameworks/bun.md): Native WASM imports, `Bun.serve`
+
+### Feature guides
+
+- [Tailwind](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/guides/tailwind.md): What works (plugins, arbitrary values, OKLCH), what doesn't (`hover:`, `transition-*`), `print:` always-active variant, imprint-specific variants (`page-first:`, `page-left:`, `page-right:`)
+- [Typography](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/guides/typography.md): HarfBuzz shaping, Knuth–Plass justification, hyphenation, variable fonts, CJK, Arabic
+- [Fonts](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/guides/fonts.md): Loading from `./public/fonts/`, from URLs (Bunny Fonts, Fontsource), subsetting, WOFF2 caveat
+- [Components](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/guides/components.md): `<Document>`, `<Page>`, `<Image>`, `<Svg>`, plus first-class HTML elements
+- [Paged layout](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/guides/paged-layout.md): `break-before`, widows/orphans, running headers, `<PageNumber>` / `<TotalPages>`
+- [Forms (AcroForms)](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/guides/forms.md): `<TextField>`, `<Checkbox>`, `<RadioGroup>`, `<Dropdown>`, `<Signature>`
+- [Charts](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/guides/charts.md): Vector charts from Recharts, Visx, ECharts, D3
+- [Type safety](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/guides/typesafety.md): JSX namespace, `defineConfig` typing, React 18 / 19 / Compiler compatibility
+
+### Cookbook
+
+- [Invoice](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/cookbook/invoice.md): Single-page A4 with line items, totals, logo
+- [Resume](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/cookbook/resume.md): Two-column layout with type ramp
+- [Certificate](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/cookbook/certificate.md): Landscape with decorative borders
+- [Contract with AcroForm](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/cookbook/contract.md): Signature fields + PKCS#7 signing
+- [Financial report](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/cookbook/report.md): Multi-page with running headers and footnotes
+- [Streaming PDFs](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/cookbook/streaming.md): `pdf(..., { as: 'stream' })` for low-memory edge handlers
+- [Batch generation](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/cookbook/batch-generation.md): Worker thread pool for hundreds of PDFs
+- [Custom fonts](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/cookbook/custom-fonts.md): Local files, hosted URLs, variable fonts, multilingual stacks
+- [Vector charts](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/cookbook/vector-charts.md): SVG output from chart libs, no rasterization
+- [CI validation](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/cookbook/ci-validation.md): veraPDF for PDF/UA-1 and PDF/X-4 conformance
+
+### Add-on packages
+
+- [@imprint-pdf/print](https://github.com/tamimbinhakim/imprint-pdf/blob/main/packages/print/README.md): PDF/X-4, CMYK, ICC profiles, bleed/trim/marks, PDF/A-2b, PDF/A-3, factur-X / ZUGFeRD
+- [@imprint-pdf/sign](https://github.com/tamimbinhakim/imprint-pdf/blob/main/packages/sign/README.md): PKCS#7 detached digital signatures, TSA timestamping
+- [@imprint-pdf/ua](https://github.com/tamimbinhakim/imprint-pdf/blob/main/packages/ua/README.md): PDF/UA-1 tagged PDF, structure tree, alt text, language propagation
+- [@imprint-pdf/eslint](https://github.com/tamimbinhakim/imprint-pdf/blob/main/packages/eslint/README.md): Lint rules (no unsupported CSS, missing alt, hover variants)
+
+### Optional
+
+- [Performance benchmarks](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/performance.md): Cold start, throughput vs alternatives
+- [FAQ](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/faq.md): Common questions, supported Tailwind classes, browser support, streaming
+- [Migrating from @react-pdf/renderer](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/migrating/react-pdf-renderer.md)
+- [Migrating from Puppeteer](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/migrating/puppeteer.md)
+- [Migrating from pdfme](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/migrating/pdfme.md)
+- [Stability policy](https://github.com/tamimbinhakim/imprint-pdf/blob/main/STABILITY.md): What's public, what's internal, semver guarantees
+- [Architecture](https://github.com/tamimbinhakim/imprint-pdf/blob/main/ARCHITECTURE.md): Deep dive on the pipeline internals

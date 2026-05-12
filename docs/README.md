@@ -2,6 +2,10 @@
 
 Real Tailwind. Real React. Real typography. PDF anywhere — no Chromium, ever.
 
+> **For LLMs and AI agents**: a navigable index lives at
+> [`/llms.txt`](../llms.txt) and a single-file context dump at
+> [`/llms-full.txt`](../llms-full.txt).
+
 ## Start here
 
 - **[Overview](overview.md)** — what imprint-pdf is and where it fits
@@ -11,6 +15,8 @@ Real Tailwind. Real React. Real typography. PDF anywhere — no Chromium, ever.
 - **[Concepts](concepts.md)** — pipeline, IR, layout, typography on one page
 - **[Performance](performance.md)** — measured cold start and throughput numbers
 - **[FAQ](faq.md)** — quick answers to common questions
+- **[Glossary](glossary.md)** — project-specific terms (`pdf()`, `PdfNode`,
+  `AssetResolver`, …)
 - **[Stability](../STABILITY.md)** — public API, what's internal, semver policy
 
 ## Guides

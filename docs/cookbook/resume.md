@@ -124,6 +124,27 @@ export function Resume({ data }: ResumeProps) {
 }
 ```
 
+## Render
+
+```ts
+import { pdf } from '@imprint-pdf/react';
+import { Resume } from './templates/Resume';
+
+const response = await pdf(
+  <Resume data={{
+    name: 'Ada Lovelace',
+    title: 'Software Engineer',
+    contact: { email: 'ada@example.com', github: 'ada', location: 'London' },
+    summary: 'Builds analytical engines.',
+    experience: [
+      { company: 'Acme', role: 'Senior Engineer', period: '2024–', bullets: ['…'] },
+    ],
+    skills: ['TypeScript', 'React'],
+  }} />,
+  { filename: 'resume.pdf' },
+);
+```
+
 ## Key patterns
 
 - `grid-cols-[200px_1fr]` — arbitrary CSS Grid column template.

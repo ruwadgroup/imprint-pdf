@@ -77,7 +77,9 @@ All in one install.
 
 ## Documentation
 
-Full documentation lives in [`docs/`](docs/):
+Full documentation lives in [`docs/`](docs/). For LLMs / AI agents, see
+[`llms.txt`](llms.txt) (index) and [`llms-full.txt`](llms-full.txt) (single-file
+context).
 
 - **[Overview](docs/overview.md)** — what imprint-pdf does and where it fits
 - **[Quick start](docs/quick-start.md)** — render your first PDF in five minutes
