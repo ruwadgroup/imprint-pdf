@@ -1,6 +1,6 @@
 {
   "name": "@imprint-pdf/cli",
-  "version": "1.0.0-alpha.4",
+  "version": "1.0.0-alpha.5",
   "description": "CLI for imprint-pdf: render, dev preview server, and PDF/X + PDF/UA validation.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",

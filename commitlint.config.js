@@ -34,6 +34,7 @@ export default {
         'ua',
         'eslint',
         'font',
+        'fonts',
         'chart',
         'svg-rasterize',
         'testing',

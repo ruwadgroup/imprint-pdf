@@ -1,5 +1,5 @@
 export type { AssetResolverOptions } from './assets.js';
-export { createAssetResolver } from './assets.js';
+export { createAssetResolver, resolveFontsourceUrl } from './assets.js';
 export type { ImprintConfig, ImprintConfigInput } from './config.js';
 export { defineConfig } from './config.js';
 export { hash, shortHash } from './hash.js';

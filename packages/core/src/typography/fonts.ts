@@ -75,61 +75,99 @@ function fontKey(family: string, weight: number, style: 'normal' | 'italic'): st
   return `${family}:${weight}:${style}`;
 }
 
+// WOFF2 → TTF / OTF: if fontkit throws RangeError on a .woff2, retry once
+// with a TTF/OTF variant of the same file. Many Fontsource and CDN-hosted
+// fonts ship both formats side-by-side; for `fontsource:` URLs we just swap
+// the format slot. Returns null if no plausible fallback URL exists.
+function ttfFallbackUrl(src: string): string | null {
+  if (src.startsWith('fontsource:') || src.startsWith('fontsource-variable:')) {
+    // The format slot is the 5th `:`-separated field; swap woff2 → ttf.
+    // If the URL has fewer fields, append the format with the standard defaults.
+    if (/[:](woff2|woff)$/i.test(src)) return src.replace(/[:](woff2|woff)$/i, ':ttf');
+    return `${src}:ttf`;
+  }
+  if (/\.woff2(\?|$)/i.test(src)) return src.replace(/\.woff2/i, '.ttf');
+  return null;
+}
+
+async function tryLoadFontBytes(
+  doc: PDFDocument,
+  resolver: AssetResolver,
+  src: string,
+): Promise<{ bytes: Uint8Array; pdfFont: import('pdf-lib').PDFFont } | undefined> {
+  const bytes = await resolver.resolve(src);
+  const pdfFont = await doc.embedFont(bytes, { subset: true });
+  return { bytes, pdfFont };
+}
+
 async function loadCustomFont(
   doc: PDFDocument,
   decl: FontDeclaration,
   resolver: AssetResolver,
 ): Promise<LoadedFont | undefined> {
+  let loaded: { bytes: Uint8Array; pdfFont: import('pdf-lib').PDFFont } | undefined;
   try {
-    const bytes = await resolver.resolve(decl.src);
-    const pdfFont = await doc.embedFont(bytes, { subset: true });
-
-    const weight =
-      typeof decl.weight === 'number'
-        ? decl.weight
-        : decl.weight !== undefined
-          ? parseInt(String(decl.weight), 10)
-          : 400;
-    const style: 'normal' | 'italic' = decl.style ?? 'normal';
-
-    // pdf-lib doesn't expose metrics; reach into the embedder for them.
-    // The field renamed across minor versions, hence both lookups.
-    let metrics: FontMetrics = DEFAULT_METRICS;
-    try {
-      // @ts-expect-error — internal fontkit reference
-      const fk = pdfFont.embedder?.font ?? pdfFont.embedder?.customFont;
-      if (fk) {
-        metrics = {
-          unitsPerEm: fk.unitsPerEm ?? 1000,
-          ascent: fk.ascent ?? 800,
-          descent: fk.descent ?? -200,
-          lineGap: fk.lineGap ?? 0,
-        };
-      }
-    } catch {}
-
-    return {
-      family: decl.family,
-      weight,
-      style,
-      pdfFont,
-      metrics,
-      rawBytes: bytes,
-    };
+    loaded = await tryLoadFontBytes(doc, resolver, decl.src);
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    const isWoff2RangeError = /Index out of range/i.test(msg) && /\.woff2(\?|$)/i.test(decl.src);
-    if (isWoff2RangeError) {
+    const isFontkitRangeError = /Index out of range/i.test(msg);
+    const fallback = isFontkitRangeError ? ttfFallbackUrl(decl.src) : null;
+
+    if (fallback) {
       console.warn(
-        `[imprint] Failed to decode WOFF2 for "${decl.family}" (${decl.src}). ` +
-          `@pdf-lib/fontkit's WOFF2 decoder rejects some pre-subsetted files — ` +
-          `try the TTF variant of this font instead. See docs/guides/fonts.md.`,
+        `[imprint] WOFF2 decoder rejected "${decl.family}" (${decl.src}); ` +
+          `retrying with ${fallback}.`,
       );
+      try {
+        loaded = await tryLoadFontBytes(doc, resolver, fallback);
+      } catch (fallbackErr) {
+        console.warn(
+          `[imprint] Fallback to ${fallback} also failed for "${decl.family}":`,
+          fallbackErr,
+        );
+        return undefined;
+      }
     } else {
       console.warn(`[imprint] Failed to load font "${decl.family}" from ${decl.src}:`, err);
+      return undefined;
     }
-    return undefined;
   }
+
+  if (!loaded) return undefined;
+  const { bytes, pdfFont } = loaded;
+
+  const weight =
+    typeof decl.weight === 'number'
+      ? decl.weight
+      : decl.weight !== undefined
+        ? parseInt(String(decl.weight), 10)
+        : 400;
+  const style: 'normal' | 'italic' = decl.style ?? 'normal';
+
+  // pdf-lib doesn't expose metrics; reach into the embedder for them. The
+  // field renamed across minor versions, hence both lookups.
+  let metrics: FontMetrics = DEFAULT_METRICS;
+  try {
+    // @ts-expect-error — internal fontkit reference
+    const fk = pdfFont.embedder?.font ?? pdfFont.embedder?.customFont;
+    if (fk) {
+      metrics = {
+        unitsPerEm: fk.unitsPerEm ?? 1000,
+        ascent: fk.ascent ?? 800,
+        descent: fk.descent ?? -200,
+        lineGap: fk.lineGap ?? 0,
+      };
+    }
+  } catch {}
+
+  return {
+    family: decl.family,
+    weight,
+    style,
+    pdfFont,
+    metrics,
+    rawBytes: bytes,
+  };
 }
 
 async function loadStandardFont(

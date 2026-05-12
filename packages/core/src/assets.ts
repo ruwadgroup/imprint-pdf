@@ -54,6 +54,56 @@ async function fetchBytes(url: string, fetchFn: typeof globalThis.fetch): Promis
   return new Uint8Array(buf);
 }
 
+/**
+ * `fontsource:` URL scheme — resolves to a jsdelivr CDN URL for the given
+ * Fontsource package. Removes the need to hand-write CDN paths.
+ *
+ * Shapes:
+ *   `fontsource:<family>`
+ *   `fontsource:<family>@<version>`
+ *   `fontsource:<family>@<version>:<weight>`
+ *   `fontsource:<family>@<version>:<weight>:<style>`
+ *   `fontsource:<family>@<version>:<weight>:<style>:<subset>`
+ *   `fontsource:<family>@<version>:<weight>:<style>:<subset>:<format>`
+ *
+ * Defaults: version=`5`, weight=`400`, style=`normal`, subset=`latin`,
+ * format=`woff2`.
+ *
+ * Variable fonts use the `fontsource-variable:` prefix and `wght` (or another
+ * axis name) in the weight slot:
+ *   `fontsource-variable:inter@5:wght:normal`
+ *
+ * Family is the Fontsource slug (kebab-case): `inter`, `jetbrains-mono`,
+ * `noto-sans-arabic`, etc.
+ *
+ * Examples:
+ *   fontsource:inter                        → Inter regular, latin, WOFF2
+ *   fontsource:inter@5:700                  → Inter bold, latin, WOFF2
+ *   fontsource:inter@5:400:italic           → Inter italic
+ *   fontsource:noto-sans-arabic@5:400:normal:arabic
+ *   fontsource-variable:inter@5:wght        → Inter variable (wght axis)
+ */
+export function resolveFontsourceUrl(src: string): string {
+  const isVariable = src.startsWith('fontsource-variable:');
+  const body = src.slice(isVariable ? 'fontsource-variable:'.length : 'fontsource:'.length);
+
+  // Split off the version with @, then the rest by `:`
+  const [familyAndVersion, ...rest] = body.split(':');
+  const [familyRaw, versionRaw] = (familyAndVersion ?? '').split('@');
+  const family = (familyRaw ?? '').trim();
+  if (!family) {
+    throw new Error(`fontsource URL is missing a family name: ${src}`);
+  }
+  const version = versionRaw?.trim() || '5';
+  const weight = (rest[0] ?? (isVariable ? 'wght' : '400')).trim();
+  const style = (rest[1] ?? 'normal').trim();
+  const subset = (rest[2] ?? 'latin').trim();
+  const format = (rest[3] ?? 'woff2').trim();
+
+  const pkg = isVariable ? `@fontsource-variable/${family}` : `@fontsource/${family}`;
+  return `https://cdn.jsdelivr.net/npm/${pkg}@${version}/files/${family}-${subset}-${weight}-${style}.${format}`;
+}
+
 function resolveFilePath(src: string, basePath?: string): string {
   if (src.startsWith('file://')) {
     return new URL(src).pathname;
@@ -71,6 +121,19 @@ export function createAssetResolver(options: AssetResolverOptions = {}): AssetRe
   async function resolve(src: string): Promise<Uint8Array> {
     if (src.startsWith('data:')) {
       return decodeDataUri(src);
+    }
+
+    // `fontsource:` / `fontsource-variable:` rewrite to jsdelivr URLs.
+    // See `parseFontsource` for the supported shapes.
+    if (src.startsWith('fontsource:') || src.startsWith('fontsource-variable:')) {
+      const url = resolveFontsourceUrl(src);
+      if (!fetchFn) {
+        throw new Error(
+          `Cannot fetch ${url}: no fetch implementation available. ` +
+            'Pass a fetch polyfill via AssetResolverOptions.fetch',
+        );
+      }
+      return fetchBytes(url, fetchFn);
     }
 
     if (src.startsWith('http://') || src.startsWith('https://')) {

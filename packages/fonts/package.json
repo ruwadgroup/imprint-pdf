@@ -1,24 +1,17 @@
 {
-  "name": "@imprint-pdf/ua",
-  "version": "1.0.0-alpha.5",
-  "description": "Tagged PDF and PDF/UA-1 accessible output for imprint-pdf — structure tree, alt text, language attributes, veraPDF validation.",
+  "name": "@imprint-pdf/fonts",
+  "version": "1.0.0-alpha.6",
+  "description": "Ergonomic font declarations for imprint-pdf — Google Fonts via Fontsource, zero-config.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tamimbinhakim/imprint-pdf.git",
-    "directory": "packages/ua"
+    "directory": "packages/fonts"
   },
-  "homepage": "https://github.com/tamimbinhakim/imprint-pdf/tree/main/packages/ua#readme",
+  "homepage": "https://github.com/tamimbinhakim/imprint-pdf/tree/main/packages/fonts#readme",
   "bugs": "https://github.com/tamimbinhakim/imprint-pdf/issues",
-  "keywords": [
-    "pdf-ua",
-    "accessibility",
-    "tagged-pdf",
-    "ada",
-    "eaa",
-    "imprint"
-  ],
+  "keywords": ["pdf", "fonts", "google-fonts", "fontsource", "imprint"],
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -35,14 +28,20 @@
         "default": "./dist/index.cjs"
       }
     },
+    "./google": {
+      "types": "./dist/google.d.ts",
+      "import": {
+        "types": "./dist/google.d.ts",
+        "default": "./dist/google.js"
+      },
+      "require": {
+        "types": "./dist/google.d.cts",
+        "default": "./dist/google.cjs"
+      }
+    },
     "./package.json": "./package.json"
   },
-  "files": [
-    "dist",
-    "README.md",
-    "CHANGELOG.md",
-    "LICENSE"
-  ],
+  "files": ["dist", "README.md", "CHANGELOG.md", "LICENSE"],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
@@ -53,15 +52,12 @@
     "clean": "rm -rf dist .turbo *.tsbuildinfo"
   },
   "dependencies": {
-    "@imprint-pdf/core": "workspace:*",
-    "@imprint-pdf/react": "workspace:*",
-    "pdf-lib": "catalog:"
+    "@imprint-pdf/core": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "catalog:",
     "tsup": "catalog:",
     "typescript": "catalog:",
-    "@vitest/coverage-v8": "catalog:",
     "vitest": "catalog:"
   },
   "engines": {
