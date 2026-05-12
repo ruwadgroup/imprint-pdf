@@ -10,11 +10,11 @@
   "dependencies": {
     "@imprint-pdf/core": "workspace:*",
     "@imprint-pdf/react": "workspace:*",
-    "@imprint-pdf/tailwind": "workspace:*"
+    "react": "catalog:"
   },
   "devDependencies": {
     "@types/bun": "^1.0.0",
-    "@types/react": "^19.0.0",
+    "@types/react": "catalog:",
     "bun-types": "^1.0.0",
     "typescript": "catalog:"
   }

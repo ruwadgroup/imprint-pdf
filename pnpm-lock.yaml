@@ -119,15 +119,15 @@ importers:
       '@imprint-pdf/react':
         specifier: workspace:*
         version: link:../../packages/react
-      '@imprint-pdf/tailwind':
-        specifier: workspace:*
-        version: link:../../packages/tailwind
+      react:
+        specifier: 'catalog:'
+        version: 19.2.5
     devDependencies:
       '@types/bun':
         specifier: ^1.0.0
         version: 1.3.13
       '@types/react':
-        specifier: ^19.0.0
+        specifier: 'catalog:'
         version: 19.2.14
       bun-types:
         specifier: ^1.0.0
@@ -170,17 +170,14 @@ importers:
   examples/next-app:
     dependencies:
       '@imprint-pdf/core':
-        specifier: workspace:*
-        version: link:../../packages/core
+        specifier: 1.0.0-alpha.4
+        version: 1.0.0-alpha.4
       '@imprint-pdf/next':
-        specifier: workspace:*
-        version: link:../../packages/next
+        specifier: 1.0.0-alpha.4
+        version: 1.0.0-alpha.4(next@15.5.15(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(postcss@8.5.14)(react@19.2.5)(tailwindcss@4.2.4)
       '@imprint-pdf/react':
-        specifier: workspace:*
-        version: link:../../packages/react
-      '@imprint-pdf/tailwind':
-        specifier: workspace:*
-        version: link:../../packages/tailwind
+        specifier: 1.0.0-alpha.4
+        version: 1.0.0-alpha.4(postcss@8.5.14)(react@19.2.5)(tailwindcss@4.2.4)
       next:
         specifier: ^15.0.0
         version: 15.5.15(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -241,17 +238,14 @@ importers:
   examples/react18-tailwind3-nextjs:
     dependencies:
       '@imprint-pdf/core':
-        specifier: workspace:*
-        version: link:../../packages/core
+        specifier: 1.0.0-alpha.4
+        version: 1.0.0-alpha.4
       '@imprint-pdf/next':
-        specifier: workspace:*
-        version: link:../../packages/next
+        specifier: 1.0.0-alpha.4
+        version: 1.0.0-alpha.4(next@14.2.35(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(postcss@8.5.14)(react@18.3.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))
       '@imprint-pdf/react':
-        specifier: workspace:*
-        version: link:../../packages/react
-      '@imprint-pdf/tailwind':
-        specifier: workspace:*
-        version: link:../../packages/tailwind
+        specifier: 1.0.0-alpha.4
+        version: 1.0.0-alpha.4(postcss@8.5.14)(react@18.3.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))
       next:
         specifier: 14.2.35
         version: 14.2.35(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1978,6 +1972,37 @@ packages:
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
     cpu: [x64]
     os: [win32]
+
+  '@imprint-pdf/core@1.0.0-alpha.4':
+    resolution: {integrity: sha512-ApVRdqYe6mITLGfhf2s2HLe696uFIgLtmNdWTBKP4uEp+WTtD+uNgcEZqWN62jO98US3nUeY+jDx+DqzK71Z8w==}
+    engines: {node: '>=20.0.0'}
+
+  '@imprint-pdf/next@1.0.0-alpha.4':
+    resolution: {integrity: sha512-UnVGAWEIa9n/y5pEd0vcYCoSIwABXgw1zJSfZ0D0s18MeVnrSIQWw/YNL+XL1V1SB3QAVukXJBnIQG0YQWT+Cg==}
+    engines: {node: '>=20.0.0'}
+    peerDependencies:
+      next: ^14.0.0 || ^15.0.0 || ^16.0.0
+      postcss: ^8.4.0
+      react: '>=18.2.0 <20'
+      tailwindcss: ^3.4.0 || ^4.0.0
+    peerDependenciesMeta:
+      postcss:
+        optional: true
+      tailwindcss:
+        optional: true
+
+  '@imprint-pdf/react@1.0.0-alpha.4':
+    resolution: {integrity: sha512-JnA6Pgl+twT02OAUO0rIHDqZx80PGe9PJzoAl1NR4U7ulJEwAMn6ULXOSB9M7K7PkMr8Jsqsgtfji33uRZFJOQ==}
+    engines: {node: '>=20.0.0'}
+    peerDependencies:
+      postcss: ^8.4.0
+      react: '>=18.2.0 <20'
+      tailwindcss: ^3.4.0 || ^4.0.0
+    peerDependenciesMeta:
+      postcss:
+        optional: true
+      tailwindcss:
+        optional: true
 
   '@inquirer/external-editor@1.0.3':
     resolution: {integrity: sha512-RWbSrDiYmO4LbejWY7ttpxczuwQyZLBUyygsA9Nsv95hpzUWwnNTVQmAq3xuh7vNwCp07UTmE5i11XAEExx4RA==}
@@ -6640,6 +6665,55 @@ snapshots:
   '@img/sharp-win32-x64@0.34.5':
     optional: true
 
+  '@imprint-pdf/core@1.0.0-alpha.4':
+    dependencies:
+      '@pdf-lib/fontkit': 1.1.1
+      fontkit: 2.0.4
+      harfbuzzjs: 1.0.0-beta.1
+      pdf-lib: 1.17.1
+      taffy-wasm: 0.9.10
+      zod: 4.3.6
+
+  '@imprint-pdf/next@1.0.0-alpha.4(next@14.2.35(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(postcss@8.5.14)(react@18.3.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))':
+    dependencies:
+      '@imprint-pdf/core': 1.0.0-alpha.4
+      '@imprint-pdf/react': 1.0.0-alpha.4(postcss@8.5.14)(react@18.3.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))
+      next: 14.2.35(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react: 18.3.1
+    optionalDependencies:
+      postcss: 8.5.14
+      tailwindcss: 3.4.19(tsx@4.21.0)(yaml@2.8.3)
+
+  '@imprint-pdf/next@1.0.0-alpha.4(next@15.5.15(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(postcss@8.5.14)(react@19.2.5)(tailwindcss@4.2.4)':
+    dependencies:
+      '@imprint-pdf/core': 1.0.0-alpha.4
+      '@imprint-pdf/react': 1.0.0-alpha.4(postcss@8.5.14)(react@19.2.5)(tailwindcss@4.2.4)
+      next: 15.5.15(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      react: 19.2.5
+    optionalDependencies:
+      postcss: 8.5.14
+      tailwindcss: 4.2.4
+
+  '@imprint-pdf/react@1.0.0-alpha.4(postcss@8.5.14)(react@18.3.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))':
+    dependencies:
+      '@imprint-pdf/core': 1.0.0-alpha.4
+      react: 18.3.1
+      react-reconciler-18: react-reconciler@0.29.2(react@18.3.1)
+      react-reconciler-19: react-reconciler@0.33.0(react@18.3.1)
+    optionalDependencies:
+      postcss: 8.5.14
+      tailwindcss: 3.4.19(tsx@4.21.0)(yaml@2.8.3)
+
+  '@imprint-pdf/react@1.0.0-alpha.4(postcss@8.5.14)(react@19.2.5)(tailwindcss@4.2.4)':
+    dependencies:
+      '@imprint-pdf/core': 1.0.0-alpha.4
+      react: 19.2.5
+      react-reconciler-18: react-reconciler@0.29.2(react@19.2.5)
+      react-reconciler-19: react-reconciler@0.33.0(react@19.2.5)
+    optionalDependencies:
+      postcss: 8.5.14
+      tailwindcss: 4.2.4
+
   '@inquirer/external-editor@1.0.3(@types/node@25.6.0)':
     dependencies:
       chardet: 2.1.1
@@ -9736,11 +9810,22 @@ snapshots:
 
   react-is@16.13.1: {}
 
+  react-reconciler@0.29.2(react@18.3.1):
+    dependencies:
+      loose-envify: 1.4.0
+      react: 18.3.1
+      scheduler: 0.23.2
+
   react-reconciler@0.29.2(react@19.2.5):
     dependencies:
       loose-envify: 1.4.0
       react: 19.2.5
       scheduler: 0.23.2
+
+  react-reconciler@0.33.0(react@18.3.1):
+    dependencies:
+      react: 18.3.1
+      scheduler: 0.27.0
 
   react-reconciler@0.33.0(react@19.2.5):
     dependencies:

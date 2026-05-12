@@ -9,10 +9,9 @@
     "start": "next start"
   },
   "dependencies": {
-    "@imprint-pdf/core": "workspace:*",
-    "@imprint-pdf/next": "workspace:*",
-    "@imprint-pdf/react": "workspace:*",
-    "@imprint-pdf/tailwind": "workspace:*",
+    "@imprint-pdf/core": "1.0.0-alpha.4",
+    "@imprint-pdf/next": "1.0.0-alpha.4",
+    "@imprint-pdf/react": "1.0.0-alpha.4",
     "next": "^15.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

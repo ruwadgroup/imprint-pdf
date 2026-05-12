@@ -58,16 +58,29 @@ function compactDefined<T extends object>(src: T | undefined): Partial<T> {
  * `pdf()`).
  */
 export function withImprint(pluginOptions: ImprintPluginOptions = {}) {
-  return (nextConfig: NextConfig = {}): NextConfig =>
-    ({
+  return (nextConfig: NextConfig = {}): NextConfig => {
+    // @imprint-pdf/* may pull in native bindings + uses `createContext` /
+    // `node:fs` at module load — Next must externalise them so RSC compilation
+    // doesn't bail. Set both keys: `serverExternalPackages` (Next 15+) and
+    // `experimental.serverComponentsExternalPackages` (Next 14). Next warns
+    // about unknown keys but doesn't error.
+    const imprintExternals = ['@imprint-pdf/next', '@imprint-pdf/react', '@imprint-pdf/core'];
+    const existingExperimental =
+      (nextConfig as { experimental?: { serverComponentsExternalPackages?: string[] } })
+        .experimental ?? {};
+
+    return {
       ...nextConfig,
 
-      // @imprint-pdf/* may pull in native bindings — let Node require them directly.
-      serverExternalPackages: [
-        ...(nextConfig.serverExternalPackages ?? []),
-        '@imprint-pdf/react',
-        '@imprint-pdf/core',
-      ],
+      serverExternalPackages: [...(nextConfig.serverExternalPackages ?? []), ...imprintExternals],
+
+      experimental: {
+        ...existingExperimental,
+        serverComponentsExternalPackages: [
+          ...(existingExperimental.serverComponentsExternalPackages ?? []),
+          ...imprintExternals,
+        ],
+      },
 
       webpack(config: WebpackConfig, ctx: WebpackConfigContext) {
         config.experiments = {
@@ -107,5 +120,6 @@ export function withImprint(pluginOptions: ImprintPluginOptions = {}) {
           ? (nextConfig.webpack(config, ctx) as WebpackConfig)
           : config;
       },
-    }) as NextConfig;
+    } as NextConfig;
+  };
 }

@@ -1,6 +1,6 @@
 {
   "name": "@imprint-pdf/sign",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "description": "PKCS#7 detached digital signatures for imprint-pdf PDFs.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",

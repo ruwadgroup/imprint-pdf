@@ -1,8 +1,14 @@
 import { createRequire } from 'node:module';
 import type { PdfNode, PdfNodeType, ResolvedStyle, VariantStyles } from '@imprint-pdf/core';
 import { resolveStylesWithVariants, shortHash } from '@imprint-pdf/core';
-import React, { createContext, type ReactElement } from 'react';
+import React, { type ReactElement } from 'react';
 import type ReactReconcilerType from 'react-reconciler';
+
+// `createContext` is referenced only in the R19 branch below. Accessing it
+// through `React.createContext` instead of a bare named import keeps Next.js
+// RSC compilation from flagging this module as a Client Component (it
+// pattern-matches bare `createContext` imports at the top of the module).
+const createContext = React.createContext;
 
 // `@imprint-pdf/react` ships both `react-reconciler@^0.29` (R18) and `^0.33`
 // (R19) under aliased package names — `react-reconciler-18` / `-19` — and
