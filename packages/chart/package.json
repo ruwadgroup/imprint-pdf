@@ -1,5 +1,6 @@
 {
   "name": "@imprint-pdf/chart",
+  "private": true,
   "version": "1.0.0-alpha.3",
   "description": "Chart adapters for imprint-pdf — render Recharts / Visx / Observable Plot / ECharts SVG output into a PDF.",
   "license": "Apache-2.0",

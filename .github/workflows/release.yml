@@ -1,11 +1,11 @@
 name: Release
 
-# Two-stage flow:
-#   1. Push to main → action reads `.changeset/*.md` and opens (or updates)
-#      a "Version Packages" PR. Nothing is published yet.
-#   2. You merge that PR → no remaining changesets, action runs
-#      `changeset publish` to push tags + npm releases + GitHub Releases.
-# `workflow_dispatch` is kept so you can re-trigger from the UI if needed.
+# Push to main:
+#   - Any `.changeset/*.md` present  → opens/updates a "Version Packages" PR.
+#   - No changesets, versions ahead of npm → runs `pnpm release` →
+#     `changeset publish` → npm + GitHub Releases.
+# Publishing auth uses npm Trusted Publishing (OIDC), not a long-lived token.
+# `workflow_dispatch` lets you re-trigger from the UI when needed.
 on:
   push:
     branches: [main]
@@ -49,15 +49,12 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # `setup-node` writes a userconfig at $RUNNER_TEMP/.npmrc and sets
-      # NPM_CONFIG_USERCONFIG to point at it. `npm config set --location=user`
-      # writes to that same file (rather than $HOME/.npmrc, which npm ignores
-      # when NPM_CONFIG_USERCONFIG is set).
-      - name: Configure npm auth
-        run: npm config set //registry.npmjs.org/:_authToken="${NPM_TOKEN}" --location=user
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
+      # No `NPM_TOKEN` step on purpose. Each `@imprint-pdf/*` package is
+      # configured for npm's "Trusted Publishing": npm trusts this workflow's
+      # GitHub Actions OIDC token to publish, no long-lived secret needed.
+      # `setup-node` above writes a registry-pointed `.npmrc`, the
+      # `id-token: write` permission on this job grants the OIDC token, and
+      # `NPM_CONFIG_PROVENANCE: true` makes the npm CLI fetch & use it.
       - name: Create Release Pull Request or Publish
         uses: changesets/action@v1
         with:
@@ -67,6 +64,4 @@ jobs:
           createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
