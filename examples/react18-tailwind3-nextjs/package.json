@@ -1,6 +1,6 @@
 {
   "name": "@imprint-pdf/example-react18-tailwind3-nextjs",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "description": "imprint-pdf smoke example — Next.js 14 on React 18 with Tailwind v3, exercising the R18 reconciler path and the v3 PostCSS dispatch.",
   "scripts": {

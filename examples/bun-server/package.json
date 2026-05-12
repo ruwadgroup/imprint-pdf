@@ -1,6 +1,6 @@
 {
   "name": "@imprint-pdf/example-bun-server",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "description": "imprint-pdf example — Bun HTTP server that generates PDFs using Bun's native WASM support.",
   "scripts": {

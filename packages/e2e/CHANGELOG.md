@@ -1,6 +1,6 @@
-# Changelog
+# @imprint-pdf/e2e
 
-## 1.0.0
+## 0.0.1
 
 ### Patch Changes
 
@@ -11,7 +11,5 @@
   [`463661d`](https://github.com/tamimbinhakim/imprint-pdf/commit/463661d5ed6788ebfa6fe82066c6c22c79a6c584)]:
   - @imprint-pdf/core@1.0.0
   - @imprint-pdf/react@1.0.0
-
-All notable changes are documented here. See
-[Conventional Commits](https://www.conventionalcommits.org) and
-[Changesets](../../.changeset) for the release workflow.
+  - @imprint-pdf/tailwind@1.0.0
+  - @imprint-pdf/font@1.0.0

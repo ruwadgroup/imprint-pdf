@@ -1,6 +1,6 @@
 {
   "name": "@imprint-pdf/e2e",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "type": "module",
   "description": "End-to-end test suite — renders real PDFs through @imprint-pdf/react and asserts on the output (text positions, geometry, visual snapshots).",

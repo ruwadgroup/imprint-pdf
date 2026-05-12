@@ -1,6 +1,6 @@
 {
   "name": "@imprint-pdf/example-cloudflare-worker",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "description": "imprint-pdf example — Cloudflare Worker that generates PDFs in < 100 ms using the standalone WASM build.",
   "scripts": {

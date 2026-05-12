@@ -1,6 +1,6 @@
 {
   "name": "@imprint-pdf/font",
-  "version": "1.0.0-alpha",
+  "version": "1.0.0",
   "description": "Font loaders for imprint-pdf — Google Fonts, Bunny Fonts, Fontsource, and local files. Returns FontDeclaration[] for renderToBuffer.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
@@ -11,7 +11,14 @@
   },
   "homepage": "https://github.com/tamimbinhakim/imprint-pdf/tree/main/packages/font#readme",
   "bugs": "https://github.com/tamimbinhakim/imprint-pdf/issues",
-  "keywords": ["pdf", "fonts", "google-fonts", "bunny-fonts", "fontsource", "imprint"],
+  "keywords": [
+    "pdf",
+    "fonts",
+    "google-fonts",
+    "bunny-fonts",
+    "fontsource",
+    "imprint"
+  ],
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -41,7 +48,12 @@
     },
     "./package.json": "./package.json"
   },
-  "files": ["dist", "data", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "data",
+    "README.md",
+    "LICENSE"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",

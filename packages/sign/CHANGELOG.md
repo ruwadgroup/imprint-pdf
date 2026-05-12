@@ -1,3 +1,17 @@
 # Changelog
 
-All notable changes are documented here. See [Conventional Commits](https://www.conventionalcommits.org) and [Changesets](../../.changeset) for the release workflow.
+## 1.0.0
+
+### Patch Changes
+
+- Updated dependencies
+  [[`463661d`](https://github.com/tamimbinhakim/imprint-pdf/commit/463661d5ed6788ebfa6fe82066c6c22c79a6c584),
+  [`52570c9`](https://github.com/tamimbinhakim/imprint-pdf/commit/52570c9d8b08ae68e1cb9d81a2fe7cebe3e37a5f),
+  [`463661d`](https://github.com/tamimbinhakim/imprint-pdf/commit/463661d5ed6788ebfa6fe82066c6c22c79a6c584),
+  [`463661d`](https://github.com/tamimbinhakim/imprint-pdf/commit/463661d5ed6788ebfa6fe82066c6c22c79a6c584)]:
+  - @imprint-pdf/core@1.0.0
+  - @imprint-pdf/react@1.0.0
+
+All notable changes are documented here. See
+[Conventional Commits](https://www.conventionalcommits.org) and
+[Changesets](../../.changeset) for the release workflow.
