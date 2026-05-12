@@ -5,42 +5,38 @@ imprint-pdf works natively with Bun's WASM support and `Bun.serve`.
 ## Install
 
 ```bash
-bun add @imprint-pdf/react @imprint-pdf/core
-bun add -d @imprint-pdf/tailwind tailwindcss
+bun add @imprint-pdf/react @imprint-pdf/core react tailwindcss
 ```
+
+The Tailwind compiler is bundled inside `@imprint-pdf/react`.
 
 ## HTTP server
 
 ```ts
 // src/index.ts
-import { renderToBuffer } from '@imprint-pdf/react';
+import { pdf } from '@imprint-pdf/react';
 import { Invoice } from './templates/Invoice';
 
 Bun.serve({
   port: 3000,
   async fetch(req) {
     const url = new URL(req.url);
-    const id = url.searchParams.get('id') ?? 'demo';
-
     if (url.pathname === '/invoice') {
-      const pdf = await renderToBuffer(
-        <Invoice data={{ id, customer: 'Acme Corp', total: 4200 }} />
+      const id = url.searchParams.get('id') ?? 'demo';
+      return pdf(
+        <Invoice data={{ id, customer: 'Acme Corp', total: 4200 }} />,
+        { filename: `invoice-${id}.pdf`, disposition: 'attachment' },
       );
-
-      return new Response(pdf, {
-        headers: {
-          'content-type': 'application/pdf',
-          'content-disposition': `attachment; filename="invoice-${id}.pdf"`,
-        },
-      });
     }
-
     return new Response('Not found', { status: 404 });
   },
 });
 
 console.log('Imprint server running at http://localhost:3000');
 ```
+
+`pdf()` returns a `Response` directly — `Bun.serve`'s `fetch` handler accepts it
+without further wrapping.
 
 ```bash
 bun run --watch src/index.ts
@@ -58,12 +54,13 @@ Bun's multi-threading via `Worker` makes batch generation practical:
 
 ```ts
 // worker.ts
-import { renderToBuffer } from '@imprint-pdf/react';
+import { pdf } from '@imprint-pdf/react';
 import { Invoice } from './templates/Invoice';
 
 self.onmessage = async ({ data }) => {
-  const pdf = await renderToBuffer(<Invoice data={data} />);
-  self.postMessage(pdf, [pdf.buffer]);
+  // Workers want a transferable — `as: 'bytes'` returns a Uint8Array directly.
+  const bytes = await pdf(<Invoice data={data} />, { as: 'bytes' });
+  self.postMessage(bytes, [bytes.buffer]);
 };
 ```
 

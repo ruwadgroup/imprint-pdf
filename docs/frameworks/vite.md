@@ -5,9 +5,13 @@ Vite + React SPA and SSR support via the `@imprint-pdf/vite` plugin.
 ## Install
 
 ```bash
-pnpm add @imprint-pdf/react @imprint-pdf/core
-pnpm add -D @imprint-pdf/vite @imprint-pdf/tailwind tailwindcss vite
+pnpm add @imprint-pdf/react @imprint-pdf/core react tailwindcss
+pnpm add -D @imprint-pdf/vite vite
 ```
+
+The Tailwind compiler and class extractor are bundled inside
+`@imprint-pdf/react` and `@imprint-pdf/vite` — no separate
+`@imprint-pdf/tailwind` install.
 
 ## Setup
 
@@ -32,15 +36,17 @@ export default defineConfig({
 
 ```tsx
 // src/App.tsx
-import { renderToBuffer } from '@imprint-pdf/react';
+import { pdf } from '@imprint-pdf/react';
 import { Invoice } from './templates/Invoice';
 
 async function downloadPdf() {
-  const pdf = await renderToBuffer(
+  const response = await pdf(
     <Invoice data={{ id: 'INV-001', customer: 'Acme Corp', total: 4200 }} />,
+    { filename: 'invoice.pdf', disposition: 'attachment' },
   );
-
-  const url = URL.createObjectURL(new Blob([pdf], { type: 'application/pdf' }));
+  // `pdf()` returns a Response — perfect for `fetch`-style code, or drop the
+  // bytes into a Blob for a one-shot download trigger.
+  const url = URL.createObjectURL(await response.blob());
   const a = document.createElement('a');
   a.href = url;
   a.download = 'invoice.pdf';
@@ -69,9 +75,9 @@ template, the preview reloads without a full rebuild.
 
 ## SSR (Vike, Astro)
 
-For SSR frameworks built on Vite, `renderToBuffer` runs on the server path
-normally — no special config needed. Add `@imprint-pdf/vite` to the Vite plugin
-list and use `renderToBuffer` in your server route.
+For SSR frameworks built on Vite, `pdf()` runs on the server path normally — no
+special config needed. Add `@imprint-pdf/vite` to the Vite plugin list and call
+`pdf(<Doc/>)` in your server route to get back a `Response`.
 
 ## Virtual font module
 

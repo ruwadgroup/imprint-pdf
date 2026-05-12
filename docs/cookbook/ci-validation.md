@@ -64,7 +64,7 @@ jobs:
 
 ```ts
 // scripts/render-test-pdfs.ts
-import { renderToBuffer } from '@imprint-pdf/react';
+import { pdf } from '@imprint-pdf/react';
 import '@imprint-pdf/ua';
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { Invoice } from '../src/templates/Invoice';
@@ -74,12 +74,12 @@ mkdirSync('./dist', { recursive: true });
 
 writeFileSync(
   './dist/test-invoice.pdf',
-  await renderToBuffer(<Invoice data={testInvoice} />)
+  await pdf(<Invoice data={testInvoice} />, { as: 'bytes' }),
 );
 
 writeFileSync(
   './dist/test-report.pdf',
-  await renderToBuffer(<Report data={testReport} />)
+  await pdf(<Report data={testReport} />, { as: 'bytes' }),
 );
 ```
 

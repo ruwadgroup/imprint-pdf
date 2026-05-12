@@ -11,26 +11,24 @@ is bundled with the Worker.
 
 ```ts
 // src/index.ts
-import { renderToStream } from '@imprint-pdf/react/standalone';
+import { pdf } from '@imprint-pdf/react/standalone';
 import wasm from '@imprint-pdf/react/imprint.wasm';
 import React from 'react';
 import { Invoice } from './templates/Invoice';
 
 export default {
-  async fetch(req: Request): Promise<Response> {
+  fetch(req: Request): Promise<Response> {
     const url = new URL(req.url);
     const id = url.searchParams.get('id') ?? 'demo';
 
-    const stream = await renderToStream(
+    // `pdf()` returns a Response directly. Pass `wasm` so the standalone
+    // build skips re-instantiating the WASM module on each request.
+    return pdf(
       React.createElement(Invoice, {
         data: { id, customer: 'Acme Corp', total: 4200 },
       }),
-      { wasm },
+      { wasm, filename: `invoice-${id}.pdf` },
     );
-
-    return new Response(stream, {
-      headers: { 'content-type': 'application/pdf' },
-    });
   },
 };
 ```

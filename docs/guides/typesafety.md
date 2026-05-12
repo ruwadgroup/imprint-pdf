@@ -35,12 +35,16 @@ export default defineConfig({
 ## Render function types
 
 ```ts
-// renderToBuffer accepts a React element typed to Imprint's JSX namespace
-const pdf = await renderToBuffer(<Invoice data={data} />);
+import { pdf } from '@imprint-pdf/react';
+
+// Overloads narrow the return type by the literal value of `as`.
+const response = await pdf(<Invoice data={data} />);
+//    ^ Response
+
+const bytes = await pdf(<Invoice data={data} />, { as: 'bytes' });
 //    ^ Uint8Array
 
-// renderToStream returns ReadableStream<Uint8Array>
-const stream = await renderToStream(<Invoice data={data} />, { wasm });
+const stream = await pdf(<Invoice data={data} />, { as: 'stream' });
 //    ^ ReadableStream<Uint8Array>
 ```
 

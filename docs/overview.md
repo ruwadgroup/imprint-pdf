@@ -37,7 +37,7 @@ React JSX (your component)
    ▼  Custom reconciler (react-reconciler)
 PdfNode IR tree
    │
-   ▼  @imprint-pdf/tailwind (Oxide v4 compiler)
+   ▼  Tailwind Oxide v4 compiler (or v3 PostCSS)
 Resolved style map (Lightning CSS AST)
    │
    ▼  Layout engine (Taffy WASM — Block + Flexbox + CSS Grid)

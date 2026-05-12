@@ -6,8 +6,8 @@ Typed exports per package.
 
 ### Runtime
 
-- `createAssetResolver(options)` → `AssetResolver`  
-  Build a resolver from `fetch` / `fs` / custom handlers.
+- `createAssetResolver(options)` → `AssetResolver` Build a resolver from `fetch`
+  / `fs` / custom handlers.
 
 ### Config
 
@@ -31,7 +31,36 @@ Typed exports per package.
 
 ## `@imprint-pdf/react`
 
-### Render functions
+### `pdf()` — the unified entry point
+
+```ts
+pdf(element: ReactElement, options?: PdfOptions & { as?: 'response' }): Promise<Response>
+pdf(element: ReactElement, options: PdfOptions & { as: 'bytes' }): Promise<Uint8Array>
+pdf(element: ReactElement, options: PdfOptions & { as: 'stream' }): Promise<ReadableStream<Uint8Array>>
+```
+
+`PdfOptions` extends `RenderOptions` with:
+
+- `as?: 'response' | 'bytes' | 'stream'` — output shape (default `'response'`).
+- `filename?: string` — `Content-Disposition` filename (response only, default
+  `'document.pdf'`).
+- `disposition?: 'inline' | 'attachment'` — default `'inline'`.
+
+Auto-loads `imprint.config.ts` from the project root and merges caller options
+on top. Overloads narrow the return type by the literal value of `as`.
+
+```ts
+// Most common — Next.js route handler returning a Response:
+export const GET = () => pdf(<Invoice />);
+
+// Power-user escape hatches:
+const bytes = await pdf(<Doc />, { as: 'bytes' });
+const stream = await pdf(<Doc />, { as: 'stream' });
+```
+
+### Lower-level primitives
+
+For consumers that want to skip the auto-config-load and Response wrapping:
 
 ```ts
 renderToBuffer(element: ReactElement, options?: RenderOptions): Promise<Uint8Array>
@@ -44,48 +73,33 @@ renderToStream(element: ReactElement, options?: RenderOptions): Promise<Readable
 `PageNumber`, `TotalPages`, `Form`, `TextField`, `Checkbox`, `RadioGroup`,
 `Dropdown`, `Signature`, `Button`, `Chart`.
 
-### `@imprint-pdf/react/server`
-
-```ts
-renderToServer(element: ReactElement, options?: RenderOptions): Promise<Uint8Array>
-renderToStream(element: ReactElement, options?: RenderOptions): Promise<ReadableStream<Uint8Array>>
-```
-
-`renderToServer` is an alias for `renderToBuffer` re-exported under a name that
-reads better in server code paths.
-
 ### `@imprint-pdf/react/standalone`
 
 Self-contained build for v8-isolate runtimes (Cloudflare Workers, Vercel Edge,
-Bun). Both functions accept an optional pre-compiled `WebAssembly.Module` so
+Bun). Same `pdf()`, `renderToBuffer`, `renderToStream` surface as the main
+entry; additionally accepts an optional pre-compiled `WebAssembly.Module` so
 hosts can avoid re-instantiating per request.
 
 ```ts
-renderToBuffer(
-  element: ReactElement,
-  options?: RenderOptions & { wasm?: WebAssembly.Module }
-): Promise<Uint8Array>
-
-renderToStream(
-  element: ReactElement,
-  options?: RenderOptions & { wasm?: WebAssembly.Module }
-): Promise<ReadableStream<Uint8Array>>
+pdf(element, options?: PdfOptions & { wasm?: WebAssembly.Module }): Promise<Response | Uint8Array | ReadableStream<Uint8Array>>
 ```
 
 ## `@imprint-pdf/next`
 
 ```ts
-renderToServer(element: ReactElement, options?: RenderOptions): Promise<Uint8Array>
-renderToEdge(element: ReactElement, options?: RenderOptions & { wasm?: WebAssembly.Module }): Promise<ReadableStream<Uint8Array>>
-createPdfResponse(
-  element: ReactElement,
-  options?: RenderOptions & {
-    filename?: string;             // default: 'document.pdf'
-    disposition?: 'inline' | 'attachment'; // default: 'inline'
-  }
-): Promise<Response>
-getImprintConfig(): Promise<ImprintConfig>
+pdf(element: ReactElement, options?: PdfOptions): Promise<Response | Uint8Array | ReadableStream<Uint8Array>>
 ```
+
+Same overloads as `@imprint-pdf/react`'s `pdf()`. Auto-detects edge vs Node via
+`NEXT_RUNTIME === 'edge'` / `globalThis.EdgeRuntime` and dispatches to the
+matching `@imprint-pdf/react` build.
+
+The following are deprecated aliases that delegate to `pdf()` — they emit a
+`@deprecated` JSDoc tag and will be removed in the next major:
+
+- `renderToServer` → `pdf(el, { as: 'bytes' })`
+- `renderToEdge` → `pdf(el, { as: 'stream' })`
+- `createPdfResponse` → `pdf(el, { filename, disposition })`
 
 ### `@imprint-pdf/next/plugin`
 
@@ -93,19 +107,14 @@ getImprintConfig(): Promise<ImprintConfig>
 withImprint(options?: ImprintPluginOptions): (nextConfig: NextConfig) => NextConfig
 ```
 
-## `@imprint-pdf/tailwind`
-
-### `@imprint-pdf/tailwind/vite`
+## `@imprint-pdf/vite`
 
 ```ts
-imprintTailwind(options?: ImprintTailwindOptions): Plugin
+imprint(options?: ImprintViteOptions): Plugin[]
 ```
 
-### `@imprint-pdf/tailwind/webpack`
-
-```ts
-withImprintTailwind(options?: ImprintTailwindOptions): (config: WebpackConfig) => WebpackConfig
-```
+Composite plugin — bundles the Tailwind class extractor, virtual font modules,
+and `.pdf.tsx` HMR. Drop it into your `vite.config.ts`'s `plugins:` array.
 
 ## `@imprint-pdf/print`
 
@@ -114,9 +123,8 @@ withImprintTailwind(options?: ImprintTailwindOptions): (config: WebpackConfig) =
 import '@imprint-pdf/print';
 ```
 
-New `<Document>` props: `intent`, `outputIntent`.  
-New `<Page>` props: `bleed`, `marks`.  
-New Tailwind variants: `imprint:cmyk-[…]`, `imprint:spot-[…]`,
+New `<Document>` props: `intent`, `outputIntent`. New `<Page>` props: `bleed`,
+`marks`. New Tailwind variants: `imprint:cmyk-[…]`, `imprint:spot-[…]`,
 `imprint:overprint`.
 
 ## `@imprint-pdf/sign`

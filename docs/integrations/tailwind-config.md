@@ -11,8 +11,8 @@ the v4 setup — for v3, jump to [Tailwind v3](#tailwind-v3).
 
 ### Dispatch precedence
 
-When you call `renderToBuffer` (or any other render entry point), imprint-pdf
-picks a compiler in this order:
+When you call `pdf()` (or the lower-level `renderToBuffer` / `renderToStream`),
+imprint-pdf picks a compiler in this order:
 
 1. Explicit `tailwind.config` in `imprint.config.ts` → **v3** (loads the JS
    config you point at).
@@ -33,7 +33,7 @@ identically in both outputs.
 ```css
 /* src/app.css (shared) */
 @import 'tailwindcss';
-@import '@imprint-pdf/tailwind/preset';
+@import '@imprint-pdf/react/preset';
 
 @theme {
   --font-sans: 'Inter', sans-serif;

@@ -6,9 +6,11 @@ Runtime, and the `withImprint` plugin.
 ## Install
 
 ```bash
-pnpm add @imprint-pdf/next @imprint-pdf/react @imprint-pdf/core
-pnpm add -D @imprint-pdf/tailwind tailwindcss
+pnpm add @imprint-pdf/next @imprint-pdf/react @imprint-pdf/core tailwindcss
 ```
+
+The Tailwind compiler and class extractor are bundled inside `@imprint-pdf/next`
+and `@imprint-pdf/react` — no separate `@imprint-pdf/tailwind` install.
 
 ## Plugin
 
@@ -23,7 +25,8 @@ export default withImprint()({
 
 `withImprint()` does three things:
 
-1. Wires `@imprint-pdf/tailwind/webpack` for compile-time class extraction.
+1. Registers the bundled `ImprintWebpackPlugin` for compile-time class
+   extraction (webpack only — Turbopack falls back to runtime compile).
 2. Enables the `asyncWebAssembly` and `layers` webpack experiments and adds a
    `webassembly/async` rule for `.wasm` files (required by the renderer).
 3. Adds `@imprint-pdf/react` and `@imprint-pdf/core` to `serverExternalPackages`

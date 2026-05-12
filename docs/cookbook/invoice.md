@@ -162,22 +162,28 @@ export function Invoice({ invoice }: InvoiceProps) {
 ## Usage
 
 ```ts
-import { renderToBuffer } from '@imprint-pdf/react';
-import { Invoice } from './templates/Invoice';
+// app/api/invoice/route.ts — Next.js
+import { pdf } from '@imprint-pdf/next';
+import { Invoice } from '@/templates/Invoice';
 
-const pdf = await renderToBuffer(
-  <Invoice invoice={{
-    id: 'INV-001',
-    date: '2026-01-15',
-    dueDate: '2026-02-15',
-    from: { name: 'Acme Corp', address: ['123 Main St', 'San Francisco, CA 94102'] },
-    to: { name: 'Globex Corp', address: ['456 Oak Ave', 'Austin, TX 78701'] },
-    items: [
-      { description: 'Design system audit', qty: 1, unit: 4200 },
-      { description: 'Component library', qty: 40, unit: 175 },
-    ],
-    taxRate: 0.08,
-    notes: 'Payment due within 30 days. Thank you for your business.',
-  }} />
-);
+export const GET = () =>
+  pdf(
+    <Invoice invoice={{
+      id: 'INV-001',
+      date: '2026-01-15',
+      dueDate: '2026-02-15',
+      from: { name: 'Acme Corp', address: ['123 Main St', 'San Francisco, CA 94102'] },
+      to: { name: 'Globex Corp', address: ['456 Oak Ave', 'Austin, TX 78701'] },
+      items: [
+        { description: 'Design system audit', qty: 1, unit: 4200 },
+        { description: 'Component library', qty: 40, unit: 175 },
+      ],
+      taxRate: 0.08,
+      notes: 'Payment due within 30 days. Thank you for your business.',
+    }} />,
+    { filename: 'invoice-INV-001.pdf' },
+  );
 ```
+
+Outside Next.js, `pdf()` from `@imprint-pdf/react` works the same — pass
+`{ as: 'bytes' }` if you need a `Uint8Array` for writing to disk.

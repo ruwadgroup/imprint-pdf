@@ -52,16 +52,18 @@ support — see the [Bun guide](frameworks/bun.md).
 
 ```bash
 # Tailwind v4 (recommended)
-pnpm add -D @imprint-pdf/tailwind tailwindcss@^4
+pnpm add tailwindcss@^4
 
 # Tailwind v3 (also supported)
-pnpm add -D @imprint-pdf/tailwind tailwindcss@^3 postcss
+pnpm add tailwindcss@^3 postcss
 ```
 
-imprint-pdf auto-detects whether you're on v3 or v4 by reading
-`tailwindcss/package.json` from your project. v3 configs (`tailwind.config.ts`)
-run through the classic PostCSS plugin; v4 configs (CSS-first via `@theme`) run
-through the new `tw.compile()` API. See
+The Tailwind compiler and class extractor are bundled into `@imprint-pdf/react`,
+`@imprint-pdf/next`, and `@imprint-pdf/vite` — no separate
+`@imprint-pdf/tailwind` install. imprint-pdf auto-detects whether you're on v3
+or v4 by reading `tailwindcss/package.json` from your project. v3 configs
+(`tailwind.config.ts`) run through the classic PostCSS plugin; v4 configs
+(CSS-first via `@theme`) run through the new `tw.compile()` API. See
 [Tailwind config](integrations/tailwind-config.md) for the precedence rules.
 
 ## Optional add-on packages

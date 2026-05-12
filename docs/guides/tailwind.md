@@ -27,7 +27,7 @@ Your `app.css` is the standard Tailwind v4 CSS-first stylesheet:
 ```css
 /* src/app.css */
 @import 'tailwindcss';
-@import '@imprint-pdf/tailwind/preset';
+@import '@imprint-pdf/react/preset';
 
 @theme {
   --font-sans: 'Inter', sans-serif;
@@ -62,8 +62,8 @@ export default withImprint()({
 
 ## Imprint-specific variants
 
-These are added via the imprint-pdf Tailwind plugin (auto-loaded by
-`@imprint-pdf/tailwind`):
+These are registered by the imprint-pdf preset (auto-loaded when you
+`@import '@imprint-pdf/react/preset'` in your Tailwind stylesheet):
 
 | Variant                        | Description                                             |
 | ------------------------------ | ------------------------------------------------------- |
@@ -78,7 +78,8 @@ These are added via the imprint-pdf Tailwind plugin (auto-loaded by
 ## What gets dropped
 
 CSS properties with no PDF analogue are silently dropped. Pass
-`{ strict: true }` to `renderToBuffer` to get warnings instead.
+`{ strict: true }` to `pdf()` (or the lower-level `renderToBuffer`) to get
+warnings instead.
 
 | Dropped category           | Examples                                                                 |
 | -------------------------- | ------------------------------------------------------------------------ |
@@ -115,7 +116,7 @@ imprint-pdf at the same stylesheet:
 ```css
 /* src/app.css (shared) */
 @import 'tailwindcss';
-@import '@imprint-pdf/tailwind/preset';
+@import '@imprint-pdf/react/preset';
 
 @theme {
   --font-sans: 'Inter', sans-serif;

@@ -52,10 +52,11 @@ await browser.close();
 ### After (imprint-pdf)
 
 ```ts
-import { renderToBuffer } from '@imprint-pdf/react';
+import { pdf } from '@imprint-pdf/react';
 import { Invoice } from './templates/Invoice';
 
-const pdf = await renderToBuffer(<Invoice data={invoiceData} />);
+const bytes = await pdf(<Invoice data={invoiceData} />, { as: 'bytes' });
+// or `const response = await pdf(<Invoice .../>);` for a fetch-style Response.
 ```
 
 ## Performance comparison

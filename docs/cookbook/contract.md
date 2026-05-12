@@ -120,11 +120,12 @@ export function Contract({ contract }: ContractProps) {
 ## Applying a digital signature
 
 ```ts
-import { renderToBuffer } from '@imprint-pdf/react';
+import { pdf } from '@imprint-pdf/react';
 import { signBuffer } from '@imprint-pdf/sign';
 import { Contract } from './templates/Contract';
 
-const unsigned = await renderToBuffer(<Contract contract={data} />);
+// `signBuffer` wants raw bytes — request the 'bytes' shape.
+const unsigned = await pdf(<Contract contract={data} />, { as: 'bytes' });
 
 const signed = await signBuffer(unsigned, {
   certificate: fs.readFileSync('./certs/company.pem', 'utf8'),

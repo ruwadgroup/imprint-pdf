@@ -160,4 +160,4 @@ document fonts — set `font-sans` or `font-serif` on the nearest parent.
 ## Flattening forms
 
 To render a filled-in form as a non-interactive PDF (flatten the fields into the
-page content), pass `{ flattenForms: true }` to `renderToBuffer`.
+page content), pass `{ flattenForms: true }` to `pdf()`.

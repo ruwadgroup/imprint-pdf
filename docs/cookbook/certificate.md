@@ -98,7 +98,9 @@ export function Certificate({ cert }: CertificateProps) {
 ## Usage
 
 ```ts
-const pdf = await renderToBuffer(
+import { pdf } from '@imprint-pdf/react';
+
+const response = await pdf(
   <Certificate cert={{
     recipientName: 'Ada Lovelace',
     courseName: 'Advanced TypeScript Engineering',
@@ -106,7 +108,8 @@ const pdf = await renderToBuffer(
     issuedBy: 'Acme Academy',
     instructorName: 'Dr. Alan Turing',
     credentialId: 'CERT-2026-AAT-00142',
-  }} />
+  }} />,
+  { filename: 'certificate.pdf' },
 );
 ```
 

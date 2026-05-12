@@ -55,10 +55,13 @@
         "default": "./dist/server.cjs"
       }
     },
+    "./preset.css": "./preset.css",
+    "./preset": "./preset.css",
     "./package.json": "./package.json"
   },
   "files": [
     "dist",
+    "preset.css",
     "README.md",
     "CHANGELOG.md",
     "LICENSE"

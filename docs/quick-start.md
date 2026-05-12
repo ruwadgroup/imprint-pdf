@@ -5,8 +5,8 @@ Five minutes from empty project to a real PDF.
 ## 1. Install
 
 ```bash
-pnpm add @imprint-pdf/react @imprint-pdf/core
-pnpm add -D @imprint-pdf/cli @imprint-pdf/tailwind tailwindcss
+pnpm add @imprint-pdf/react @imprint-pdf/core tailwindcss
+pnpm add -D @imprint-pdf/cli
 ```
 
 ## 2. Initialise
@@ -28,7 +28,7 @@ conventional locations — no extra wiring required:
 ```css
 /* src/app.css */
 @import 'tailwindcss';
-@import '@imprint-pdf/tailwind/preset';
+@import '@imprint-pdf/react/preset';
 
 @theme {
   --font-sans: 'Inter', sans-serif;

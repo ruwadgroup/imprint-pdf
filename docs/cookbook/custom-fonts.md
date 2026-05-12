@@ -91,8 +91,10 @@ Fonts fetched by URL are cached in the `AssetResolver`. In production, wrap the
 resolver to cache aggressively:
 
 ```ts
+import { pdf } from '@imprint-pdf/react';
+
 const cachedFetch = memoize(fetch);
-renderToBuffer(<Doc />, {
+pdf(<Doc />, {
   assetResolver: {
     fetch: (url, init) => cachedFetch(url, init),
   },
@@ -130,5 +132,6 @@ KB for a document with 500 Chinese characters.
 To disable subsetting (for debugging):
 
 ```ts
-renderToBuffer(<Doc />, { typography: { subset: false } });
+import { pdf } from '@imprint-pdf/react';
+pdf(<Doc />, { typography: { subset: false } });
 ```

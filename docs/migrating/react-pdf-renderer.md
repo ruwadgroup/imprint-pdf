@@ -19,8 +19,7 @@ deliberate improvements.
 
 ```bash
 pnpm remove @react-pdf/renderer react-pdf-tailwind
-pnpm add @imprint-pdf/react @imprint-pdf/core
-pnpm add -D @imprint-pdf/tailwind tailwindcss
+pnpm add @imprint-pdf/react @imprint-pdf/core tailwindcss
 ```
 
 ## Component renames
@@ -95,11 +94,15 @@ const buffer = await ReactPDF.renderToBuffer(<Doc />);
 ### After
 
 ```ts
-import { renderToBuffer, renderToStream } from '@imprint-pdf/react';
+import { pdf } from '@imprint-pdf/react';
 
-const buffer = await renderToBuffer(<Doc />);
-const stream = await renderToStream(<Doc />);
+const response = await pdf(<Doc />);                  // → Response
+const buffer = await pdf(<Doc />, { as: 'bytes' });   // → Uint8Array
+const stream = await pdf(<Doc />, { as: 'stream' }); // → ReadableStream
 ```
+
+(`renderToBuffer` and `renderToStream` from `@imprint-pdf/react` are still
+exported as lower-level primitives if you want to skip the auto-config-load.)
 
 ## Font loading
 

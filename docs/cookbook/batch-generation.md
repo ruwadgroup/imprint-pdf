@@ -4,8 +4,9 @@ Generating hundreds or thousands of PDFs efficiently.
 
 ## Concurrency model
 
-`renderToBuffer` and `renderToStream` are CPU-bound (WASM layout + shaping).
-They do not benefit from Node.js event loop concurrency. For true parallelism:
+`pdf()` (and the lower-level `renderToBuffer` / `renderToStream`) is CPU-bound
+(WASM layout + shaping). It does not benefit from Node.js event loop
+concurrency. For true parallelism:
 
 - **Node.js**: use `worker_threads`.
 - **Bun**: use `Worker`.
@@ -16,11 +17,12 @@ They do not benefit from Node.js event loop concurrency. For true parallelism:
 ```ts
 // src/worker.ts (run in a worker thread)
 import { parentPort, workerData } from 'node:worker_threads';
-import { renderToBuffer } from '@imprint-pdf/react';
+import { pdf } from '@imprint-pdf/react';
 import { Invoice } from './templates/Invoice';
 
-const pdf = await renderToBuffer(<Invoice data={workerData} />);
-parentPort!.postMessage(pdf, [pdf.buffer]);
+// `as: 'bytes'` returns a transferable Uint8Array — no Response wrapping needed.
+const bytes = await pdf(<Invoice data={workerData} />, { as: 'bytes' });
+parentPort!.postMessage(bytes, [bytes.buffer]);
 ```
 
 ```ts
@@ -75,8 +77,8 @@ await Promise.all(
 
 ## Throughput estimates
 
-Measured on a 4-core Node 22 / M2 MacBook with `renderToBuffer` in 4 worker
-threads:
+Measured on a 4-core Node 22 / M2 MacBook with `pdf(..., { as: 'bytes' })` in 4
+worker threads:
 
 | Document type                       | Throughput  |
 | ----------------------------------- | ----------- |

@@ -70,11 +70,11 @@ don't let users opt into worse output by default.
 ## One license, no surprises
 
 Every package is Apache-2.0. The engine (`@imprint-pdf/core`,
-`@imprint-pdf/react`, `@imprint-pdf/tailwind`, `@imprint-pdf/cli`,
-`@imprint-pdf/next`, `@imprint-pdf/vite`, `@imprint-pdf/eslint`) and the
-compliance & print add-ons (`@imprint-pdf/print`, `@imprint-pdf/sign`,
-`@imprint-pdf/ua`) all ship under the same permissive license — no time-bombed
-source, no commercial seat requirement, no friction for production deployment.
+`@imprint-pdf/react`, `@imprint-pdf/cli`, `@imprint-pdf/next`,
+`@imprint-pdf/vite`, `@imprint-pdf/eslint`) and the compliance & print add-ons
+(`@imprint-pdf/print`, `@imprint-pdf/sign`, `@imprint-pdf/ua`) all ship under
+the same permissive license — no time-bombed source, no commercial seat
+requirement, no friction for production deployment.
 
 Why not BSL or open-core gating? It made the Apache-2.0 surface feel partial and
 the BSL surface feel hostile. Regulated industries — print shops, fintech,

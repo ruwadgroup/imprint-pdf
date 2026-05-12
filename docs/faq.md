@@ -7,8 +7,8 @@ values, `@theme` tokens, and custom variants all work. What's dropped are CSS
 properties that have no PDF output: `hover:`, `focus:`, `transition-*`,
 `animation-*`, `position: sticky`, `position: fixed`, `overflow: auto`.
 
-Pass `{ strict: true }` to `renderToBuffer` to get warnings for dropped
-properties instead of silent drops.
+Pass `{ strict: true }` to `pdf()` to get warnings for dropped properties
+instead of silent drops.
 
 ## What's the difference between `@imprint-pdf/react` and `@react-pdf/renderer`?
 
@@ -100,6 +100,7 @@ embedded attachments — used for factur-X and ZUGFeRD e-invoicing.
 
 ## How does streaming work?
 
-`renderToStream` returns a `ReadableStream<Uint8Array>` that emits one chunk per
-page. The first byte arrives in <50 ms for most documents. Pipe it directly into
-a `Response` object in Cloudflare Workers or Vercel Edge Functions.
+`pdf(<Doc/>, { as: 'stream' })` returns a `ReadableStream<Uint8Array>` that
+emits one chunk per page. The first byte arrives in <50 ms for most documents.
+Use the default `pdf(<Doc/>)` shape if you want a ready-to-return `Response` in
+Cloudflare Workers or Vercel Edge Functions.
