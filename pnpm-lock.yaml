@@ -568,7 +568,16 @@ importers:
       '@imprint-pdf/react':
         specifier: workspace:*
         version: link:../react
+      postcss:
+        specifier: ^8.4.0
+        version: 8.5.14
+      tailwindcss:
+        specifier: ^3.4.0 || ^4.0.0
+        version: 4.2.4
     devDependencies:
+      '@imprint-pdf/tailwind':
+        specifier: workspace:*
+        version: link:../tailwind
       '@types/node':
         specifier: 'catalog:'
         version: 25.6.0
@@ -627,12 +636,18 @@ importers:
       '@imprint-pdf/core':
         specifier: workspace:*
         version: link:../core
+      postcss:
+        specifier: ^8.4.0
+        version: 8.5.14
       react-reconciler-18:
         specifier: npm:react-reconciler@^0.29.0
         version: react-reconciler@0.29.2(react@19.2.5)
       react-reconciler-19:
         specifier: npm:react-reconciler@^0.33.0
         version: react-reconciler@0.33.0(react@19.2.5)
+      tailwindcss:
+        specifier: ^3.4.0 || ^4.0.0
+        version: 4.2.4
     devDependencies:
       '@imprint-pdf/tailwind':
         specifier: workspace:*
@@ -812,10 +827,16 @@ importers:
       '@imprint-pdf/core':
         specifier: workspace:*
         version: link:../core
+      postcss:
+        specifier: ^8.4.0
+        version: 8.5.14
+      tailwindcss:
+        specifier: ^3.4.0 || ^4.0.0
+        version: 4.2.4
+    devDependencies:
       '@imprint-pdf/tailwind':
         specifier: workspace:*
         version: link:../tailwind
-    devDependencies:
       '@types/node':
         specifier: 'catalog:'
         version: 25.6.0

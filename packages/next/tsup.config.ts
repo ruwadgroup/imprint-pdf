@@ -11,4 +11,5 @@ export default defineConfig({
   clean: true,
   splitting: false,
   treeshake: true,
+  noExternal: ['@imprint-pdf/tailwind'],
 });

@@ -1,5 +1,6 @@
 {
   "name": "@imprint-pdf/tailwind",
+  "private": true,
   "version": "1.0.0-alpha.3",
   "description": "Vite, Webpack, and Bun plugins for compile-time Tailwind v4 extraction, plus the runtime Oxide WASM fallback.",
   "license": "Apache-2.0",
