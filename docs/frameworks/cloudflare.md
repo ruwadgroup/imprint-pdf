@@ -55,7 +55,15 @@ Workers have no filesystem. Two options:
 
 ```ts
 defineConfig({
-  fonts: [{ family: 'Inter', src: 'https://fonts.gstatic.com/…/inter.woff2' }],
+  fonts: [
+    {
+      family: 'Inter',
+      // Bunny Fonts / Fontsource via jsdelivr are stable. Avoid
+      // `fonts.gstatic.com` — Google rotates the version slug periodically,
+      // which silently breaks production renders.
+      src: 'https://fonts.bunny.net/inter/files/inter-latin-400-normal.woff2',
+    },
+  ],
 });
 ```
 

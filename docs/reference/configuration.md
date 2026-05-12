@@ -134,7 +134,7 @@ export default defineConfig({
     },
     {
       family: 'Noto Sans Arabic',
-      src: 'https://fonts.gstatic.com/…/noto-sans-arabic.woff2',
+      src: 'https://fonts.bunny.net/noto-sans-arabic/files/noto-sans-arabic-arabic-400-normal.woff2',
     },
   ],
 

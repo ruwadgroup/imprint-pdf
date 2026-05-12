@@ -1,8 +1,30 @@
+import { createRequire } from 'node:module';
 import type { PdfNode, PdfNodeType, ResolvedStyle, VariantStyles } from '@imprint-pdf/core';
 import { resolveStylesWithVariants, shortHash } from '@imprint-pdf/core';
-import { createContext, type ReactElement } from 'react';
-import ReactReconciler from 'react-reconciler';
-import { DefaultEventPriority, LegacyRoot } from 'react-reconciler/constants.js';
+import React, { createContext, type ReactElement } from 'react';
+import type ReactReconcilerType from 'react-reconciler';
+
+// `@imprint-pdf/react` ships both `react-reconciler@^0.29` (R18) and `^0.33`
+// (R19) under aliased package names — `react-reconciler-18` / `-19` — and
+// picks the matching one at module load. Consumers install neither directly.
+const IS_REACT_18 = parseInt(String(React.version ?? '19').split('.')[0] ?? '19', 10) < 19;
+const reconcilerSpecifier = IS_REACT_18 ? 'react-reconciler-18' : 'react-reconciler-19';
+
+// `createRequire` runs on Node ESM and CJS. Edge runtimes go through
+// `src/standalone.ts`; `react-reconciler` itself needs Node primitives so a
+// direct edge import of this file would fail regardless.
+const nodeRequire = createRequire(import.meta.url);
+const reconcilerModule = nodeRequire(reconcilerSpecifier) as
+  | typeof ReactReconcilerType
+  | { default: typeof ReactReconcilerType };
+const ReactReconciler =
+  (reconcilerModule as { default?: typeof ReactReconcilerType }).default ??
+  (reconcilerModule as typeof ReactReconcilerType);
+
+const { DefaultEventPriority, LegacyRoot } = nodeRequire(`${reconcilerSpecifier}/constants.js`) as {
+  DefaultEventPriority: number;
+  LegacyRoot: number;
+};
 
 export interface Container {
   document: PdfNode | null;
@@ -93,7 +115,235 @@ function makeIdGenerator() {
   };
 }
 
-const hostConfig: ReactReconciler.HostConfig<
+// React 18 and 19 share a large host-config core but diverge: R19 adds 16
+// fields (transition/priority/suspense/form/paint), `commitUpdate` is 4-arg
+// on R19 vs 5-arg on R18, `createContainer` takes 5 args on R18 vs 10 on R19,
+// and `updateContainerSync`/`flushSyncWork` are R19-only. We gate the extras
+// on `IS_REACT_18` and read `newProps` from the last `commitUpdate` arg either
+// way. The final config is cast to `unknown` so the two `@types/react-reconciler`
+// majors don't clash structurally.
+function buildHostConfig(): unknown {
+  const core = {
+    isPrimaryRenderer: true,
+    supportsMutation: true,
+    supportsPersistence: false,
+    supportsHydration: false,
+
+    scheduleTimeout: setTimeout,
+    cancelTimeout: clearTimeout,
+    noTimeout: -1 as const,
+
+    getRootHostContext(_rootContainer: Container): HostContext {
+      return {};
+    },
+    getChildHostContext(
+      _parentContext: HostContext,
+      _type: string,
+      _rootContainer: Container,
+    ): HostContext {
+      return {};
+    },
+
+    shouldSetTextContent(_type: string, _props: Record<string, unknown>): boolean {
+      return false;
+    },
+
+    createInstance(
+      type: string,
+      props: Record<string, unknown>,
+      rootContainer: Container,
+      _hostContext: HostContext,
+    ): PdfNode {
+      const nodeType = mapType(type);
+      const { className, style, children: _children, ...restProps } = props;
+      const resolved = resolveStyle(
+        className as string | undefined,
+        style as Record<string, unknown> | undefined,
+      );
+
+      // The Tailwind two-pass pipeline reads className back off the tree.
+      const nodeProps: Record<string, unknown> = { ...restProps };
+      if (className != null) {
+        nodeProps.className = className;
+      }
+
+      const node: PdfNode = {
+        type: nodeType,
+        id: rootContainer.nextId(),
+        props: nodeProps,
+        style: resolved.style,
+        children: [],
+      } as PdfNode;
+      if (Object.keys(resolved.variants).length > 0) {
+        node.variants = resolved.variants;
+      }
+      return node;
+    },
+
+    createTextInstance(text: string, rootContainer: Container, _hostContext: HostContext): PdfNode {
+      return {
+        type: 'text',
+        id: rootContainer.nextId(),
+        text,
+        props: {},
+        style: {},
+        children: [],
+      } as PdfNode;
+    },
+
+    appendInitialChild(parentInstance: PdfNode, child: PdfNode): void {
+      parentInstance.children.push(child);
+    },
+
+    appendChild(parentInstance: PdfNode, child: PdfNode): void {
+      parentInstance.children.push(child);
+    },
+
+    appendChildToContainer(container: Container, child: PdfNode): void {
+      container.document = child;
+    },
+
+    insertBefore(parentInstance: PdfNode, child: PdfNode, beforeChild: PdfNode): void {
+      const idx = parentInstance.children.indexOf(beforeChild);
+      if (idx === -1) {
+        parentInstance.children.push(child);
+      } else {
+        parentInstance.children.splice(idx, 0, child);
+      }
+    },
+
+    insertInContainerBefore(container: Container, child: PdfNode, _beforeChild: PdfNode): void {
+      container.document = child;
+    },
+
+    removeChild(parentInstance: PdfNode, child: PdfNode): void {
+      const idx = parentInstance.children.indexOf(child);
+      if (idx !== -1) {
+        parentInstance.children.splice(idx, 1);
+      }
+    },
+
+    removeChildFromContainer(container: Container, _child: PdfNode): void {
+      container.document = null;
+    },
+
+    clearContainer(container: Container): void {
+      container.document = null;
+    },
+
+    finalizeInitialChildren(
+      _instance: PdfNode,
+      _type: string,
+      _props: Record<string, unknown>,
+      _rootContainer: Container,
+      _hostContext: HostContext,
+    ): boolean {
+      return false;
+    },
+
+    prepareForCommit(_container: Container): Record<string, unknown> | null {
+      return null;
+    },
+
+    resetAfterCommit(_container: Container): void {},
+
+    commitTextUpdate(textInstance: PdfNode, _oldText: string, newText: string): void {
+      if (textInstance.type === 'text') {
+        textInstance.text = newText;
+      }
+    },
+
+    getPublicInstance(instance: PdfNode): PdfNode {
+      return instance;
+    },
+
+    getInstanceFromNode(_node: unknown): null {
+      return null;
+    },
+
+    beforeActiveInstanceBlur(): void {},
+    afterActiveInstanceBlur(): void {},
+    prepareScopeUpdate(_scopeInstance: unknown, _instance: unknown): void {},
+
+    getInstanceFromScope(_scopeInstance: unknown): PdfNode | null {
+      return null;
+    },
+
+    detachDeletedInstance(_node: PdfNode): void {},
+    preparePortalMount(_container: Container): void {},
+
+    // R18 only — produces the `updatePayload` arg for `commitUpdate`. `true`
+    // is the standard "do a commit" sentinel for non-DOM hosts. Ignored on R19.
+    prepareUpdate(): unknown {
+      return true;
+    },
+  };
+
+  // Read newProps from the last arg — it's there on both R18 (5-arg) and R19 (4-arg).
+  function commitUpdate(...args: unknown[]): void {
+    const instance = args[0] as PdfNode;
+    const newProps = args[args.length - 1] as Record<string, unknown>;
+    const { className, style, children: _children, ...restProps } = newProps;
+    const resolved = resolveStyle(
+      className as string | undefined,
+      style as Record<string, unknown> | undefined,
+    );
+    instance.style = resolved.style;
+    if (Object.keys(resolved.variants).length > 0) instance.variants = resolved.variants;
+    else delete instance.variants;
+    Object.assign(instance.props, restProps);
+    if (className != null) {
+      instance.props.className = className;
+    }
+  }
+
+  if (IS_REACT_18) {
+    return { ...core, commitUpdate };
+  }
+
+  // R19-only fields — inert defaults; R19's reconciler uses them for
+  // transition/suspense/priority bookkeeping the PDF host doesn't care about.
+  const r19Extensions = {
+    commitUpdate,
+    resetFormInstance(_form: never): void {},
+    NotPendingTransition: null,
+    // Wants a ReactContext<never> whose internals React doesn't expose. Never read here.
+    HostTransitionContext: createContext<never>(null as never) as never,
+    resolveUpdatePriority(): number {
+      return DefaultEventPriority;
+    },
+    setCurrentUpdatePriority(_newPriority: number): void {},
+    getCurrentUpdatePriority(): number {
+      return DefaultEventPriority;
+    },
+    requestPostPaintCallback(_callback: (time: number) => void): void {},
+    shouldAttemptEagerTransition(): boolean {
+      return false;
+    },
+    trackSchedulerEvent(): void {},
+    resolveEventType(): string | null {
+      return null;
+    },
+    resolveEventTimeStamp(): number {
+      return -1;
+    },
+    maySuspendCommit(_type: string, _props: Record<string, unknown>): boolean {
+      return false;
+    },
+    preloadInstance(_type: string, _props: Record<string, unknown>): boolean {
+      return true;
+    },
+    startSuspendingCommit(): void {},
+    suspendInstance(_type: string, _props: Record<string, unknown>): void {},
+    waitForCommitToBeReady(): null {
+      return null;
+    },
+  };
+
+  return { ...core, ...r19Extensions };
+}
+
+const hostConfig = buildHostConfig() as ReactReconcilerType.HostConfig<
   string,
   Record<string, unknown>,
   Container,
@@ -108,228 +358,44 @@ const hostConfig: ReactReconciler.HostConfig<
   ReturnType<typeof setTimeout>,
   -1,
   never
-> = {
-  isPrimaryRenderer: true,
-  supportsMutation: true,
-  supportsPersistence: false,
-  supportsHydration: false,
+>;
 
-  scheduleTimeout: setTimeout,
-  cancelTimeout: clearTimeout,
-  noTimeout: -1 as const,
-
-  getRootHostContext(_rootContainer: Container): HostContext {
-    return {};
-  },
-  getChildHostContext(
-    _parentContext: HostContext,
-    _type: string,
-    _rootContainer: Container,
-  ): HostContext {
-    return {};
-  },
-
-  shouldSetTextContent(_type: string, _props: Record<string, unknown>): boolean {
-    return false;
-  },
-
-  createInstance(
-    type: string,
-    props: Record<string, unknown>,
-    rootContainer: Container,
-    _hostContext: HostContext,
-  ): PdfNode {
-    const nodeType = mapType(type);
-    const { className, style, children: _children, ...restProps } = props;
-    const resolved = resolveStyle(
-      className as string | undefined,
-      style as Record<string, unknown> | undefined,
-    );
-
-    // The Tailwind two-pass pipeline reads className back off the tree.
-    const nodeProps: Record<string, unknown> = { ...restProps };
-    if (className != null) {
-      nodeProps.className = className;
-    }
-
-    const node: PdfNode = {
-      type: nodeType,
-      id: rootContainer.nextId(),
-      props: nodeProps,
-      style: resolved.style,
-      children: [],
-    } as PdfNode;
-    if (Object.keys(resolved.variants).length > 0) {
-      node.variants = resolved.variants;
-    }
-    return node;
-  },
-
-  createTextInstance(text: string, rootContainer: Container, _hostContext: HostContext): PdfNode {
-    return {
-      type: 'text',
-      id: rootContainer.nextId(),
-      text,
-      props: {},
-      style: {},
-      children: [],
-    } as PdfNode;
-  },
-
-  appendInitialChild(parentInstance: PdfNode, child: PdfNode): void {
-    parentInstance.children.push(child);
-  },
-
-  appendChild(parentInstance: PdfNode, child: PdfNode): void {
-    parentInstance.children.push(child);
-  },
-
-  appendChildToContainer(container: Container, child: PdfNode): void {
-    container.document = child;
-  },
-
-  insertBefore(parentInstance: PdfNode, child: PdfNode, beforeChild: PdfNode): void {
-    const idx = parentInstance.children.indexOf(beforeChild);
-    if (idx === -1) {
-      parentInstance.children.push(child);
-    } else {
-      parentInstance.children.splice(idx, 0, child);
-    }
-  },
-
-  insertInContainerBefore(container: Container, child: PdfNode, _beforeChild: PdfNode): void {
-    container.document = child;
-  },
-
-  removeChild(parentInstance: PdfNode, child: PdfNode): void {
-    const idx = parentInstance.children.indexOf(child);
-    if (idx !== -1) {
-      parentInstance.children.splice(idx, 1);
-    }
-  },
-
-  removeChildFromContainer(container: Container, _child: PdfNode): void {
-    container.document = null;
-  },
-
-  clearContainer(container: Container): void {
-    container.document = null;
-  },
-
-  finalizeInitialChildren(
-    _instance: PdfNode,
-    _type: string,
-    _props: Record<string, unknown>,
-    _rootContainer: Container,
-    _hostContext: HostContext,
-  ): boolean {
-    return false;
-  },
-
-  prepareForCommit(_container: Container): Record<string, unknown> | null {
-    return null;
-  },
-
-  resetAfterCommit(_container: Container): void {},
-
-  commitUpdate(
-    instance: PdfNode,
-    _type: string,
-    _oldProps: Record<string, unknown>,
-    newProps: Record<string, unknown>,
-  ): void {
-    const { className, style, children: _children, ...restProps } = newProps;
-    const resolved = resolveStyle(
-      className as string | undefined,
-      style as Record<string, unknown> | undefined,
-    );
-    instance.style = resolved.style;
-    if (Object.keys(resolved.variants).length > 0) instance.variants = resolved.variants;
-    else delete instance.variants;
-    Object.assign(instance.props, restProps);
-    if (className != null) {
-      instance.props.className = className;
-    }
-  },
-
-  resetFormInstance(_form: never): void {},
-  commitTextUpdate(textInstance: PdfNode, _oldText: string, newText: string): void {
-    if (textInstance.type === 'text') {
-      textInstance.text = newText;
-    }
-  },
-
-  getPublicInstance(instance: PdfNode): PdfNode {
-    return instance;
-  },
-
-  getInstanceFromNode(_node: unknown): null {
-    return null;
-  },
-
-  beforeActiveInstanceBlur(): void {},
-  afterActiveInstanceBlur(): void {},
-  prepareScopeUpdate(_scopeInstance: unknown, _instance: unknown): void {},
-
-  getInstanceFromScope(_scopeInstance: unknown): PdfNode | null {
-    return null;
-  },
-
-  detachDeletedInstance(_node: PdfNode): void {},
-  preparePortalMount(_container: Container): void {},
-
-  NotPendingTransition: null,
-  // HostConfig wants a ReactContext<never> with internals React doesn't expose;
-  // we never read this in PDF rendering.
-  HostTransitionContext: createContext<never>(null as never) as never,
-
-  resolveUpdatePriority(): number {
-    return DefaultEventPriority;
-  },
-
-  setCurrentUpdatePriority(_newPriority: number): void {},
-
-  getCurrentUpdatePriority(): number {
-    return DefaultEventPriority;
-  },
-
-  requestPostPaintCallback(_callback: (time: number) => void): void {},
-
-  shouldAttemptEagerTransition(): boolean {
-    return false;
-  },
-
-  trackSchedulerEvent(): void {},
-
-  resolveEventType(): string | null {
-    return null;
-  },
-
-  resolveEventTimeStamp(): number {
-    return -1;
-  },
-
-  maySuspendCommit(_type: string, _props: Record<string, unknown>): boolean {
-    return false;
-  },
-
-  preloadInstance(_type: string, _props: Record<string, unknown>): boolean {
-    return true;
-  },
-
-  startSuspendingCommit(): void {},
-
-  suspendInstance(_type: string, _props: Record<string, unknown>): void {},
-
-  waitForCommitToBeReady(): null {
-    return null;
-  },
+const reconciler = ReactReconciler(hostConfig) as unknown as {
+  createContainer: (...args: unknown[]) => unknown;
+  updateContainer: (element: ReactElement | null, root: unknown) => unknown;
+  updateContainerSync?: (element: ReactElement | null, root: unknown) => unknown;
+  flushSyncWork?: () => void;
 };
-
-const reconciler = ReactReconciler(hostConfig);
 
 if (typeof globalThis !== 'undefined' && !('__REACT_DEVTOOLS_GLOBAL_HOOK__' in globalThis)) {
   (globalThis as Record<string, unknown>).__REACT_DEVTOOLS_GLOBAL_HOOK__ = { isDisabled: true };
+}
+
+// R18: 5-arg createContainer. R19: 10-arg with trailing identifier prefix +
+// error callbacks the PDF host never reads. updateContainer on R18 is already
+// synchronous under LegacyRoot, so the Sync variant is R19-only.
+function buildPdfNodeTreeImpl(container: Container, element: ReactElement): void {
+  const root = IS_REACT_18
+    ? reconciler.createContainer(container, LegacyRoot, null, false, null)
+    : reconciler.createContainer(
+        container,
+        LegacyRoot,
+        null,
+        false,
+        null,
+        '',
+        () => {},
+        () => {},
+        () => {},
+        () => {},
+      );
+
+  if (reconciler.updateContainerSync) {
+    reconciler.updateContainerSync(element, root);
+    reconciler.flushSyncWork?.();
+  } else {
+    reconciler.updateContainer(element, root);
+  }
 }
 
 // React splits `<Text>Hello {name}</Text>` into separate text instances; Taffy
@@ -348,24 +414,7 @@ function collapseTextChildren(node: PdfNode): void {
 
 export function buildPdfNodeTree(element: ReactElement): PdfNode {
   const container: Container = { document: null, nextId: makeIdGenerator() };
-
-  const root = reconciler.createContainer(
-    container,
-    LegacyRoot,
-    null,
-    false,
-    null,
-    '',
-    () => {},
-    () => {},
-    () => {},
-    () => {},
-  );
-
-  reconciler.updateContainerSync(element, root, null, null);
-  reconciler.flushSyncWork();
-
-  if (container.document !== null) collapseTextChildren(container.document);
+  buildPdfNodeTreeImpl(container, element);
 
   if (container.document === null) {
     throw new Error(
@@ -374,5 +423,6 @@ export function buildPdfNodeTree(element: ReactElement): PdfNode {
     );
   }
 
+  collapseTextChildren(container.document);
   return container.document;
 }

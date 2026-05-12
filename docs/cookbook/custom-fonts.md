@@ -64,12 +64,27 @@ Usage with `font-variation-settings`:
 
 ## Google Fonts via URL
 
+Prefer stable, versioned URLs. `fonts.gstatic.com` slugs (`v15` → `v22`) rotate
+without notice — when they do, the URL 404s and the font silently disappears
+from the PDF. Stable alternatives:
+
 ```ts
+// Bunny Fonts — drop-in Google Fonts mirror with stable URLs.
 {
   family: 'Playfair Display',
-  src: 'https://fonts.gstatic.com/s/playfairdisplay/v30/nuFiD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKdFvUDQ.woff2',
+  src: 'https://fonts.bunny.net/playfair-display/files/playfair-display-latin-700-normal.woff2',
   weight: 700,
 }
+
+// Fontsource via jsdelivr — version-pinned npm package contents.
+{
+  family: 'Playfair Display',
+  src: 'https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5/files/playfair-display-latin-700-normal.woff2',
+  weight: 700,
+}
+
+// Best for production: self-host. Copy the file into ./public/fonts/.
+{ family: 'Playfair Display', src: './public/fonts/PlayfairDisplay-Bold.woff2', weight: 700 }
 ```
 
 Fonts fetched by URL are cached in the `AssetResolver`. In production, wrap the

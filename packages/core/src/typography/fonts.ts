@@ -117,7 +117,17 @@ async function loadCustomFont(
       rawBytes: bytes,
     };
   } catch (err) {
-    console.warn(`[imprint] Failed to load font "${decl.family}" from ${decl.src}:`, err);
+    const msg = err instanceof Error ? err.message : String(err);
+    const isWoff2RangeError = /Index out of range/i.test(msg) && /\.woff2(\?|$)/i.test(decl.src);
+    if (isWoff2RangeError) {
+      console.warn(
+        `[imprint] Failed to decode WOFF2 for "${decl.family}" (${decl.src}). ` +
+          `@pdf-lib/fontkit's WOFF2 decoder rejects some pre-subsetted files — ` +
+          `try the TTF variant of this font instead. See docs/guides/fonts.md.`,
+      );
+    } else {
+      console.warn(`[imprint] Failed to load font "${decl.family}" from ${decl.src}:`, err);
+    }
     return undefined;
   }
 }

@@ -2,6 +2,7 @@ import type { PDFPage } from 'pdf-lib';
 import { PDFDocument } from 'pdf-lib';
 import { resolvePageDimensions } from '../layout/pages.js';
 import { runTaffyLayout } from '../layout/taffy-adapter.js';
+import { substitutePageMarkers } from '../style/variants.js';
 import type {
   AssetResolver,
   BookmarkNode,
@@ -112,30 +113,33 @@ export async function writePdf(
   }
 
   const namedDests = buildNamedDests(document, pdfPages);
+  const totalPages = pageNodes.length;
+
+  // Running elements (watermark/header/footer) are re-laid-out per page
+  // because page sizes can vary, and re-cloned so per-page `<PageNumber>` /
+  // `<TotalPages>` markers resolve to the right values.
+  async function drawRunning(
+    template: PdfNode,
+    page: PDFPage,
+    pageWidth: number,
+    pageHeight: number,
+    pageIndex: number,
+  ): Promise<void> {
+    const cloned = substitutePageMarkers(template, pageIndex, totalPages);
+    const geos = await runTaffyLayout(cloned, pageWidth, pageHeight, fonts);
+    await drawNode(cloned, page, pageHeight, geos, fonts, doc, resolver, {}, namedDests);
+  }
 
   for (let i = 0; i < pageNodes.length; i++) {
     const pageNode = pageNodes[i]!;
     const page = pdfPages[i]!;
     const [pageWidth, pageHeight] = resolvePageDimensions(pageNode, pageDefaults);
 
-    // Order: watermark below content, header/footer above. Running elements
-    // are re-laid-out per page because page sizes can vary.
-    if (watermarkNode) {
-      const wGeos = await runTaffyLayout(watermarkNode, pageWidth, pageHeight, fonts);
-      await drawNode(watermarkNode, page, pageHeight, wGeos, fonts, doc, resolver, {}, namedDests);
-    }
-
+    // Watermark renders below content; header/footer above.
+    if (watermarkNode) await drawRunning(watermarkNode, page, pageWidth, pageHeight, i);
     await drawNode(pageNode, page, pageHeight, geometries, fonts, doc, resolver, {}, namedDests);
-
-    if (runningHeader) {
-      const hGeos = await runTaffyLayout(runningHeader, pageWidth, pageHeight, fonts);
-      await drawNode(runningHeader, page, pageHeight, hGeos, fonts, doc, resolver, {}, namedDests);
-    }
-
-    if (runningFooter) {
-      const fGeos = await runTaffyLayout(runningFooter, pageWidth, pageHeight, fonts);
-      await drawNode(runningFooter, page, pageHeight, fGeos, fonts, doc, resolver, {}, namedDests);
-    }
+    if (runningHeader) await drawRunning(runningHeader, page, pageWidth, pageHeight, i);
+    if (runningFooter) await drawRunning(runningFooter, page, pageWidth, pageHeight, i);
   }
 
   addOutline(doc, document, pdfPages);

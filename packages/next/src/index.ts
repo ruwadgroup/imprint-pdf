@@ -1,13 +1,77 @@
 import type { RenderOptions } from '@imprint-pdf/core';
+import type { PdfOptions } from '@imprint-pdf/react';
 import type { ReactElement } from 'react';
 
+export type { RenderOptions } from '@imprint-pdf/core';
+export type { PdfOptions, PdfOutput } from '@imprint-pdf/react';
+
+/**
+ * Render a React element to a PDF. The single, recommended entry point.
+ *
+ * Auto-loads `imprint.config.ts` from the project root (Node only), merges
+ * caller-supplied options on top, and dispatches to the right `@imprint-pdf/react`
+ * build for the runtime: the Node bundle for `runtime = 'nodejs'` (default),
+ * the standalone edge bundle for `runtime = 'edge'`.
+ *
+ * @example
+ * ```ts
+ * // app/api/invoice/route.ts — default Response output
+ * export const GET = () => pdf(<Invoice />);
+ *
+ * // Power-user escape hatches
+ * const bytes  = await pdf(<Doc />, { as: 'bytes'  });
+ * const stream = await pdf(<Doc />, { as: 'stream' });
+ * ```
+ */
+export function pdf(
+  element: ReactElement,
+  options?: PdfOptions & { as?: 'response' },
+): Promise<Response>;
+export function pdf(
+  element: ReactElement,
+  options: PdfOptions & { as: 'bytes' },
+): Promise<Uint8Array>;
+export function pdf(
+  element: ReactElement,
+  options: PdfOptions & { as: 'stream' },
+): Promise<ReadableStream<Uint8Array>>;
+export async function pdf(
+  element: ReactElement,
+  options: PdfOptions = {},
+): Promise<Response | Uint8Array | ReadableStream<Uint8Array>> {
+  const mod = (await loadReactEntry()) as {
+    pdf: (
+      e: ReactElement,
+      o?: PdfOptions,
+    ) => Promise<Response | Uint8Array | ReadableStream<Uint8Array>>;
+  };
+  return mod.pdf(element, options);
+}
+
+// The Node entry pulls in pdf-lib's native bindings; `/standalone` ships them
+// as WASM with no `node:*` imports. Next sets `NEXT_RUNTIME` on edge routes;
+// `globalThis.EdgeRuntime` is the generic Vercel/Cloudflare signal.
+function isEdgeRuntime(): boolean {
+  if (
+    typeof process !== 'undefined' &&
+    typeof process.env === 'object' &&
+    process.env.NEXT_RUNTIME === 'edge'
+  ) {
+    return true;
+  }
+  return typeof (globalThis as { EdgeRuntime?: unknown }).EdgeRuntime !== 'undefined';
+}
+
+function loadReactEntry(): Promise<unknown> {
+  return isEdgeRuntime() ? import('@imprint-pdf/react/standalone') : import('@imprint-pdf/react');
+}
+
+/** @deprecated Use `pdf(element, { as: 'bytes' })` instead. */
 export async function renderToServer(
   element: ReactElement,
-  options?: RenderOptions,
+  options: RenderOptions = {},
 ): Promise<Uint8Array> {
-  // dynamic import keeps @imprint-pdf/react out of the client bundle
-  const { renderToBuffer } = await import('@imprint-pdf/react');
-  return renderToBuffer(element, options);
+  return pdf(element, { ...options, as: 'bytes' as const });
 }
 
 export interface EdgeRenderOptions extends RenderOptions {
@@ -15,50 +79,13 @@ export interface EdgeRenderOptions extends RenderOptions {
   wasm?: WebAssembly.Module;
 }
 
+/** @deprecated Use `pdf(element, { as: 'stream' })` from a route with `runtime = 'edge'`. */
 export async function renderToEdge(
   element: ReactElement,
-  options?: EdgeRenderOptions,
+  options: EdgeRenderOptions = {},
 ): Promise<ReadableStream<Uint8Array>> {
-  // @imprint-pdf/react/standalone is a self-contained build for v8 isolate environments
-  const { renderToStream } = await import('@imprint-pdf/react/standalone');
-  return renderToStream(element, options);
-}
-
-export interface ImprintConfig {
-  fonts?: Array<{
-    family: string;
-    src: string;
-    weight?: number;
-    style?: 'normal' | 'italic';
-  }>;
-  tailwind?: {
-    config?: string;
-    stylesheet?: string;
-  };
-  [key: string]: unknown;
-}
-
-export async function getImprintConfig(): Promise<ImprintConfig> {
-  const configPaths = [
-    './imprint.config.ts',
-    './imprint.config.js',
-    './imprint.config.mjs',
-    './imprint.config.cjs',
-  ];
-
-  for (const configPath of configPaths) {
-    try {
-      const mod = await import(/* @vite-ignore */ configPath);
-      const config: unknown = mod.default ?? mod;
-      if (config && typeof config === 'object') {
-        return config as ImprintConfig;
-      }
-    } catch {
-      // config file not present — try the next candidate
-    }
-  }
-
-  return {};
+  const { wasm: _wasm, ...rest } = options;
+  return pdf(element, { ...rest, as: 'stream' as const });
 }
 
 export interface PdfResponseOptions extends RenderOptions {
@@ -68,22 +95,10 @@ export interface PdfResponseOptions extends RenderOptions {
   disposition?: 'inline' | 'attachment';
 }
 
+/** @deprecated Use `pdf(element, { filename, disposition })` instead. */
 export async function createPdfResponse(
   element: ReactElement,
   options: PdfResponseOptions = {},
 ): Promise<Response> {
-  const { filename = 'document.pdf', disposition = 'inline', ...renderOptions } = options;
-  const bytes = await renderToServer(element, renderOptions);
-
-  const safeFilename = filename.replace(/[^\w.-]/g, '_');
-
-  return new Response(bytes as unknown as BodyInit, {
-    headers: {
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': `${disposition}; filename="${safeFilename}"`,
-      'Content-Length': String(bytes.byteLength),
-    },
-  });
+  return pdf(element, options);
 }
-
-export type { RenderOptions } from '@imprint-pdf/core';

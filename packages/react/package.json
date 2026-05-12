@@ -74,11 +74,12 @@
   },
   "dependencies": {
     "@imprint-pdf/core": "workspace:*",
-    "react-reconciler": "catalog:"
+    "react-reconciler-18": "npm:react-reconciler@^0.29.0",
+    "react-reconciler-19": "npm:react-reconciler@^0.33.0"
   },
   "peerDependencies": {
     "@imprint-pdf/tailwind": "workspace:*",
-    "react": ">=18.0.0"
+    "react": ">=18.2.0 <20"
   },
   "peerDependenciesMeta": {
     "@imprint-pdf/tailwind": {

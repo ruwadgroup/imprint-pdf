@@ -15,6 +15,12 @@ pnpm add -D @imprint-pdf/cli @imprint-pdf/tailwind tailwindcss
 npx imprint init
 ```
 
+`imprint init` detects your framework (Next.js App Router or Pages, Vite, or
+generic Node) and writes everything needed: `imprint.config.ts`, the
+`withImprint` wrap on `next.config.{ts,mjs}` (or the `imprint()` plugin on
+`vite.config.ts`), an `ExamplePdf.tsx` template, and an `/api/pdf` route or
+`./src/pdf.ts` helper. Existing files are left untouched.
+
 Create a Tailwind v4 stylesheet (CSS-first config). imprint-pdf auto-detects it
 at `src/app.css`, `src/globals.css`, `app/globals.css`, and a few other
 conventional locations — no extra wiring required:
@@ -82,15 +88,16 @@ export function Invoice({ invoice }: InvoiceProps) {
 
 ```ts
 // src/generate.ts
-import { renderToBuffer } from '@imprint-pdf/react';
+import { pdf } from '@imprint-pdf/react';
 import { Invoice } from './templates/Invoice';
 import { writeFileSync } from 'node:fs';
 
-const pdf = await renderToBuffer(
-  <Invoice invoice={{ id: 'INV-001', customer: 'Acme Corp', total: 4200 }} />
+const bytes = await pdf(
+  <Invoice invoice={{ id: 'INV-001', customer: 'Acme Corp', total: 4200 }} />,
+  { as: 'bytes' },
 );
 
-writeFileSync('./out/invoice.pdf', pdf);
+writeFileSync('./out/invoice.pdf', bytes);
 ```
 
 ```bash
@@ -102,7 +109,7 @@ open out/invoice.pdf
 
 ```ts
 // app/api/invoice/[id]/route.ts
-import { renderToServer } from '@imprint-pdf/next';
+import { pdf } from '@imprint-pdf/next';
 import { Invoice } from '@/templates/Invoice';
 import { getInvoice } from '@/lib/db';
 
@@ -112,27 +119,26 @@ export async function GET(
 ) {
   const { id } = await params;
   const data = await getInvoice(id);
-  const pdf = await renderToServer(<Invoice invoice={data} />);
-
-  return new Response(pdf, {
-    headers: { 'content-type': 'application/pdf' },
-  });
+  return pdf(<Invoice invoice={data} />, { filename: `invoice-${id}.pdf` });
 }
 ```
+
+`pdf()` returns a `Response`, auto-loads `imprint.config.ts`, and auto-detects
+Node vs Edge runtime. Pass `{ as: 'bytes' }` to get a `Uint8Array` or
+`{ as: 'stream' }` for a `ReadableStream`.
 
 ### Browser (Vite)
 
 ```ts
 // src/App.tsx
-import { renderToBuffer } from '@imprint-pdf/react';
+import { pdf } from '@imprint-pdf/react';
 import { Invoice } from './templates/Invoice';
 
 async function download() {
-  const pdf = await renderToBuffer(
+  const response = await pdf(
     <Invoice invoice={{ id: 'INV-001', customer: 'Acme Corp', total: 4200 }} />
   );
-  const url = URL.createObjectURL(new Blob([pdf], { type: 'application/pdf' }));
-  window.open(url);
+  window.open(URL.createObjectURL(await response.blob()));
 }
 ```
 

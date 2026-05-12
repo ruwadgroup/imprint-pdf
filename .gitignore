@@ -64,3 +64,6 @@ fixtures/verapdf/
 
 # veraPDF CLI install (download, never committed)
 tools/verapdf/
+
+# Local-only packed tarballs (used for testing against the smoke example)
+.local-tgz/

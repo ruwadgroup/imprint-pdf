@@ -1,28 +1,14 @@
-// ---------------------------------------------------------------------------
-// @imprint-pdf/vite — Vite plugin
-//
-// Composes the Tailwind extraction plugin, a virtual font module plugin, and
-// an HMR plugin that triggers full page reload when a .pdf.tsx file changes.
-// ---------------------------------------------------------------------------
-
 import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import type { ImprintTailwindOptions } from '@imprint-pdf/tailwind';
 import { imprintTailwind } from '@imprint-pdf/tailwind/vite';
 import type { Plugin } from 'vite';
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
 export interface FontDefinition {
-  /** CSS font-family name */
   family: string;
-  /** File path or URL to the font file (ttf, otf, woff, woff2) */
+  /** File path or URL to the font file (ttf, otf, woff, woff2). */
   src: string;
-  /** Numeric font weight, e.g. 400, 700 */
   weight?: number;
-  /** Font style */
   style?: 'normal' | 'italic';
 }
 
@@ -30,16 +16,9 @@ export interface ImprintViteOptions extends ImprintTailwindOptions {
   fonts?: FontDefinition[];
 }
 
-// ---------------------------------------------------------------------------
-// imprintFonts plugin
-// ---------------------------------------------------------------------------
-
 /**
- * Virtual module plugin for fonts.
- *
- * Usage in consuming code:
- *   import fontData from 'virtual:imprint-font/Inter'
- *   // fontData is a base64 data URL string
+ * `virtual:imprint-font/<family>` resolves to a base64 data URL (or the raw
+ * URL/data URI when the src isn't a local file).
  */
 function imprintFonts(options: ImprintViteOptions): Plugin {
   return {
@@ -63,7 +42,6 @@ function imprintFonts(options: ImprintViteOptions): Plugin {
         return `export default null`;
       }
 
-      // If src looks like an absolute file path or relative file path, embed it
       const src = font.src;
       if (!src.startsWith('http://') && !src.startsWith('https://') && !src.startsWith('data:')) {
         if (existsSync(src)) {
@@ -79,8 +57,7 @@ function imprintFonts(options: ImprintViteOptions): Plugin {
                   : ext === 'otf'
                     ? 'font/otf'
                     : 'font/ttf';
-            const dataUrl = `data:${mime};base64,${b64}`;
-            return `export default ${JSON.stringify(dataUrl)}`;
+            return `export default ${JSON.stringify(`data:${mime};base64,${b64}`)}`;
           } catch (err) {
             this.warn(`[imprint-fonts] Failed to read font file "${src}": ${String(err)}`);
           }
@@ -89,20 +66,12 @@ function imprintFonts(options: ImprintViteOptions): Plugin {
         }
       }
 
-      // Fallback: return src as-is (URL or data URI)
       return `export default ${JSON.stringify(src)}`;
     },
-
-    // Expose a virtual module that lists all registered fonts with metadata
-    // import { fonts } from 'virtual:imprint-fonts'
-    // Returns: Array<FontDefinition>
   };
 }
 
-// ---------------------------------------------------------------------------
-// imprintFontsList plugin — virtual:imprint-fonts → font metadata list
-// ---------------------------------------------------------------------------
-
+/** `virtual:imprint-fonts` → `export const fonts: FontDefinition[]`. */
 function imprintFontsList(options: ImprintViteOptions): Plugin {
   const VIRTUAL_ID = 'virtual:imprint-fonts';
   const RESOLVED_ID = `\0${VIRTUAL_ID}`;
@@ -123,19 +92,14 @@ function imprintFontsList(options: ImprintViteOptions): Plugin {
   };
 }
 
-// ---------------------------------------------------------------------------
-// imprintHmr plugin
-// ---------------------------------------------------------------------------
-
+// Re-render `.pdf.tsx` files via a full page reload (component tree changes
+// invalidate the entire PDF, not just one module).
 function imprintHmr(): Plugin {
   return {
     name: 'imprint-hmr',
-
     handleHotUpdate({ file, server }) {
       if (file.endsWith('.pdf.tsx') || file.endsWith('.pdf.ts')) {
-        // Full reload so the PDF is re-rendered with the new component tree
         server.ws.send({ type: 'full-reload', path: '*' });
-        // Return an empty array to tell Vite we've handled the update
         return [];
       }
       return undefined;
@@ -143,35 +107,22 @@ function imprintHmr(): Plugin {
   };
 }
 
-// ---------------------------------------------------------------------------
-// imprint — composite plugin factory
-// ---------------------------------------------------------------------------
-
 /**
- * Returns the full set of Vite plugins needed for Imprint PDF development:
- *
- * 1. `imprint-tailwind` — compile-time Tailwind class extraction
- * 2. `imprint-fonts`    — virtual font module (`virtual:imprint-font/<family>`)
- * 3. `imprint-fonts-list` — virtual module for font metadata list
- * 4. `imprint-hmr`      — full-reload HMR for `.pdf.tsx` files
+ * Returns the full set of Vite plugins needed for imprint-pdf: Tailwind class
+ * extraction, virtual font modules, and full-reload HMR for `.pdf.tsx`.
  *
  * @example
+ * ```ts
  * // vite.config.ts
  * import { imprint } from '@imprint-pdf/vite'
- *
  * export default {
- *   plugins: [
- *     imprint({
- *       fonts: [{ family: 'Inter', src: './fonts/Inter.ttf' }],
- *       safelist: ['text-red-500'],
- *     }),
- *   ],
+ *   plugins: [imprint({ fonts: [{ family: 'Inter', src: './fonts/Inter.ttf' }] })],
  * }
+ * ```
  */
 export function imprint(options: ImprintViteOptions = {}): Plugin[] {
   return [imprintTailwind(options), imprintFonts(options), imprintFontsList(options), imprintHmr()];
 }
 
 export type { ImprintTailwindOptions } from '@imprint-pdf/tailwind';
-// Named re-exports for consumers who want individual plugins
 export { imprintTailwind } from '@imprint-pdf/tailwind/vite';

@@ -1,0 +1,31 @@
+{
+  "name": "@imprint-pdf/example-react18-tailwind3-nextjs",
+  "version": "0.0.0",
+  "private": true,
+  "description": "imprint-pdf smoke example — Next.js 14 on React 18 with Tailwind v3, exercising the R18 reconciler path and the v3 PostCSS dispatch.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "tsc --noEmit",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@imprint-pdf/core": "workspace:*",
+    "@imprint-pdf/next": "workspace:*",
+    "@imprint-pdf/react": "workspace:*",
+    "@imprint-pdf/tailwind": "workspace:*",
+    "next": "14.2.35",
+    "react": "^18",
+    "react-dom": "^18"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.35",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  }
+}

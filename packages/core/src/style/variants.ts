@@ -1,4 +1,4 @@
-import type { DocumentNode, ImprintVariant, PageNode, PdfNode } from '../types.js';
+import type { DocumentNode, ImprintVariant, PageNode, PdfNode, TextNode } from '../types.js';
 import { mergeStyles } from './resolver.js';
 
 export interface VariantContext {
@@ -19,10 +19,25 @@ function variantsActiveFor(ctx: VariantContext): Set<ImprintVariant> {
   return active;
 }
 
-// Shallow-clones each node so the same authored tree can render with
-// different variant contexts (proof PDF, then CMYK plate) without
-// cross-contamination.
-function applyToSubtree(node: PdfNode, active: Set<ImprintVariant>): PdfNode {
+// `<PageNumber>` / `<TotalPages>` lower to a `view` carrying these flags.
+// We resolve them here so the substitution rides the same per-page clone that
+// applies page-* variants — no extra walk. Text nodes carry empty style; the
+// drawText path inherits from inline context, matching how the reconciler
+// produces literal text children.
+function makeMarkerText(parent: PdfNode, value: string, suffix: string): TextNode {
+  return {
+    type: 'text',
+    id: `${parent.id}-${suffix}`,
+    text: value,
+    style: {},
+    props: {},
+    children: [],
+  };
+}
+
+// Shallow-clones each node so the same authored tree can render with different
+// variant contexts (proof PDF, then CMYK plate) without cross-contamination.
+function applyToSubtree(node: PdfNode, active: Set<ImprintVariant>, ctx: VariantContext): PdfNode {
   let style = node.style;
   if (node.variants) {
     for (const variant of active) {
@@ -30,7 +45,15 @@ function applyToSubtree(node: PdfNode, active: Set<ImprintVariant>): PdfNode {
       if (v) style = mergeStyles(style, v);
     }
   }
-  const children = node.children.map((c) => applyToSubtree(c, active));
+
+  const props = node.props as Record<string, unknown>;
+  const children: PdfNode[] =
+    props.__pageNumber === true
+      ? [makeMarkerText(node, String(ctx.pageIndex + 1), 'pgn')]
+      : props.__totalPages === true
+        ? [makeMarkerText(node, String(ctx.pageCount), 'tot')]
+        : node.children.map((c) => applyToSubtree(c, active, ctx));
+
   return { ...node, style, children } as PdfNode;
 }
 
@@ -49,8 +72,22 @@ export function applyImprintVariants(document: DocumentNode): DocumentNode {
       cmyk: false,
     };
     pageIndex += 1;
-    return applyToSubtree(page, variantsActiveFor(ctx));
+    return applyToSubtree(page, variantsActiveFor(ctx), ctx);
   });
 
   return { ...document, children: newChildren };
+}
+
+/**
+ * Per-page substitution for running header/footer/watermark trees, which are
+ * authored once and drawn on every page. Returns a fresh clone with
+ * `<PageNumber>` / `<TotalPages>` markers filled in for the given page.
+ */
+export function substitutePageMarkers(
+  node: PdfNode,
+  pageIndex: number,
+  pageCount: number,
+): PdfNode {
+  const ctx: VariantContext = { pageIndex, pageCount, bleed: false, cmyk: false };
+  return applyToSubtree(node, new Set(), ctx);
 }

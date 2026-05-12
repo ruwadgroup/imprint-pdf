@@ -392,7 +392,11 @@ export async function drawNode(
               pageHeight,
             );
           }
-        } catch {}
+        } catch (err) {
+          // The rasterizer path can still throw (sharp/network); fail-soft so
+          // the rest of the page renders. drawSvgString itself never throws.
+          console.warn('[imprint] failed to render SVG node, skipping:', err);
+        }
       }
       break;
     }

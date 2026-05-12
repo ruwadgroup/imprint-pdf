@@ -22,11 +22,17 @@ export default defineConfig({
 Accepted formats: `.woff2`, `.woff`, `.otf`, `.ttf`. WOFF2 recommended —
 smallest file, best subsetting.
 
-### URL fonts (Google Fonts, Bunny Fonts)
+### URL fonts (Bunny Fonts, Fontsource, self-hosted)
 
 ```ts
-{ family: 'Inter', src: 'https://fonts.gstatic.com/…/inter-latin.woff2' }
+// Bunny Fonts — stable, versioned URLs (Google Fonts mirror).
+{ family: 'Inter', src: 'https://fonts.bunny.net/inter/files/inter-latin-400-normal.woff2' }
 ```
+
+Avoid `fonts.gstatic.com` directly — Google rotates the version slug (`v15` →
+`v22`) every few months. When that happens, the URL 404s and the font silently
+disappears from the PDF. Prefer Bunny Fonts, Fontsource via jsdelivr
+(version-pinned npm), or self-hosting from `./public/fonts/`.
 
 Fetched at render time. Cache the response via a custom `AssetResolver` for
 production.

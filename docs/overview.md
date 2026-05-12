@@ -7,9 +7,9 @@ Edge, and the browser — with the same code path.
 ## What you write
 
 ```tsx
-import { renderToBuffer, Document, Page } from '@imprint-pdf/react';
+import { pdf, Document, Page } from '@imprint-pdf/react';
 
-const pdf = await renderToBuffer(
+const response = await pdf(
   <Document>
     <Page size="A4" className="p-12 font-sans bg-white">
       <h1 className="text-3xl font-bold tracking-tight">Hello, PDF</h1>
@@ -18,9 +18,13 @@ const pdf = await renderToBuffer(
       </p>
     </Page>
   </Document>,
-  { fonts: ['Inter'] },
 );
 ```
+
+`pdf()` returns a `Response` you can hand straight to any web framework (Next.js
+routes, Hono, Bun.serve). Want bytes instead? Pass `{ as: 'bytes' }`. Streaming?
+`{ as: 'stream' }`. Fonts and Tailwind are loaded from `imprint.config.ts`
+automatically.
 
 That's the whole authoring surface. No `StyleSheet.create`, no custom DSL, no
 class subset table to memorise.

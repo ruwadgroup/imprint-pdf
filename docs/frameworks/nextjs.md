@@ -29,11 +29,11 @@ export default withImprint()({
 3. Adds `@imprint-pdf/react` and `@imprint-pdf/core` to `serverExternalPackages`
    so Next.js doesn't bundle their server-only internals.
 
-## Route handler (Node runtime)
+## Route handler
 
 ```ts
 // app/api/invoice/[id]/route.ts
-import { renderToServer } from '@imprint-pdf/next';
+import { pdf } from '@imprint-pdf/next';
 import { Invoice } from '@/templates/Invoice';
 import { getInvoice } from '@/lib/db';
 
@@ -43,25 +43,26 @@ export async function GET(
 ) {
   const { id } = await params;
   const data = await getInvoice(id);
-
-  const pdf = await renderToServer(<Invoice data={data} />);
-
-  return new Response(pdf, {
-    headers: {
-      'content-type': 'application/pdf',
-      'content-disposition': `attachment; filename="invoice-${id}.pdf"`,
-    },
+  return pdf(<Invoice data={data} />, {
+    filename: `invoice-${id}.pdf`,
+    disposition: 'attachment', // or 'inline' (default)
   });
 }
 ```
 
-## Route handler (Edge Runtime)
+`pdf()` returns a `Response`, auto-loads `imprint.config.ts`, and auto-detects
+Node vs Edge runtime. No separate `renderToEdge` to call.
+
+## Edge Runtime
+
+Set `runtime = 'edge'` on the route — that's it. `pdf()` detects
+`NEXT_RUNTIME === 'edge'` and switches to the standalone WASM-only bundle.
 
 ```ts
 // app/api/invoice/[id]/route.ts
 export const runtime = 'edge';
 
-import { renderToEdge } from '@imprint-pdf/next';
+import { pdf } from '@imprint-pdf/next';
 import { Invoice } from '@/templates/Invoice';
 
 export async function GET(
@@ -69,71 +70,21 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  const stream = await renderToEdge(<Invoice data={{ id }} />);
-
-  return new Response(stream, {
-    headers: { 'content-type': 'application/pdf' },
-  });
+  return pdf(<Invoice data={{ id }} />, { as: 'stream' });
 }
 ```
 
-`renderToEdge` always returns a `ReadableStream<Uint8Array>` — there is no
-separate "streaming mode" to enable.
+`{ as: 'stream' }` returns a `ReadableStream<Uint8Array>` — useful when you want
+to wrap it yourself (e.g. compose with another transform). The default
+`as: 'response'` is what most edge routes want.
 
-## Server Component helper
+## Power-user output shapes
 
-```tsx
-// app/invoice/[id]/page.tsx
-import { getImprintConfig } from '@imprint-pdf/next';
-
-export default async function InvoicePage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
-  const config = await getImprintConfig();
-  // Pass config to a Client Component that calls renderToBuffer
-  return <InvoicePreview invoiceId={id} imprintConfig={config} />;
-}
-```
-
-`getImprintConfig()` walks `imprint.config.{ts,js,mjs,cjs}` candidates from the
-project root and returns the parsed config (or `{}` if none is found).
-
-## One-line PDF response
-
-`createPdfResponse` is a convenience wrapper around `renderToServer` that builds
-a `Response` with the right `Content-Type`, `Content-Length`, and
-`Content-Disposition` headers for you:
-
-```ts
-import { createPdfResponse } from '@imprint-pdf/next';
-
-export async function GET(
-  _req: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
-  const { id } = await params;
-  const data = await getInvoice(id);
-
-  return createPdfResponse(<Invoice data={data} />, {
-    filename: `invoice-${id}.pdf`,
-    disposition: 'attachment', // or 'inline' (default)
-  });
-}
-```
-
-## Streaming
-
-`renderToEdge` already returns a `ReadableStream<Uint8Array>` — pipe it straight
-into a `Response`:
-
-```ts
-const stream = await renderToEdge(<Invoice data={data} />);
-// First byte arrives in < 50 ms for most documents
-return new Response(stream, { headers: { 'content-type': 'application/pdf' } });
-```
+| Shape                            | Use case                                                    |
+| -------------------------------- | ----------------------------------------------------------- |
+| `pdf(<Doc />)` (default)         | Web framework integration — returns a `Response`.           |
+| `pdf(<Doc />, { as: 'bytes' })`  | Writing to disk, attaching to email, custom HTTP framework. |
+| `pdf(<Doc />, { as: 'stream' })` | Edge runtimes with tight memory budgets.                    |
 
 ## Caching route handler output
 
@@ -146,14 +97,10 @@ export async function GET(
 ) {
   const { id } = await params;
   const data = await getInvoice(id);
-  const pdf = await renderToServer(<Invoice data={data} />);
-
-  return new Response(pdf, {
-    headers: {
-      'content-type': 'application/pdf',
-      'cache-control': 'public, max-age=3600',
-    },
-  });
+  const response = await pdf(<Invoice data={data} />);
+  // Append your own cache headers on top of the defaults.
+  response.headers.set('cache-control', 'public, max-age=3600');
+  return response;
 }
 ```
 

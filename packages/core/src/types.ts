@@ -403,6 +403,10 @@ export interface FontDeclaration {
   weight?: number | string;
   style?: 'normal' | 'italic';
   format?: 'woff2' | 'woff' | 'ttf' | 'otf';
+  /** Variable font marker — surfaces axes to the runtime so `font-variation-settings` works. */
+  variable?: boolean;
+  /** Allowed axis ranges (e.g. `{ wght: [100, 900] }`). Only meaningful when `variable` is true. */
+  axes?: Record<string, [number, number]>;
 }
 
 export interface AssetResolver {

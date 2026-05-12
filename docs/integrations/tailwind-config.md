@@ -2,6 +2,27 @@
 
 Sharing your design system between your web app and PDF templates.
 
+## Version support
+
+imprint-pdf supports both **Tailwind v3** and **Tailwind v4**. It detects which
+major you have installed (by reading `tailwindcss/package.json` from your
+project) and dispatches to the matching code path. The rest of this guide shows
+the v4 setup — for v3, jump to [Tailwind v3](#tailwind-v3).
+
+### Dispatch precedence
+
+When you call `renderToBuffer` (or any other render entry point), imprint-pdf
+picks a compiler in this order:
+
+1. Explicit `tailwind.config` in `imprint.config.ts` → **v3** (loads the JS
+   config you point at).
+2. Explicit `tailwind.stylesheet` in `imprint.config.ts` → **v4** (CSS-first
+   authoring).
+3. Auto-detected `tailwind.config.{ts,js,mjs,cjs}` _and_ installed
+   `tailwindcss@3` → **v3**.
+4. Auto-detected `*.css` entry → **v4**.
+5. Nothing detected → **v4** with a bare `@import "tailwindcss"` fallback.
+
 ## Single stylesheet, two targets
 
 imprint-pdf runs **Tailwind v4**, which is configured CSS-first. The recommended

@@ -28,10 +28,11 @@ export default defineConfig({
       axes: { wght: [100, 900] },
     },
 
-    // Remote URL
+    // Remote URL — prefer stable hosts like Bunny Fonts or Fontsource via
+    // jsdelivr. `fonts.gstatic.com` slugs rotate and 404 without warning.
     {
       family: 'Noto Sans Arabic',
-      src: 'https://fonts.gstatic.com/…/noto-sans-arabic.woff2',
+      src: 'https://fonts.bunny.net/noto-sans-arabic/files/noto-sans-arabic-arabic-400-normal.woff2',
     },
 
     // Monospace
@@ -81,11 +82,32 @@ explicitly declare the font files you want in the PDF.
 
 | Format   | Supported | Notes                            |
 | -------- | :-------: | -------------------------------- |
-| `.woff2` |     ✓     | Recommended. Best compression.   |
+| `.woff2` |    ✓\*    | Recommended. Best compression.   |
 | `.woff`  |     ✓     |                                  |
 | `.otf`   |     ✓     |                                  |
 | `.ttf`   |     ✓     |                                  |
 | `.eot`   |     ✗     | Legacy IE format, not supported. |
+
+### \* WOFF2 caveat
+
+imprint-pdf embeds fonts via [`pdf-lib`](https://github.com/Hopding/pdf-lib),
+which uses [`@pdf-lib/fontkit`](https://www.npmjs.com/package/@pdf-lib/fontkit)
+1.1.1 to decode font files. That decoder's WOFF2 path throws
+`RangeError: Index out of range` on some pre-subsetted WOFF2 files in the wild —
+notably Bunny Fonts' Outfit family. The error string is identical to an
+unrelated buffer-aliasing bug fixed in core, which makes diagnosis confusing.
+
+**Workaround when WOFF2 fails to decode**: use the TTF variant of the same font
+(Google Fonts upstream on GitHub, or Fontsource on jsdelivr — both ship TTFs).
+TTF and OTF are unaffected.
+
+```ts
+// If this throws RangeError…
+{ family: 'Outfit', src: 'https://fonts.bunny.net/outfit/files/outfit-latin-400-normal.woff2' }
+
+// …switch to the TTF.
+{ family: 'Outfit', src: 'https://cdn.jsdelivr.net/npm/@fontsource/outfit@5/files/outfit-latin-400-normal.ttf' }
+```
 
 ## System fonts
 

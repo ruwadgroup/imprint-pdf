@@ -15,7 +15,7 @@ export {
   setCompiledClassMap,
 } from './style/resolver.js';
 export type { VariantContext } from './style/variants.js';
-export { applyImprintVariants } from './style/variants.js';
+export { applyImprintVariants, substitutePageMarkers } from './style/variants.js';
 export type {
   AssetResolver,
   BaseNode,

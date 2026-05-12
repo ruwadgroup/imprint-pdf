@@ -402,67 +402,73 @@ function drawShape(ctx: DrawCtx, el: SvgElement, parentTransform: Mat, opacitySc
   const d = shapeToPath(el);
   if (!d) return;
 
-  const transform = multiply(parentTransform, parseTransform(el.attrs.transform));
-  const fillRule = (attrOrStyle(el, 'fill-rule') ?? 'nonzero') === 'evenodd';
-  const opacity = parseFloat(attrOrStyle(el, 'opacity') ?? '1') || 1;
-  const fillOpacity = parseFloat(attrOrStyle(el, 'fill-opacity') ?? '1') || 1;
-  const strokeOpacity = parseFloat(attrOrStyle(el, 'stroke-opacity') ?? '1') || 1;
-  const fillPaint = resolvePaint(
-    attrOrStyle(el, 'fill'),
-    { kind: 'rgb', r: 0, g: 0, b: 0, opacity: 1 },
-    fillOpacity * opacity * opacityScale,
-  );
-  const strokePaint = resolvePaint(
-    attrOrStyle(el, 'stroke'),
-    { kind: 'none' },
-    strokeOpacity * opacity * opacityScale,
-  );
-  const strokeWidth = parseFloat(attrOrStyle(el, 'stroke-width') ?? '1') || 1;
-  const clipRefId = parseUrlRef(attrOrStyle(el, 'clip-path'));
-
   ctx.page.pushOperators(pushGraphicsState());
-
-  if (!isIdentity(transform)) {
-    applyMatrix(ctx, transform);
-  }
-
-  if (clipRefId) applyClipPath(ctx, clipRefId);
-
-  if (fillPaint.kind === 'gradient') {
-    const bbox = pathBBox(d);
-    const built = buildGradientPattern(ctx.page, ctx.defs, fillPaint.id, bbox);
-    if (built) {
-      const name = ensurePatternResource(ctx, built.patternRef);
-      ctx.page.pushOperators(setFillingColorSpace('Pattern'), setFillingPattern(name));
-    } else {
-      ctx.page.pushOperators(setFillingRgbColor(0, 0, 0));
-    }
-  } else if (fillPaint.kind === 'rgb') {
-    ctx.page.pushOperators(setFillingRgbColor(fillPaint.r, fillPaint.g, fillPaint.b));
-  }
-
-  if (strokePaint.kind === 'rgb') {
-    ctx.page.pushOperators(
-      setStrokingRgbColor(strokePaint.r, strokePaint.g, strokePaint.b),
-      setLineWidth(strokeWidth),
+  // try/finally ensures `Q` is emitted even if a malformed gradient, path, or
+  // clipPath child throws — otherwise the next shape would draw inside this
+  // shape's CTM and clipping.
+  try {
+    const transform = multiply(parentTransform, parseTransform(el.attrs.transform));
+    const fillRule = (attrOrStyle(el, 'fill-rule') ?? 'nonzero') === 'evenodd';
+    const opacity = parseFloat(attrOrStyle(el, 'opacity') ?? '1') || 1;
+    const fillOpacity = parseFloat(attrOrStyle(el, 'fill-opacity') ?? '1') || 1;
+    const strokeOpacity = parseFloat(attrOrStyle(el, 'stroke-opacity') ?? '1') || 1;
+    const fillPaint = resolvePaint(
+      attrOrStyle(el, 'fill'),
+      { kind: 'rgb', r: 0, g: 0, b: 0, opacity: 1 },
+      fillOpacity * opacity * opacityScale,
     );
+    const strokePaint = resolvePaint(
+      attrOrStyle(el, 'stroke'),
+      { kind: 'none' },
+      strokeOpacity * opacity * opacityScale,
+    );
+    const strokeWidth = parseFloat(attrOrStyle(el, 'stroke-width') ?? '1') || 1;
+    const clipRefId = parseUrlRef(attrOrStyle(el, 'clip-path'));
+
+    if (!isIdentity(transform)) {
+      applyMatrix(ctx, transform);
+    }
+
+    if (clipRefId) applyClipPath(ctx, clipRefId);
+
+    if (fillPaint.kind === 'gradient') {
+      const bbox = pathBBox(d);
+      const built = buildGradientPattern(ctx.page, ctx.defs, fillPaint.id, bbox);
+      if (built) {
+        const name = ensurePatternResource(ctx, built.patternRef);
+        ctx.page.pushOperators(setFillingColorSpace('Pattern'), setFillingPattern(name));
+      } else {
+        ctx.page.pushOperators(setFillingRgbColor(0, 0, 0));
+      }
+    } else if (fillPaint.kind === 'rgb') {
+      ctx.page.pushOperators(setFillingRgbColor(fillPaint.r, fillPaint.g, fillPaint.b));
+    }
+
+    if (strokePaint.kind === 'rgb') {
+      ctx.page.pushOperators(
+        setStrokingRgbColor(strokePaint.r, strokePaint.g, strokePaint.b),
+        setLineWidth(strokeWidth),
+      );
+    }
+
+    emitPathOperators(ctx.page, d);
+
+    const hasFill = fillPaint.kind !== 'none';
+    const hasStroke = strokePaint.kind !== 'none';
+    if (hasFill && hasStroke) {
+      ctx.page.pushOperators(fillRule ? PDFOperator.of('B*' as never) : fillAndStroke());
+    } else if (hasStroke) {
+      ctx.page.pushOperators(stroke());
+    } else if (hasFill) {
+      ctx.page.pushOperators(fillRule ? PDFOperator.of('f*' as never) : fill());
+    } else {
+      ctx.page.pushOperators(endPath());
+    }
+  } catch (err) {
+    console.warn('[imprint] drawShape: skipping malformed SVG shape:', err);
+  } finally {
+    ctx.page.pushOperators(popGraphicsState());
   }
-
-  emitPathOperators(ctx.page, d);
-
-  const hasFill = fillPaint.kind !== 'none';
-  const hasStroke = strokePaint.kind !== 'none';
-  if (hasFill && hasStroke) {
-    ctx.page.pushOperators(fillRule ? PDFOperator.of('B*' as never) : fillAndStroke());
-  } else if (hasStroke) {
-    ctx.page.pushOperators(stroke());
-  } else if (hasFill) {
-    ctx.page.pushOperators(fillRule ? PDFOperator.of('f*' as never) : fill());
-  } else {
-    ctx.page.pushOperators(endPath());
-  }
-
-  ctx.page.pushOperators(popGraphicsState());
 }
 
 function isIdentity(m: Mat): boolean {
@@ -500,7 +506,12 @@ export interface DrawSvgOptions {
   height: number;
 }
 
-/** Renders an inline SVG document into the given PDF box. Returns `false` if `source` isn't a parseable `<svg>`. */
+/**
+ * Renders an inline SVG document into the given PDF box. Returns `false` if
+ * `source` isn't a parseable `<svg>` or a draw error caused the SVG to be
+ * skipped. A draw error is logged but never bubbles up — a single malformed
+ * `<path>` should not corrupt the rest of the page.
+ */
 export function drawSvgString(
   source: string,
   page: PDFPage,
@@ -519,28 +530,41 @@ export function drawSvgString(
       h: parseFloat(root.attrs.height ?? `${opts.height}`) || opts.height,
     } as ViewBox);
 
+  // A zero-width/height viewBox would produce a NaN/Infinity scale matrix.
+  if (!(viewBox.w > 0) || !(viewBox.h > 0)) return false;
+
   const sx = opts.width / viewBox.w;
   const sy = opts.height / viewBox.h;
 
   // SVG is y-down, PDF y-up — negative y-scale plus an offset flips it.
   const pdfTop = pageHeight - opts.y;
+
   page.pushOperators(pushGraphicsState());
-  page.pushOperators(
-    PDFOperator.of(
-      'cm' as never,
-      [sx, 0, 0, -sy, opts.x - viewBox.x * sx, pdfTop + viewBox.y * sy] as unknown as never[],
-    ),
-  );
+  try {
+    page.pushOperators(
+      PDFOperator.of(
+        'cm' as never,
+        [sx, 0, 0, -sy, opts.x - viewBox.x * sx, pdfTop + viewBox.y * sy] as unknown as never[],
+      ),
+    );
 
-  const ctx: DrawCtx = {
-    page,
-    defs: root,
-    patternCounter: { n: 0 },
-    patternNames: new Map(),
-  };
+    const ctx: DrawCtx = {
+      page,
+      defs: root,
+      patternCounter: { n: 0 },
+      patternNames: new Map(),
+    };
 
-  walk(ctx, root, IDENTITY, 1);
-
-  page.pushOperators(popGraphicsState());
-  return true;
+    // walk recurses into drawShape; drawShape balances its own q/Q in a
+    // try/finally so a malformed child only loses that single shape.
+    walk(ctx, root, IDENTITY, 1);
+    return true;
+  } catch (err) {
+    // Last-resort guard: drawShape already self-balances, but a future bug
+    // shouldn't be allowed to silently emit an empty page.
+    console.warn('[imprint] drawSvgString: skipping SVG due to draw error:', err);
+    return false;
+  } finally {
+    page.pushOperators(popGraphicsState());
+  }
 }

@@ -109,4 +109,11 @@ describe('drawSvgString', () => {
       false,
     );
   });
+
+  it('returns false for zero-area viewBox without throwing', async () => {
+    const doc = await PDFDocument.create();
+    const page = doc.addPage([100, 100]);
+    const svg = '<svg viewBox="0 0 0 0"><rect width="1" height="1"/></svg>';
+    expect(drawSvgString(svg, page, { x: 0, y: 0, width: 50, height: 50 }, 100)).toBe(false);
+  });
 });
