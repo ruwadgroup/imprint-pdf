@@ -1,6 +1,6 @@
 {
   "name": "@imprint-pdf/testing",
-  "version": "1.0.0-alpha",
+  "version": "1.0.0-alpha.3",
   "description": "Vitest / Jest matchers for imprint-pdf — toMatchPdfSnapshot for visual regression testing of rendered PDFs.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",

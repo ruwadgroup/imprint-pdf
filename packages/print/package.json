@@ -1,6 +1,6 @@
 {
   "name": "@imprint-pdf/print",
-  "version": "1.0.0-alpha",
+  "version": "1.0.0-alpha.3",
   "description": "Print-ready add-on for imprint-pdf — PDF/X-4, CMYK, ICC profile embedding, spot color, bleed/trim, and PDF/A output.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",

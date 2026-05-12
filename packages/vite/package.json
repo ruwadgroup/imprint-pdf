@@ -1,6 +1,6 @@
 {
   "name": "@imprint-pdf/vite",
-  "version": "1.0.0-alpha",
+  "version": "1.0.0-alpha.3",
   "description": "Vite plugin for imprint-pdf — compile-time Tailwind extraction, HMR, and virtual font modules.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
