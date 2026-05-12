@@ -9,10 +9,6 @@ pnpm add @imprint-pdf/react @imprint-pdf/core react tailwindcss
 pnpm add -D @imprint-pdf/vite vite
 ```
 
-The Tailwind compiler and class extractor are bundled inside
-`@imprint-pdf/react` and `@imprint-pdf/vite` — no separate
-`@imprint-pdf/tailwind` install.
-
 ## Setup
 
 ```ts

@@ -1,11 +1,15 @@
 # @imprint-pdf/next
 
-Next.js App Router integration for
-[imprint-pdf](https://github.com/tamimbinhakim/imprint-pdf).
+Next.js integration for
+[imprint-pdf](https://github.com/tamimbinhakim/imprint-pdf). One `pdf()`
+function for route handlers, one `withImprint()` plugin for the config.
 
 ```bash
-pnpm add @imprint-pdf/next @imprint-pdf/react @imprint-pdf/core
+pnpm add @imprint-pdf/next @imprint-pdf/react @imprint-pdf/core tailwindcss
 ```
+
+Works on Next 14, 15, and 16 — App Router and Pages Router, Node and Edge
+runtimes.
 
 ## Plugin
 
@@ -18,21 +22,20 @@ export default withImprint()({
 });
 ```
 
-The plugin wires up:
+`withImprint()` does three things:
 
-- Compile-time Tailwind extraction via `@imprint-pdf/tailwind/webpack`
-- `asyncWebAssembly` + `layers` webpack experiments and a `webassembly/async`
-  rule for `.wasm` files (required by the renderer)
-- `serverExternalPackages` entries for `@imprint-pdf/react` and
-  `@imprint-pdf/core` so Next.js doesn't bundle their server-only internals
+1. Registers the bundled webpack plugin for compile-time Tailwind class
+   extraction (webpack only — Turbopack falls back to runtime compile).
+2. Enables the `asyncWebAssembly` + `layers` experiments and adds the
+   `webassembly/async` rule for `.wasm` files.
+3. Adds `@imprint-pdf/react` and `@imprint-pdf/core` to `serverExternalPackages`
+   so Next.js doesn't bundle their server-only internals.
 
 ## Route handler
 
-The canonical pattern for PDF generation in Next.js App Router:
-
 ```ts
 // app/api/invoice/[id]/route.ts
-import { renderToServer } from '@imprint-pdf/next';
+import { pdf } from '@imprint-pdf/next';
 import { Invoice } from '@/templates/Invoice';
 import { getInvoice } from '@/lib/db';
 
@@ -42,65 +45,35 @@ export async function GET(
 ) {
   const { id } = await params;
   const data = await getInvoice(id);
-  const pdf = await renderToServer(<Invoice data={data} />);
-
-  return new Response(pdf, {
-    headers: {
-      'content-type': 'application/pdf',
-      'content-disposition': `attachment; filename="invoice-${id}.pdf"`,
-    },
+  return pdf(<Invoice data={data} />, {
+    filename: `invoice-${id}.pdf`,
+    disposition: 'attachment',
   });
 }
 ```
 
-Or use `createPdfResponse` to skip the header boilerplate:
+`pdf()` returns a `Response`. It auto-loads `imprint.config.ts` from the project
+root and auto-detects edge vs Node runtime (via `NEXT_RUNTIME` /
+`globalThis.EdgeRuntime`), dispatching to the matching `@imprint-pdf/react`
+build automatically.
 
-```ts
-import { createPdfResponse } from '@imprint-pdf/next';
+Want raw bytes? `{ as: 'bytes' }`. A stream? `{ as: 'stream' }`. Same function.
 
-return createPdfResponse(<Invoice data={data} />, {
-  filename: `invoice-${id}.pdf`,
-  disposition: 'attachment',
-});
-```
+## Edge runtime
 
-## RSC helper
-
-`getImprintConfig()` reads `imprint.config.{ts,js,mjs,cjs}` from the project
-root from a Server Component, so a Client Component can do the actual render
-with shared font / Tailwind config.
-
-```tsx
-// app/invoice/[id]/page.tsx
-import { getImprintConfig } from '@imprint-pdf/next';
-import { PreviewFrame } from '@/components/PreviewFrame';
-
-export default async function InvoicePage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
-  const config = await getImprintConfig();
-  return <PreviewFrame invoiceId={id} imprintConfig={config} />;
-}
-```
-
-## Edge deployment
-
-To deploy the route handler to the Next.js Edge Runtime, use the standalone
-build:
+Just mark the route — no separate function call.
 
 ```ts
 // app/api/invoice/[id]/route.ts
 export const runtime = 'edge';
 
-import { renderToEdge } from '@imprint-pdf/next';
+import { pdf } from '@imprint-pdf/next';
+export const GET = () => pdf(<Invoice data={data} />);
 ```
 
 ## Exports
 
-| Entry                      | Purpose                                                                   |
-| -------------------------- | ------------------------------------------------------------------------- |
-| `@imprint-pdf/next`        | `renderToServer`, `renderToEdge`, `createPdfResponse`, `getImprintConfig` |
-| `@imprint-pdf/next/plugin` | `withImprint` Next.js plugin wrapper                                      |
+| Entry                      | Purpose                                  |
+| -------------------------- | ---------------------------------------- |
+| `@imprint-pdf/next`        | `pdf()` with auto edge/Node dispatch     |
+| `@imprint-pdf/next/plugin` | `withImprint()` `next.config.ts` wrapper |

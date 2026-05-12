@@ -30,10 +30,10 @@ pnpm add @imprint-pdf/ua
 ### Wire up the `postProcess` hook
 
 ```ts
-import { renderToBuffer } from '@imprint-pdf/react';
+import { pdf } from '@imprint-pdf/react';
 import { taggedPdf } from '@imprint-pdf/ua';
 
-const pdf = await renderToBuffer(
+const response = await pdf(
   <Document lang="en-US" title="Q1 Report">
     <Page size="A4" className="p-12">
       <h1 className="text-3xl font-bold">Accessible PDF</h1>

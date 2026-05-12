@@ -1,8 +1,8 @@
 # Overview
 
 imprint-pdf is a TypeScript library for generating PDFs as React components
-styled with real Tailwind CSS. It runs on Node, Bun, Cloudflare Workers, Vercel
-Edge, and the browser — with the same code path.
+styled with real Tailwind CSS. Same code path on Node, Bun, Cloudflare Workers,
+Vercel Edge, and the browser.
 
 ## What you write
 
@@ -21,12 +21,12 @@ const response = await pdf(
 );
 ```
 
-`pdf()` returns a `Response` you can hand straight to any web framework (Next.js
-routes, Hono, Bun.serve). Want bytes instead? Pass `{ as: 'bytes' }`. Streaming?
-`{ as: 'stream' }`. Fonts and Tailwind are loaded from `imprint.config.ts`
+`pdf()` returns a `Response`. Hand it to Next.js, Hono, `Bun.serve` — any web
+framework. Need raw bytes? `{ as: 'bytes' }`. A `ReadableStream`?
+`{ as: 'stream' }`. Fonts and Tailwind come from `imprint.config.ts`
 automatically.
 
-That's the whole authoring surface. No `StyleSheet.create`, no custom DSL, no
+That's the whole authoring surface. No `StyleSheet.create`. No custom DSL. No
 class subset table to memorise.
 
 ## What the pipeline does
@@ -37,8 +37,8 @@ React JSX (your component)
    ▼  Custom reconciler (react-reconciler)
 PdfNode IR tree
    │
-   ▼  Tailwind Oxide v4 compiler (or v3 PostCSS)
-Resolved style map (Lightning CSS AST)
+   ▼  Tailwind compiler (Oxide v4 or PostCSS v3, auto-detected)
+Resolved style map
    │
    ▼  Layout engine (Taffy WASM — Block + Flexbox + CSS Grid)
    │  + Inline layout (Parley-lite)
@@ -52,24 +52,27 @@ Computed geometry tree
 Positioned glyph runs + vector ops
    │
    ▼  PDF writer (pdf-lib v0 → imprint-pdf Rust WASM v1)
-Uint8Array | ReadableStream
+Response | Uint8Array | ReadableStream
 ```
 
 ## Pillars
 
-- **Real Tailwind.** The actual Tailwind v4 Oxide compiler resolves your classes
-  — including your plugins, your `@theme`, your arbitrary values.
-- **No Chromium.** The entire pipeline is JavaScript + WASM. Cold starts in the
-  40–100 ms range on Cloudflare Workers and Vercel Edge.
+- **Real Tailwind.** The actual Oxide compiler (v4) or PostCSS plugin (v3), not
+  a translator. Plugins, `@theme` tokens, arbitrary values, OKLCH colors — all
+  work.
+- **No Chromium.** The entire pipeline is JavaScript + WASM. Cold starts in
+  40–100 ms on Cloudflare Workers and Vercel Edge.
 - **Real typography.** HarfBuzz shaping, Knuth–Plass justification, ICU4X
   bidirectional text, variable font support. Better than what browsers do for
   paged text.
-- **CSS Grid.** Taffy is the only open layout engine that ships Block + Flexbox
-  - Grid. `@react-pdf/renderer`, Satori, and Forme do not have Grid.
-- **AcroForms in JSX.** Declarative `<TextField>`, `<Signature>`, etc. that
-  produce real PDF form fields — not screenshots of form-like UI.
-- **Apache-2.0 throughout.** Engine, React layer, Tailwind compiler, and the
-  PDF/X, PDF/UA, and signing surface all ship under one permissive license.
+- **CSS Grid.** Taffy ships Block + Flexbox + Grid in one layout pass.
+  `@react-pdf/renderer`, Satori, and Forme do not have Grid.
+- **AcroForms in JSX.** `<TextField>`, `<Signature>`, etc. produce real PDF form
+  fields, not screenshots of form-like UI.
+- **One API.** `pdf(<Doc />)` is everything. The output shape is a parameter,
+  not a different function name.
+- **Apache-2.0 throughout.** Engine, React layer, Tailwind compiler, CLI, and
+  the PDF/X, PDF/UA, signing add-ons all under one permissive license.
 
 ## How it compares
 

@@ -15,15 +15,15 @@ pnpm add -D @imprint-pdf/cli
 npx imprint init
 ```
 
-`imprint init` detects your framework (Next.js App Router or Pages, Vite, or
-generic Node) and writes everything needed: `imprint.config.ts`, the
-`withImprint` wrap on `next.config.{ts,mjs}` (or the `imprint()` plugin on
-`vite.config.ts`), an `ExamplePdf.tsx` template, and an `/api/pdf` route or
-`./src/pdf.ts` helper. Existing files are left untouched.
+`imprint init` detects your framework (Next.js, Vite, or generic Node) and
+writes the rest: `imprint.config.ts`, the right plugin wired into your
+`next.config.{ts,mjs}` or `vite.config.ts`, an `ExamplePdf.tsx` template, and an
+`/api/pdf` route (or `./src/pdf.ts` helper for Vite). Existing files are left
+alone.
 
-Create a Tailwind v4 stylesheet (CSS-first config). imprint-pdf auto-detects it
-at `src/app.css`, `src/globals.css`, `app/globals.css`, and a few other
-conventional locations — no extra wiring required:
+Author your Tailwind v4 stylesheet as you normally would. imprint-pdf
+auto-detects it at `src/app.css`, `src/globals.css`, `app/globals.css`, and a
+few other conventional locations:
 
 ```css
 /* src/app.css */
@@ -35,9 +35,12 @@ conventional locations — no extra wiring required:
 }
 ```
 
-The generated `imprint.config.ts` only needs your fonts:
+`@imprint-pdf/react/preset` registers the page-position variants (`page-first:`,
+`page-left:`, `page-right:`) Tailwind needs to know about so it compiles
+`page-first:p-12` correctly.
 
 ```ts
+// imprint.config.ts
 import { defineConfig } from '@imprint-pdf/core/config';
 
 export default defineConfig({
@@ -45,7 +48,7 @@ export default defineConfig({
 });
 ```
 
-> If your stylesheet lives somewhere unconventional, set
+> If your stylesheet lives somewhere unusual, set
 > `tailwind: { stylesheet: './path/to/your.css' }` explicitly.
 
 ## 3. Write a component
@@ -84,7 +87,7 @@ export function Invoice({ invoice }: InvoiceProps) {
 
 ## 4. Render
 
-### Node.js / server
+### Node.js
 
 ```ts
 // src/generate.ts
@@ -124,8 +127,8 @@ export async function GET(
 ```
 
 `pdf()` returns a `Response`, auto-loads `imprint.config.ts`, and auto-detects
-Node vs Edge runtime. Pass `{ as: 'bytes' }` to get a `Uint8Array` or
-`{ as: 'stream' }` for a `ReadableStream`.
+Node vs Edge runtime. `{ as: 'bytes' }` gives a `Uint8Array`; `{ as: 'stream' }`
+gives a `ReadableStream`.
 
 ### Browser (Vite)
 
@@ -149,23 +152,23 @@ npx imprint dev src/templates/Invoice.tsx
 # → http://localhost:4000
 ```
 
-Hot-reloads when you save. Uses the same pipeline as production.
+Hot-reloads when you save. Same pipeline as production.
 
 ## 6. Validate
 
-If you have `@imprint-pdf/ua` or `@imprint-pdf/print`:
+With `@imprint-pdf/ua` or `@imprint-pdf/print` installed:
 
 ```bash
 npx imprint validate ./out/invoice.pdf --profile pdf-ua-1
 ```
 
-Exits non-zero on failure — wire it into CI.
+Non-zero on failure — wire it into CI.
 
-## What's next
+## Where to go next
 
-- **[Concepts](concepts.md)** — how the pipeline fits together
-- **[Tailwind guide](guides/tailwind.md)** — what's supported, what's dropped
-- **[Typography](guides/typography.md)** — fonts, shaping, Knuth–Plass
-- **[Next.js](frameworks/nextjs.md)** or **[Vite](frameworks/vite.md)** —
-  framework setup
-- **[Cookbook](README.md#cookbook)** — real-world recipes
+- [Concepts](concepts.md) — how the pipeline fits together
+- [Tailwind](guides/tailwind.md) — what's supported, what isn't
+- [Typography](guides/typography.md) — fonts, shaping, Knuth–Plass
+- [Next.js](frameworks/nextjs.md) · [Vite](frameworks/vite.md) ·
+  [Bun](frameworks/bun.md) · [Cloudflare](frameworks/cloudflare.md)
+- [Cookbook](README.md#cookbook) — invoices, contracts, reports

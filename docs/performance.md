@@ -69,10 +69,9 @@ pnpm --filter @imprint-pdf/example-cloudflare-worker deploy --dry-run
 
 ## Methodology notes
 
-- Times use `performance.now()` around `pdf(..., { as: 'bytes' })` calls (the
-  lower-level `renderToBuffer` under the hood, no Response wrapping). The first
-  run in a process is excluded (V8 warm-up); reported numbers are median of 100
-  runs on warm WASM.
+- Times use `performance.now()` around `pdf(..., { as: 'bytes' })` calls (no
+  Response wrapping). The first run in a process is excluded (V8 warm-up);
+  reported numbers are median of 100 runs on warm WASM.
 - Cloudflare Worker numbers are from `wrangler dev` with `--local` flag and the
   Workers Unbound resource tier. Production edge may vary ±20%.
 - Gzip sizes from `gzip -9` of the production bundle output.

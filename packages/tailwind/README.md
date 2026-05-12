@@ -1,99 +1,21 @@
-# @imprint-pdf/tailwind
+# @imprint-pdf/tailwind (internal)
 
-Real Tailwind v4 integration for
-[imprint-pdf](https://github.com/tamimbinhakim/imprint-pdf).
+> **This package is internal to the
+> [imprint-pdf](https://github.com/tamimbinhakim/imprint-pdf) monorepo. It's not
+> published to npm.** Its code is inlined into `@imprint-pdf/react`,
+> `@imprint-pdf/next`, and `@imprint-pdf/vite` at build time — those are the
+> packages you actually install.
+>
+> If you're looking for Tailwind integration docs, see
+> [docs/integrations/tailwind-config.md](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/integrations/tailwind-config.md).
 
-Not a subset. Not a DSL. The actual Tailwind v4 Oxide compiler — your plugins,
-your `@theme`, your arbitrary values (`text-[#bada55]`, `mt-[3.7mm]`), all
-resolved the same way they are in the browser.
+## What's in here
 
-```bash
-pnpm add -D @imprint-pdf/tailwind tailwindcss
-```
+- `tw-runner.ts` — runtime tailwind compile (v3 and v4 dispatch).
+- `css-to-styles.ts` — CSS → resolved style map.
+- `vite.ts` — Vite plugin for compile-time class extraction.
+- `webpack.ts` — Webpack plugin for compile-time class extraction.
+- `runtime.ts` — small re-export surface.
 
-## How it works
-
-**Compile-time (recommended):** A Vite/Webpack plugin runs the Tailwind v4 Oxide
-CLI over your source files at build time. Classes are resolved into a static map
-that ships at zero runtime cost.
-
-**Runtime fallback:** An Oxide WASM build resolves classes at request time —
-useful for dynamic class names generated from data. Adds ~2 MB to the bundle;
-lazy-loaded on first use.
-
-**Hybrid (default):** The plugin pre-compiles static classes; the WASM fallback
-handles the rest. Mirrors how Tailwind v4 itself works in the playground.
-
-## Vite
-
-```ts
-// vite.config.ts
-import { defineConfig } from 'vite';
-import { imprintTailwind } from '@imprint-pdf/tailwind/vite';
-
-export default defineConfig({
-  plugins: [imprintTailwind()],
-});
-```
-
-## Webpack / Next.js
-
-```ts
-// next.config.ts
-import { withImprintTailwind } from '@imprint-pdf/tailwind/webpack';
-
-export default withImprintTailwind()({
-  // next config
-});
-```
-
-## Custom Tailwind config
-
-Tailwind v4 is configured CSS-first. imprint-pdf auto-detects your stylesheet
-from conventional locations — `src/app.css`, `src/globals.css`, `src/index.css`,
-`src/styles{,/app,/globals}.css`, `app/{app,globals}.css`, and
-`styles/{app,globals}.css` — and uses the first match. Your `@theme` tokens,
-`@plugin` directives, and custom variants are inherited identically.
-
-Override only when your CSS entry lives somewhere unusual:
-
-```ts
-imprintTailwind({ stylesheet: './src/styles/pdf.css' });
-```
-
-```css
-/* src/app.css */
-@import 'tailwindcss';
-@import '@imprint-pdf/tailwind/preset';
-
-@theme {
-  --font-sans: 'Inter', sans-serif;
-  --color-brand: #0f172a;
-}
-```
-
-Still on a Tailwind v3 `tailwind.config.ts`? Reference it from your CSS via the
-v4 compatibility directive:
-
-```css
-@import 'tailwindcss';
-@config '../tailwind.config.ts';
-```
-
-## Imprint-specific Tailwind variants
-
-| Variant                                    | Description                             |
-| ------------------------------------------ | --------------------------------------- |
-| `print:`                                   | Always active (unlike the browser).     |
-| `page-first:`, `page-left:`, `page-right:` | CSS Paged Media analogues.              |
-| `imprint:cmyk-[c_m_y_k]`                   | CMYK colour (via `@imprint-pdf/print`). |
-| `imprint:bleed-[size]`                     | Bleed area.                             |
-| `imprint:spot-[Pantone-185-C]`             | Spot colour.                            |
-| `imprint:overprint`                        | PDF overprint flag.                     |
-
-## What gets dropped
-
-CSS properties with no PDF analogue are silently discarded: `hover:`, `focus:`,
-`active:`, `:not()` pseudo-selectors, `transition-*`, `animation-*`,
-`position: sticky`, `position: fixed`. Pass `{ strict: true }` to the render
-options to surface these as warnings instead.
+These get bundled into the consumer packages' dist via `tsup`'s `noExternal`, so
+no separate npm install is needed.

@@ -58,15 +58,6 @@ const bytes = await pdf(<Doc />, { as: 'bytes' });
 const stream = await pdf(<Doc />, { as: 'stream' });
 ```
 
-### Lower-level primitives
-
-For consumers that want to skip the auto-config-load and Response wrapping:
-
-```ts
-renderToBuffer(element: ReactElement, options?: RenderOptions): Promise<Uint8Array>
-renderToStream(element: ReactElement, options?: RenderOptions): Promise<ReadableStream<Uint8Array>>
-```
-
 ### Components
 
 `Document`, `Page`, `View`, `Text`, `Image`, `Svg`, `Link`, `Bullet`,
@@ -76,9 +67,9 @@ renderToStream(element: ReactElement, options?: RenderOptions): Promise<Readable
 ### `@imprint-pdf/react/standalone`
 
 Self-contained build for v8-isolate runtimes (Cloudflare Workers, Vercel Edge,
-Bun). Same `pdf()`, `renderToBuffer`, `renderToStream` surface as the main
-entry; additionally accepts an optional pre-compiled `WebAssembly.Module` so
-hosts can avoid re-instantiating per request.
+Bun). Same `pdf()` surface as the main entry; additionally accepts an optional
+pre-compiled `WebAssembly.Module` so hosts can avoid re-instantiating per
+request.
 
 ```ts
 pdf(element, options?: PdfOptions & { wasm?: WebAssembly.Module }): Promise<Response | Uint8Array | ReadableStream<Uint8Array>>
@@ -93,13 +84,6 @@ pdf(element: ReactElement, options?: PdfOptions): Promise<Response | Uint8Array 
 Same overloads as `@imprint-pdf/react`'s `pdf()`. Auto-detects edge vs Node via
 `NEXT_RUNTIME === 'edge'` / `globalThis.EdgeRuntime` and dispatches to the
 matching `@imprint-pdf/react` build.
-
-The following are deprecated aliases that delegate to `pdf()` — they emit a
-`@deprecated` JSDoc tag and will be removed in the next major:
-
-- `renderToServer` → `pdf(el, { as: 'bytes' })`
-- `renderToEdge` → `pdf(el, { as: 'stream' })`
-- `createPdfResponse` → `pdf(el, { filename, disposition })`
 
 ### `@imprint-pdf/next/plugin`
 

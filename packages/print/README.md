@@ -25,14 +25,14 @@ pnpm add @imprint-pdf/print
 
 ## Usage
 
-Pass `printIntent()` as a `postProcess` hook to `renderToBuffer`:
+Pass `printIntent()` as a `postProcess` hook to `pdf()`:
 
 ```ts
-import { renderToBuffer } from '@imprint-pdf/react';
+import { pdf } from '@imprint-pdf/react';
 import { printIntent } from '@imprint-pdf/print';
 import fogra39 from './icc/FOGRA39.icc'; // Uint8Array
 
-const pdf = await renderToBuffer(element, {
+const response = await pdf(element, {
   postProcess: [
     printIntent({
       intent: 'PDF/X-4',
@@ -52,9 +52,10 @@ const pdf = await renderToBuffer(element, {
 ## PDF/A-3 + factur-X / ZUGFeRD
 
 ```ts
+import { pdf } from '@imprint-pdf/react';
 import { printIntent } from '@imprint-pdf/print';
 
-const pdf = await renderToBuffer(element, {
+const response = await pdf(element, {
   postProcess: [
     printIntent({
       intent: 'PDF/A-3B',

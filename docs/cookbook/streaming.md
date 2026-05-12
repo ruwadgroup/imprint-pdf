@@ -19,9 +19,6 @@ return new Response(stream, {
 
 The `'stream'` shape returns a `ReadableStream<Uint8Array>` that emits one chunk
 per page, followed by the cross-reference table when all pages are complete.
-(`renderToStream` from `@imprint-pdf/react` is the lower-level primitive `pdf()`
-calls under the hood — use it directly if you need to skip the
-auto-config-load.)
 
 ## Cloudflare Workers
 

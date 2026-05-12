@@ -4,9 +4,8 @@ Generating hundreds or thousands of PDFs efficiently.
 
 ## Concurrency model
 
-`pdf()` (and the lower-level `renderToBuffer` / `renderToStream`) is CPU-bound
-(WASM layout + shaping). It does not benefit from Node.js event loop
-concurrency. For true parallelism:
+`pdf()` is CPU-bound (WASM layout + shaping). It does not benefit from Node.js
+event loop concurrency. For true parallelism:
 
 - **Node.js**: use `worker_threads`.
 - **Bun**: use `Worker`.

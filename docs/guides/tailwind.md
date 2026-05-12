@@ -78,8 +78,7 @@ These are registered by the imprint-pdf preset (auto-loaded when you
 ## What gets dropped
 
 CSS properties with no PDF analogue are silently dropped. Pass
-`{ strict: true }` to `pdf()` (or the lower-level `renderToBuffer`) to get
-warnings instead.
+`{ strict: true }` to `pdf()` to get warnings instead.
 
 | Dropped category           | Examples                                                                 |
 | -------------------------- | ------------------------------------------------------------------------ |

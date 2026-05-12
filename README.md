@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://github.com/tamimbinhakim/imprint-pdf">
-    <img src="assets/banner-1.0.0-alpha.png" alt="imprint-pdf — real Tailwind, real React, real typography. PDFs anywhere — no Chromium, ever." width="100%" />
+    <img src="assets/banner-1.0.0-alpha.png" alt="imprint-pdf — author PDFs as React components, styled with real Tailwind, rendered without Chromium." width="100%" />
   </a>
 
 <br />
@@ -13,22 +13,15 @@
 [![Conventional Commits](https://img.shields.io/badge/conventional_commits-1.0.0-fa6673.svg)](https://www.conventionalcommits.org)
 [![Status: 1.0.0-alpha](https://img.shields.io/badge/status-1.0.0--alpha-red.svg)](#status)
 
-Author PDFs as React components, styled with **real Tailwind classes**. Run them
-anywhere JavaScript runs — Node, Bun, the browser, Vercel Edge, Cloudflare
-Workers. No Chromium. Ever.
+**A typesafe, edge-native, framework-agnostic PDF library for React. Real
+Tailwind. Real typography. No Chromium.**
 
 </div>
 
-<!-- prettier-ignore -->
-> [!WARNING]
-> imprint-pdf is in **1.0.0-alpha**. The public API will move. Pin exact
-> versions if anything depends on it. The name "imprint-pdf" is itself a
-> placeholder until 1.0 — see [`docs/naming.md`](docs/naming.md).
-
 ```tsx
-import { renderToBuffer, Document, Page } from '@imprint-pdf/react';
+import { pdf, Document, Page } from '@imprint-pdf/react';
 
-const pdf = await renderToBuffer(
+const response = await pdf(
   <Document>
     <Page size="A4" className="p-12 font-sans bg-white">
       <h1 className="text-3xl font-bold tracking-tight">Hello, PDF</h1>
@@ -40,50 +33,47 @@ const pdf = await renderToBuffer(
 );
 ```
 
-```bash
-npx imprint render Invoice.tsx --out=invoice.pdf
-```
+That's it. `pdf()` returns a `Response` you can hand to any web framework. Pass
+`{ as: 'bytes' }` for a `Uint8Array`, `{ as: 'stream' }` for a `ReadableStream`.
+Everything else is config the library doesn't make you write.
 
-## Why imprint-pdf
+## Why
 
-The PDF problem in JavaScript has three bad answers:
+Generating a PDF in a JavaScript app shouldn't require launching a 200 MB
+browser. It shouldn't require learning a hand-rolled `StyleSheet` DSL. It
+shouldn't require pushing coordinates by hand. And it should run in the same
+runtime as the rest of your code — Node, Bun, Vercel Edge, Cloudflare Workers,
+the browser.
 
-1. **Spin up Chromium** (Puppeteer, Playwright, Gotenberg, DocRaptor, PDFShift)
-   — 200 MB binaries, 1.5–3 s per render, no edge runtime.
-2. **`@react-pdf/renderer`** — React ergonomics, but a hand-rolled `StyleSheet`
-   DSL. Not real CSS. Not real Tailwind. No Knuth–Plass. No PDF/X.
-3. **`pdf-lib` / `PDFKit` / `jsPDF`** — imperative coordinate-pushing. No layout
-   engine. No React. No Tailwind.
+imprint-pdf gives you the **actual** Tailwind v4 Oxide compiler, the **actual**
+HarfBuzz shaping engine, the **actual** Knuth–Plass justification algorithm, and
+the **actual** Taffy layout engine (Block + Flexbox + CSS Grid). All Apache-2.0.
+All in one install.
 
-imprint-pdf is the fourth option. A TypeScript library with a Rust + WASM core
-that uses the **actual Tailwind v4 Oxide compiler**, the **actual HarfBuzz
-shaping engine**, the **actual Knuth–Plass justification algorithm**, and the
-**actual Taffy layout engine** (Block + Flexbox + CSS Grid). Sub-100 ms cold
-starts on Cloudflare Workers. PDF/X-4 + PDF/UA-1 ship as opt-in Apache-2.0
-add-ons — no paywall.
-
-## Quick features
+## Features
 
 - **Real Tailwind classes.** `p-4 grid grid-cols-12 gap-6 text-pretty` — the
-  real compiler, not a translator, not a subset. Plugins, presets, arbitrary
-  values, OKLCH colors, `@theme` design tokens all work.
-- **Real React.** A custom reconciler. JSX components, refs, hooks, Suspense.
-  HTML elements (`<div>`, `<h1>`, `<table>`) compile to semantically tagged PDF
-  nodes.
+  real compiler, not a translator, not a subset. Plugins, arbitrary values,
+  OKLCH colors, and `@theme` design tokens all work. Supports Tailwind v3 and v4
+  — auto-detected from your project's installed version.
+- **Real React.** A custom reconciler. JSX components, refs, hooks. HTML
+  elements (`<div>`, `<h1>`, `<table>`) compile to semantically tagged PDF
+  nodes. Works on React 18 and 19 — both reconciler majors are bundled.
 - **Real typography.** HarfBuzz shaping (Arabic, Indic, Thai, CJK, kerning,
   ligatures, variable fonts), Knuth–Plass justification, Plass page breaking
   (widows / orphans / footnotes).
-- **Edge-native.** Sub-100 ms cold on Cloudflare Workers and Vercel Edge. Same
-  code path on Node, Bun, the browser, Lambda, and Deno.
-- **CSS Grid.** Taffy (Rust → WASM). Block + Flexbox + Grid in the same layout
-  pass.
+- **One API.** `pdf(<Doc />)` returns a `Response`.
+  `pdf(<Doc />, { as: 'bytes' })` returns a `Uint8Array`.
+  `pdf(<Doc />, { as: 'stream' })` returns a `ReadableStream`. Same function
+  everywhere — Node, Bun, the browser, edge.
+- **Edge-native.** Sub-100 ms cold on Cloudflare Workers and Vercel Edge.
+- **CSS Grid.** Taffy (Rust → WASM). Block + Flexbox + Grid in one layout pass.
 - **Vector charts.** Recharts, Visx, ECharts, Observable Plot SVG output flows
   through the vector pipeline — crisp at any zoom, no rasterized PNG.
 - **AcroForms in JSX.** `<TextField>`, `<Checkbox>`, `<RadioGroup>`,
-  `<Signature>` declared as components. Widget rectangles come from the same
-  layout pass that lays out visual text.
+  `<Signature>` declared as components. Real PDF form fields, not screenshots.
 - **Print-grade output.** PDF/X-4 + CMYK + ICC profiles + PDF/UA-1 tagged PDF +
-  PKCS#7 signing + factur-X / ZUGFeRD.
+  PKCS#7 signing + factur-X / ZUGFeRD, all as opt-in add-ons.
 
 ## Documentation
 
@@ -91,81 +81,52 @@ Full documentation lives in [`docs/`](docs/):
 
 - **[Overview](docs/overview.md)** — what imprint-pdf does and where it fits
 - **[Quick start](docs/quick-start.md)** — render your first PDF in five minutes
-- **[Philosophy](docs/philosophy.md)** — why no Chromium, why real Tailwind, why
-  Knuth–Plass
-- **[Concepts](docs/concepts.md)** — documents, pages, the layout pass, the
-  writer
+- **[Philosophy](docs/philosophy.md)** — why no Chromium, why real Tailwind
+- **[Concepts](docs/concepts.md)** — documents, pages, layout, the writer
 - **[Guides](docs/README.md#guides)** — components, Tailwind, fonts, charts,
   forms, accessibility
 - **[Frameworks](docs/README.md#frameworks)** — Next.js, Vite, Bun, Cloudflare
-  Workers
-- **[Cookbook](docs/README.md#cookbook)** — invoices, contracts, tickets,
-  packing slips, books
-- **[Reference](docs/README.md#reference)** — every component, every CLI flag,
-  every export
+- **[Cookbook](docs/README.md#cookbook)** — invoices, contracts, reports
+- **[Reference](docs/README.md#reference)** — every component, every CLI flag
 
-## Installation
+## Install
 
 ```bash
-pnpm add @imprint-pdf/react @imprint-pdf/core
-pnpm add -D @imprint-pdf/cli @imprint-pdf/tailwind
+pnpm add @imprint-pdf/react @imprint-pdf/core tailwindcss
+pnpm add -D @imprint-pdf/cli
 npx imprint init
 ```
 
-## Quick start
+`imprint init` detects your framework (Next.js, Vite, generic Node), wires the
+right plugin into your config, scaffolds an example template + route, and prints
+the first command to run.
 
-Configure `imprint.config.ts`:
-
-```ts
-import { defineConfig } from '@imprint-pdf/core/config';
-
-export default defineConfig({
-  fonts: ['Inter', 'JetBrains Mono'],
-  pageSize: 'A4',
-  tailwind: { mode: 'compile-time' },
-});
-```
-
-Author your PDF as a React component:
-
-```tsx
-import { Document, Page } from '@imprint-pdf/react';
-
-export function Invoice({ data }: { data: InvoiceData }) {
-  return (
-    <Document title={`Invoice ${data.id}`}>
-      <Page size="A4" className="p-12 font-sans bg-white">
-        <h1 className="text-3xl font-bold tracking-tight">{data.id}</h1>
-        <table className="mt-8 w-full text-sm">{/* … */}</table>
-      </Page>
-    </Document>
-  );
-}
-```
-
-Render anywhere:
+## Render
 
 ```ts
-import { renderToBuffer } from '@imprint-pdf/react';
-const pdf = await renderToBuffer(<Invoice data={data} />);
+// Next.js / Hono / Bun route — returns a Response with PDF headers
+import { pdf } from '@imprint-pdf/next';
+export const GET = () => pdf(<Invoice data={data} />);
 ```
 
 ```ts
-// Cloudflare Worker
-import { renderToStream } from '@imprint-pdf/react/standalone';
+// Cloudflare Worker — same `pdf()`, edge-friendly build
+import { pdf } from '@imprint-pdf/react/standalone';
 import wasm from '@imprint-pdf/react/imprint.wasm';
 
 export default {
-  async fetch(req: Request) {
-    const stream = await renderToStream(<Invoice data={…} />, { wasm });
-    return new Response(stream, {
-      headers: { 'content-type': 'application/pdf' },
-    });
-  },
+  fetch: () => pdf(<Invoice data={…} />, { wasm }),
 };
 ```
 
-The full walkthrough is in [Quick start](docs/quick-start.md).
+```ts
+// Writing to disk — `{ as: 'bytes' }` gives back a Uint8Array
+import { pdf } from '@imprint-pdf/react';
+import { writeFileSync } from 'node:fs';
+
+const bytes = await pdf(<Invoice data={data} />, { as: 'bytes' });
+writeFileSync('./invoice.pdf', bytes);
+```
 
 ## How it works
 
@@ -173,29 +134,29 @@ The full walkthrough is in [Quick start](docs/quick-start.md).
 Source code  →  React reconciler  →  PdfNode IR
                                           │
                                           ▼
-                                Tailwind resolver
-                            (Oxide CLI or WASM fallback)
+                                  Tailwind resolver
+                              (Oxide v4 or PostCSS v3)
                                           │
                                           ▼
-                          Layout pass  (Taffy WASM)
+                            Layout pass  (Taffy WASM)
                           + inline layout (Parley-lite)
                           + Knuth–Plass paragraph breaker
                           + Plass page breaker
                                           │
                                           ▼
-                          Text & vector pipeline
+                            Text & vector pipeline
                           (HarfBuzz, ICU4X, fontkit, resvg)
                                           │
                                           ▼
-                          PDF writer  (pdf-lib v0 → imprint-pdf v1)
+                            PDF writer  (pdf-lib v0 → imprint-pdf v1)
                                           │
                                           ▼
-                          Uint8Array | ReadableStream
+                            Response | Uint8Array | ReadableStream
 ```
 
 For the full design, see [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
-## Why imprint-pdf over the alternatives
+## How it compares
 
 | Capability                        | `@react-pdf` | Satori | pdfme | Forme | Chromium SaaS | Typst |  imprint-pdf  |
 | --------------------------------- | :----------: | :----: | :---: | :---: | :-----------: | :---: | :-----------: |
@@ -214,9 +175,6 @@ For the full design, see [`ARCHITECTURE.md`](ARCHITECTURE.md).
 | Sub-100 ms edge cold start        |     n/a      |   ✓    | part. |   ✓   |       —       |   ✓   |     **✓**     |
 | Same code: client + edge + server |    part.     |   ✓    |   ✓   |   ✓   |      n/a      |   ✓   |     **✓**     |
 
-The one-liner: **Real Tailwind. Real React. Real typography. PDF anywhere — no
-Chromium, ever.**
-
 ## Benchmarks
 
 Measured with [`@imprint-pdf/bench`](packages/bench) on an Apple M-series laptop
@@ -230,13 +188,10 @@ JSX-driven library.
 | Puppeteer (warm, browser reused)    |    50.6 ms | 51.1 ms | 51.1 ms | 46.9 KB |
 | Puppeteer (cold, launch per render) |     473 ms | 494 ms  | 494 ms  | 46.9 KB |
 
-- **3.15× faster than `@react-pdf/renderer`** on the only fair head-to-head
-  comparison (both consume JSX, both run a layout pass).
-- **~12× faster than warm Chromium**, **~110× faster than cold Chromium** — the
-  cold number is what serverless functions actually pay, plus the 200 MB binary
-  download.
-
-Reproduce locally:
+3.15× faster than `@react-pdf/renderer` on the only fair head-to-head comparison
+(both consume JSX, both run a layout pass). ~12× faster than warm Chromium,
+~110× faster than cold Chromium — the cold number is what serverless functions
+actually pay, plus a 200 MB binary download.
 
 ```bash
 pnpm bench                    # runs competitors + complexity + pipeline + features
@@ -245,9 +200,9 @@ pnpm bench:all                # everything, including chromium
 ```
 
 Imperative libraries (`pdfkit`, `pdf-lib`, `jsPDF`) and template-based ones
-(`pdfme`) are intentionally excluded from the head-to-head — they're a different
-paradigm (no layout engine, no React) and the comparison would flatter
-imprint-pdf on ergonomics while making it look slow on µs-per-glyph.
+(`pdfme`) are intentionally excluded — they're a different paradigm and the
+comparison would flatter imprint-pdf on ergonomics while making it look slow on
+µs-per-glyph.
 
 ## Examples
 
@@ -257,18 +212,17 @@ imprint-pdf on ergonomics while making it look slow on µs-per-glyph.
 - [`examples/cloudflare-worker`](examples/cloudflare-worker) — Worker that
   streams a PDF in <100 ms cold
 - [`examples/bun-server`](examples/bun-server) — Bun + Hono PDF endpoint
+- [`examples/react18-tailwind3-nextjs`](examples/react18-tailwind3-nextjs) —
+  Next 14 + React 18 + Tailwind 3 smoke
 
 ```bash
 pnpm --filter @imprint-pdf/example-next-app dev
-pnpm --filter @imprint-pdf/example-vite-react dev
-pnpm --filter @imprint-pdf/example-cloudflare-worker dev
-pnpm --filter @imprint-pdf/example-bun-server dev
 ```
 
 ## Status
 
-**1.0.0-alpha.** Nothing is stable yet. The architecture is settled
-([`ARCHITECTURE.md`](ARCHITECTURE.md)); the API isn't.
+**1.0.0-alpha.** Architecture is settled ([`ARCHITECTURE.md`](ARCHITECTURE.md));
+the API is close. Pin exact versions.
 
 | Phase    | Versions        | What it means                                  |
 | -------- | --------------- | ---------------------------------------------- |
@@ -279,12 +233,12 @@ pnpm --filter @imprint-pdf/example-bun-server dev
 
 See [`STABILITY.md`](STABILITY.md) for the full contract.
 
-## Licensing
+## License
 
-Every package is **Apache-2.0** — the engine, the React layer, the Tailwind
-compiler, the CLI/integrations, _and_ the compliance & print add-ons (PDF/X-4
-with CMYK + ICC, PDF/UA-1 tagged PDF, PKCS#7 signing, factur-X / ZUGFeRD). No
-commercial seats, no time-bombed source. See [`LICENSING.md`](LICENSING.md).
+**Apache-2.0** — every package. Engine, React layer, Tailwind compiler, CLI,
+integrations, _and_ the compliance & print add-ons (PDF/X-4 + CMYK + ICC,
+PDF/UA-1 tagged PDF, PKCS#7 signing, factur-X / ZUGFeRD). No commercial seats,
+no time-bombed source. See [`LICENSING.md`](LICENSING.md).
 
 ## Contributing
 
@@ -296,10 +250,8 @@ pnpm typecheck   # composite tsc
 pnpm lint        # biome check
 ```
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full workflow and
-[`.github/RELEASING.md`](.github/RELEASING.md) for the release process.
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) and
+[`.github/RELEASING.md`](.github/RELEASING.md).
 
-## License
-
-**Apache-2.0** © [Tamim Bin Hakim](https://github.com/tamimbinhakim) and
-contributors — applies to every package in the repository.
+© [Tamim Bin Hakim](https://github.com/tamimbinhakim) and contributors.
+</content> </invoke>
