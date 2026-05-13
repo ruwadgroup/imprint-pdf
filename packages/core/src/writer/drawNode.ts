@@ -17,6 +17,7 @@ import type {
   LinkNode,
   PdfNode,
   RadioGroupNode,
+  RenderOptions,
   SignatureNode,
   TextFieldNode,
   TextNode,
@@ -32,7 +33,7 @@ import {
   drawSignature,
   drawTextField,
 } from './drawForms.js';
-import { drawImage } from './drawImage.js';
+import { drawImage, reportAssetError } from './drawImage.js';
 import { drawLink } from './drawLink.js';
 import { drawText } from './drawText.js';
 import { drawSvgString } from './svg/drawSvg.js';
@@ -239,11 +240,13 @@ async function drawBackgroundImage(
   css: string,
   resolver: AssetResolver,
   doc: PDFDocument,
+  onAssetError?: RenderOptions['onAssetError'],
 ): Promise<void> {
   const urlMatch = css.match(/url\(['"]?([^'")\s]+)['"]?\)/);
   if (!urlMatch?.[1]) return;
+  const src = urlMatch[1];
   try {
-    const bytes = await resolver.resolve(urlMatch[1]);
+    const bytes = await resolver.resolve(src);
     // PNG signature 89 50; anything else assumed JPEG (WebP/AVIF not supported).
     const isPng = bytes[0] === 0x89 && bytes[1] === 0x50;
     const img = isPng ? await doc.embedPng(bytes) : await doc.embedJpg(bytes);
@@ -253,7 +256,9 @@ async function drawBackgroundImage(
       width: Math.max(0.1, geo.width),
       height: Math.max(0.1, geo.height),
     });
-  } catch {}
+  } catch (err) {
+    reportAssetError({ src, kind: 'background-image', error: err }, onAssetError);
+  }
 }
 
 /**
@@ -271,6 +276,7 @@ export async function drawNode(
   resolver: AssetResolver,
   inheritedStyle: Record<string, unknown> = {},
   namedDests?: Map<string, PDFPage>,
+  onAssetError?: RenderOptions['onAssetError'],
 ): Promise<void> {
   const geo = geometries.get(node.id);
   if (!geo) return;
@@ -339,7 +345,7 @@ export async function drawNode(
   if (node.type !== 'text') {
     const bgImg = styleRecord.backgroundImage as string | undefined;
     if (bgImg && bgImg !== 'none') {
-      await drawBackgroundImage(page, geo, pdfYPos, bgImg, resolver, doc);
+      await drawBackgroundImage(page, geo, pdfYPos, bgImg, resolver, doc, onAssetError);
     }
   }
 
@@ -348,7 +354,7 @@ export async function drawNode(
       await drawText(node as TextNode, style, page, pageHeight, geo, fonts);
       break;
     case 'image':
-      await drawImage(node as ImageNode, page, pageHeight, geo, resolver, doc);
+      await drawImage(node as ImageNode, page, pageHeight, geo, resolver, doc, onAssetError);
       break;
     case 'link':
       drawLink(node as LinkNode, page, pageHeight, geo, doc, namedDests);
@@ -395,7 +401,7 @@ export async function drawNode(
         } catch (err) {
           // The rasterizer path can still throw (sharp/network); fail-soft so
           // the rest of the page renders. drawSvgString itself never throws.
-          console.warn('[imprint] failed to render SVG node, skipping:', err);
+          reportAssetError({ src: src ?? '<inline svg>', kind: 'svg', error: err }, onAssetError);
         }
       }
       break;
@@ -417,6 +423,7 @@ export async function drawNode(
         resolver,
         childInherited,
         namedDests,
+        onAssetError,
       );
     }
   }

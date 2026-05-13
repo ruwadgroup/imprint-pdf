@@ -28,6 +28,8 @@ export interface WritePdfOptions {
   postProcess?: PdfPostProcessHook[];
   /** Hooks invoked on the serialized byte buffer. */
   postBytes?: PdfPostBytesHook[];
+  /** Fail-soft image/SVG fetch handler — see `RenderOptions.onAssetError`. */
+  onAssetError?: import('../types.js').RenderOptions['onAssetError'];
 }
 
 function collectBookmarks(node: PdfNode, result: BookmarkNode[] = []): BookmarkNode[] {
@@ -127,7 +129,18 @@ export async function writePdf(
   ): Promise<void> {
     const cloned = substitutePageMarkers(template, pageIndex, totalPages);
     const geos = await runTaffyLayout(cloned, pageWidth, pageHeight, fonts);
-    await drawNode(cloned, page, pageHeight, geos, fonts, doc, resolver, {}, namedDests);
+    await drawNode(
+      cloned,
+      page,
+      pageHeight,
+      geos,
+      fonts,
+      doc,
+      resolver,
+      {},
+      namedDests,
+      options.onAssetError,
+    );
   }
 
   for (let i = 0; i < pageNodes.length; i++) {
@@ -137,7 +150,18 @@ export async function writePdf(
 
     // Watermark renders below content; header/footer above.
     if (watermarkNode) await drawRunning(watermarkNode, page, pageWidth, pageHeight, i);
-    await drawNode(pageNode, page, pageHeight, geometries, fonts, doc, resolver, {}, namedDests);
+    await drawNode(
+      pageNode,
+      page,
+      pageHeight,
+      geometries,
+      fonts,
+      doc,
+      resolver,
+      {},
+      namedDests,
+      options.onAssetError,
+    );
     if (runningHeader) await drawRunning(runningHeader, page, pageWidth, pageHeight, i);
     if (runningFooter) await drawRunning(runningFooter, page, pageWidth, pageHeight, i);
   }

@@ -1,6 +1,6 @@
 {
   "name": "@imprint-pdf/react",
-  "version": "1.0.0-alpha.9",
+  "version": "1.0.0-alpha.10",
   "description": "React components and reconciler for imprint-pdf — Document, Page, View, Text, Image, Svg, Form, and chart adapters.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",

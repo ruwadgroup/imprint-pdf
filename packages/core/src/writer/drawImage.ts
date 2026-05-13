@@ -1,6 +1,42 @@
 import type { PDFDocument, PDFPage } from 'pdf-lib';
-import type { AssetResolver, ComputedGeometry, ImageNode } from '../types.js';
+import type { AssetResolver, ComputedGeometry, ImageNode, RenderOptions } from '../types.js';
 import { pdfY } from './coords.js';
+
+/**
+ * URL schemes a Node/edge runtime can never fetch — fail fast with an
+ * actionable message instead of letting undici throw a generic
+ * `TypeError: fetch failed` from far inside the writer.
+ */
+const CLIENT_ONLY_SCHEMES = ['blob:', 'data-url:', 'chrome-extension:', 'moz-extension:'];
+
+function isClientOnlyScheme(src: string): boolean {
+  return CLIENT_ONLY_SCHEMES.some((s) => src.startsWith(s));
+}
+
+/**
+ * Default failure handler. Swallows the error so a broken image never aborts
+ * the whole PDF render — that's almost always the wrong behaviour for
+ * user-supplied content (a profile photo gone 404 shouldn't kill an invoice).
+ * Consumers can override via `RenderOptions.onAssetError`.
+ */
+export function reportAssetError(
+  info: { src: string; kind: 'image' | 'background-image' | 'font' | 'svg'; error: unknown },
+  onAssetError: RenderOptions['onAssetError'],
+): void {
+  if (onAssetError) {
+    // Intentionally do NOT catch: throwing from the hook is the supported
+    // way to opt into strict mode (abort the render on broken assets).
+    // Returning normally keeps the default fail-soft behaviour.
+    onAssetError(info);
+    return;
+  }
+  const reason =
+    info.error instanceof Error ? info.error.message : String(info.error ?? 'unknown error');
+  const hint = isClientOnlyScheme(info.src)
+    ? ' (URL scheme is browser-only — fetch the bytes client-side and pass a data: URL, an https: URL, or pre-uploaded asset path instead)'
+    : '';
+  console.warn(`[imprint] ${info.kind} asset failed: "${info.src}" — ${reason}${hint}`);
+}
 
 /** Resolves CSS `object-position` to `[posX, posY]` in 0–1 space (0 = top/left, 1 = bottom/right). */
 function parseObjectPosition(
@@ -29,9 +65,21 @@ export async function drawImage(
   geo: ComputedGeometry,
   resolver: AssetResolver,
   doc: PDFDocument,
+  onAssetError?: RenderOptions['onAssetError'],
 ): Promise<void> {
   const src = node.props.src;
   if (!src) return;
+  if (isClientOnlyScheme(String(src))) {
+    reportAssetError(
+      {
+        src: String(src),
+        kind: 'image',
+        error: new Error(`${String(src).split(':')[0]}: URLs are not fetchable server-side`),
+      },
+      onAssetError,
+    );
+    return;
+  }
   try {
     const bytes = await resolver.resolve(src);
     const ext = String(src).split('.').pop()?.toLowerCase();
@@ -119,6 +167,8 @@ export async function drawImage(
       height: Math.max(0.1, drawH),
     });
   } catch (err) {
-    console.warn(`[imprint] Failed to embed image "${src}":`, err);
+    // Swallow so one broken image doesn't kill the whole render. Consumers
+    // who want strict-mode behaviour pass `onAssetError` and throw from there.
+    reportAssetError({ src: String(src), kind: 'image', error: err }, onAssetError);
   }
 }

@@ -437,6 +437,37 @@ export interface RenderOptions {
    * pass to rewrite or append to the final byte stream.
    */
   postBytes?: PdfPostBytesHook[];
+  /**
+   * Called when an `<Image>` `src` (or background-image URL) can't be fetched
+   * or decoded. The default behaviour is to log a warning and continue
+   * rendering with that image omitted — failed fetches DO NOT crash the PDF
+   * generation. Pass a hook here to:
+   *
+   *   - collect a list of broken assets for logging / Sentry
+   *   - decide whether to throw on critical assets
+   *   - silence the default `console.warn` (pass a no-op)
+   *
+   * Throwing inside the hook propagates up and *will* abort the render — the
+   * default no-throw path is the safer choice for user-supplied content.
+   *
+   * ```ts
+   * await pdf(<Doc />, {
+   *   onAssetError: ({ src, error }) => {
+   *     Sentry.captureMessage(`PDF asset failed: ${src}`, { extra: { error } });
+   *   },
+   * });
+   * ```
+   */
+  onAssetError?: (info: AssetErrorInfo) => void;
+}
+
+export interface AssetErrorInfo {
+  /** The exact `src` string that failed (after URL-scheme rewrites like `fontsource:` → CDN URL). */
+  src: string;
+  /** Which subsystem encountered the failure. */
+  kind: 'image' | 'background-image' | 'font' | 'svg';
+  /** The underlying error — usually a `TypeError: fetch failed` or `Error: invalid method`. */
+  error: unknown;
 }
 
 export type SvgRasterizer = (

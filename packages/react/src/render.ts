@@ -66,6 +66,7 @@ async function renderInternal(
     const pdf = await writePdf(documentNode, geometries, options.fonts ?? [], resolver, {
       ...(options.postProcess && { postProcess: options.postProcess }),
       ...(options.postBytes && { postBytes: options.postBytes }),
+      ...(options.onAssetError && { onAssetError: options.onAssetError }),
     });
     return { pdf, tree: documentNode, geometries };
   } finally {

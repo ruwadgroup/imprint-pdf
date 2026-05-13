@@ -14,7 +14,7 @@ pnpm add -D @imprint-pdf/cli
 npx imprint init
 ```
 
-Current alpha (under the `alpha` dist-tag, not `latest`): `@imprint-pdf/core@1.0.0-alpha.9`, `@imprint-pdf/react@1.0.0-alpha.9`, `@imprint-pdf/next@1.0.0-alpha.9`, `@imprint-pdf/fonts@1.0.0-alpha.6`. Pin explicitly while we're pre-1.0 — `latest` may lag.
+Current alpha (under the `alpha` dist-tag, not `latest`): `@imprint-pdf/core@1.0.0-alpha.10`, `@imprint-pdf/react@1.0.0-alpha.10`, `@imprint-pdf/next@1.0.0-alpha.10`, `@imprint-pdf/fonts@1.0.0-alpha.6`. Pin explicitly while we're pre-1.0 — `latest` may lag.
 
 `imprint init` detects Next.js / Vite / generic Node and wires the rest.
 
@@ -286,7 +286,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
 - The consumer's `tailwindcss` and `postcss` for v3 Tailwind compilation (resolved via `createRequire(projectRoot)` at render time).
 - The consumer's `tailwind.config.{ts,js,mjs,cjs}` for v3 dispatch.
 
-Use `withImprint()` (≥ `@imprint-pdf/next@1.0.0-alpha.9`) and `@imprint-pdf/react@1.0.0-alpha.9+`. If you can't drop `withImprint()` into your `next.config`, set the same keys manually:
+Use `withImprint()` (≥ `@imprint-pdf/next@1.0.0-alpha.10`) and `@imprint-pdf/react@1.0.0-alpha.10+`. If you can't drop `withImprint()` into your `next.config`, set the same keys manually:
 
 ```js
 // next.config.{js,mjs,ts}
@@ -652,7 +652,7 @@ This package was unpublished. The Tailwind compiler is bundled inside `@imprint-
 
 ### Deploy: `Cannot find module 'react-reconciler-18'`
 
-Production deploy of a Next.js app on `output: 'standalone'` (Docker, Coolify, self-hosted Vercel). Vercel's nft didn't trace `react-reconciler` into `.next/standalone/node_modules`. Upgrade to `@imprint-pdf/react@1.0.0-alpha.9+` (lazy `await import('react-reconciler-XX')` which nft *can* trace) and use `withImprint()` from `@imprint-pdf/next/plugin`. Pre-alpha.7 used `createRequire(import.meta.url)('react-reconciler-18')` which nft couldn't follow. See [Next.js → Standalone deployments](#standalone-deployments-docker--coolify--self-hosted-vercel).
+Production deploy of a Next.js app on `output: 'standalone'` (Docker, Coolify, self-hosted Vercel). Vercel's nft didn't trace `react-reconciler` into `.next/standalone/node_modules`. Upgrade to `@imprint-pdf/react@1.0.0-alpha.10+` (lazy `await import('react-reconciler-XX')` which nft *can* trace) and use `withImprint()` from `@imprint-pdf/next/plugin`. Pre-alpha.7 used `createRequire(import.meta.url)('react-reconciler-18')` which nft couldn't follow. See [Next.js → Standalone deployments](#standalone-deployments-docker--coolify--self-hosted-vercel).
 
 ### Deploy: `Cannot find module 'tailwindcss'`
 
@@ -663,11 +663,11 @@ Same scenario, different module. `tailwindcss` and `postcss` are typically in `d
 Build's Node process runs out of heap during trace collection. Default Node heap (~4 GB) can be exceeded by large monorepos (imprint-pdf + Sentry + UI lib + ORM client + many routes). Two levers:
 
 1. `ENV NODE_OPTIONS=--max-old-space-size=8192` (or 12288) on the builder stage of the Dockerfile.
-2. Upgrade to `@imprint-pdf/react@1.0.0-alpha.9+`. Pre-alpha.7 used static `import * as Reconciler18 from 'react-reconciler-18'` which inflated every route's eager bundle. Alpha.7 switched to lazy `await import(...)` so the reconciler lives in a separate async chunk and per-route trace work shrinks.
+2. Upgrade to `@imprint-pdf/react@1.0.0-alpha.10+`. Pre-alpha.7 used static `import * as Reconciler18 from 'react-reconciler-18'` which inflated every route's eager bundle. Alpha.7 switched to lazy `await import(...)` so the reconciler lives in a separate async chunk and per-route trace work shrinks.
 
 ### Layout: tiny labels overlap their values; badge text appears bottom-aligned
 
-Pre-alpha.6 the Taffy layout pass measured every text leaf at the default 12pt × 1.2 lineHeight regardless of the parent's `text-[6.5pt]` etc., while `drawText` correctly cascaded the parent's fontSize. Layout boxes were sized for 12pt; glyphs were drawn at 6.5pt. Upgrade to `@imprint-pdf/core@1.0.0-alpha.9+`.
+Pre-alpha.6 the Taffy layout pass measured every text leaf at the default 12pt × 1.2 lineHeight regardless of the parent's `text-[6.5pt]` etc., while `drawText` correctly cascaded the parent's fontSize. Layout boxes were sized for 12pt; glyphs were drawn at 6.5pt. Upgrade to `@imprint-pdf/core@1.0.0-alpha.10+`.
 
 ---
 
