@@ -160,22 +160,22 @@ For the full design, see [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 ## How it compares
 
-| Capability                        | `@react-pdf` | Satori | pdfme | Forme | Chromium SaaS | Typst |  imprint-pdf  |
-| --------------------------------- | :----------: | :----: | :---: | :---: | :-----------: | :---: | :-----------: |
-| Real Tailwind classes             |   — (DSL)    | subset |   —   |   ✓   |       ✓       |   —   |     **✓**     |
-| React / JSX components            |      ✓       |   ✓    | part. |   ✓   |       —       |   —   |     **✓**     |
-| Edge runtimes (CF Workers)        |    part.     |   ✓    | part. |   ✓   |       —       |   ✓   |     **✓**     |
-| CSS Grid                          |      —       |   —    |   —   |   ?   |       ✓       |   ✓   | **✓** (Taffy) |
-| HarfBuzz-grade shaping            |      —       |   —    |   —   |   ✓   |       ✓       |   ✓   |     **✓**     |
-| Knuth–Plass justification         |      —       |   —    |   —   |   —   |   Prince ≈    |   ✓   |     **✓**     |
-| Variable fonts                    |    part.     |   —    |   —   |   ?   |       ✓       |   ✓   |     **✓**     |
-| Arabic / Indic / Thai / CJK       |     weak     |  weak  | weak  | part. |       ✓       |   ✓   |     **✓**     |
-| Vector charts                     |      —       |   —    |   —   |   ?   |       ✓       |   ✓   |     **✓**     |
-| AcroForms in JSX                  |      —       |  n/a   | tmpl. |   ✓   |       —       |   —   |     **✓**     |
-| PDF/X-4 + CMYK                    |      —       |   —    |   —   | part. |   DocRaptor   | part. |     **✓**     |
-| PDF/UA-1 tagged PDF               |      —       |   —    |   —   |   ✓   |   DocRaptor   | part. |     **✓**     |
-| Sub-100 ms edge cold start        |     n/a      |   ✓    | part. |   ✓   |       —       |   ✓   |     **✓**     |
-| Same code: client + edge + server |    part.     |   ✓    |   ✓   |   ✓   |      n/a      |   ✓   |     **✓**     |
+| Capability                        | `@react-pdf` | Satori | pdfme | Forme | Chromium SaaS | Typst | imprint-pdf |
+| --------------------------------- | :----------: | :----: | :---: | :---: | :-----------: | :---: | :---------: |
+| Real Tailwind classes             |   ❌ (DSL)   | subset |  ❌   |  ✅   |      ✅       |  ❌   |     ✅      |
+| React / JSX components            |      ✅      |   ✅   | part. |  ✅   |      ❌       |  ❌   |     ✅      |
+| Edge runtimes (CF Workers)        |    part.     |   ✅   | part. |  ✅   |      ❌       |  ✅   |     ✅      |
+| CSS Grid                          |      ❌      |   ❌   |  ❌   |  ❓   |      ✅       |  ✅   | ✅ (Taffy)  |
+| HarfBuzz-grade shaping            |      ❌      |   ❌   |  ❌   |  ✅   |      ✅       |  ✅   |     ✅      |
+| Knuth–Plass justification         |      ❌      |   ❌   |  ❌   |  ❌   |   Prince ≈    |  ✅   |     ✅      |
+| Variable fonts                    |    part.     |   ❌   |  ❌   |  ❓   |      ✅       |  ✅   |     ✅      |
+| Arabic / Indic / Thai / CJK       |     weak     |  weak  | weak  | part. |      ✅       |  ✅   |     ✅      |
+| Vector charts                     |      ❌      |   ❌   |  ❌   |  ❓   |      ✅       |  ✅   |     ✅      |
+| AcroForms in JSX                  |      ❌      |  n/a   | tmpl. |  ✅   |      ❌       |  ❌   |     ✅      |
+| PDF/X-4 + CMYK                    |      ❌      |   ❌   |  ❌   | part. |   DocRaptor   | part. |     ✅      |
+| PDF/UA-1 tagged PDF               |      ❌      |   ❌   |  ❌   |  ✅   |   DocRaptor   | part. |     ✅      |
+| Sub-100 ms edge cold start        |     n/a      |   ✅   | part. |  ✅   |      ❌       |  ✅   |     ✅      |
+| Same code: client + edge + server |    part.     |   ✅   |  ✅   |  ✅   |      n/a      |  ✅   |     ✅      |
 
 ## Benchmarks
 

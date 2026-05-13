@@ -76,21 +76,21 @@ Response | Uint8Array | ReadableStream
 
 ## How it compares
 
-| Capability                        | `@react-pdf/renderer` | Satori | Forme | Chromium SaaS  | **imprint-pdf** |
-| --------------------------------- | :-------------------: | :----: | :---: | :------------: | :-------------: |
-| Real Tailwind classes             |           ✗           |   ⚠    |   ✓   |       ✓        |      **✓**      |
-| React / JSX components            |           ✓           |   ✓    |   ✓   |       ✗        |      **✓**      |
-| Edge runtimes (CF Workers)        |           ⚠           |   ✓    |   ✓   |       ✗        |      **✓**      |
-| CSS Grid                          |           ✗           |   ✗    |   ?   |       ✓        |      **✓**      |
-| HarfBuzz shaping                  |           ✗           |   ✗    |   ✓   |       ✓        |      **✓**      |
-| Knuth–Plass justification         |           ✗           |   ✗    |   ✗   |       ✗        |      **✓**      |
-| Vector charts                     |           ✗           |   ✗    |   ?   |       ✓        |      **✓**      |
-| AcroForms in JSX                  |           ✗           |  n/a   |   ✓   |       ✗        |      **✓**      |
-| PDF/X-4 + CMYK                    |           ✗           |   ✗    |   ⚠   | DocRaptor only |      **✓**      |
-| PDF/UA-1 tagged PDF               |           ✗           |   ✗    |   ✓   | DocRaptor only |      **✓**      |
-| Sub-100 ms edge cold start        |          n/a          |   ✓    |   ✓   |       ✗        |      **✓**      |
-| Same code: client + edge + server |        partial        |   ✓    |   ✓   |      n/a       |      **✓**      |
-| Open source                       |           ✓           |   ✓    |   ✗   |       ✗        |      **✓**      |
+| Capability                        | `@react-pdf/renderer` | Satori | Forme | Chromium SaaS  | imprint-pdf |
+| --------------------------------- | :-------------------: | :----: | :---: | :------------: | :---------: |
+| Real Tailwind classes             |          ❌           |   ⚠️   |  ✅   |       ✅       |     ✅      |
+| React / JSX components            |          ✅           |   ✅   |  ✅   |       ❌       |     ✅      |
+| Edge runtimes (CF Workers)        |          ⚠️           |   ✅   |  ✅   |       ❌       |     ✅      |
+| CSS Grid                          |          ❌           |   ❌   |  ❓   |       ✅       |     ✅      |
+| HarfBuzz shaping                  |          ❌           |   ❌   |  ✅   |       ✅       |     ✅      |
+| Knuth–Plass justification         |          ❌           |   ❌   |  ❌   |       ❌       |     ✅      |
+| Vector charts                     |          ❌           |   ❌   |  ❓   |       ✅       |     ✅      |
+| AcroForms in JSX                  |          ❌           |  n/a   |  ✅   |       ❌       |     ✅      |
+| PDF/X-4 + CMYK                    |          ❌           |   ❌   |  ⚠️   | DocRaptor only |     ✅      |
+| PDF/UA-1 tagged PDF               |          ❌           |   ❌   |  ✅   | DocRaptor only |     ✅      |
+| Sub-100 ms edge cold start        |          n/a          |   ✅   |  ✅   |       ❌       |     ✅      |
+| Same code: client + edge + server |        partial        |   ✅   |  ✅   |      n/a       |     ✅      |
+| Open source                       |          ✅           |   ✅   |  ❌   |       ❌       |     ✅      |
 
 ## Status
 
