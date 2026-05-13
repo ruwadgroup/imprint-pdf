@@ -18,6 +18,7 @@ const STYLESHEET_AUTO_PATHS = [
   'styles/app.css',
   'styles/globals.css',
 ];
+
 const V3_CONFIG_AUTO_PATHS = [
   'tailwind.config.ts',
   'tailwind.config.js',
