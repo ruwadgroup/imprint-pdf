@@ -1,8 +1,21 @@
-import { createRequire } from 'node:module';
 import type { PdfNode, PdfNodeType, ResolvedStyle, VariantStyles } from '@imprint-pdf/core';
 import { resolveStylesWithVariants, shortHash } from '@imprint-pdf/core';
 import React, { type ReactElement } from 'react';
 import type ReactReconcilerType from 'react-reconciler';
+
+// Static side-effect imports so the Vercel / Next.js `nft` deployment tracer
+// statically sees both reconciler packages and includes them in the build
+// artifact. Indirect `createRequire(import.meta.url)(...)` calls aren't tracked
+// by nft even with literal specifiers, producing `Cannot find module
+// 'react-reconciler-18'` errors at deploy time. Static imports are followed.
+//
+// Both modules are factory exports — loading them is cheap and side-effect
+// free; only the matching one is invoked at runtime via the `IS_REACT_18`
+// selector below.
+import * as Reconciler18 from 'react-reconciler-18';
+import * as Reconciler18Constants from 'react-reconciler-18/constants.js';
+import * as Reconciler19 from 'react-reconciler-19';
+import * as Reconciler19Constants from 'react-reconciler-19/constants.js';
 
 // `createContext` is referenced only in the R19 branch below. Accessing it
 // through `React.createContext` instead of a bare named import keeps Next.js
@@ -10,27 +23,21 @@ import type ReactReconcilerType from 'react-reconciler';
 // pattern-matches bare `createContext` imports at the top of the module).
 const createContext = React.createContext;
 
-// `@imprint-pdf/react` ships both `react-reconciler@^0.29` (R18) and `^0.33`
-// (R19) under aliased package names — `react-reconciler-18` / `-19` — and
-// picks the matching one at module load. Consumers install neither directly.
 const IS_REACT_18 = parseInt(String(React.version ?? '19').split('.')[0] ?? '19', 10) < 19;
-const reconcilerSpecifier = IS_REACT_18 ? 'react-reconciler-18' : 'react-reconciler-19';
 
-// `createRequire` runs on Node ESM and CJS. Edge runtimes go through
-// `src/standalone.ts`; `react-reconciler` itself needs Node primitives so a
-// direct edge import of this file would fail regardless.
-const nodeRequire = createRequire(import.meta.url);
-const reconcilerModule = nodeRequire(reconcilerSpecifier) as
-  | typeof ReactReconcilerType
-  | { default: typeof ReactReconcilerType };
+type ReconcilerModuleShape = typeof ReactReconcilerType | { default: typeof ReactReconcilerType };
+type ConstantsModuleShape = { DefaultEventPriority: number; LegacyRoot: number };
+
+const reconcilerModule: ReconcilerModuleShape = IS_REACT_18
+  ? (Reconciler18 as unknown as ReconcilerModuleShape)
+  : (Reconciler19 as unknown as ReconcilerModuleShape);
 const ReactReconciler =
   (reconcilerModule as { default?: typeof ReactReconcilerType }).default ??
   (reconcilerModule as typeof ReactReconcilerType);
 
-const { DefaultEventPriority, LegacyRoot } = nodeRequire(`${reconcilerSpecifier}/constants.js`) as {
-  DefaultEventPriority: number;
-  LegacyRoot: number;
-};
+const { DefaultEventPriority, LegacyRoot } = (IS_REACT_18
+  ? Reconciler18Constants
+  : Reconciler19Constants) as unknown as ConstantsModuleShape;
 
 export interface Container {
   document: PdfNode | null;

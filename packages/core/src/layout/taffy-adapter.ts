@@ -308,8 +308,15 @@ function toTaffyStyle(style: ResolvedStyle, containerWidth: number): Style {
 interface LeafContext {
   node: PdfNode;
   fixed?: boolean;
-  /** Carries an ancestor's font-family down so text measure agrees with draw. */
-  inheritedFontFamily?: string;
+  /**
+   * Cascaded typography from ancestors. The reconciler creates text nodes
+   * with `style: {}` (parent's `<span className="text-[6.5pt]">` sits one
+   * level above), so the measure callback must use this cascade — or it
+   * measures every text leaf at the 12pt × 1.2 default and the drawn glyphs
+   * (which `drawNode` cascades correctly) sit inside an over-sized layout
+   * box, misaligning siblings.
+   */
+  inheritedStyle?: ResolvedStyle;
 }
 
 interface BuildResult {
@@ -322,28 +329,25 @@ function buildNode(
   node: PdfNode,
   tree: TaffyTree,
   containerWidth: number,
-  inheritedFontFamily?: string,
+  inheritedStyle?: ResolvedStyle,
 ): BuildResult {
   const isLeafFixed = node.type === 'image' || node.type === 'svg' || node.type === 'chart';
 
-  const ownFamily = (node.style.fontFamily as string | undefined) ?? undefined;
-  const passDownFamily = ownFamily ?? inheritedFontFamily;
+  // Typography cascades; geometry doesn't. measureText only reads typography
+  // fields so we can merge the whole style and let unrelated keys fall through.
+  const cascaded: ResolvedStyle = { ...(inheritedStyle ?? {}), ...node.style };
 
   if (node.type === 'text') {
     const s = new Style();
     s.display = Display.Flex;
-    const ctx: LeafContext = passDownFamily
-      ? { node, inheritedFontFamily: passDownFamily }
-      : { node };
+    const ctx: LeafContext = { node, inheritedStyle: cascaded };
     const taffyId = tree.newLeafWithContext(s, ctx);
     return { taffyId, imprintId: node.id, children: [] };
   }
 
   if (isLeafFixed) {
     const s = toTaffyStyle(node.style, containerWidth);
-    const ctx: LeafContext = passDownFamily
-      ? { node, fixed: true, inheritedFontFamily: passDownFamily }
-      : { node, fixed: true };
+    const ctx: LeafContext = { node, fixed: true, inheritedStyle: cascaded };
     const taffyId = tree.newLeafWithContext(s, ctx);
     return { taffyId, imprintId: node.id, children: [] };
   }
@@ -352,7 +356,7 @@ function buildNode(
   const childResults: BuildResult[] = [];
   const childTaffyIds: bigint[] = [];
   for (const child of node.children) {
-    const r = buildNode(child, tree, containerWidth, passDownFamily);
+    const r = buildNode(child, tree, containerWidth, cascaded);
     childResults.push(r);
     childTaffyIds.push(r.taffyId);
   }
@@ -424,11 +428,11 @@ async function layoutPage(
   const padding = resolveEdges(pageNode.style, 'padding', pageW);
   const contentW = pageW - padding.left - padding.right;
 
-  const pageFontFamily = pageNode.style.fontFamily as string | undefined;
+  const pageStyle: ResolvedStyle = pageNode.style;
   const childResults: BuildResult[] = [];
   const childTaffyIds: bigint[] = [];
   for (const child of pageNode.children) {
-    const r = buildNode(child, tree, contentW, pageFontFamily);
+    const r = buildNode(child, tree, contentW, pageStyle);
     childResults.push(r);
     childTaffyIds.push(r.taffyId);
   }
@@ -465,9 +469,11 @@ async function layoutPage(
       if (node.type === 'text') {
         const textNode = node as TextNode;
         const effectiveWidth = knownDimensions.width ?? (availW > 0 ? availW : pageW);
-        const style = textNode.style;
-        const familyRaw =
-          (style.fontFamily as string | undefined) ?? ctx.inheritedFontFamily ?? 'Helvetica';
+        // The text node's own style is empty (reconciler creates text leaves
+        // with `style: {}`); the visible styling lives on the parent element.
+        // Use the cascade so measure matches what drawText renders.
+        const style: ResolvedStyle = { ...(ctx.inheritedStyle ?? {}), ...textNode.style };
+        const familyRaw = (style.fontFamily as string | undefined) ?? 'Helvetica';
         const family =
           familyRaw
             .split(',')[0]

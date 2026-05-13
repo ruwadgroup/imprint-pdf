@@ -5,15 +5,15 @@
   "description": "imprint-pdf smoke example — Next.js 14 on React 18 with Tailwind v3.",
   "scripts": {
     "dev": "next dev",
-    "build": "tsc --noEmit",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "@imprint-pdf/core": "1.0.0-alpha.5",
+    "@imprint-pdf/core": "1.0.0-alpha.6",
     "@imprint-pdf/fonts": "1.0.0-alpha.6",
-    "@imprint-pdf/next": "1.0.0-alpha.5",
-    "@imprint-pdf/react": "1.0.0-alpha.5",
+    "@imprint-pdf/next": "1.0.0-alpha.6",
+    "@imprint-pdf/react": "1.0.0-alpha.6",
     "next": "14.2.35",
     "react": "^18",
     "react-dom": "^18"
