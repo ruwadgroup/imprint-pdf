@@ -67,19 +67,15 @@ export function resolveClassNameWithVariants(className: string): {
 /** Merges `override` over `base`; `undefined` in `override` means "not set". */
 export function mergeStyles(base: ResolvedStyle, override: ResolvedStyle): ResolvedStyle {
   const result: ResolvedStyle = { ...base };
-  for (const key of Object.keys(override) as Array<keyof ResolvedStyle>) {
-    const val = override[key];
-    if (val !== undefined) {
-      (result as Record<string, unknown>)[key] = val;
-    }
+  for (const [key, val] of Object.entries(override)) {
+    if (val !== undefined) (result as Record<string, unknown>)[key] = val;
   }
   return result;
 }
 
 export function resolveStyles(className?: string, style?: Partial<ResolvedStyle>): ResolvedStyle {
   const base = className ? resolveClassName(className) : {};
-  const inline = style ?? {};
-  return mergeStyles(base, inline as ResolvedStyle);
+  return mergeStyles(base, (style ?? {}) as ResolvedStyle);
 }
 
 export function resolveStylesWithVariants(
@@ -89,6 +85,5 @@ export function resolveStylesWithVariants(
   const { base, variants } = className
     ? resolveClassNameWithVariants(className)
     : { base: {} as ResolvedStyle, variants: {} as VariantStyles };
-  const inline = style ?? {};
-  return { style: mergeStyles(base, inline as ResolvedStyle), variants };
+  return { style: mergeStyles(base, (style ?? {}) as ResolvedStyle), variants };
 }

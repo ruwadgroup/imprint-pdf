@@ -140,9 +140,8 @@ export function withImprint(pluginOptions: ImprintPluginOptions = {}) {
           config.plugins.push(new ImprintWebpackPlugin(compactDefined(pluginOptions.tailwind)));
           if (pluginOptions.debug) console.info('[imprint] ImprintWebpackPlugin registered');
         } catch (err) {
-          if (pluginOptions.debug) {
+          if (pluginOptions.debug)
             console.warn('[imprint] Could not load ImprintWebpackPlugin:', String(err));
-          }
         }
 
         // Run the user's webpack hook last so they can override.

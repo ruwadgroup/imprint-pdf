@@ -8,11 +8,10 @@ import { parseColor, toPt } from './color.js';
 import { alignTextX } from './coords.js';
 
 function firstFontFamily(value: string | undefined): string | undefined {
-  if (!value) return undefined;
   return (
     value
-      .split(',')[0]!
-      .trim()
+      ?.split(',')[0]
+      ?.trim()
       .replace(/^['"]|['"]$/g, '') || undefined
   );
 }
@@ -95,33 +94,19 @@ export async function drawText(
     if (!line.width || !(hasUnderline || hasStrikethrough || hasOverline)) continue;
 
     const lineEnd = lineX + line.width;
+    const drawDecoration = (yOffset: number): void => {
+      const y = lineY + yOffset;
+      page.drawLine({
+        start: { x: lineX, y },
+        end: { x: lineEnd, y },
+        thickness: decorationThickness,
+        color,
+        opacity,
+      });
+    };
 
-    if (hasUnderline) {
-      page.drawLine({
-        start: { x: lineX, y: lineY - fontSize * 0.12 },
-        end: { x: lineEnd, y: lineY - fontSize * 0.12 },
-        thickness: decorationThickness,
-        color,
-        opacity,
-      });
-    }
-    if (hasStrikethrough) {
-      page.drawLine({
-        start: { x: lineX, y: lineY + fontSize * 0.38 },
-        end: { x: lineEnd, y: lineY + fontSize * 0.38 },
-        thickness: decorationThickness,
-        color,
-        opacity,
-      });
-    }
-    if (hasOverline) {
-      page.drawLine({
-        start: { x: lineX, y: lineY + fontSize * 1.05 },
-        end: { x: lineEnd, y: lineY + fontSize * 1.05 },
-        thickness: decorationThickness,
-        color,
-        opacity,
-      });
-    }
+    if (hasUnderline) drawDecoration(-fontSize * 0.12);
+    if (hasStrikethrough) drawDecoration(fontSize * 0.38);
+    if (hasOverline) drawDecoration(fontSize * 1.05);
   }
 }

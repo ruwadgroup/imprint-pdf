@@ -41,7 +41,7 @@ function uuidV4(): string {
   else for (let i = 0; i < 16; i++) bytes[i] = Math.floor(Math.random() * 256);
   bytes[6] = (bytes[6]! & 0x0f) | 0x40;
   bytes[8] = (bytes[8]! & 0x3f) | 0x80;
-  const hex = [...bytes].map((b) => b.toString(16).padStart(2, '0')).join('');
+  const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
 }
 
@@ -49,8 +49,9 @@ export function buildXmpPacket(input: XmpInput): string {
   const lang = input.lang ?? 'x-default';
   const creatorTool = input.creatorTool ?? 'imprint';
   const producer = input.producer ?? 'imprint';
-  const createDate = isoDate(input.createDate ?? new Date());
-  const modifyDate = isoDate(input.modifyDate ?? input.createDate ?? new Date());
+  const now = new Date();
+  const createDate = isoDate(input.createDate ?? now);
+  const modifyDate = isoDate(input.modifyDate ?? input.createDate ?? now);
   const documentId = input.documentId ?? uuidV4();
   const instanceId = input.instanceId ?? uuidV4();
 
@@ -68,7 +69,7 @@ export function buildXmpPacket(input: XmpInput): string {
       `<dc:description><rdf:Alt><rdf:li xml:lang="${esc(lang)}">${esc(input.subject)}</rdf:li></rdf:Alt></dc:description>`,
     );
   }
-  if (input.keywords && input.keywords.length > 0) {
+  if (input.keywords?.length) {
     const items = input.keywords.map((k) => `<rdf:li>${esc(k)}</rdf:li>`).join('');
     dc.push(`<dc:subject><rdf:Bag>${items}</rdf:Bag></dc:subject>`);
   }
@@ -93,7 +94,7 @@ export function buildXmpPacket(input: XmpInput): string {
     `<xmp:ModifyDate>${modifyDate}</xmp:ModifyDate>`,
     `<xmp:MetadataDate>${modifyDate}</xmp:MetadataDate>`,
     `<pdf:Producer>${esc(producer)}</pdf:Producer>`,
-    ...(input.keywords && input.keywords.length > 0
+    ...(input.keywords?.length
       ? [`<pdf:Keywords>${esc(input.keywords.join(', '))}</pdf:Keywords>`]
       : []),
     `<xmpMM:DocumentID>uuid:${documentId}</xmpMM:DocumentID>`,

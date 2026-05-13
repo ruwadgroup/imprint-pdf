@@ -13,7 +13,7 @@ const EXPRESSION_STRING_RE = /className\s*=\s*\{["']([^"']+)["']\}/g;
 
 function extractClasses(code: string): string[] {
   const found: string[] = [];
-  const extract = (re: RegExp) => {
+  for (const re of [STATIC_CLASS_RE, TEMPLATE_CLASS_RE, EXPRESSION_STRING_RE]) {
     re.lastIndex = 0;
     let match = re.exec(code);
     while (match !== null) {
@@ -24,10 +24,7 @@ function extractClasses(code: string): string[] {
       }
       match = re.exec(code);
     }
-  };
-  extract(STATIC_CLASS_RE);
-  extract(TEMPLATE_CLASS_RE);
-  extract(EXPRESSION_STRING_RE);
+  }
   return found;
 }
 
@@ -72,11 +69,9 @@ export function imprintTailwind(options: ImprintTailwindOptions = {}): Plugin {
     return added;
   }
 
-  if (options.safelist) {
-    for (const cls of options.safelist) {
-      for (const c of cls.split(/\s+/)) {
-        if (c) classSet.add(c);
-      }
+  for (const cls of options.safelist ?? []) {
+    for (const c of cls.split(/\s+/)) {
+      if (c) classSet.add(c);
     }
   }
 
@@ -107,9 +102,7 @@ export function imprintTailwind(options: ImprintTailwindOptions = {}): Plugin {
 
       cachedModule = null;
 
-      if (debug) {
-        console.info(`[imprint-tailwind] pre-scan complete — ${classSet.size} classes`);
-      }
+      if (debug) console.info(`[imprint-tailwind] pre-scan complete — ${classSet.size} classes`);
     },
 
     transform(code: string, id: string) {
@@ -119,8 +112,7 @@ export function imprintTailwind(options: ImprintTailwindOptions = {}): Plugin {
     },
 
     resolveId(id: string) {
-      if (id === VIRTUAL_MODULE_ID) return RESOLVED_VIRTUAL_ID;
-      return null;
+      return id === VIRTUAL_MODULE_ID ? RESOLVED_VIRTUAL_ID : null;
     },
 
     async load(id: string) {
@@ -128,9 +120,7 @@ export function imprintTailwind(options: ImprintTailwindOptions = {}): Plugin {
       if (cachedModule !== null) return cachedModule;
 
       const styleMap = await runTailwind(classSet, options, projectRoot);
-      if (debug) {
-        console.info(`[imprint-tailwind] resolved ${styleMap.size} classes`);
-      }
+      if (debug) console.info(`[imprint-tailwind] resolved ${styleMap.size} classes`);
 
       const classMap: Record<string, unknown> = {};
       for (const [cls, style] of styleMap) {
@@ -145,8 +135,7 @@ export function imprintTailwind(options: ImprintTailwindOptions = {}): Plugin {
       return cachedModule;
     },
 
-    handleHotUpdate(ctx: HmrContext) {
-      const { file, server } = ctx;
+    handleHotUpdate({ file, server }: HmrContext) {
       if (!/\.[jt]sx?$/.test(file) || file.includes('node_modules')) return;
       try {
         if (addClasses(readFileSync(file, 'utf8'))) {

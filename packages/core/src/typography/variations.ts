@@ -38,14 +38,13 @@ export function deriveAxesFromStyle(style: {
   }
   if (out.wdth === undefined && style.fontStretch !== undefined) {
     const raw = String(style.fontStretch).trim();
-    const pct =
-      STRETCH_PERCENTS[raw] ??
-      (raw.endsWith('%')
-        ? parseFloat(raw)
-        : Number.isFinite(parseFloat(raw))
-          ? parseFloat(raw)
-          : undefined);
-    if (pct !== undefined) out.wdth = pct;
+    const named = STRETCH_PERCENTS[raw];
+    if (named !== undefined) {
+      out.wdth = named;
+    } else {
+      const n = parseFloat(raw);
+      if (Number.isFinite(n)) out.wdth = n;
+    }
   }
   return out;
 }

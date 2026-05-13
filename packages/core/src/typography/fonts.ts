@@ -75,6 +75,12 @@ function fontKey(family: string, weight: number, style: 'normal' | 'italic'): st
   return `${family}:${weight}:${style}`;
 }
 
+function declWeight(weight: FontDeclaration['weight']): number {
+  if (typeof weight === 'number') return weight;
+  if (weight === undefined) return 400;
+  return parseInt(String(weight), 10);
+}
+
 // Fontkit chokes on some .woff2 with RangeError; retry once with TTF/OTF.
 // Fontsource and most CDNs ship both side-by-side, so swapping the format slot
 // usually just works. Returns null if there's no plausible fallback.
@@ -134,12 +140,7 @@ async function loadCustomFont(
   if (!loaded) return undefined;
   const { bytes, pdfFont } = loaded;
 
-  const weight =
-    typeof decl.weight === 'number'
-      ? decl.weight
-      : decl.weight !== undefined
-        ? parseInt(String(decl.weight), 10)
-        : 400;
+  const weight = declWeight(decl.weight);
   const style: 'normal' | 'italic' = decl.style ?? 'normal';
 
   // pdf-lib doesn't expose metrics publicly — reach into the embedder. The
@@ -211,12 +212,7 @@ export async function loadFontMetricsOnly(
   for (const decl of declarations) {
     try {
       const bytes = await resolver.resolve(decl.src);
-      const weight =
-        typeof decl.weight === 'number'
-          ? decl.weight
-          : decl.weight !== undefined
-            ? parseInt(String(decl.weight), 10)
-            : 400;
+      const weight = declWeight(decl.weight);
       const style: 'normal' | 'italic' = decl.style ?? 'normal';
       fonts.set(fontKey(decl.family, weight, style), {
         family: decl.family,
@@ -246,12 +242,7 @@ export async function loadFonts(
   for (const decl of declarations) {
     const loaded = await loadCustomFont(doc, decl, resolver);
     if (loaded) {
-      const weight =
-        typeof decl.weight === 'number'
-          ? decl.weight
-          : decl.weight !== undefined
-            ? parseInt(String(decl.weight), 10)
-            : 400;
+      const weight = declWeight(decl.weight);
       const style: 'normal' | 'italic' = decl.style ?? 'normal';
       fonts.set(fontKey(decl.family, weight, style), loaded);
     }
@@ -284,21 +275,19 @@ export function selectFont(
   const exact = fonts.get(fontKey(family, weight, style));
   if (exact) return exact;
 
-  const families = [...fonts.values()].filter((f) => f.family === family);
-  if (families.length > 0) {
-    let best: LoadedFont | undefined;
-    let bestDiff = Infinity;
-    // Style mismatch costs 100, which exceeds the max weight gap (800), so
-    // a matching-style font always beats a wrong-style one.
-    for (const f of families) {
-      const diff = Math.abs(f.weight - weight) + (f.style !== style ? 100 : 0);
-      if (diff < bestDiff) {
-        bestDiff = diff;
-        best = f;
-      }
+  // Style mismatch costs 100, which exceeds the max weight gap (800), so
+  // a matching-style font always beats a wrong-style one.
+  let best: LoadedFont | undefined;
+  let bestDiff = Infinity;
+  for (const f of fonts.values()) {
+    if (f.family !== family) continue;
+    const diff = Math.abs(f.weight - weight) + (f.style !== style ? 100 : 0);
+    if (diff < bestDiff) {
+      bestDiff = diff;
+      best = f;
     }
-    if (best) return best;
   }
+  if (best) return best;
 
   const canonical = normalizeFamily(family);
   if (canonical !== family) {

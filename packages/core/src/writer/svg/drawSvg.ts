@@ -144,17 +144,18 @@ function ensurePatternResource(ctx: DrawCtx, ref: PDFRef): string {
 }
 
 // pdf-lib doesn't expose pattern-paint operators — emit them by hand.
+function op(name: string, args: unknown[] = []): PDFOperator {
+  return PDFOperator.of(name as never, args as never[]);
+}
 function setFillingColorSpace(name: string): PDFOperator {
-  return PDFOperator.of('cs' as never, [PDFName.of(name)]);
+  return op('cs', [PDFName.of(name)]);
 }
 function setFillingPattern(name: string): PDFOperator {
-  return PDFOperator.of('scn' as never, [PDFName.of(name)]);
+  return op('scn', [PDFName.of(name)]);
 }
 
 function applyMatrix(ctx: DrawCtx, m: Mat): void {
-  ctx.page.pushOperators(
-    PDFOperator.of('cm' as never, [m[0], m[1], m[2], m[3], m[4], m[5]] as unknown as never[]),
-  );
+  ctx.page.pushOperators(op('cm', [m[0], m[1], m[2], m[3], m[4], m[5]]));
 }
 
 function emitPathOperators(page: PDFPage, d: string): void {
@@ -188,7 +189,7 @@ function emitPathOperators(page: PDFPage, d: string): void {
         cy = y;
         sx = x;
         sy = y;
-        ops.push(PDFOperator.of('m' as never, [x, y] as unknown as never[]));
+        ops.push(op('m', [x, y]));
         lastCtrl = null;
         break;
       }
@@ -198,7 +199,7 @@ function emitPathOperators(page: PDFPage, d: string): void {
         const y = num() + (rel ? cy : 0);
         cx = x;
         cy = y;
-        ops.push(PDFOperator.of('l' as never, [x, y] as unknown as never[]));
+        ops.push(op('l', [x, y]));
         lastCtrl = null;
         break;
       }
@@ -206,7 +207,7 @@ function emitPathOperators(page: PDFPage, d: string): void {
       case 'h': {
         const x = num() + (rel ? cx : 0);
         cx = x;
-        ops.push(PDFOperator.of('l' as never, [x, cy] as unknown as never[]));
+        ops.push(op('l', [x, cy]));
         lastCtrl = null;
         break;
       }
@@ -214,7 +215,7 @@ function emitPathOperators(page: PDFPage, d: string): void {
       case 'v': {
         const y = num() + (rel ? cy : 0);
         cy = y;
-        ops.push(PDFOperator.of('l' as never, [cx, y] as unknown as never[]));
+        ops.push(op('l', [cx, y]));
         lastCtrl = null;
         break;
       }
@@ -226,7 +227,7 @@ function emitPathOperators(page: PDFPage, d: string): void {
         const y2 = num() + (rel ? cy : 0);
         const x = num() + (rel ? cx : 0);
         const y = num() + (rel ? cy : 0);
-        ops.push(PDFOperator.of('c' as never, [x1, y1, x2, y2, x, y] as unknown as never[]));
+        ops.push(op('c', [x1, y1, x2, y2, x, y]));
         cx = x;
         cy = y;
         lastCtrl = [x2, y2];
@@ -240,7 +241,7 @@ function emitPathOperators(page: PDFPage, d: string): void {
         const y = num() + (rel ? cy : 0);
         const x1 = lastCtrl ? 2 * cx - lastCtrl[0] : cx;
         const y1 = lastCtrl ? 2 * cy - lastCtrl[1] : cy;
-        ops.push(PDFOperator.of('c' as never, [x1, y1, x2, y2, x, y] as unknown as never[]));
+        ops.push(op('c', [x1, y1, x2, y2, x, y]));
         cx = x;
         cy = y;
         lastCtrl = [x2, y2];
@@ -256,7 +257,7 @@ function emitPathOperators(page: PDFPage, d: string): void {
         const y1 = cy + (2 / 3) * (qy - cy);
         const x2 = x + (2 / 3) * (qx - x);
         const y2 = y + (2 / 3) * (qy - y);
-        ops.push(PDFOperator.of('c' as never, [x1, y1, x2, y2, x, y] as unknown as never[]));
+        ops.push(op('c', [x1, y1, x2, y2, x, y]));
         cx = x;
         cy = y;
         lastCtrl = [qx, qy];
@@ -273,7 +274,7 @@ function emitPathOperators(page: PDFPage, d: string): void {
         const y1 = cy + (2 / 3) * (qy - cy);
         const x2 = x + (2 / 3) * (qx - x);
         const y2 = y + (2 / 3) * (qy - y);
-        ops.push(PDFOperator.of('c' as never, [x1, y1, x2, y2, x, y] as unknown as never[]));
+        ops.push(op('c', [x1, y1, x2, y2, x, y]));
         cx = x;
         cy = y;
         lastCtrl = [qx, qy];
@@ -289,7 +290,7 @@ function emitPathOperators(page: PDFPage, d: string): void {
         const ex = num() + (rel ? cx : 0);
         const ey = num() + (rel ? cy : 0);
         for (const seg of arcToBezier(cx, cy, ex, ey, rx, ry, xRot, largeArc, sweep)) {
-          ops.push(PDFOperator.of('c' as never, seg as unknown as never[]));
+          ops.push(op('c', seg));
         }
         cx = ex;
         cy = ey;
@@ -455,11 +456,11 @@ function drawShape(ctx: DrawCtx, el: SvgElement, parentTransform: Mat, opacitySc
     const hasFill = fillPaint.kind !== 'none';
     const hasStroke = strokePaint.kind !== 'none';
     if (hasFill && hasStroke) {
-      ctx.page.pushOperators(fillRule ? PDFOperator.of('B*' as never) : fillAndStroke());
+      ctx.page.pushOperators(fillRule ? op('B*') : fillAndStroke());
     } else if (hasStroke) {
       ctx.page.pushOperators(stroke());
     } else if (hasFill) {
-      ctx.page.pushOperators(fillRule ? PDFOperator.of('f*' as never) : fill());
+      ctx.page.pushOperators(fillRule ? op('f*') : fill());
     } else {
       ctx.page.pushOperators(endPath());
     }
@@ -474,9 +475,18 @@ function isIdentity(m: Mat): boolean {
   return m[0] === 1 && m[1] === 0 && m[2] === 0 && m[3] === 1 && m[4] === 0 && m[5] === 0;
 }
 
+const SKIP_TAGS = new Set([
+  'defs',
+  'linearGradient',
+  'radialGradient',
+  'mask',
+  'filter',
+  'clipPath',
+]);
+const SHAPE_TAGS = new Set(['path', 'rect', 'circle', 'ellipse', 'line', 'polyline', 'polygon']);
+
 function walk(ctx: DrawCtx, el: SvgElement, parent: Mat, opacityScale: number): void {
-  if (el.tag === 'defs' || el.tag === 'linearGradient' || el.tag === 'radialGradient') return;
-  if (el.tag === 'mask' || el.tag === 'filter' || el.tag === 'clipPath') return;
+  if (SKIP_TAGS.has(el.tag)) return;
 
   if (el.tag === 'g' || el.tag === 'svg') {
     const local = multiply(parent, parseTransform(el.attrs.transform));
@@ -485,15 +495,7 @@ function walk(ctx: DrawCtx, el: SvgElement, parent: Mat, opacityScale: number): 
     return;
   }
 
-  if (
-    el.tag === 'path' ||
-    el.tag === 'rect' ||
-    el.tag === 'circle' ||
-    el.tag === 'ellipse' ||
-    el.tag === 'line' ||
-    el.tag === 'polyline' ||
-    el.tag === 'polygon'
-  ) {
+  if (SHAPE_TAGS.has(el.tag)) {
     drawShape(ctx, el, parent, opacityScale);
   }
 }
@@ -539,12 +541,7 @@ export function drawSvgString(
 
   page.pushOperators(pushGraphicsState());
   try {
-    page.pushOperators(
-      PDFOperator.of(
-        'cm' as never,
-        [sx, 0, 0, -sy, opts.x - viewBox.x * sx, pdfTop + viewBox.y * sy] as unknown as never[],
-      ),
-    );
+    page.pushOperators(op('cm', [sx, 0, 0, -sy, opts.x - viewBox.x * sx, pdfTop + viewBox.y * sy]));
 
     const ctx: DrawCtx = {
       page,

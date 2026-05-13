@@ -47,30 +47,10 @@ function parseStops(el: SvgElement): GradientStop[] {
 
 function buildShadingFunction(page: PDFPage, stops: GradientStop[]): PDFRef {
   const ctx = page.doc.context;
-  if (stops.length === 0) {
-    const f = ctx.obj({
-      FunctionType: 2,
-      Domain: [0, 1],
-      C0: [0, 0, 0],
-      C1: [0, 0, 0],
-      N: 1,
-    });
-    return ctx.register(f);
-  }
-  if (stops.length === 1) {
-    const c = stops[0]!.color;
-    const f = ctx.obj({ FunctionType: 2, Domain: [0, 1], C0: c, C1: c, N: 1 });
-    return ctx.register(f);
-  }
-  if (stops.length === 2) {
-    const f = ctx.obj({
-      FunctionType: 2,
-      Domain: [0, 1],
-      C0: stops[0]!.color,
-      C1: stops[1]!.color,
-      N: 1,
-    });
-    return ctx.register(f);
+  if (stops.length <= 2) {
+    const c0 = stops[0]?.color ?? [0, 0, 0];
+    const c1 = stops[1]?.color ?? c0;
+    return ctx.register(ctx.obj({ FunctionType: 2, Domain: [0, 1], C0: c0, C1: c1, N: 1 }));
   }
   const fns: PDFRef[] = [];
   const bounds: number[] = [];

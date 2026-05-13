@@ -97,10 +97,9 @@ function parseBoxShadow(css: string): Shadow | null {
   return { dx, dy, spread, color, opacity };
 }
 
-function resolveRadius(style: Record<string, unknown>, key: string, fallback: number): number {
+function resolvePt(style: Record<string, unknown>, key: string, fallback: number): number {
   const v = style[key];
-  if (v === undefined) return fallback;
-  return toPt(v as string | number, 0);
+  return v === undefined ? fallback : toPt(v as string | number, 0);
 }
 
 function drawBackground(
@@ -111,18 +110,16 @@ function drawBackground(
   style: Record<string, unknown>,
 ): void {
   const bgColor = parseColor(style.backgroundColor as string | undefined);
-  const allBorderW =
-    style.borderWidth !== undefined ? toPt(style.borderWidth as string | number, 0) : 0;
+  const allBorderW = resolvePt(style, 'borderWidth', 0);
   const allBorderColor = parseColor(
     (style.borderColor ?? style.borderTopColor) as string | undefined,
   );
 
-  const uniformR =
-    style.borderRadius !== undefined ? toPt(style.borderRadius as string | number, 0) : 0;
-  const tl = resolveRadius(style, 'borderTopLeftRadius', uniformR);
-  const tr = resolveRadius(style, 'borderTopRightRadius', uniformR);
-  const br = resolveRadius(style, 'borderBottomRightRadius', uniformR);
-  const bl = resolveRadius(style, 'borderBottomLeftRadius', uniformR);
+  const uniformR = resolvePt(style, 'borderRadius', 0);
+  const tl = resolvePt(style, 'borderTopLeftRadius', uniformR);
+  const tr = resolvePt(style, 'borderTopRightRadius', uniformR);
+  const br = resolvePt(style, 'borderBottomRightRadius', uniformR);
+  const bl = resolvePt(style, 'borderBottomLeftRadius', uniformR);
   const hasRadius = tl > 0 || tr > 0 || br > 0 || bl > 0;
   const opacity = style.opacity !== undefined ? parseFloat(String(style.opacity)) : undefined;
 
@@ -203,7 +200,7 @@ function drawBackground(
   ] as const;
 
   for (const side of sides) {
-    const w = style[side.wKey] !== undefined ? toPt(style[side.wKey] as string | number, 0) : 0;
+    const w = resolvePt(style, side.wKey, 0);
     if (w <= 0) continue;
     const c =
       parseColor(style[side.cKey] as string | undefined) ??

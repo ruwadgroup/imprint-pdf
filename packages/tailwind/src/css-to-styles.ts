@@ -237,8 +237,8 @@ function oklchToHex(l: number, c: number, h: number): string {
 function resolveOklch(value: string): string {
   return value.replace(
     /oklch\(\s*(\d*\.?\d+)%\s+(\d*\.?\d+)\s+(\d*\.?\d+)\s*\)/g,
-    (_, ls: string, c: string, h: string) =>
-      oklchToHex(parseFloat(ls) / 100, parseFloat(c), parseFloat(h)),
+    (_, l: string, c: string, h: string) =>
+      oklchToHex(parseFloat(l) / 100, parseFloat(c), parseFloat(h)),
   );
 }
 
@@ -347,12 +347,8 @@ export function parseCssToStyleMap(css: string): Map<string, ResolvedStyle> {
           if (val) {
             style[key] = val;
             // Logical shorthands fan out to both physical sides.
-            if (prop === 'padding-inline') {
-              style.paddingRight = val;
-            }
-            if (prop === 'padding-block') {
-              style.paddingBottom = val;
-            }
+            if (prop === 'padding-inline') style.paddingRight = val;
+            else if (prop === 'padding-block') style.paddingBottom = val;
           }
         }
       }

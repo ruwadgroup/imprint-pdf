@@ -49,10 +49,9 @@ function buildNamedDests(document: DocumentNode, pdfPages: PDFPage[]): Map<strin
       if (!page) return;
       for (const bm of collectBookmarks(pageNode)) {
         const title = bm.props.title as string | undefined;
-        if (title) {
-          map.set(title.toLowerCase().replace(/\s+/g, '-'), page);
-          map.set(title.toLowerCase(), page);
-        }
+        if (!title) continue;
+        map.set(title.toLowerCase().replace(/\s+/g, '-'), page);
+        map.set(title.toLowerCase(), page);
       }
     });
   return map;

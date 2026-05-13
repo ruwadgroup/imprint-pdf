@@ -110,7 +110,7 @@ export function breakPages(blocks: PageBlock[], options: BreakPagesOptions): Pag
         }
       }
 
-      const p = lastBlock ? FORCED : forced ? FORCED : 0;
+      const p = lastBlock || forced ? FORCED : 0;
       const d = a.demerits + pageDemerits(r, p, widowOrphan);
       if (d < localD) {
         localD = d;
@@ -120,8 +120,7 @@ export function breakPages(blocks: PageBlock[], options: BreakPagesOptions): Pag
 
     if (localBest === null) continue;
     if (lastBlock) {
-      if (!best) best = localBest;
-      else if (localBest.demerits < best.demerits) best = localBest;
+      if (!best || localBest.demerits < best.demerits) best = localBest;
       break;
     }
     if (forced) active.length = 0;

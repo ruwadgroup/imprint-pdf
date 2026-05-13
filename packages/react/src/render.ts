@@ -61,9 +61,10 @@ async function renderInternal(
     if (options.hyphenate) setHyphenator(options.hyphenate);
     if (options.svgRasterizer) setSvgRasterizer(options.svgRasterizer);
 
-    const fontMetrics = await loadFontMetricsOnly(options.fonts ?? [], resolver);
+    const fonts = options.fonts ?? [];
+    const fontMetrics = await loadFontMetricsOnly(fonts, resolver);
     const geometries = await runLayout(documentNode, 0, 0, fontMetrics);
-    const pdf = await writePdf(documentNode, geometries, options.fonts ?? [], resolver, {
+    const pdf = await writePdf(documentNode, geometries, fonts, resolver, {
       ...(options.postProcess && { postProcess: options.postProcess }),
       ...(options.postBytes && { postBytes: options.postBytes }),
       ...(options.onAssetError && { onAssetError: options.onAssetError }),
@@ -112,7 +113,7 @@ export async function renderToStream(
  * Render and return the bytes plus the post-layout tree and per-node geometry.
  * Powers `imprint dev`'s inspector; not part of the public render API.
  */
-export async function renderForInspector(
+export function renderForInspector(
   element: ReactElement,
   options: RenderOptions = {},
 ): Promise<InspectorRenderResult> {

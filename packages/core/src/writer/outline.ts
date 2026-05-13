@@ -18,8 +18,7 @@ function collectBookmarksWithPages(document: DocumentNode): BookmarkEntry[] {
   document.children
     .filter((c) => c.type === 'page')
     .forEach((pageNode, pageIndex) => {
-      const bms = collectBookmarks(pageNode);
-      for (const bm of bms) result.push({ node: bm, pageIndex });
+      for (const bm of collectBookmarks(pageNode)) result.push({ node: bm, pageIndex });
     });
   return result;
 }

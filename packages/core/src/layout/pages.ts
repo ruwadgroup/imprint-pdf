@@ -9,13 +9,9 @@ export function resolvePageDimensions(node: PageNode, defaults?: PageDefaults): 
   let w: number, h: number;
   if (Array.isArray(sizeRaw)) {
     const factor = UNIT_TO_PT[unit as keyof typeof UNIT_TO_PT] ?? 1;
-    w = sizeRaw[0] * factor;
-    h = sizeRaw[1] * factor;
+    [w, h] = [sizeRaw[0] * factor, sizeRaw[1] * factor];
   } else {
-    const dims = PAGE_SIZES[sizeRaw];
-    w = dims[0];
-    h = dims[1];
+    [w, h] = PAGE_SIZES[sizeRaw];
   }
-  if (orientation === 'landscape' && w < h) return [h, w];
-  return [w, h];
+  return orientation === 'landscape' && w < h ? [h, w] : [w, h];
 }

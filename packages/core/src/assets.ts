@@ -21,12 +21,7 @@ function decodeDataUri(src: string): Uint8Array {
   const data = src.slice(commaIdx + 1);
 
   if (meta.includes(';base64')) {
-    const binStr = atob(data);
-    const bytes = new Uint8Array(binStr.length);
-    for (let i = 0; i < binStr.length; i++) {
-      bytes[i] = binStr.charCodeAt(i);
-    }
-    return bytes;
+    return Uint8Array.from(atob(data), (ch) => ch.charCodeAt(0));
   }
   return new TextEncoder().encode(decodeURIComponent(data));
 }
@@ -49,8 +44,7 @@ async function fetchBytes(url: string, fetchFn: typeof globalThis.fetch): Promis
   if (!res.ok) {
     throw new Error(`Failed to fetch ${url}: ${res.status} ${res.statusText}`);
   }
-  const buf = await res.arrayBuffer();
-  return new Uint8Array(buf);
+  return new Uint8Array(await res.arrayBuffer());
 }
 
 /**
@@ -111,8 +105,9 @@ export function createAssetResolver(options: AssetResolverOptions = {}): AssetRe
     }
 
     // `fontsource:` / `fontsource-variable:` rewrite to jsdelivr URLs.
-    if (src.startsWith('fontsource:') || src.startsWith('fontsource-variable:')) {
-      const url = resolveFontsourceUrl(src);
+    const isFontsource = src.startsWith('fontsource:') || src.startsWith('fontsource-variable:');
+    if (isFontsource || src.startsWith('http://') || src.startsWith('https://')) {
+      const url = isFontsource ? resolveFontsourceUrl(src) : src;
       if (!fetchFn) {
         throw new Error(
           `Cannot fetch ${url}: no fetch implementation available. ` +
@@ -122,19 +117,8 @@ export function createAssetResolver(options: AssetResolverOptions = {}): AssetRe
       return fetchBytes(url, fetchFn);
     }
 
-    if (src.startsWith('http://') || src.startsWith('https://')) {
-      if (!fetchFn) {
-        throw new Error(
-          `Cannot fetch ${src}: no fetch implementation available. ` +
-            'Pass a fetch polyfill via AssetResolverOptions.fetch',
-        );
-      }
-      return fetchBytes(src, fetchFn);
-    }
-
     if (src.startsWith('file://') || (!src.startsWith('blob:') && isNode)) {
-      const filePath = resolveFilePath(src, basePath);
-      return readFileNode(filePath);
+      return readFileNode(resolveFilePath(src, basePath));
     }
 
     if (fetchFn) {
@@ -147,10 +131,10 @@ export function createAssetResolver(options: AssetResolverOptions = {}): AssetRe
     );
   }
 
-  async function resolveText(src: string): Promise<string> {
-    const bytes = await resolve(src);
-    return new TextDecoder().decode(bytes);
-  }
-
-  return { resolve, resolveText };
+  return {
+    resolve,
+    async resolveText(src: string): Promise<string> {
+      return new TextDecoder().decode(await resolve(src));
+    },
+  };
 }

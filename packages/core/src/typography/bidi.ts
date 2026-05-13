@@ -20,9 +20,7 @@ function isRtl(cp: number): boolean {
 }
 
 export function hasRtlChars(text: string): boolean {
-  for (const ch of text) {
-    if (isRtl(ch.codePointAt(0) ?? 0)) return true;
-  }
+  for (const ch of text) if (isRtl(ch.codePointAt(0) ?? 0)) return true;
   return false;
 }
 
@@ -74,6 +72,5 @@ function runs(text: string): Run[] {
 export function reorderLine(text: string, baseDir: 'ltr' | 'rtl'): string {
   if (!hasRtlChars(text)) return text;
   const rs = runs(text).map((r) => (r.rtl ? [...r.text].reverse().join('') : r.text));
-  if (baseDir === 'rtl') rs.reverse();
-  return rs.join('');
+  return (baseDir === 'rtl' ? rs.reverse() : rs).join('');
 }

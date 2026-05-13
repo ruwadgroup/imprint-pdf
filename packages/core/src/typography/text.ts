@@ -24,13 +24,10 @@ export interface TextMetrics {
 function parsePx(value: string | number | undefined, fallback: number): number {
   if (value === undefined) return fallback;
   if (typeof value === 'number') return value;
-  if (typeof value === 'string') {
-    if (value.endsWith('px') || value.endsWith('pt')) return parseFloat(value);
-    if (value.endsWith('em')) return parseFloat(value) * fallback;
-    const n = parseFloat(value);
-    return Number.isNaN(n) ? fallback : n;
-  }
-  return fallback;
+  if (value.endsWith('px') || value.endsWith('pt')) return parseFloat(value);
+  if (value.endsWith('em')) return parseFloat(value) * fallback;
+  const n = parseFloat(value);
+  return Number.isNaN(n) ? fallback : n;
 }
 
 function charWidth(char: string, size: number, font: LoadedFont | undefined): number {
@@ -137,19 +134,18 @@ export function measureText(
 
   const letterSpacingRaw = style.letterSpacing;
   let letterSpacing = 0;
-  if (letterSpacingRaw !== undefined) {
-    const ls = typeof letterSpacingRaw === 'number' ? letterSpacingRaw : String(letterSpacingRaw);
-    if (typeof ls === 'number') letterSpacing = ls;
-    else if (ls.endsWith('em')) letterSpacing = parseFloat(ls) * size;
-    else letterSpacing = parsePx(ls, size);
+  if (typeof letterSpacingRaw === 'number') {
+    letterSpacing = letterSpacingRaw;
+  } else if (letterSpacingRaw !== undefined) {
+    const ls = String(letterSpacingRaw);
+    letterSpacing = ls.endsWith('em') ? parseFloat(ls) * size : parsePx(ls, size);
   }
 
   const wordSpacingRaw = style.wordSpacing;
   let extraSpaceW = 0;
   if (wordSpacingRaw !== undefined) {
     const ws = typeof wordSpacingRaw === 'number' ? wordSpacingRaw : String(wordSpacingRaw);
-    if (ws === 'normal') extraSpaceW = 0;
-    else extraSpaceW = parsePx(ws, size);
+    if (ws !== 'normal') extraSpaceW = parsePx(ws, size);
   }
 
   const variations = deriveAxesFromStyle(style);
@@ -167,13 +163,6 @@ export function measureText(
 
   for (const para of inputText.split('\n')) {
     if (lineClamp > 0 && lines.length >= lineClamp) break;
-
-    if (!para) {
-      lines.push({ text: '', width: 0, y, xOffset: 0 });
-      y += lineHeight;
-      isFirstParagraph = false;
-      continue;
-    }
 
     const words = para.split(/\s+/).filter(Boolean);
     if (!words.length) {

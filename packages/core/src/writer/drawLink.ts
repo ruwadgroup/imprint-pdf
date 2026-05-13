@@ -18,10 +18,7 @@ export function drawLink(
   const pdfYPos = pdfY(pageHeight, y, height);
 
   const rectArr = PDFArray.withContext(doc.context);
-  rectArr.push(doc.context.obj(x));
-  rectArr.push(doc.context.obj(pdfYPos));
-  rectArr.push(doc.context.obj(x + width));
-  rectArr.push(doc.context.obj(pdfYPos + height));
+  for (const v of [x, pdfYPos, x + width, pdfYPos + height]) rectArr.push(doc.context.obj(v));
 
   // `[H V W]` = horiz radius, vert radius, width. All zero so links don't get
   // boxed by default — matches what browsers do.

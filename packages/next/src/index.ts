@@ -52,13 +52,7 @@ export async function pdf(
 // WASM with no `node:*` imports. Next sets `NEXT_RUNTIME=edge` on edge routes;
 // `globalThis.EdgeRuntime` is the generic Vercel/Cloudflare signal.
 function isEdgeRuntime(): boolean {
-  if (
-    typeof process !== 'undefined' &&
-    typeof process.env === 'object' &&
-    process.env.NEXT_RUNTIME === 'edge'
-  ) {
-    return true;
-  }
+  if (typeof process !== 'undefined' && process.env?.NEXT_RUNTIME === 'edge') return true;
   return typeof (globalThis as { EdgeRuntime?: unknown }).EdgeRuntime !== 'undefined';
 }
 
@@ -67,11 +61,11 @@ function loadReactEntry(): Promise<unknown> {
 }
 
 /** @deprecated Use `pdf(element, { as: 'bytes' })` instead. */
-export async function renderToServer(
+export function renderToServer(
   element: ReactElement,
   options: RenderOptions = {},
 ): Promise<Uint8Array> {
-  return pdf(element, { ...options, as: 'bytes' as const });
+  return pdf(element, { ...options, as: 'bytes' });
 }
 
 export interface EdgeRenderOptions extends RenderOptions {
@@ -80,12 +74,12 @@ export interface EdgeRenderOptions extends RenderOptions {
 }
 
 /** @deprecated Use `pdf(element, { as: 'stream' })` from a route with `runtime = 'edge'`. */
-export async function renderToEdge(
+export function renderToEdge(
   element: ReactElement,
   options: EdgeRenderOptions = {},
 ): Promise<ReadableStream<Uint8Array>> {
   const { wasm: _wasm, ...rest } = options;
-  return pdf(element, { ...rest, as: 'stream' as const });
+  return pdf(element, { ...rest, as: 'stream' });
 }
 
 export interface PdfResponseOptions extends RenderOptions {
@@ -96,7 +90,7 @@ export interface PdfResponseOptions extends RenderOptions {
 }
 
 /** @deprecated Use `pdf(element, { filename, disposition })` instead. */
-export async function createPdfResponse(
+export function createPdfResponse(
   element: ReactElement,
   options: PdfResponseOptions = {},
 ): Promise<Response> {

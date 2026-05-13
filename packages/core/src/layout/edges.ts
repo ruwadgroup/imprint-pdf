@@ -14,21 +14,15 @@ export function resolveEdges(
   containerW: number,
 ): Edges {
   const shorthand = style[prop];
-  let top = 0,
-    right = 0,
-    bottom = 0,
-    left = 0;
-  if (shorthand !== undefined && shorthand !== '') {
-    const v = resolvePt(shorthand, containerW);
-    top = right = bottom = left = v;
-  }
-  const tKey = `${prop}Top` as keyof ResolvedStyle;
-  const rKey = `${prop}Right` as keyof ResolvedStyle;
-  const bKey = `${prop}Bottom` as keyof ResolvedStyle;
-  const lKey = `${prop}Left` as keyof ResolvedStyle;
-  if (style[tKey] !== undefined) top = resolvePt(style[tKey] as string | number, containerW);
-  if (style[rKey] !== undefined) right = resolvePt(style[rKey] as string | number, containerW);
-  if (style[bKey] !== undefined) bottom = resolvePt(style[bKey] as string | number, containerW);
-  if (style[lKey] !== undefined) left = resolvePt(style[lKey] as string | number, containerW);
-  return { top, right, bottom, left };
+  const base = shorthand !== undefined && shorthand !== '' ? resolvePt(shorthand, containerW) : 0;
+  const side = (key: keyof ResolvedStyle): number => {
+    const v = style[key];
+    return v !== undefined ? resolvePt(v as string | number, containerW) : base;
+  };
+  return {
+    top: side(`${prop}Top` as keyof ResolvedStyle),
+    right: side(`${prop}Right` as keyof ResolvedStyle),
+    bottom: side(`${prop}Bottom` as keyof ResolvedStyle),
+    left: side(`${prop}Left` as keyof ResolvedStyle),
+  };
 }

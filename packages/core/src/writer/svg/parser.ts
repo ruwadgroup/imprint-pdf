@@ -28,19 +28,20 @@ export function parseSvg(source: string): SvgElement | null {
   let root: SvgElement | null = null;
   const re =
     /<\/([a-zA-Z][\w:-]*)\s*>|<([a-zA-Z][\w:-]*)([^>]*?)\/>|<([a-zA-Z][\w:-]*)([^>]*?)>|([^<]+)/g;
+  const attach = (el: SvgElement) => {
+    if (stack.length === 0) root = el;
+    else stack[stack.length - 1]!.children.push(el);
+  };
   let m: RegExpExecArray | null;
   // biome-ignore lint/suspicious/noAssignInExpressions: standard regex iteration
   while ((m = re.exec(trimmed)) !== null) {
     if (m[1]) {
       stack.pop();
     } else if (m[2]) {
-      const el: SvgElement = { tag: m[2], attrs: parseAttrs(m[3] ?? ''), children: [] };
-      if (stack.length === 0) root = el;
-      else stack[stack.length - 1]!.children.push(el);
+      attach({ tag: m[2], attrs: parseAttrs(m[3] ?? ''), children: [] });
     } else if (m[4]) {
       const el: SvgElement = { tag: m[4], attrs: parseAttrs(m[5] ?? ''), children: [] };
-      if (stack.length === 0) root = el;
-      else stack[stack.length - 1]!.children.push(el);
+      attach(el);
       stack.push(el);
     } else if (m[6]) {
       const text = decodeEntities(m[6]).trim();

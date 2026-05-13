@@ -25,12 +25,12 @@ const FF_COMBO = 1 << 17;
 function buildDA(style: ResolvedStyle): string {
   const fontSize = toPt(style.fontSize, 12);
   const color = parseColor(style.color as string | undefined);
+  const fmt = (n: number) => Math.round(n * 1000) / 1000;
   let colorOp = '0 g';
   if (color && 'red' in color) {
-    const fmt = (n: number) => Math.round(n * 1000) / 1000;
     colorOp = `${fmt(color.red)} ${fmt(color.green)} ${fmt(color.blue)} rg`;
   } else if (color && 'gray' in color) {
-    colorOp = `${Math.round((color as { gray: number }).gray * 1000) / 1000} g`;
+    colorOp = `${fmt((color as { gray: number }).gray)} g`;
   }
   return `/Helvetica ${fontSize} Tf ${colorOp}`;
 }
@@ -47,10 +47,7 @@ function ensureAcroForm(doc: PDFDocument): PDFDict {
 
 function rectArray(doc: PDFDocument, x: number, y: number, w: number, h: number): PDFArray {
   const arr = PDFArray.withContext(doc.context);
-  arr.push(doc.context.obj(x));
-  arr.push(doc.context.obj(y));
-  arr.push(doc.context.obj(x + w));
-  arr.push(doc.context.obj(y + h));
+  for (const v of [x, y, x + w, y + h]) arr.push(doc.context.obj(v));
   return arr;
 }
 

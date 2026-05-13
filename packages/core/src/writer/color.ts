@@ -3,17 +3,14 @@ import { cmyk, grayscale, rgb } from 'pdf-lib';
 
 function hexToRgb(hex: string): { r: number; g: number; b: number } {
   const clean = hex.replace(/^#/, '');
-  if (clean.length === 3) {
-    return {
-      r: parseInt(clean[0]! + clean[0]!, 16) / 255,
-      g: parseInt(clean[1]! + clean[1]!, 16) / 255,
-      b: parseInt(clean[2]! + clean[2]!, 16) / 255,
-    };
-  }
+  const expanded =
+    clean.length === 3
+      ? clean[0]! + clean[0]! + clean[1]! + clean[1]! + clean[2]! + clean[2]!
+      : clean;
   return {
-    r: parseInt(clean.slice(0, 2), 16) / 255,
-    g: parseInt(clean.slice(2, 4), 16) / 255,
-    b: parseInt(clean.slice(4, 6), 16) / 255,
+    r: parseInt(expanded.slice(0, 2), 16) / 255,
+    g: parseInt(expanded.slice(2, 4), 16) / 255,
+    b: parseInt(expanded.slice(4, 6), 16) / 255,
   };
 }
 
@@ -46,34 +43,18 @@ function hslToRgb(h: number, s: number, l: number): { r: number; g: number; b: n
   const c = (1 - Math.abs(2 * l - 1)) * s;
   const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
   const m = l - c / 2;
-  let r = 0,
-    g = 0,
-    b = 0;
-  if (h < 60) {
-    r = c;
-    g = x;
-    b = 0;
-  } else if (h < 120) {
-    r = x;
-    g = c;
-    b = 0;
-  } else if (h < 180) {
-    r = 0;
-    g = c;
-    b = x;
-  } else if (h < 240) {
-    r = 0;
-    g = x;
-    b = c;
-  } else if (h < 300) {
-    r = x;
-    g = 0;
-    b = c;
-  } else {
-    r = c;
-    g = 0;
-    b = x;
-  }
+  const [r, g, b] =
+    h < 60
+      ? [c, x, 0]
+      : h < 120
+        ? [x, c, 0]
+        : h < 180
+          ? [0, c, x]
+          : h < 240
+            ? [0, x, c]
+            : h < 300
+              ? [x, 0, c]
+              : [c, 0, x];
   return { r: r + m, g: g + m, b: b + m };
 }
 
@@ -155,11 +136,11 @@ export function parseColor(colorStr: string | undefined): Color | undefined {
 export function toPt(value: string | number | undefined, fallback: number): number {
   if (value === undefined) return fallback;
   if (typeof value === 'number') return value;
-  if (value.endsWith('px')) return parseFloat(value) * 0.75;
-  if (value.endsWith('pt')) return parseFloat(value);
-  if (value.endsWith('mm')) return parseFloat(value) * 2.8346;
-  if (value.endsWith('cm')) return parseFloat(value) * 28.346;
-  if (value.endsWith('in')) return parseFloat(value) * 72;
   const n = parseFloat(value);
+  if (value.endsWith('px')) return n * 0.75;
+  if (value.endsWith('pt')) return n;
+  if (value.endsWith('mm')) return n * 2.8346;
+  if (value.endsWith('cm')) return n * 28.346;
+  if (value.endsWith('in')) return n * 72;
   return Number.isNaN(n) ? fallback : n;
 }

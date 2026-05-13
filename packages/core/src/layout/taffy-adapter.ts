@@ -70,6 +70,49 @@ function lpa(v: number | string | undefined): LengthPercentageAuto {
   return typeof v === 'number' ? v : parseFloat(String(v)) || 0;
 }
 
+function toFloat(v: number | string): number {
+  return typeof v === 'number' ? v : parseFloat(String(v));
+}
+
+const AI_MAP: Record<string, AlignItems> = {
+  'flex-start': AlignItems.FlexStart,
+  start: AlignItems.FlexStart,
+  'flex-end': AlignItems.FlexEnd,
+  end: AlignItems.FlexEnd,
+  center: AlignItems.Center,
+  baseline: AlignItems.Baseline,
+};
+
+const AC_MAP: Record<string, AlignContent> = {
+  'flex-start': AlignContent.FlexStart,
+  start: AlignContent.FlexStart,
+  'flex-end': AlignContent.FlexEnd,
+  end: AlignContent.FlexEnd,
+  center: AlignContent.Center,
+  'space-between': AlignContent.SpaceBetween,
+  'space-around': AlignContent.SpaceAround,
+  'space-evenly': AlignContent.SpaceEvenly,
+};
+
+const AS_MAP: Record<string, AlignSelf> = {
+  'flex-start': AlignSelf.FlexStart,
+  start: AlignSelf.FlexStart,
+  'flex-end': AlignSelf.FlexEnd,
+  end: AlignSelf.FlexEnd,
+  center: AlignSelf.Center,
+  baseline: AlignSelf.Baseline,
+  stretch: AlignSelf.Stretch,
+};
+
+const JC_MAP: Record<string, JustifyContent> = {
+  'flex-end': JustifyContent.FlexEnd,
+  end: JustifyContent.FlexEnd,
+  center: JustifyContent.Center,
+  'space-between': JustifyContent.SpaceBetween,
+  'space-around': JustifyContent.SpaceAround,
+  'space-evenly': JustifyContent.SpaceEvenly,
+};
+
 function parseGridPlacement(v: string | number | undefined): GridPlacement {
   if (v === undefined || v === 'auto') return 'auto';
   if (typeof v === 'number') return v;
@@ -120,12 +163,8 @@ function parseGridTemplate(template: string | undefined): GridTemplateComponent[
     const repeatMatch = /^repeat\((\d+|auto-fill|auto-fit),?$/.exec(token);
     if (repeatMatch) {
       const countStr = repeatMatch[1] ?? '';
-      const count =
-        countStr === 'auto-fill'
-          ? 'auto-fill'
-          : countStr === 'auto-fit'
-            ? 'auto-fit'
-            : parseInt(countStr, 10);
+      const count: number | 'auto-fill' | 'auto-fit' =
+        countStr === 'auto-fill' || countStr === 'auto-fit' ? countStr : parseInt(countStr, 10);
       const tracks: TrackSizingFunction[] = [];
       i++;
       while (i < tokens.length && !tokens[i]?.endsWith(')')) {
@@ -171,42 +210,19 @@ function toTaffyStyle(style: ResolvedStyle, containerWidth: number): Style {
   else if (wrap === 'wrap-reverse') s.flexWrap = FlexWrap.WrapReverse;
   else s.flexWrap = FlexWrap.NoWrap;
 
-  const ai = style.alignItems;
-  if (ai === 'flex-start' || ai === 'start') s.alignItems = AlignItems.FlexStart;
-  else if (ai === 'flex-end' || ai === 'end') s.alignItems = AlignItems.FlexEnd;
-  else if (ai === 'center') s.alignItems = AlignItems.Center;
-  else if (ai === 'baseline') s.alignItems = AlignItems.Baseline;
-  else s.alignItems = AlignItems.Stretch;
+  s.alignItems = AI_MAP[style.alignItems ?? ''] ?? AlignItems.Stretch;
+  s.alignContent = AC_MAP[style.alignContent ?? ''] ?? AlignContent.Stretch;
 
-  const ac = style.alignContent;
-  if (ac === 'flex-start' || ac === 'start') s.alignContent = AlignContent.FlexStart;
-  else if (ac === 'flex-end' || ac === 'end') s.alignContent = AlignContent.FlexEnd;
-  else if (ac === 'center') s.alignContent = AlignContent.Center;
-  else if (ac === 'space-between') s.alignContent = AlignContent.SpaceBetween;
-  else if (ac === 'space-around') s.alignContent = AlignContent.SpaceAround;
-  else if (ac === 'space-evenly') s.alignContent = AlignContent.SpaceEvenly;
-  else s.alignContent = AlignContent.Stretch;
+  const asMapped = AS_MAP[style.alignSelf ?? ''];
+  if (asMapped !== undefined) s.alignSelf = asMapped;
 
-  const as_ = style.alignSelf;
-  if (as_ === 'flex-start' || as_ === 'start') s.alignSelf = AlignSelf.FlexStart;
-  else if (as_ === 'flex-end' || as_ === 'end') s.alignSelf = AlignSelf.FlexEnd;
-  else if (as_ === 'center') s.alignSelf = AlignSelf.Center;
-  else if (as_ === 'baseline') s.alignSelf = AlignSelf.Baseline;
-  else if (as_ === 'stretch') s.alignSelf = AlignSelf.Stretch;
-
-  const jc = style.justifyContent;
-  if (jc === 'flex-end' || jc === 'end') s.justifyContent = JustifyContent.FlexEnd;
-  else if (jc === 'center') s.justifyContent = JustifyContent.Center;
-  else if (jc === 'space-between') s.justifyContent = JustifyContent.SpaceBetween;
-  else if (jc === 'space-around') s.justifyContent = JustifyContent.SpaceAround;
-  else if (jc === 'space-evenly') s.justifyContent = JustifyContent.SpaceEvenly;
-  else s.justifyContent = JustifyContent.FlexStart;
+  s.justifyContent = JC_MAP[style.justifyContent ?? ''] ?? JustifyContent.FlexStart;
 
   // `flex: 1` expands to `1 1 0%` — keep the 0 basis when no longhand
   // flex-basis follows, so `flex-1` columns share width equally.
   let basisSetByShorthand = false;
   if (style.flex !== undefined) {
-    const f = typeof style.flex === 'number' ? style.flex : parseFloat(String(style.flex));
+    const f = toFloat(style.flex);
     if (!Number.isNaN(f)) {
       s.flexGrow = f;
       s.flexShrink = 1;
@@ -215,15 +231,11 @@ function toTaffyStyle(style: ResolvedStyle, containerWidth: number): Style {
     }
   }
   if (style.flexGrow !== undefined) {
-    const v =
-      typeof style.flexGrow === 'number' ? style.flexGrow : parseFloat(String(style.flexGrow));
+    const v = toFloat(style.flexGrow);
     if (!Number.isNaN(v)) s.flexGrow = v;
   }
   if (style.flexShrink !== undefined) {
-    const v =
-      typeof style.flexShrink === 'number'
-        ? style.flexShrink
-        : parseFloat(String(style.flexShrink));
+    const v = toFloat(style.flexShrink);
     if (!Number.isNaN(v)) s.flexShrink = v;
   }
   if (style.flexBasis !== undefined) {
@@ -262,17 +274,19 @@ function toTaffyStyle(style: ResolvedStyle, containerWidth: number): Style {
   };
 
   const gapBase = style.gap !== undefined ? resolvePt(style.gap, containerWidth) : 0;
-  const rowGap = style.rowGap !== undefined ? resolvePt(style.rowGap, containerWidth) : gapBase;
-  const colGap =
-    style.columnGap !== undefined ? resolvePt(style.columnGap, containerWidth) : gapBase;
-  s.gap = { width: colGap, height: rowGap } satisfies Size<LengthPercentage>;
+  s.gap = {
+    width: style.columnGap !== undefined ? resolvePt(style.columnGap, containerWidth) : gapBase,
+    height: style.rowGap !== undefined ? resolvePt(style.rowGap, containerWidth) : gapBase,
+  } satisfies Size<LengthPercentage>;
 
   if (pos === 'absolute') {
+    const inset = (v: string | number | undefined): LengthPercentageAuto =>
+      v !== undefined ? resolvePt(v, containerWidth) : 'auto';
     s.inset = {
-      top: style.top !== undefined ? resolvePt(style.top, containerWidth) : 'auto',
-      right: style.right !== undefined ? resolvePt(style.right, containerWidth) : 'auto',
-      bottom: style.bottom !== undefined ? resolvePt(style.bottom, containerWidth) : 'auto',
-      left: style.left !== undefined ? resolvePt(style.left, containerWidth) : 'auto',
+      top: inset(style.top),
+      right: inset(style.right),
+      bottom: inset(style.bottom),
+      left: inset(style.left),
     };
   }
 
@@ -295,7 +309,7 @@ function toTaffyStyle(style: ResolvedStyle, containerWidth: number): Style {
     const ar = String(style.aspectRatio);
     if (ar.includes('/')) {
       const [num, den] = ar.split('/').map((v) => parseFloat(v.trim()));
-      if (num && den && den !== 0) s.aspectRatio = num / den;
+      if (num && den) s.aspectRatio = num / den;
     } else {
       const n = parseFloat(ar);
       if (!Number.isNaN(n)) s.aspectRatio = n;

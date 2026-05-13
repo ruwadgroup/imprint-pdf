@@ -76,11 +76,9 @@ export async function drawImage(
     const isPng = (bytes[0] === 0x89 && bytes[1] === 0x50) || ext === 'png';
     const isJpeg = (bytes[0] === 0xff && bytes[1] === 0xd8) || ext === 'jpg' || ext === 'jpeg';
     let image: Awaited<ReturnType<typeof doc.embedPng>> | undefined;
-    if (isPng) {
-      image = await doc.embedPng(bytes);
-    } else if (isJpeg) {
-      image = await doc.embedJpg(bytes);
-    } else {
+    if (isPng) image = await doc.embedPng(bytes);
+    else if (isJpeg) image = await doc.embedJpg(bytes);
+    else {
       try {
         image = await doc.embedPng(bytes);
       } catch {
@@ -130,14 +128,14 @@ export async function drawImage(
       drawX = x + (width - drawW) * posX;
       drawY = pdfYPos + (height - drawH) * posY;
     } else if (objectFit === 'scale-down') {
-      const aspect = image.width / image.height;
-      const ca = width / height;
       if (image.width <= width && image.height <= height) {
         drawW = image.width;
         drawH = image.height;
         drawX = x + (width - drawW) * posX;
         drawY = pdfYPos + (height - drawH) * posY;
       } else {
+        const aspect = image.width / image.height;
+        const ca = width / height;
         if (aspect > ca) {
           drawW = width;
           drawH = width / aspect;

@@ -113,12 +113,15 @@ async function runTailwindV4(
       try {
         const pkgDir = path.dirname(req.resolve(`${id}/package.json`));
         return { content: readFileSync(path.join(pkgDir, 'index.css'), 'utf8'), base: pkgDir };
-      } catch {}
+      } catch {
+        // not a package; fall through to a relative-path attempt
+      }
       try {
         const abs = path.resolve(base, id);
         return { content: readFileSync(abs, 'utf8'), base: path.dirname(abs) };
-      } catch {}
-      return { content: '', base };
+      } catch {
+        return { content: '', base };
+      }
     }
 
     const stylesheet = options.stylesheet ?? findFirstExisting(projectRoot, STYLESHEET_AUTO_PATHS);

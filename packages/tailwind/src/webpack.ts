@@ -14,7 +14,7 @@ const EXPRESSION_STRING_RE = /className\s*=\s*\{["']([^"']+)["']\}/g;
 
 function extractClasses(source: string): string[] {
   const found: string[] = [];
-  const extract = (re: RegExp) => {
+  for (const re of [STATIC_CLASS_RE, TEMPLATE_CLASS_RE, EXPRESSION_STRING_RE]) {
     re.lastIndex = 0;
     let match = re.exec(source);
     while (match !== null) {
@@ -25,10 +25,7 @@ function extractClasses(source: string): string[] {
       }
       match = re.exec(source);
     }
-  };
-  extract(STATIC_CLASS_RE);
-  extract(TEMPLATE_CLASS_RE);
-  extract(EXPRESSION_STRING_RE);
+  }
   return found;
 }
 
@@ -39,11 +36,9 @@ class ImprintWebpackPlugin {
   constructor(options: ImprintTailwindOptions = {}) {
     this.options = options;
     this.classSet = new Set<string>();
-    if (options.safelist) {
-      for (const cls of options.safelist) {
-        for (const c of cls.split(/\s+/)) {
-          if (c) this.classSet.add(c);
-        }
+    for (const cls of options.safelist ?? []) {
+      for (const c of cls.split(/\s+/)) {
+        if (c) this.classSet.add(c);
       }
     }
   }
@@ -70,9 +65,7 @@ class ImprintWebpackPlugin {
         async () => {
           const styleMap = await runTailwind(this.classSet, this.options, projectRoot);
 
-          if (debug) {
-            console.info(`[imprint-tailwind] resolved ${styleMap.size} classes`);
-          }
+          if (debug) console.info(`[imprint-tailwind] resolved ${styleMap.size} classes`);
 
           const classMap: Record<string, unknown> = {};
           for (const [cls, style] of styleMap) {

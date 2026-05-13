@@ -22,13 +22,15 @@ const CONFIG_CANDIDATES = [
 ];
 
 async function tryLoad(): Promise<ResolvedImprintConfig> {
-  let fs: typeof import('node:fs') | undefined;
-  let pathMod: typeof import('node:path') | undefined;
-  let urlMod: typeof import('node:url') | undefined;
+  let fs: typeof import('node:fs');
+  let pathMod: typeof import('node:path');
+  let urlMod: typeof import('node:url');
   try {
-    fs = await import('node:fs');
-    pathMod = await import('node:path');
-    urlMod = await import('node:url');
+    [fs, pathMod, urlMod] = await Promise.all([
+      import('node:fs'),
+      import('node:path'),
+      import('node:url'),
+    ]);
   } catch {
     return {};
   }

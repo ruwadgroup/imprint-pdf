@@ -32,9 +32,7 @@ let reconcilerPending: Promise<ReconcilerCache> | undefined;
 
 async function loadReconciler(): Promise<ReconcilerCache> {
   if (reconcilerCache) return reconcilerCache;
-  if (reconcilerPending) return reconcilerPending;
-
-  reconcilerPending = (async () => {
+  reconcilerPending ??= (async () => {
     const [reconcilerMod, constantsMod] = IS_REACT_18
       ? await Promise.all([
           import('react-reconciler-18'),
@@ -145,9 +143,7 @@ const IMPRINT_TYPES: Record<string, PdfNodeType> = {
 };
 
 function mapType(type: string): PdfNodeType {
-  if (type in IMPRINT_TYPES) return IMPRINT_TYPES[type] as PdfNodeType;
-  if (type in HTML_ALIASES) return HTML_ALIASES[type] as PdfNodeType;
-  return 'view';
+  return IMPRINT_TYPES[type] ?? HTML_ALIASES[type] ?? 'view';
 }
 
 function resolveStyle(
@@ -203,7 +199,6 @@ function buildHostConfig(DefaultEventPriority: number): unknown {
       rootContainer: Container,
       _hostContext: HostContext,
     ): PdfNode {
-      const nodeType = mapType(type);
       const { className, style, children: _children, ...restProps } = props;
       const resolved = resolveStyle(
         className as string | undefined,
@@ -212,20 +207,16 @@ function buildHostConfig(DefaultEventPriority: number): unknown {
 
       // Tailwind's two-pass pipeline reads className back off the tree.
       const nodeProps: Record<string, unknown> = { ...restProps };
-      if (className != null) {
-        nodeProps.className = className;
-      }
+      if (className != null) nodeProps.className = className;
 
       const node: PdfNode = {
-        type: nodeType,
+        type: mapType(type),
         id: rootContainer.nextId(),
         props: nodeProps,
         style: resolved.style,
         children: [],
       } as PdfNode;
-      if (Object.keys(resolved.variants).length > 0) {
-        node.variants = resolved.variants;
-      }
+      if (Object.keys(resolved.variants).length > 0) node.variants = resolved.variants;
       return node;
     },
 
@@ -254,11 +245,8 @@ function buildHostConfig(DefaultEventPriority: number): unknown {
 
     insertBefore(parentInstance: PdfNode, child: PdfNode, beforeChild: PdfNode): void {
       const idx = parentInstance.children.indexOf(beforeChild);
-      if (idx === -1) {
-        parentInstance.children.push(child);
-      } else {
-        parentInstance.children.splice(idx, 0, child);
-      }
+      if (idx === -1) parentInstance.children.push(child);
+      else parentInstance.children.splice(idx, 0, child);
     },
 
     insertInContainerBefore(container: Container, child: PdfNode, _beforeChild: PdfNode): void {
@@ -267,9 +255,7 @@ function buildHostConfig(DefaultEventPriority: number): unknown {
 
     removeChild(parentInstance: PdfNode, child: PdfNode): void {
       const idx = parentInstance.children.indexOf(child);
-      if (idx !== -1) {
-        parentInstance.children.splice(idx, 1);
-      }
+      if (idx !== -1) parentInstance.children.splice(idx, 1);
     },
 
     removeChildFromContainer(container: Container, _child: PdfNode): void {
@@ -297,9 +283,7 @@ function buildHostConfig(DefaultEventPriority: number): unknown {
     resetAfterCommit(_container: Container): void {},
 
     commitTextUpdate(textInstance: PdfNode, _oldText: string, newText: string): void {
-      if (textInstance.type === 'text') {
-        textInstance.text = newText;
-      }
+      if (textInstance.type === 'text') textInstance.text = newText;
     },
 
     getPublicInstance(instance: PdfNode): PdfNode {
@@ -341,9 +325,7 @@ function buildHostConfig(DefaultEventPriority: number): unknown {
     if (Object.keys(resolved.variants).length > 0) instance.variants = resolved.variants;
     else delete instance.variants;
     Object.assign(instance.props, restProps);
-    if (className != null) {
-      instance.props.className = className;
-    }
+    if (className != null) instance.props.className = className;
   }
 
   if (IS_REACT_18) {

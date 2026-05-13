@@ -69,16 +69,11 @@ export function splitByScript(text: string): ScriptRun[] {
   let cur: ScriptTag | null = null;
 
   for (const ch of text) {
-    const cp = ch.codePointAt(0) ?? 0;
-    const sc = scriptOf(cp);
-    if (sc === 'zyyy') {
+    const sc = scriptOf(ch.codePointAt(0) ?? 0);
+    if (sc === 'zyyy' || sc === cur) {
       buf += ch;
-      continue;
-    }
-    if (cur === null) {
+    } else if (cur === null) {
       cur = sc;
-      buf += ch;
-    } else if (sc === cur) {
       buf += ch;
     } else {
       result.push({ text: buf, script: cur });
