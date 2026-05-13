@@ -104,3 +104,36 @@ embedded attachments — used for factur-X and ZUGFeRD e-invoicing.
 emits one chunk per page. The first byte arrives in <50 ms for most documents.
 Use the default `pdf(<Doc/>)` shape if you want a ready-to-return `Response` in
 Cloudflare Workers or Vercel Edge Functions.
+
+## Why does my deploy fail with `Cannot find module 'react-reconciler-18'`?
+
+This means your `next build` produced a `.next/standalone/` artifact (Docker /
+Coolify / self-hosted Vercel) but Next's file tracer didn't copy
+`react-reconciler` into it. Upgrade to `@imprint-pdf/react@1.0.0-alpha.7+` and
+`@imprint-pdf/next@1.0.0-alpha.8+`, and make sure `next.config.{js,mjs,ts}` uses
+`withImprint()` from `@imprint-pdf/next/plugin`. Full explanation in the
+[Next.js standalone deployments guide](frameworks/nextjs.md#standalone-deployments).
+
+## Why does my deploy fail with `Cannot find module 'tailwindcss'`?
+
+Same family of bug. `tailwindcss` and `postcss` are typically in
+`devDependencies`, so Next's file tracer doesn't copy them into the standalone
+artifact. `withImprint()` (≥ `1.0.0-alpha.8`) sets the externals + trace-include
+globs that fix this. Alternatively, move `tailwindcss` + `postcss` from
+`devDependencies` to `dependencies`. See the
+[Next.js standalone deployments guide](frameworks/nextjs.md#standalone-deployments).
+
+## `next build` is OOM-killed in `Collecting build traces`. What now?
+
+The trace phase walks each route's import graph. With many routes plus a large
+dependency stack (imprint-pdf + Sentry + a UI library + database client), the
+trace can exceed default Node heap (~4 GB). Two levers:
+
+1. **Bump the build's Node heap.** In Docker:
+   `ENV NODE_OPTIONS=--max-old-space-size=8192` on the builder stage (or 12288
+   for very large monorepos).
+2. **Upgrade to alpha.7+.** Pre-alpha.7, `@imprint-pdf/react` had static
+   top-level imports of both `react-reconciler-18` and `react-reconciler-19`,
+   which inflated every route's eager bundle. Alpha.7 switched to lazy
+   `await import(...)` so the reconciler lives in a separate async chunk and
+   per-route trace work is significantly smaller.

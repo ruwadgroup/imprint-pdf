@@ -16,7 +16,11 @@ pnpm add -D @imprint-pdf/cli
 npx imprint init
 ```
 
+Latest published versions (alpha): `@imprint-pdf/core@1.0.0-alpha.7`, `@imprint-pdf/react@1.0.0-alpha.8`, `@imprint-pdf/next@1.0.0-alpha.8`, `@imprint-pdf/fonts@1.0.0-alpha.6`. The `alpha` dist-tag points at the latest each.
+
 `imprint init` detects your framework (Next.js, Vite, generic Node), wires the correct plugin into your config, and scaffolds an example route + template.
+
+**Next.js production deploys (`output: 'standalone'`, Docker, Coolify, self-hosted Vercel) require `withImprint()` from `@imprint-pdf/next/plugin`** so the file tracer copies `react-reconciler` (R18 + R19) and `tailwindcss` / `postcss` into the build artifact. See [Next.js → Standalone deployments](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/frameworks/nextjs.md#standalone-deployments).
 
 ## Hello world
 
@@ -53,7 +57,7 @@ const response = await pdf(
 
 ### Frameworks
 
-- [Next.js](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/frameworks/nextjs.md): App Router, Pages Router, route handlers, Edge Runtime, `withImprint` plugin
+- [Next.js](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/frameworks/nextjs.md): App Router, Pages Router, route handlers, Edge Runtime, `withImprint` plugin, [standalone / Docker deployments](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/frameworks/nextjs.md#standalone-deployments) (`Cannot find module 'react-reconciler-18'` / `'tailwindcss'` fix)
 - [Vite](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/frameworks/vite.md): SPA, SSR, virtual modules, HMR for `.pdf.tsx` files
 - [Cloudflare Workers](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/frameworks/cloudflare.md): Standalone WASM build, sub-100 ms cold start
 - [Bun](https://github.com/tamimbinhakim/imprint-pdf/blob/main/docs/frameworks/bun.md): Native WASM imports, `Bun.serve`

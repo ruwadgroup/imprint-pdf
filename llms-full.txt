@@ -14,6 +14,8 @@ pnpm add -D @imprint-pdf/cli
 npx imprint init
 ```
 
+Current alpha (under the `alpha` dist-tag, not `latest`): `@imprint-pdf/core@1.0.0-alpha.7`, `@imprint-pdf/react@1.0.0-alpha.8`, `@imprint-pdf/next@1.0.0-alpha.8`, `@imprint-pdf/fonts@1.0.0-alpha.6`. Pin explicitly while we're pre-1.0 — `latest` may lag.
+
 `imprint init` detects Next.js / Vite / generic Node and wires the rest.
 
 Framework-specific (alongside the core install):
@@ -247,9 +249,17 @@ import {
 import { withImprint } from '@imprint-pdf/next/plugin';
 
 export default withImprint()({
-  // your Next config
+  output: 'standalone',  // for Docker / Coolify / self-hosted Vercel
+  // …rest of your Next config
 });
 ```
+
+`withImprint()` is required for production deploys (see [Standalone deployments](#standalone-deployments-docker--coolify--self-hosted-vercel) below). It:
+
+1. Registers the webpack plugin for compile-time Tailwind class extraction (webpack only — Turbopack falls back to runtime compile).
+2. Enables `asyncWebAssembly` + `layers` webpack experiments and the `webassembly/async` rule for `.wasm`.
+3. Adds `@imprint-pdf/{react,core,next}` to `serverExternalPackages` (Next 15) **and** `experimental.serverComponentsExternalPackages` (Next 14).
+4. Adds `tailwindcss` + `postcss` to the same externals **and** writes `experimental.outputFileTracingIncludes` globs so Vercel's [node-file-tracer](https://github.com/vercel/nft) copies them into `.next/standalone/node_modules` during `next build`.
 
 ```ts
 // app/api/invoice/[id]/route.ts
@@ -267,6 +277,56 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
 ```
 
 `pdf()` from `@imprint-pdf/next` auto-detects edge vs Node via `NEXT_RUNTIME` / `globalThis.EdgeRuntime` and dispatches to the right `@imprint-pdf/react` build.
+
+#### Standalone deployments (Docker / Coolify / self-hosted Vercel)
+
+`next build` with `output: 'standalone'` runs nft across each route's import graph and copies only the matched files into `.next/standalone/node_modules`. imprint-pdf has three things that nft can't statically follow and that `withImprint()` makes visible to it:
+
+- The matching `react-reconciler` for your React major (R18 lazy-loaded via `await import('react-reconciler-18')`, R19 via `-19`).
+- The consumer's `tailwindcss` and `postcss` for v3 Tailwind compilation (resolved via `createRequire(projectRoot)` at render time).
+- The consumer's `tailwind.config.{ts,js,mjs,cjs}` for v3 dispatch.
+
+Use `withImprint()` (≥ `@imprint-pdf/next@1.0.0-alpha.8`) and `@imprint-pdf/react@1.0.0-alpha.7+`. If you can't drop `withImprint()` into your `next.config`, set the same keys manually:
+
+```js
+// next.config.{js,mjs,ts}
+const nextConfig = {
+  output: 'standalone',
+
+  serverExternalPackages: [
+    '@imprint-pdf/react', '@imprint-pdf/core', '@imprint-pdf/next',
+    'tailwindcss', 'postcss',
+  ],
+
+  experimental: {
+    // Next 14 — Next 15+ reads the top-level key above.
+    serverComponentsExternalPackages: [
+      '@imprint-pdf/react', '@imprint-pdf/core', '@imprint-pdf/next',
+      'tailwindcss', 'postcss',
+    ],
+    outputFileTracingIncludes: {
+      '**/*': [
+        './node_modules/tailwindcss/**/*',
+        './node_modules/postcss/**/*',
+        './node_modules/.pnpm/tailwindcss@*/node_modules/tailwindcss/**/*',
+        './node_modules/.pnpm/postcss@*/node_modules/postcss/**/*',
+      ],
+    },
+  },
+};
+
+export default nextConfig;
+```
+
+Alternative: move `tailwindcss` + `postcss` from `devDependencies` to `dependencies` in your app's `package.json` (nft only traces dependencies by default).
+
+Verify before deploying:
+
+```bash
+pnpm next build
+node .next/standalone/server.js &
+curl -i http://localhost:3000/api/invoice    # → 200, %PDF-…
+```
 
 ### Vite
 
@@ -589,6 +649,25 @@ Already handled — components default to `display: 'inline-flex'`. If you've ex
 ### `npm install @imprint-pdf/tailwind` fails
 
 This package was unpublished. The Tailwind compiler is bundled inside `@imprint-pdf/react`, `@imprint-pdf/next`, and `@imprint-pdf/vite`. Remove `@imprint-pdf/tailwind` from your `package.json`.
+
+### Deploy: `Cannot find module 'react-reconciler-18'`
+
+Production deploy of a Next.js app on `output: 'standalone'` (Docker, Coolify, self-hosted Vercel). Vercel's nft didn't trace `react-reconciler` into `.next/standalone/node_modules`. Upgrade to `@imprint-pdf/react@1.0.0-alpha.7+` (lazy `await import('react-reconciler-XX')` which nft *can* trace) and use `withImprint()` from `@imprint-pdf/next/plugin`. Pre-alpha.7 used `createRequire(import.meta.url)('react-reconciler-18')` which nft couldn't follow. See [Next.js → Standalone deployments](#standalone-deployments-docker--coolify--self-hosted-vercel).
+
+### Deploy: `Cannot find module 'tailwindcss'`
+
+Same scenario, different module. `tailwindcss` and `postcss` are typically in `devDependencies`, so nft doesn't copy them into standalone. `withImprint()` (≥ `1.0.0-alpha.8`) adds them to `serverExternalPackages` + `experimental.outputFileTracingIncludes` so nft includes them anyway. Alternative: promote both from `devDependencies` → `dependencies`.
+
+### `next build` OOM in `Collecting build traces`
+
+Build's Node process runs out of heap during trace collection. Default Node heap (~4 GB) can be exceeded by large monorepos (imprint-pdf + Sentry + UI lib + ORM client + many routes). Two levers:
+
+1. `ENV NODE_OPTIONS=--max-old-space-size=8192` (or 12288) on the builder stage of the Dockerfile.
+2. Upgrade to `@imprint-pdf/react@1.0.0-alpha.7+`. Pre-alpha.7 used static `import * as Reconciler18 from 'react-reconciler-18'` which inflated every route's eager bundle. Alpha.7 switched to lazy `await import(...)` so the reconciler lives in a separate async chunk and per-route trace work shrinks.
+
+### Layout: tiny labels overlap their values; badge text appears bottom-aligned
+
+Pre-alpha.6 the Taffy layout pass measured every text leaf at the default 12pt × 1.2 lineHeight regardless of the parent's `text-[6.5pt]` etc., while `drawText` correctly cascaded the parent's fontSize. Layout boxes were sized for 12pt; glyphs were drawn at 6.5pt. Upgrade to `@imprint-pdf/core@1.0.0-alpha.7+`.
 
 ---
 

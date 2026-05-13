@@ -93,6 +93,20 @@ next command to run.
 | ---------------- | ----------- | ------- | ----- | --------- | ---- |
 | 1.x              | 18.2 – 19.x | 14 – 16 | 5 – 7 | 3.4 – 4.x | ≥20  |
 
+Current published alphas (under the `alpha` dist-tag):
+`@imprint-pdf/core@1.0.0-alpha.7`, `@imprint-pdf/react@1.0.0-alpha.8`,
+`@imprint-pdf/next@1.0.0-alpha.8`, `@imprint-pdf/fonts@1.0.0-alpha.6`. Pin
+explicitly while pre-1.0.
+
+## Deploying to production?
+
+If your Next.js app uses `output: 'standalone'` (Docker, Coolify, self-hosted
+Vercel), make sure your `next.config` uses `withImprint()` from
+`@imprint-pdf/next/plugin` — otherwise nft drops `react-reconciler` /
+`tailwindcss` / `postcss` and your deployed route fails with
+`Cannot find module 'react-reconciler-18'` or `'tailwindcss'`. See the
+[Next.js standalone deployments guide](frameworks/nextjs.md#standalone-deployments).
+
 ## Next
 
 - [Quick start](quick-start.md)
