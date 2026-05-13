@@ -444,8 +444,8 @@ importers:
         specifier: 'catalog:'
         version: 2.0.4
       harfbuzzjs:
-        specifier: 1.0.0-beta.1
-        version: 1.0.0-beta.1
+        specifier: 1.0.0
+        version: 1.0.0
       pdf-lib:
         specifier: 'catalog:'
         version: 1.17.1
@@ -3978,6 +3978,9 @@ packages:
 
   graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
+
+  harfbuzzjs@1.0.0:
+    resolution: {integrity: sha512-oP289VVQnAfTP8qbNKUNPqjpJzowB3fiFNl/tu7cXmu+ogLxcYA2fOt+WvZQF5alZQHVoyVzoOgs/MIlf0+P7A==}
 
   harfbuzzjs@1.0.0-beta.1:
     resolution: {integrity: sha512-a7NY74Lu9Cvt4Vt+lLimQ9k5k1blO8rs0DFNPyaYNUZX1/ZVkkWx5eaXkUJ/Uo/Z/y92vN6uoZ6ZvXIYd4aiRg==}
@@ -8963,6 +8966,8 @@ snapshots:
   graceful-fs@4.2.11: {}
 
   graphemer@1.4.0: {}
+
+  harfbuzzjs@1.0.0: {}
 
   harfbuzzjs@1.0.0-beta.1: {}
 
