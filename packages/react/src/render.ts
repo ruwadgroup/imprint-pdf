@@ -32,7 +32,7 @@ async function renderInternal(
   // pass to harvest class names, then reconcile again with the compiled map.
   if (options.tailwind) {
     const { runTailwind } = await import('@imprint-pdf/tailwind');
-    const dryRoot = buildPdfNodeTree(element);
+    const dryRoot = await buildPdfNodeTree(element);
     const classes = collectClassNames(dryRoot);
     if (classes.size > 0) {
       const projectRoot = (options.tailwind as { projectRoot?: string }).projectRoot;
@@ -48,7 +48,7 @@ async function renderInternal(
   }
 
   try {
-    const rootNode: PdfNode = buildPdfNodeTree(element);
+    const rootNode: PdfNode = await buildPdfNodeTree(element);
 
     if (rootNode.type !== 'document') {
       throw new Error(

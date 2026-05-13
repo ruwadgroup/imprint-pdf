@@ -5,8 +5,8 @@ import { buildPdfNodeTree } from './reconciler.js';
 import { renderToBuffer } from './render.js';
 
 describe('buildPdfNodeTree', () => {
-  it('builds a document node tree', () => {
-    const tree = buildPdfNodeTree(
+  it('builds a document node tree', async () => {
+    const tree = await buildPdfNodeTree(
       <Document>
         <Page size="A4">
           <div>
@@ -20,8 +20,8 @@ describe('buildPdfNodeTree', () => {
     expect(tree.children[0]?.children[0]?.type).toBe('view');
   });
 
-  it('stores className on node props', () => {
-    const tree = buildPdfNodeTree(
+  it('stores className on node props', async () => {
+    const tree = await buildPdfNodeTree(
       <Document>
         <Page size="A4">
           <div className="flex flex-row px-4" />
@@ -32,8 +32,8 @@ describe('buildPdfNodeTree', () => {
     expect((viewNode?.props as Record<string, unknown>).className).toBe('flex flex-row px-4');
   });
 
-  it('resolves inline style onto node', () => {
-    const tree = buildPdfNodeTree(
+  it('resolves inline style onto node', async () => {
+    const tree = await buildPdfNodeTree(
       <Document>
         <Page size="A4">
           <div style={{ backgroundColor: '#ff0000' }} />
@@ -44,8 +44,8 @@ describe('buildPdfNodeTree', () => {
     expect(viewNode?.style.backgroundColor).toBe('#ff0000');
   });
 
-  it('throws when root element is not Document', () => {
-    const tree = buildPdfNodeTree(<div />);
+  it('throws when root element is not Document', async () => {
+    const tree = await buildPdfNodeTree(<div />);
     expect(tree.type).not.toBe('document');
   });
 });

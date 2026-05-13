@@ -3,20 +3,6 @@ import { resolveStylesWithVariants, shortHash } from '@imprint-pdf/core';
 import React, { type ReactElement } from 'react';
 import type ReactReconcilerType from 'react-reconciler';
 
-// Static side-effect imports so the Vercel / Next.js `nft` deployment tracer
-// statically sees both reconciler packages and includes them in the build
-// artifact. Indirect `createRequire(import.meta.url)(...)` calls aren't tracked
-// by nft even with literal specifiers, producing `Cannot find module
-// 'react-reconciler-18'` errors at deploy time. Static imports are followed.
-//
-// Both modules are factory exports — loading them is cheap and side-effect
-// free; only the matching one is invoked at runtime via the `IS_REACT_18`
-// selector below.
-import * as Reconciler18 from 'react-reconciler-18';
-import * as Reconciler18Constants from 'react-reconciler-18/constants.js';
-import * as Reconciler19 from 'react-reconciler-19';
-import * as Reconciler19Constants from 'react-reconciler-19/constants.js';
-
 // `createContext` is referenced only in the R19 branch below. Accessing it
 // through `React.createContext` instead of a bare named import keeps Next.js
 // RSC compilation from flagging this module as a Client Component (it
@@ -28,16 +14,74 @@ const IS_REACT_18 = parseInt(String(React.version ?? '19').split('.')[0] ?? '19'
 type ReconcilerModuleShape = typeof ReactReconcilerType | { default: typeof ReactReconcilerType };
 type ConstantsModuleShape = { DefaultEventPriority: number; LegacyRoot: number };
 
-const reconcilerModule: ReconcilerModuleShape = IS_REACT_18
-  ? (Reconciler18 as unknown as ReconcilerModuleShape)
-  : (Reconciler19 as unknown as ReconcilerModuleShape);
-const ReactReconciler =
-  (reconcilerModule as { default?: typeof ReactReconcilerType }).default ??
-  (reconcilerModule as typeof ReactReconcilerType);
+// Lazy-loaded via `await import('react-reconciler-XX')` so Vercel/Next.js
+// `nft` traces both packages into `.next/standalone` (it follows dynamic
+// imports with literal specifiers) without paying for either at module load.
+// Routes that import this package for types or unused exports never touch
+// the reconciler. The `import()` calls are inside an async function rather
+// than top-level so the module stays sync-importable.
+//
+// One reconciler is selected per process based on `React.version`; the
+// resolved module + constants are memoised in `reconcilerCache` for the
+// process lifetime.
+interface ReconcilerCache {
+  reconciler: {
+    createContainer: (...args: unknown[]) => unknown;
+    updateContainer: (element: ReactElement | null, root: unknown) => unknown;
+    updateContainerSync?: (element: ReactElement | null, root: unknown) => unknown;
+    flushSyncWork?: () => void;
+  };
+  DefaultEventPriority: number;
+  LegacyRoot: number;
+}
+let reconcilerCache: ReconcilerCache | undefined;
+let reconcilerPending: Promise<ReconcilerCache> | undefined;
 
-const { DefaultEventPriority, LegacyRoot } = (IS_REACT_18
-  ? Reconciler18Constants
-  : Reconciler19Constants) as unknown as ConstantsModuleShape;
+async function loadReconciler(): Promise<ReconcilerCache> {
+  if (reconcilerCache) return reconcilerCache;
+  if (reconcilerPending) return reconcilerPending;
+
+  reconcilerPending = (async () => {
+    const [reconcilerMod, constantsMod] = IS_REACT_18
+      ? await Promise.all([
+          import('react-reconciler-18'),
+          import('react-reconciler-18/constants.js'),
+        ])
+      : await Promise.all([
+          import('react-reconciler-19'),
+          import('react-reconciler-19/constants.js'),
+        ]);
+
+    const reconcilerExport = reconcilerMod as unknown as ReconcilerModuleShape;
+    const ReactReconciler =
+      (reconcilerExport as { default?: typeof ReactReconcilerType }).default ??
+      (reconcilerExport as typeof ReactReconcilerType);
+    const { DefaultEventPriority, LegacyRoot } = constantsMod as unknown as ConstantsModuleShape;
+
+    const hostConfig = buildHostConfig(DefaultEventPriority) as ReactReconcilerType.HostConfig<
+      string,
+      Record<string, unknown>,
+      Container,
+      PdfNode,
+      PdfNode,
+      never,
+      never,
+      never,
+      PdfNode,
+      HostContext,
+      never,
+      ReturnType<typeof setTimeout>,
+      -1,
+      never
+    >;
+
+    const reconciler = ReactReconciler(hostConfig) as unknown as ReconcilerCache['reconciler'];
+    reconcilerCache = { reconciler, DefaultEventPriority, LegacyRoot };
+    return reconcilerCache;
+  })();
+
+  return reconcilerPending;
+}
 
 export interface Container {
   document: PdfNode | null;
@@ -135,7 +179,7 @@ function makeIdGenerator() {
 // on `IS_REACT_18` and read `newProps` from the last `commitUpdate` arg either
 // way. The final config is cast to `unknown` so the two `@types/react-reconciler`
 // majors don't clash structurally.
-function buildHostConfig(): unknown {
+function buildHostConfig(DefaultEventPriority: number): unknown {
   const core = {
     isPrimaryRenderer: true,
     supportsMutation: true,
@@ -356,30 +400,6 @@ function buildHostConfig(): unknown {
   return { ...core, ...r19Extensions };
 }
 
-const hostConfig = buildHostConfig() as ReactReconcilerType.HostConfig<
-  string,
-  Record<string, unknown>,
-  Container,
-  PdfNode,
-  PdfNode,
-  never,
-  never,
-  never,
-  PdfNode,
-  HostContext,
-  never,
-  ReturnType<typeof setTimeout>,
-  -1,
-  never
->;
-
-const reconciler = ReactReconciler(hostConfig) as unknown as {
-  createContainer: (...args: unknown[]) => unknown;
-  updateContainer: (element: ReactElement | null, root: unknown) => unknown;
-  updateContainerSync?: (element: ReactElement | null, root: unknown) => unknown;
-  flushSyncWork?: () => void;
-};
-
 if (typeof globalThis !== 'undefined' && !('__REACT_DEVTOOLS_GLOBAL_HOOK__' in globalThis)) {
   (globalThis as Record<string, unknown>).__REACT_DEVTOOLS_GLOBAL_HOOK__ = { isDisabled: true };
 }
@@ -387,7 +407,12 @@ if (typeof globalThis !== 'undefined' && !('__REACT_DEVTOOLS_GLOBAL_HOOK__' in g
 // R18: 5-arg createContainer. R19: 10-arg with trailing identifier prefix +
 // error callbacks the PDF host never reads. updateContainer on R18 is already
 // synchronous under LegacyRoot, so the Sync variant is R19-only.
-function buildPdfNodeTreeImpl(container: Container, element: ReactElement): void {
+function buildPdfNodeTreeImpl(
+  cache: ReconcilerCache,
+  container: Container,
+  element: ReactElement,
+): void {
+  const { reconciler, LegacyRoot } = cache;
   const root = IS_REACT_18
     ? reconciler.createContainer(container, LegacyRoot, null, false, null)
     : reconciler.createContainer(
@@ -425,9 +450,10 @@ function collapseTextChildren(node: PdfNode): void {
   }
 }
 
-export function buildPdfNodeTree(element: ReactElement): PdfNode {
+export async function buildPdfNodeTree(element: ReactElement): Promise<PdfNode> {
+  const cache = await loadReconciler();
   const container: Container = { document: null, nextId: makeIdGenerator() };
-  buildPdfNodeTreeImpl(container, element);
+  buildPdfNodeTreeImpl(cache, container, element);
 
   if (container.document === null) {
     throw new Error(
