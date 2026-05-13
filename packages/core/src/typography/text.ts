@@ -21,11 +21,21 @@ export interface TextMetrics {
   lines: TextLine[];
 }
 
+// CSS length → PDF points for typography (fontSize, lineHeight, textIndent, …).
+// Matches `layout/units.ts` resolvePt for px/pt/cm/mm/in but uses `fallback` as
+// the em base, since typography ems are relative to the parent fontSize, not
+// the container width.
 function parsePx(value: string | number | undefined, fallback: number): number {
-  if (value === undefined) return fallback;
+  if (value === undefined || value === '') return fallback;
   if (typeof value === 'number') return value;
-  if (value.endsWith('px') || value.endsWith('pt')) return parseFloat(value);
+  if (value.endsWith('pt')) return parseFloat(value);
+  if (value.endsWith('px')) return parseFloat(value) * 0.75; // 1px = 0.75pt
   if (value.endsWith('em')) return parseFloat(value) * fallback;
+  if (value.endsWith('rem')) return parseFloat(value) * 12; // 1rem ≈ 16px = 12pt
+  if (value.endsWith('mm')) return parseFloat(value) * 2.8346;
+  if (value.endsWith('cm')) return parseFloat(value) * 28.346;
+  if (value.endsWith('in')) return parseFloat(value) * 72;
+  if (value.endsWith('%')) return (parseFloat(value) / 100) * fallback;
   const n = parseFloat(value);
   return Number.isNaN(n) ? fallback : n;
 }

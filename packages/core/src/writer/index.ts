@@ -65,7 +65,7 @@ export async function writePdf(
   options: WritePdfOptions = {},
 ): Promise<Uint8Array> {
   const doc = await PDFDocument.create();
-  const fonts = await loadFonts(doc, fontDeclarations, resolver);
+  const fonts = await loadFonts(doc, fontDeclarations, resolver, options.onAssetError);
 
   const { props } = document;
   if (props.title) doc.setTitle(props.title);

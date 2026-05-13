@@ -1,6 +1,7 @@
 import fontkitLib from '@pdf-lib/fontkit';
 import { type PDFDocument, type PDFFont, StandardFonts } from 'pdf-lib';
-import type { AssetResolver, FontDeclaration } from '../types.js';
+import type { AssetResolver, FontDeclaration, RenderOptions } from '../types.js';
+import { reportAssetError } from '../writer/drawImage.js';
 import { createHbFont, type HbFont } from './shaper.js';
 
 export interface FontMetrics {
@@ -108,6 +109,7 @@ async function loadCustomFont(
   doc: PDFDocument,
   decl: FontDeclaration,
   resolver: AssetResolver,
+  onAssetError?: RenderOptions['onAssetError'],
 ): Promise<LoadedFont | undefined> {
   let loaded: { bytes: Uint8Array; pdfFont: import('pdf-lib').PDFFont } | undefined;
   try {
@@ -125,14 +127,11 @@ async function loadCustomFont(
       try {
         loaded = await tryLoadFontBytes(doc, resolver, fallback);
       } catch (fallbackErr) {
-        console.warn(
-          `[imprint] Fallback to ${fallback} also failed for "${decl.family}":`,
-          fallbackErr,
-        );
+        reportAssetError({ src: fallback, kind: 'font', error: fallbackErr }, onAssetError);
         return undefined;
       }
     } else {
-      console.warn(`[imprint] Failed to load font "${decl.family}" from ${decl.src}:`, err);
+      reportAssetError({ src: decl.src, kind: 'font', error: err }, onAssetError);
       return undefined;
     }
   }
@@ -207,6 +206,7 @@ async function loadStandardFont(
 export async function loadFontMetricsOnly(
   declarations: FontDeclaration[],
   resolver: AssetResolver,
+  onAssetError?: RenderOptions['onAssetError'],
 ): Promise<Map<string, LoadedFont>> {
   const fonts = new Map<string, LoadedFont>();
   for (const decl of declarations) {
@@ -221,7 +221,9 @@ export async function loadFontMetricsOnly(
         metrics: DEFAULT_METRICS,
         hbFont: createHbFont(bytes),
       });
-    } catch {}
+    } catch (err) {
+      reportAssetError({ src: decl.src, kind: 'font', error: err }, onAssetError);
+    }
   }
   return fonts;
 }
@@ -230,6 +232,7 @@ export async function loadFonts(
   doc: PDFDocument,
   declarations: FontDeclaration[],
   resolver: AssetResolver,
+  onAssetError?: RenderOptions['onAssetError'],
 ): Promise<Map<string, LoadedFont>> {
   // fontkit is only needed for non-StandardFonts — skip registering it when
   // every font is Helvetica/Times/Courier.
@@ -240,7 +243,7 @@ export async function loadFonts(
   const fonts = new Map<string, LoadedFont>();
 
   for (const decl of declarations) {
-    const loaded = await loadCustomFont(doc, decl, resolver);
+    const loaded = await loadCustomFont(doc, decl, resolver, onAssetError);
     if (loaded) {
       const weight = declWeight(decl.weight);
       const style: 'normal' | 'italic' = decl.style ?? 'normal';

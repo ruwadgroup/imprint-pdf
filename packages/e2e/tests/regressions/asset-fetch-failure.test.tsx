@@ -90,6 +90,27 @@ describe('broken image src does not abort the render', () => {
     expect(errors).toEqual(['blob:one', 'blob:two', 'blob:three']);
   });
 
+  it('font fetch failure routes through the same onAssetError hook', async () => {
+    const errors: { src: string; kind: string }[] = [];
+    const pdf = await render(
+      <Document>
+        <Page size="A4" style={{ padding: 24 }}>
+          <p>still renders without the font</p>
+        </Page>
+      </Document>,
+      {
+        fonts: [{ family: 'Broken', src: 'https://example.com/does-not-exist.woff2' }],
+        onAssetError: ({ src, kind }) => errors.push({ src, kind }),
+      },
+    );
+
+    expect(pdf.byteLength).toBeGreaterThan(500);
+    expect(String.fromCharCode(...pdf.subarray(0, 4))).toBe('%PDF');
+    // The font fetch fails twice — once in metrics-only pre-layout, once in
+    // the full embed pass — both should route through the hook.
+    expect(errors.some((e) => e.kind === 'font')).toBe(true);
+  });
+
   it('throwing from onAssetError aborts the render — opt-in strict mode', async () => {
     await expect(
       render(

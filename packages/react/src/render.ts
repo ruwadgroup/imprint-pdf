@@ -62,7 +62,7 @@ async function renderInternal(
     if (options.svgRasterizer) setSvgRasterizer(options.svgRasterizer);
 
     const fonts = options.fonts ?? [];
-    const fontMetrics = await loadFontMetricsOnly(fonts, resolver);
+    const fontMetrics = await loadFontMetricsOnly(fonts, resolver, options.onAssetError);
     const geometries = await runLayout(documentNode, 0, 0, fontMetrics);
     const pdf = await writePdf(documentNode, geometries, fonts, resolver, {
       ...(options.postProcess && { postProcess: options.postProcess }),
