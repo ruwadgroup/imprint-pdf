@@ -65,21 +65,54 @@ export function withImprint(pluginOptions: ImprintPluginOptions = {}) {
     // `experimental.serverComponentsExternalPackages` (Next 14). Next warns
     // about unknown keys but doesn't error.
     const imprintExternals = ['@imprint-pdf/next', '@imprint-pdf/react', '@imprint-pdf/core'];
+    // imprint's Tailwind runtime resolves the consumer's `tailwindcss` /
+    // `postcss` via `createRequire(projectRoot)` — nft can't statically follow
+    // that, so unless these are also marked external, they don't get traced
+    // into `.next/standalone` and runtime renders fail with
+    // `Cannot find module 'tailwindcss'`. Listing them here tells nft they're
+    // real runtime deps and pulls them into the build artifact even when the
+    // consumer kept them in `devDependencies`.
+    const tailwindRuntime = ['tailwindcss', 'postcss'];
     const existingExperimental =
-      (nextConfig as { experimental?: { serverComponentsExternalPackages?: string[] } })
-        .experimental ?? {};
+      (
+        nextConfig as {
+          experimental?: {
+            serverComponentsExternalPackages?: string[];
+            outputFileTracingIncludes?: Record<string, string[]>;
+          };
+        }
+      ).experimental ?? {};
 
     return {
       ...nextConfig,
 
-      serverExternalPackages: [...(nextConfig.serverExternalPackages ?? []), ...imprintExternals],
+      serverExternalPackages: [
+        ...(nextConfig.serverExternalPackages ?? []),
+        ...imprintExternals,
+        ...tailwindRuntime,
+      ],
 
       experimental: {
         ...existingExperimental,
         serverComponentsExternalPackages: [
           ...(existingExperimental.serverComponentsExternalPackages ?? []),
           ...imprintExternals,
+          ...tailwindRuntime,
         ],
+        // Belt-and-suspenders: explicit trace include for `tailwindcss` and
+        // `postcss` so nft copies them even when the consumer's app routes
+        // don't import them directly (they're loaded lazily inside imprint
+        // via createRequire). Glob covers both root and pnpm `.pnpm/` layouts.
+        outputFileTracingIncludes: {
+          ...(existingExperimental.outputFileTracingIncludes ?? {}),
+          '**/*': [
+            ...((existingExperimental.outputFileTracingIncludes?.['**/*'] as string[]) ?? []),
+            './node_modules/tailwindcss/**/*',
+            './node_modules/postcss/**/*',
+            './node_modules/.pnpm/tailwindcss@*/node_modules/tailwindcss/**/*',
+            './node_modules/.pnpm/postcss@*/node_modules/postcss/**/*',
+          ],
+        },
       },
 
       webpack(config: WebpackConfig, ctx: WebpackConfigContext) {

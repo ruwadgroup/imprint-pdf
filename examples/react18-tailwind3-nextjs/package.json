@@ -12,8 +12,8 @@
   "dependencies": {
     "@imprint-pdf/core": "1.0.0-alpha.7",
     "@imprint-pdf/fonts": "1.0.0-alpha.6",
-    "@imprint-pdf/next": "1.0.0-alpha.7",
-    "@imprint-pdf/react": "1.0.0-alpha.7",
+    "@imprint-pdf/next": "1.0.0-alpha.8",
+    "@imprint-pdf/react": "1.0.0-alpha.8",
     "next": "14.2.35",
     "react": "^18",
     "react-dom": "^18"

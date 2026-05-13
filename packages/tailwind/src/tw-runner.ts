@@ -168,9 +168,19 @@ async function runTailwindV3(
     const result = await postcss([tailwindV3(mergedConfig)]).process(stubCss, { from: undefined });
     return parseCssToStyleMap(result.css);
   } catch (err) {
+    const msg = String(err);
+    const isModuleNotFound = /Cannot find module '(tailwindcss|postcss)'/.test(msg);
     throw new Error(
-      `[imprint-tailwind] Tailwind v3 compilation failed: ${String(err)}\n` +
-        `Config: ${configPath}. Ensure tailwindcss@3 and postcss are installed in the consumer project.`,
+      `[imprint-tailwind] Tailwind v3 compilation failed: ${msg}\n` +
+        `Config: ${configPath}.\n` +
+        (isModuleNotFound
+          ? "On standalone builds (Next.js `output: 'standalone'`, Docker, etc.) " +
+            '`tailwindcss` and `postcss` must be in `dependencies` (not `devDependencies`) ' +
+            'OR the Next.js config must mark them external so nft traces them into ' +
+            'the build artifact. `withImprint()` from `@imprint-pdf/next/plugin` ' +
+            '(alpha.8+) does this automatically; for a manual fix, add ' +
+            "`serverExternalPackages: ['tailwindcss', 'postcss']` to `next.config.js`."
+          : 'Ensure tailwindcss@3 and postcss are installed in the consumer project.'),
     );
   }
 }
