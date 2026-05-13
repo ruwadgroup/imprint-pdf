@@ -1,6 +1,6 @@
 # Bun
 
-imprint-pdf works natively with Bun's WASM support and `Bun.serve`.
+Native Bun WASM + `Bun.serve` support.
 
 ## Install
 
@@ -35,8 +35,7 @@ Bun.serve({
 console.log('Imprint server running at http://localhost:3000');
 ```
 
-`pdf()` returns a `Response` directly — `Bun.serve`'s `fetch` handler accepts it
-without further wrapping.
+`pdf()` returns a `Response`. `Bun.serve`'s `fetch` handler accepts it directly.
 
 ```bash
 bun run --watch src/index.ts
@@ -44,13 +43,12 @@ bun run --watch src/index.ts
 
 ## WASM in Bun
 
-Bun loads WASM natively — no `WebAssembly.instantiateStreaming` ceremony. The
-`@imprint-pdf/react` package detects the Bun runtime and uses the appropriate
-loading path automatically.
+Bun loads WASM natively — no `WebAssembly.instantiateStreaming` ceremony.
+`@imprint-pdf/react` detects Bun and uses the matching loading path.
 
 ## Batch generation
 
-Bun's multi-threading via `Worker` makes batch generation practical:
+Bun's `Worker` multi-threading makes batches practical:
 
 ```ts
 // worker.ts

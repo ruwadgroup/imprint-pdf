@@ -8,17 +8,16 @@ export interface AssetResolverOptions {
   fetch?: typeof globalThis.fetch;
 }
 
-// avoid importing node:fs at module level so this file stays usable in browser/edge
+// No top-level `node:fs` — this file ships to browser/edge too.
 const isNode =
   typeof process !== 'undefined' &&
   typeof process.versions !== 'undefined' &&
   typeof process.versions.node !== 'undefined';
 
 function decodeDataUri(src: string): Uint8Array {
-  // data:[<mediatype>][;base64],<data>
   const commaIdx = src.indexOf(',');
   if (commaIdx === -1) throw new Error(`Invalid data URI: ${src.slice(0, 60)}`);
-  const meta = src.slice(5, commaIdx); // strip "data:"
+  const meta = src.slice(5, commaIdx);
   const data = src.slice(commaIdx + 1);
 
   if (meta.includes(';base64')) {
@@ -33,13 +32,13 @@ function decodeDataUri(src: string): Uint8Array {
 }
 
 async function readFileNode(filePath: string): Promise<Uint8Array> {
-  // dynamic import so bundlers can tree-shake for browser builds
+  // Dynamic import so bundlers tree-shake `node:fs` out of browser builds.
   const { readFile } = await import('node:fs/promises');
   const buf = await readFile(filePath);
-  // `readFile`'s Buffer is typically a view into Node's allocation pool —
-  // `buf.buffer` is the pool, often much larger than the file. Copy into a
-  // fresh ArrayBuffer so downstream WASM consumers (HarfBuzz, fontkit) that
-  // walk `.buffer` don't read pool padding and throw `RangeError`.
+  // Node's `Buffer` is a view into a shared pool — `buf.buffer` is often much
+  // larger than the file. Copy into a fresh ArrayBuffer so WASM consumers
+  // (HarfBuzz, fontkit) that walk `.buffer` don't read pool padding and
+  // RangeError on us.
   const bytes = new Uint8Array(buf.byteLength);
   bytes.set(buf);
   return bytes;
@@ -55,39 +54,27 @@ async function fetchBytes(url: string, fetchFn: typeof globalThis.fetch): Promis
 }
 
 /**
- * `fontsource:` URL scheme — resolves to a jsdelivr CDN URL for the given
- * Fontsource package. Removes the need to hand-write CDN paths.
+ * Resolves a `fontsource:` URL to a jsdelivr CDN URL — no hand-written CDN paths.
  *
- * Shapes:
- *   `fontsource:<family>`
- *   `fontsource:<family>@<version>`
- *   `fontsource:<family>@<version>:<weight>`
- *   `fontsource:<family>@<version>:<weight>:<style>`
- *   `fontsource:<family>@<version>:<weight>:<style>:<subset>`
- *   `fontsource:<family>@<version>:<weight>:<style>:<subset>:<format>`
+ * Shape: `fontsource:<family>[@<version>][:<weight>[:<style>[:<subset>[:<format>]]]]`.
+ * Defaults: version=`5`, weight=`400`, style=`normal`, subset=`latin`, format=`woff2`.
  *
- * Defaults: version=`5`, weight=`400`, style=`normal`, subset=`latin`,
- * format=`woff2`.
+ * Variable fonts use the `fontsource-variable:` prefix and an axis name (e.g. `wght`)
+ * in the weight slot: `fontsource-variable:inter@5:wght`.
  *
- * Variable fonts use the `fontsource-variable:` prefix and `wght` (or another
- * axis name) in the weight slot:
- *   `fontsource-variable:inter@5:wght:normal`
+ * Family is the Fontsource slug (kebab-case): `inter`, `jetbrains-mono`, `noto-sans-arabic`.
  *
- * Family is the Fontsource slug (kebab-case): `inter`, `jetbrains-mono`,
- * `noto-sans-arabic`, etc.
- *
- * Examples:
- *   fontsource:inter                        → Inter regular, latin, WOFF2
- *   fontsource:inter@5:700                  → Inter bold, latin, WOFF2
- *   fontsource:inter@5:400:italic           → Inter italic
+ * @example
+ *   fontsource:inter                              // Inter regular, latin, WOFF2
+ *   fontsource:inter@5:700                        // Inter bold
+ *   fontsource:inter@5:400:italic                 // Inter italic
  *   fontsource:noto-sans-arabic@5:400:normal:arabic
- *   fontsource-variable:inter@5:wght        → Inter variable (wght axis)
+ *   fontsource-variable:inter@5:wght              // Inter variable (wght axis)
  */
 export function resolveFontsourceUrl(src: string): string {
   const isVariable = src.startsWith('fontsource-variable:');
   const body = src.slice(isVariable ? 'fontsource-variable:'.length : 'fontsource:'.length);
 
-  // Split off the version with @, then the rest by `:`
   const [familyAndVersion, ...rest] = body.split(':');
   const [familyRaw, versionRaw] = (familyAndVersion ?? '').split('@');
   const family = (familyRaw ?? '').trim();
@@ -124,7 +111,6 @@ export function createAssetResolver(options: AssetResolverOptions = {}): AssetRe
     }
 
     // `fontsource:` / `fontsource-variable:` rewrite to jsdelivr URLs.
-    // See `parseFontsource` for the supported shapes.
     if (src.startsWith('fontsource:') || src.startsWith('fontsource-variable:')) {
       const url = resolveFontsourceUrl(src);
       if (!fetchFn) {

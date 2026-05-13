@@ -1,13 +1,13 @@
-// `@imprint-pdf/next/plugin` — wraps next.config to inject WASM support, the
-// imprint-pdf webpack plugin for compile-time Tailwind class extraction, and
-// `serverExternalPackages` tweaks. Any pre-existing user config is preserved.
+// `@imprint-pdf/next/plugin` — wraps next.config to add WASM support, the
+// imprint webpack plugin for compile-time Tailwind class extraction, and
+// `serverExternalPackages` tweaks. Pre-existing user config is preserved.
 //
 //   // next.config.ts
 //   import { withImprint } from '@imprint-pdf/next/plugin'
 //   export default withImprint({ fonts: [...] })(nextConfig)
 //
-// Turbopack falls through to the runtime Tailwind compile inside `pdf()` —
-// no build-time plugin is needed.
+// Turbopack uses the runtime Tailwind compile inside `pdf()` — no build-time
+// plugin needed there.
 
 import type { NextConfig } from 'next';
 import type { WebpackConfigContext } from 'next/dist/server/config-shared';
@@ -41,7 +41,7 @@ export interface ImprintPluginOptions {
   debug?: boolean;
 }
 
-// Strip undefined keys so downstream `exactOptionalPropertyTypes` is happy.
+// Strip undefined keys to keep `exactOptionalPropertyTypes` happy downstream.
 function compactDefined<T extends object>(src: T | undefined): Partial<T> {
   if (!src) return {};
   const out: Partial<T> = {};
@@ -54,24 +54,22 @@ function compactDefined<T extends object>(src: T | undefined): Partial<T> {
 /**
  * Wrap a Next.js config with imprint-pdf build-time support: WASM experiments
  * and the bundled `ImprintWebpackPlugin` for compile-time Tailwind class
- * extraction (webpack only — Turbopack falls back to the runtime compile in
- * `pdf()`).
+ * extraction. Webpack only — Turbopack uses the runtime compile in `pdf()`.
  */
 export function withImprint(pluginOptions: ImprintPluginOptions = {}) {
   return (nextConfig: NextConfig = {}): NextConfig => {
-    // @imprint-pdf/* may pull in native bindings + uses `createContext` /
-    // `node:fs` at module load — Next must externalise them so RSC compilation
-    // doesn't bail. Set both keys: `serverExternalPackages` (Next 15+) and
+    // @imprint-pdf/* uses native bindings + `createContext` / `node:fs` at
+    // module load, so Next must externalise them or RSC compilation bails.
+    // Set both keys: `serverExternalPackages` (Next 15+) and
     // `experimental.serverComponentsExternalPackages` (Next 14). Next warns
-    // about unknown keys but doesn't error.
+    // on unknown keys but doesn't error.
     const imprintExternals = ['@imprint-pdf/next', '@imprint-pdf/react', '@imprint-pdf/core'];
-    // imprint's Tailwind runtime resolves the consumer's `tailwindcss` /
-    // `postcss` via `createRequire(projectRoot)` — nft can't statically follow
-    // that, so unless these are also marked external, they don't get traced
-    // into `.next/standalone` and runtime renders fail with
-    // `Cannot find module 'tailwindcss'`. Listing them here tells nft they're
-    // real runtime deps and pulls them into the build artifact even when the
-    // consumer kept them in `devDependencies`.
+    // We resolve the consumer's `tailwindcss` / `postcss` via
+    // `createRequire(projectRoot)`, which nft can't statically follow. Marking
+    // them external tells nft they're real runtime deps so they get traced
+    // into `.next/standalone` even when the consumer left them in
+    // `devDependencies` — otherwise renders fail with `Cannot find module
+    // 'tailwindcss'`.
     const tailwindRuntime = ['tailwindcss', 'postcss'];
     const existingExperimental =
       (
@@ -99,10 +97,9 @@ export function withImprint(pluginOptions: ImprintPluginOptions = {}) {
           ...imprintExternals,
           ...tailwindRuntime,
         ],
-        // Belt-and-suspenders: explicit trace include for `tailwindcss` and
-        // `postcss` so nft copies them even when the consumer's app routes
-        // don't import them directly (they're loaded lazily inside imprint
-        // via createRequire). Glob covers both root and pnpm `.pnpm/` layouts.
+        // Belt-and-suspenders: explicit trace include so nft copies
+        // `tailwindcss` / `postcss` even when consumer routes never import
+        // them directly. Glob covers both root and pnpm `.pnpm/` layouts.
         outputFileTracingIncludes: {
           ...(existingExperimental.outputFileTracingIncludes ?? {}),
           '**/*': [
@@ -127,9 +124,9 @@ export function withImprint(pluginOptions: ImprintPluginOptions = {}) {
         config.module.rules.push({ test: /\.wasm$/, type: 'webassembly/async' });
 
         // `@imprint-pdf/tailwind/webpack` is inlined into this package's dist
-        // via tsup `noExternal`, so the require resolves even if the consumer
-        // hasn't installed `@imprint-pdf/tailwind` (it's a private workspace
-        // package). The try/catch is defensive against future build changes.
+        // via tsup `noExternal`, so the require resolves even though the
+        // consumer never installs `@imprint-pdf/tailwind` (private workspace
+        // package). try/catch is defensive against future build changes.
         try {
           // eslint-disable-next-line @typescript-eslint/no-require-imports
           const { ImprintWebpackPlugin } = require('@imprint-pdf/tailwind/webpack') as {
@@ -148,7 +145,7 @@ export function withImprint(pluginOptions: ImprintPluginOptions = {}) {
           }
         }
 
-        // Run the user's own webpack hook last so they can override.
+        // Run the user's webpack hook last so they can override.
         return typeof nextConfig.webpack === 'function'
           ? (nextConfig.webpack(config, ctx) as WebpackConfig)
           : config;

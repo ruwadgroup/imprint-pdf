@@ -1,7 +1,8 @@
 import type { ImprintVariant, ResolvedStyle, VariantStyles } from '../types.js';
 
-// `null` until the two-pass renderer compiles Tailwind output. Distinct from
-// an empty map so a missing setup surfaces, not silently produces unstyled docs.
+// `null` until the two-pass renderer compiles Tailwind output. Kept distinct
+// from an empty map so a missing setup throws instead of silently producing
+// unstyled docs.
 let _compiledClassMap: Map<string, ResolvedStyle> | null = null;
 
 export function setCompiledClassMap(map: Map<string, ResolvedStyle>): void {
@@ -31,7 +32,7 @@ function lookupClass(cls: string): ResolvedStyle | undefined {
   if (_compiledClassMap === null) return undefined;
   const direct = _compiledClassMap.get(cls);
   if (direct) return direct;
-  // Fall back past PDF-irrelevant variant prefixes (`sm:`, `hover:`, …).
+  // Strip PDF-irrelevant variant prefixes (`sm:`, `hover:`, ...) and retry.
   const colonIdx = cls.lastIndexOf(':');
   return colonIdx === -1 ? undefined : _compiledClassMap.get(cls.slice(colonIdx + 1));
 }
@@ -63,7 +64,7 @@ export function resolveClassNameWithVariants(className: string): {
   return { base, variants };
 }
 
-/** Merges `override` over `base`. `undefined` in `override` is treated as "not set". */
+/** Merges `override` over `base`; `undefined` in `override` means "not set". */
 export function mergeStyles(base: ResolvedStyle, override: ResolvedStyle): ResolvedStyle {
   const result: ResolvedStyle = { ...base };
   for (const key of Object.keys(override) as Array<keyof ResolvedStyle>) {

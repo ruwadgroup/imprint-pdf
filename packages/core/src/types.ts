@@ -82,9 +82,7 @@ export interface ResolvedStyle {
   fontSize?: string | number;
   fontWeight?: string | number;
   fontStyle?: string;
-  // CSS spec: `"wght" 700, "wdth" 80, "opsz" 12`. Quoted-tag/value pairs
-  // separated by commas; numeric only (no `auto`/`normal`/`italic` keywords —
-  // those map to font-weight/font-style/font-stretch).
+  /** CSS `font-variation-settings`. Quoted tag + numeric value pairs, e.g. `"wght" 700, "wdth" 80`. */
   fontVariationSettings?: string;
   fontStretch?: string | number;
   fontFeatureSettings?: string;
@@ -96,9 +94,10 @@ export interface ResolvedStyle {
   whiteSpace?: string;
   textOverflow?: string;
   wordSpacing?: string | number;
-  // CSS `writing-mode`. `vertical-rl` (East Asian default) rotates glyphs
-  // 90° clockwise and stacks lines right-to-left. `vertical-lr` is the
-  // mirror. Currently affects draw only — layout still measures horizontal.
+  /**
+   * CSS `writing-mode`. `vertical-rl` rotates glyphs 90° clockwise and stacks lines
+   * right-to-left; `vertical-lr` mirrors. Draw-only for now — layout still measures horizontal.
+   */
   writingMode?: 'horizontal-tb' | 'vertical-rl' | 'vertical-lr' | string;
   lineClamp?: string | number;
   textIndent?: string | number;
@@ -249,9 +248,10 @@ export interface BookmarkProps {
   [key: string]: unknown;
 }
 
-// Variants whose match condition is known statically per page (first/left/
-// right) or per output pipeline (bleed/cmyk). Resolved up front by the
-// reconciler, applied per page in a pre-layout pass.
+/**
+ * Variants whose match condition is known statically per page or per output pipeline.
+ * Resolved by the reconciler, applied per page in a pre-layout pass.
+ */
 export type ImprintVariant = 'page-first' | 'page-left' | 'page-right' | 'bleed' | 'cmyk';
 
 export type VariantStyles = Partial<Record<ImprintVariant, ResolvedStyle>>;

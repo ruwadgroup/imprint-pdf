@@ -1,4 +1,4 @@
-// Approximation of UCD DerivedBidiClass.txt strong-RTL characters; covers
+// Approximation of UCD DerivedBidiClass.txt strong-RTL characters — covers
 // the blocks real-world mixed-direction text actually uses.
 const RTL_RANGES: [number, number][] = [
   [0x0590, 0x05ff], // Hebrew

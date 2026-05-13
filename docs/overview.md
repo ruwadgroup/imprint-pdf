@@ -1,8 +1,8 @@
 # Overview
 
-imprint-pdf is a TypeScript library for generating PDFs as React components
-styled with real Tailwind CSS. Same code path on Node, Bun, Cloudflare Workers,
-Vercel Edge, and the browser.
+A TypeScript library for generating PDFs as React components styled with real
+Tailwind CSS. Same code path on Node, Bun, Cloudflare Workers, Vercel Edge, and
+the browser.
 
 ## What you write
 
@@ -94,8 +94,8 @@ Response | Uint8Array | ReadableStream
 
 ## Status
 
-Pre-1.0. The public API, package exports, and on-disk config format may change
-until `v1.0.0`. See [`STABILITY.md`](../STABILITY.md) and
+Pre-1.0. Public API, package exports, and config format may change until
+`v1.0.0`. See [`STABILITY.md`](../STABILITY.md) and
 [`ROADMAP.md`](../ROADMAP.md).
 
 ## Next

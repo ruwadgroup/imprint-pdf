@@ -6,19 +6,19 @@ export type { RenderOptions } from '@imprint-pdf/core';
 export type { PdfOptions, PdfOutput } from '@imprint-pdf/react';
 
 /**
- * Render a React element to a PDF. The single, recommended entry point.
+ * Render a React element to a PDF — the recommended entry point.
  *
  * Auto-loads `imprint.config.ts` from the project root (Node only), merges
- * caller-supplied options on top, and dispatches to the right `@imprint-pdf/react`
- * build for the runtime: the Node bundle for `runtime = 'nodejs'` (default),
- * the standalone edge bundle for `runtime = 'edge'`.
+ * caller options on top, and picks the right `@imprint-pdf/react` build for
+ * the runtime: Node bundle for `runtime = 'nodejs'` (default), standalone
+ * edge bundle for `runtime = 'edge'`.
  *
  * @example
  * ```ts
- * // app/api/invoice/route.ts — default Response output
+ * // app/api/invoice/route.ts — Response output by default
  * export const GET = () => pdf(<Invoice />);
  *
- * // Power-user escape hatches
+ * // Escape hatches
  * const bytes  = await pdf(<Doc />, { as: 'bytes'  });
  * const stream = await pdf(<Doc />, { as: 'stream' });
  * ```
@@ -48,8 +48,8 @@ export async function pdf(
   return mod.pdf(element, options);
 }
 
-// The Node entry pulls in pdf-lib's native bindings; `/standalone` ships them
-// as WASM with no `node:*` imports. Next sets `NEXT_RUNTIME` on edge routes;
+// The Node entry pulls in pdf-lib's native bindings; `/standalone` ships
+// WASM with no `node:*` imports. Next sets `NEXT_RUNTIME=edge` on edge routes;
 // `globalThis.EdgeRuntime` is the generic Vercel/Cloudflare signal.
 function isEdgeRuntime(): boolean {
   if (
@@ -75,7 +75,7 @@ export async function renderToServer(
 }
 
 export interface EdgeRenderOptions extends RenderOptions {
-  /** pre-compiled WebAssembly module for the PDF renderer (optional) */
+  /** Pre-compiled WebAssembly module for the PDF renderer. */
   wasm?: WebAssembly.Module;
 }
 
@@ -89,9 +89,9 @@ export async function renderToEdge(
 }
 
 export interface PdfResponseOptions extends RenderOptions {
-  /** suggested filename for Content-Disposition header */
+  /** Suggested filename in the `Content-Disposition` header. */
   filename?: string;
-  /** 'inline' displays in the browser, 'attachment' triggers download */
+  /** `'inline'` displays in the browser, `'attachment'` triggers download. */
   disposition?: 'inline' | 'attachment';
 }
 

@@ -2,12 +2,9 @@
 
 A multi-page contract PDF with a fillable AcroForm signature section.
 
-## What you'll build
-
-- Cover page with parties and effective date
-- Terms and conditions body (multi-page, auto-broken)
-- Signature page with `<Signature>` and `<Checkbox>` fields
-- Digital PKCS#7 signing via `@imprint-pdf/sign` (optional add-on)
+Cover page with parties and effective date. Auto-paged terms body. Signature
+page with `<Signature>` and `<Checkbox>` fields. PKCS#7 digital signing via
+`@imprint-pdf/sign` (optional).
 
 ## Template sketch
 

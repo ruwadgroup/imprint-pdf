@@ -40,8 +40,8 @@ export async function drawText(
   const wrapWidth = geo.width - geo.paddingLeft - geo.paddingRight;
   const metrics = measureText(node.text, style, wrapWidth, loadedFont);
 
-  // Vertical writing mode rotates each line 90° and stacks columns. Layout
-  // still measures horizontally — full vertical line stacking is v0.4 work.
+  // Vertical writing mode rotates each line 90° and stacks columns.
+  // Layout still measures horizontally — full vertical stacking is v0.4 work.
   const writingMode = (style.writingMode as string | undefined) ?? 'horizontal-tb';
   const vertical = writingMode === 'vertical-rl' || writingMode === 'vertical-lr';
   if (vertical) {
@@ -67,8 +67,7 @@ export async function drawText(
   const hasUnderline = decoration.includes('underline');
   const hasStrikethrough = decoration.includes('line-through');
   const hasOverline = decoration.includes('overline');
-  // 1/20 of font-size matches what browsers settle on; clamp at 0.5pt so it
-  // doesn't disappear at common print resolutions.
+  // `fontSize / 20` matches browsers; floor at 0.5pt so it doesn't vanish in print.
   const decorationThickness = Math.max(0.5, fontSize / 20);
 
   for (const line of metrics.lines) {
@@ -80,7 +79,7 @@ export async function drawText(
       line.width,
     );
     const lineY = pageHeight - (geo.y + geo.paddingTop + line.y + fontSize);
-    // One-fontSize slop on each side keeps edge-straddling glyphs intact.
+    // One-fontSize slop each side so edge-straddling glyphs survive.
     if (lineY < -fontSize || lineY > pageHeight + fontSize) continue;
 
     page.drawText(line.text, {

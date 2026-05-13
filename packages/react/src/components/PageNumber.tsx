@@ -1,10 +1,9 @@
 import React from 'react';
 
 /**
- * Renders a placeholder that the PDF writer replaces with the current page
- * number at write time. Lays out as `inline-flex` so siblings like
- * `<span>Page <PageNumber /></span>` render on a single line — a plain
- * `view` would default to a block and break inline flow.
+ * Placeholder for the current page number — replaced at write time. Renders
+ * `inline-flex` so `<span>Page <PageNumber /></span>` stays on one line;
+ * a plain `view` defaults to block and breaks inline flow.
  */
 export function PageNumber(): React.ReactElement {
   return React.createElement('imprint-view', {

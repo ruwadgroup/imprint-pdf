@@ -1,8 +1,7 @@
 # Migrating from pdfme
 
-`pdfme` is a template-driven PDF generator. Its model is absolute-positioned
-JSON schemas, not flowable React components. The migration is a conceptual
-shift, not just a package swap.
+`pdfme` is template-driven — absolute-positioned JSON schemas, not flowable
+React components. The migration is a conceptual shift, not just a package swap.
 
 ## Key differences
 
@@ -18,8 +17,8 @@ shift, not just a package swap.
 ## When to stay on pdfme
 
 pdfme's WYSIWYG designer and absolute-positioning model are genuinely better for
-data-fill templates like labels, simple forms, and certificates where designers
-(not engineers) own the layout. If that's your workflow, pdfme is fine.
+data-fill templates — labels, simple forms, certificates — where designers (not
+engineers) own the layout. If that's the workflow, stay.
 
 Migrate to imprint-pdf when:
 

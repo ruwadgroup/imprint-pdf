@@ -8,7 +8,7 @@ export interface VariantContext {
   cmyk: boolean;
 }
 
-// Print convention: page 1 is recto (right), page 2 verso (left), etc.
+// Print convention: page 1 is recto (right), page 2 is verso (left), and so on.
 function variantsActiveFor(ctx: VariantContext): Set<ImprintVariant> {
   const active = new Set<ImprintVariant>();
   if (ctx.pageIndex === 0) active.add('page-first');
@@ -20,10 +20,9 @@ function variantsActiveFor(ctx: VariantContext): Set<ImprintVariant> {
 }
 
 // `<PageNumber>` / `<TotalPages>` lower to a `view` carrying these flags.
-// We resolve them here so the substitution rides the same per-page clone that
-// applies page-* variants — no extra walk. Text nodes carry empty style; the
-// drawText path inherits from inline context, matching how the reconciler
-// produces literal text children.
+// Resolved here so the substitution rides the same per-page clone that applies
+// page-* variants — no extra walk. The text node carries empty style; drawText
+// inherits from inline context, matching how the reconciler emits literal text.
 function makeMarkerText(parent: PdfNode, value: string, suffix: string): TextNode {
   return {
     type: 'text',
@@ -35,8 +34,8 @@ function makeMarkerText(parent: PdfNode, value: string, suffix: string): TextNod
   };
 }
 
-// Shallow-clones each node so the same authored tree can render with different
-// variant contexts (proof PDF, then CMYK plate) without cross-contamination.
+// Shallow-clones each node so one authored tree can render under different
+// variant contexts (proof PDF then CMYK plate) without cross-contamination.
 function applyToSubtree(node: PdfNode, active: Set<ImprintVariant>, ctx: VariantContext): PdfNode {
   let style = node.style;
   if (node.variants) {
@@ -78,11 +77,9 @@ export function applyImprintVariants(document: DocumentNode): DocumentNode {
   return { ...document, children: newChildren };
 }
 
-/**
- * Per-page substitution for running header/footer/watermark trees, which are
- * authored once and drawn on every page. Returns a fresh clone with
- * `<PageNumber>` / `<TotalPages>` markers filled in for the given page.
- */
+// Per-page substitution for running header/footer/watermark trees — authored
+// once, drawn on every page. Returns a fresh clone with `<PageNumber>` /
+// `<TotalPages>` markers filled in for the given page.
 export function substitutePageMarkers(
   node: PdfNode,
   pageIndex: number,

@@ -2,43 +2,33 @@ import type { PDFDocument, PDFPage } from 'pdf-lib';
 import type { AssetResolver, ComputedGeometry, ImageNode, RenderOptions } from '../types.js';
 import { pdfY } from './coords.js';
 
-/**
- * URL schemes a Node/edge runtime can never fetch — fail fast with an
- * actionable message instead of letting undici throw a generic
- * `TypeError: fetch failed` from far inside the writer.
- */
+// Schemes Node/edge can't fetch. Short-circuit before undici throws a generic
+// `TypeError: fetch failed` from deep inside the writer.
 const CLIENT_ONLY_SCHEMES = ['blob:', 'data-url:', 'chrome-extension:', 'moz-extension:'];
 
 function isClientOnlyScheme(src: string): boolean {
   return CLIENT_ONLY_SCHEMES.some((s) => src.startsWith(s));
 }
 
-/**
- * Default failure handler. Swallows the error so a broken image never aborts
- * the whole PDF render — that's almost always the wrong behaviour for
- * user-supplied content (a profile photo gone 404 shouldn't kill an invoice).
- * Consumers can override via `RenderOptions.onAssetError`.
- */
+// Fail-soft by default — a 404 profile photo shouldn't kill the invoice.
+// Throw from `onAssetError` to opt into strict mode.
 export function reportAssetError(
   info: { src: string; kind: 'image' | 'background-image' | 'font' | 'svg'; error: unknown },
   onAssetError: RenderOptions['onAssetError'],
 ): void {
   if (onAssetError) {
-    // Intentionally do NOT catch: throwing from the hook is the supported
-    // way to opt into strict mode (abort the render on broken assets).
-    // Returning normally keeps the default fail-soft behaviour.
     onAssetError(info);
     return;
   }
   const reason =
     info.error instanceof Error ? info.error.message : String(info.error ?? 'unknown error');
   const hint = isClientOnlyScheme(info.src)
-    ? ' (URL scheme is browser-only — fetch the bytes client-side and pass a data: URL, an https: URL, or pre-uploaded asset path instead)'
+    ? ' (browser-only scheme — pass a data:/https: URL instead)'
     : '';
   console.warn(`[imprint] ${info.kind} asset failed: "${info.src}" — ${reason}${hint}`);
 }
 
-/** Resolves CSS `object-position` to `[posX, posY]` in 0–1 space (0 = top/left, 1 = bottom/right). */
+// 0–1 in container space (0 = top/left, 1 = bottom/right).
 function parseObjectPosition(
   css: string,
   containerW: number,
@@ -167,8 +157,6 @@ export async function drawImage(
       height: Math.max(0.1, drawH),
     });
   } catch (err) {
-    // Swallow so one broken image doesn't kill the whole render. Consumers
-    // who want strict-mode behaviour pass `onAssetError` and throw from there.
     reportAssetError({ src: String(src), kind: 'image', error: err }, onAssetError);
   }
 }

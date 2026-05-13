@@ -14,15 +14,15 @@ pnpm add @imprint-pdf/react @imprint-pdf/core tailwindcss
 pnpm add -D @imprint-pdf/cli
 ```
 
-Works on React 18 and 19 — both reconciler majors are bundled.
+React 18 and 19 — both reconciler majors are bundled.
 
-`@imprint-pdf/cli` is a dev dependency. It's what `npx imprint dev`,
-`npx imprint render`, and `npx imprint validate` use. The runtime packages go
-into your production bundle.
+`@imprint-pdf/cli` is a dev dependency. It backs `npx imprint dev`,
+`npx imprint render`, and `npx imprint validate`. The runtime packages go in
+your production bundle.
 
 ## Framework adapter
 
-Pick the one that matches your setup.
+Pick the matching one.
 
 ```bash
 # Next.js (App Router or Pages, any runtime)
@@ -32,9 +32,9 @@ pnpm add @imprint-pdf/next
 pnpm add -D @imprint-pdf/vite
 ```
 
-Cloudflare Workers and Bun don't need a dedicated package — they import
-`@imprint-pdf/react/standalone` directly. See
-[Cloudflare](frameworks/cloudflare.md) and [Bun](frameworks/bun.md).
+Cloudflare Workers and Bun import `@imprint-pdf/react/standalone` directly — no
+adapter package needed. See [Cloudflare](frameworks/cloudflare.md) and
+[Bun](frameworks/bun.md).
 
 ## Tailwind
 
@@ -46,16 +46,15 @@ pnpm add tailwindcss
 pnpm add tailwindcss@^3 postcss
 ```
 
-imprint-pdf reads `tailwindcss/package.json` from your project to figure out
-which version you're on, then dispatches accordingly. v3 configs
-(`tailwind.config.ts`) run through the classic PostCSS plugin; v4 configs
-(CSS-first via `@theme`) run through the Oxide compiler. See
-[Tailwind config](integrations/tailwind-config.md) for the precedence ladder.
+imprint-pdf reads `tailwindcss/package.json` to detect your version, then
+dispatches. v3 configs (`tailwind.config.ts`) run through the classic PostCSS
+plugin; v4 (CSS-first via `@theme`) runs through Oxide. See
+[Tailwind config](integrations/tailwind-config.md) for precedence.
 
 ## Optional add-ons
 
-Apache-2.0 like the rest. Install only what you actually need — the core
-packages render full invoices and reports without any of these.
+Apache-2.0 like the rest. Install only what you need — the core packages render
+full invoices and reports without any of these.
 
 | Package              | What for                                             |
 | -------------------- | ---------------------------------------------------- |
@@ -83,9 +82,9 @@ pnpm add -D @imprint-pdf/eslint
 npx imprint init
 ```
 
-Detects your framework, writes `imprint.config.ts`, wires the plugin into your
+Detects your framework, writes `imprint.config.ts`, wires the plugin into
 `next.config` or `vite.config`, scaffolds a template + route, and prints the
-next command to run.
+next command.
 
 ## Version matrix
 
@@ -101,11 +100,11 @@ explicitly while pre-1.0.
 ## Deploying to production?
 
 If your Next.js app uses `output: 'standalone'` (Docker, Coolify, self-hosted
-Vercel), make sure your `next.config` uses `withImprint()` from
-`@imprint-pdf/next/plugin` — otherwise nft drops `react-reconciler` /
-`tailwindcss` / `postcss` and your deployed route fails with
-`Cannot find module 'react-reconciler-18'` or `'tailwindcss'`. See the
-[Next.js standalone deployments guide](frameworks/nextjs.md#standalone-deployments).
+Vercel), wrap `next.config` with `withImprint()` from
+`@imprint-pdf/next/plugin`. Otherwise nft drops `react-reconciler`,
+`tailwindcss`, and `postcss`, and your deployed route fails with
+`Cannot find module 'react-reconciler-18'` or `'tailwindcss'`. See
+[Next.js standalone deployments](frameworks/nextjs.md#standalone-deployments).
 
 ## Next
 

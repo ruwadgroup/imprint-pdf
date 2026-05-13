@@ -45,8 +45,7 @@ export function addOutline(doc: PDFDocument, document: DocumentNode, pdfPages: P
         Parent: outlineRef,
       }) as PDFDict;
 
-      // PDF §12.3.2.2: [page /XYZ left top zoom]. Nulls keep current
-      // left/top; final 0 keeps current zoom.
+      // PDF §12.3.2.2: `[page /XYZ left top zoom]`. Nulls keep current left/top; 0 keeps zoom.
       if (pdfPage) {
         const destArr = doc.context.obj([
           pdfPage.ref,
@@ -64,6 +63,6 @@ export function addOutline(doc: PDFDocument, document: DocumentNode, pdfPages: P
       prevRef = itemRef;
     }
   } catch {
-    // Sidebar bookmarks are a nav convenience; the document still renders.
+    // Sidebar bookmarks are nav-only — silently skip rather than fail the render.
   }
 }

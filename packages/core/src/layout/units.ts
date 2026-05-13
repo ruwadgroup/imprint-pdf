@@ -1,4 +1,4 @@
-/** Named page sizes in PDF points. `PageSize` is derived from these keys. */
+/** Named page sizes in PDF points. `PageSize` derives from these keys. */
 export const PAGE_SIZES = {
   A0: [2383.94, 3370.39],
   A1: [1683.78, 2383.94],

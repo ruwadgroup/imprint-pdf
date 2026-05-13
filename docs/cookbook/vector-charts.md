@@ -4,8 +4,8 @@ Embedding charts from Recharts, Visx, and D3 as PDF vector graphics.
 
 ## Recharts
 
-Wrap your Recharts tree in `<Chart>`. imprint-pdf renders it to SVG server-side
-and converts the output to PDF vector operators.
+Wrap your Recharts tree in `<Chart>`. It's rendered to SVG server-side and
+converted to PDF vector operators.
 
 ```tsx
 import { Chart } from '@imprint-pdf/react';
@@ -41,9 +41,8 @@ export function RevenueChart() {
 }
 ```
 
-Note: `<Tooltip>` and `<Legend>` are rendered as static elements in PDFs — hover
-interactivity has no effect. Remove them for cleaner output or style them for
-static display.
+`<Tooltip>` and `<Legend>` render as static elements — hover does nothing.
+Remove them for cleaner output, or style them for static display.
 
 ## Visx
 
@@ -77,8 +76,8 @@ export function LineChart({ data }: { data: Point[] }) {
 
 ## D3 (manual SVG → `<Svg>`)
 
-D3 doesn't have a server-side "render to SVG string" API out of the box. Use a
-detached SVG document with `jsdom` (Node) or pass the SVG string manually:
+D3 doesn't ship a server-side "render to SVG string" API. Use a detached SVG
+document with `jsdom` (Node), or pass the SVG string manually:
 
 ```ts
 import * as d3 from 'd3';

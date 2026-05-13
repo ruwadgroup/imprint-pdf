@@ -1,13 +1,10 @@
 # Cookbook — Resume
 
-A clean, single-page resume with a sidebar layout using CSS Grid.
+A clean single-page resume with a sidebar layout via CSS Grid.
 
-## What you'll build
-
-- 2-column CSS Grid layout (sidebar + main)
-- Custom fonts (Inter for body, JetBrains Mono for code)
-- Section headings with a border-bottom rule
-- Icon-labelled contact info using inline SVG
+2-column CSS Grid (sidebar + main). Custom fonts (Inter for body, JetBrains Mono
+for code). Section headings with a border-bottom rule. Icon-labelled contact
+info via inline SVG.
 
 ## Template sketch
 
@@ -148,7 +145,6 @@ const response = await pdf(
 ## Key patterns
 
 - `grid-cols-[200px_1fr]` — arbitrary CSS Grid column template.
-- `first:mt-0` — removes top margin on the first experience entry.
-- `text-[9pt]` — arbitrary point size for tight typesetting on a resume.
-- `min-h-full` on the grid container ensures both columns reach the bottom of
-  the page.
+- `first:mt-0` — strips top margin on the first experience entry.
+- `text-[9pt]` — arbitrary point size for tight resume typography.
+- `min-h-full` on the grid container — both columns reach the page bottom.

@@ -1,6 +1,6 @@
 # Cookbook — Custom fonts
 
-Loading local fonts, Google Fonts, variable fonts, and system-style fallbacks.
+Local fonts, Google Fonts, variable fonts, system-style fallbacks.
 
 ## Local files
 
@@ -33,7 +33,7 @@ export default defineConfig({
 });
 ```
 
-Then register in your Tailwind v4 stylesheet:
+Register them in your Tailwind v4 stylesheet:
 
 ```css
 /* src/app.css */
@@ -65,8 +65,8 @@ Usage with `font-variation-settings`:
 ## Google Fonts via URL
 
 Prefer stable, versioned URLs. `fonts.gstatic.com` slugs (`v15` → `v22`) rotate
-without notice — when they do, the URL 404s and the font silently disappears
-from the PDF. Stable alternatives:
+without notice — when they do, the URL 404s and the font silently disappears.
+Stable alternatives:
 
 ```ts
 // Bunny Fonts — drop-in Google Fonts mirror with stable URLs.
@@ -87,7 +87,7 @@ from the PDF. Stable alternatives:
 { family: 'Playfair Display', src: './public/fonts/PlayfairDisplay-Bold.woff2', weight: 700 }
 ```
 
-Fonts fetched by URL are cached in the `AssetResolver`. In production, wrap the
+URL-fetched fonts cache through `AssetResolver`. In production, wrap the
 resolver to cache aggressively:
 
 ```ts
@@ -120,16 +120,15 @@ fonts: [
 }
 ```
 
-imprint-pdf resolves glyphs from left to right in the font stack — Latin from
-Inter, Arabic from Noto Sans Arabic, etc.
+Glyphs resolve left-to-right through the stack — Latin from Inter, Arabic from
+Noto Sans Arabic, etc.
 
 ## Subsetting
 
-Subsetting is automatic. The HarfBuzz subsetter embeds only the glyphs actually
-used in the document. A full Noto Sans CJK file (~12 MB) might embed as ~60–100
-KB for a document with 500 Chinese characters.
+Automatic. HarfBuzz embeds only the glyphs you used. A full Noto Sans CJK (~12
+MB) might land at ~60–100 KB for a document with 500 Chinese characters.
 
-To disable subsetting (for debugging):
+To disable (debugging only):
 
 ```ts
 import { pdf } from '@imprint-pdf/react';

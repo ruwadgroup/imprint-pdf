@@ -28,8 +28,8 @@ async function renderInternal(
 ): Promise<InspectorRenderResult> {
   const resolver = options.assetResolver ?? createAssetResolver();
 
-  // Two-pass reconcile to break the Tailwind ↔ resolved-style cycle: dry
-  // pass to harvest class names, then reconcile again with the compiled map.
+  // Two-pass reconcile to break the Tailwind ↔ resolved-style cycle: dry pass
+  // harvests class names, second pass reconciles with the compiled map.
   if (options.tailwind) {
     const { runTailwind } = await import('@imprint-pdf/tailwind');
     const dryRoot = await buildPdfNodeTree(element);
@@ -85,14 +85,12 @@ export async function renderToBuffer(
 }
 
 /**
- * Renders the document and returns the bytes as a chunked `ReadableStream`.
+ * Render to a chunked `ReadableStream<Uint8Array>`.
  *
- * pdf-lib produces the buffer in one shot, so the chunking here is a
- * downstream-friendly optimisation: it lets HTTP frameworks send the
- * `Content-Type: application/pdf` headers and start flushing bytes
- * immediately, which matters for sub-100 ms TTFB targets on edge runtimes
- * (Cloudflare Workers, Vercel Edge, Deno Deploy, Bun). 64 KB chunks match
- * Node's default high-water mark and keep memory usage flat for large PDFs.
+ * pdf-lib builds the buffer in one shot, but chunking lets frameworks flush
+ * `Content-Type: application/pdf` headers and bytes immediately — matters for
+ * sub-100ms TTFB on edge runtimes. 64 KB chunks match Node's default
+ * high-water mark.
  */
 export async function renderToStream(
   element: ReactElement,
@@ -111,9 +109,8 @@ export async function renderToStream(
 }
 
 /**
- * Single-pass render that returns the PDF bytes alongside the post-layout
- * PdfNode tree and per-node geometry map. Powers `imprint dev`'s inspector;
- * not part of the public render API.
+ * Render and return the bytes plus the post-layout tree and per-node geometry.
+ * Powers `imprint dev`'s inspector; not part of the public render API.
  */
 export async function renderForInspector(
   element: ReactElement,

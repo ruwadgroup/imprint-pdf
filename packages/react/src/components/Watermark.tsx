@@ -7,9 +7,7 @@ export interface WatermarkProps {
   children?: ReactNode;
 }
 
-/**
- * Watermark — rendered behind page content on every page.
- */
+/** Watermark — drawn behind page content on every page. */
 export function Watermark({ children, ...rest }: WatermarkProps): React.ReactElement {
   return React.createElement('imprint-watermark', rest as Record<string, unknown>, children);
 }

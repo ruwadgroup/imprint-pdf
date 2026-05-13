@@ -115,9 +115,9 @@ const response = await pdf(
 
 ## Key patterns
 
-- Landscape orientation via `<Page size="A4" orientation="landscape">`.
-- `absolute inset-*` for the decorative border — rendered over the content
-  layer, does not affect layout flow.
-- Arbitrary colour values: `border-[#C9A84C]`, `text-[#C9A84C]`.
+- Landscape via `<Page size="A4" orientation="landscape">`.
+- `absolute inset-*` for the decorative border — drawn over content, out of the
+  layout flow.
+- Arbitrary colours: `border-[#C9A84C]`, `text-[#C9A84C]`.
 - `tracking-[0.3em]` — wide letter-spacing for the decorative header.
-- `font-mono` for the credential ID ensures alignment in any locale.
+- `font-mono` on the credential ID aligns it in any locale.

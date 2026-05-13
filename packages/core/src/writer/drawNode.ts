@@ -40,8 +40,7 @@ import { drawSvgString } from './svg/drawSvg.js';
 import { getSvgRasterizer, needsRasterization } from './svg/rasterize-slot.js';
 import { buildTransformMatrix } from './transform.js';
 
-// pdf-lib's drawRectangle only supports a uniform radius; emit a path so each
-// corner can have its own. Coordinates are y-down (layout space).
+// pdf-lib's drawRectangle takes one radius for all corners; we need four.
 function roundedRectPath(
   x: number,
   svgY: number,
@@ -72,9 +71,8 @@ function roundedRectPath(
   ].join(' ');
 }
 
-// CSS box-shadow grammar: `[dx] [dy] [blur?] [spread?] [color?]`. We render
-// only the offset + spread — PDF has no native blur, and `inset` shadows
-// would require clipping the inverse.
+// `[dx] [dy] [blur?] [spread?] [color?]`. Blur is dropped — PDF has none.
+// `inset` would need a hole-punched clip; skipped.
 interface Shadow {
   dx: number;
   dy: number;
@@ -130,8 +128,8 @@ function drawBackground(
 
   if (bgColor || (allBorderColor && allBorderW > 0)) {
     if (hasRadius) {
-      // y = pageHeight makes drawSvgPath's `scale(1,-1)` map y-down layout
-      // coords directly to PDF y-up. y=0 (the default) would flip below the page.
+      // y = pageHeight cancels drawSvgPath's internal `scale(1,-1)` so y-down
+      // layout coords land in PDF y-up. y=0 would flip the path off-page.
       const path = roundedRectPath(
         geo.x,
         geo.y,
@@ -166,7 +164,7 @@ function drawBackground(
     }
   }
 
-  // The uniform stroke above already drew every side; per-side strokes would double up.
+  // Uniform stroke already drew every side — bail or strokes double up.
   if (allBorderW > 0) return;
 
   const sides = [
@@ -220,8 +218,8 @@ function drawBackground(
   }
 }
 
-// PDF clipping is whole-region only. Asymmetric `overflow-x/y: hidden`
-// degrades to no clip rather than truncating one axis surprisingly.
+// PDF clipping is all-or-nothing; asymmetric `overflow-x/y: hidden` becomes
+// no clip rather than a confusing single-axis truncation.
 function shouldClip(style: Record<string, unknown>): boolean {
   const ov = style.overflow as string | undefined;
   const ovX = style.overflowX as string | undefined;
@@ -232,7 +230,7 @@ function shouldClip(style: Record<string, unknown>): boolean {
   return false;
 }
 
-// `url(...)` only — repeat / position / size / gradients are out of scope.
+// `url(...)` only. Repeat/position/size/gradients aren't supported.
 async function drawBackgroundImage(
   page: PDFPage,
   geo: { x: number; y: number; width: number; height: number },
@@ -281,7 +279,7 @@ export async function drawNode(
   const geo = geometries.get(node.id);
   if (!geo) return;
 
-  // Only text inherits cascading style — other nodes carry their fully resolved style.
+  // Only text cascades; other nodes carry their fully resolved style.
   const style =
     node.type === 'text' ? ({ ...inheritedStyle, ...node.style } as typeof node.style) : node.style;
 
@@ -289,8 +287,7 @@ export async function drawNode(
   const pdfYPos = pdfY(pageHeight, geo.y, geo.height);
   const hasClip = node.type !== 'text' && shouldClip(styleRecord);
 
-  // box-shadow paints before the graphics-state push so it isn't clipped by
-  // its own element's overflow (CSS behavior).
+  // Per CSS, shadow paints outside the clip — emit it before the clip push.
   if (node.type !== 'text' && node.type !== 'image') {
     const shadowCss = styleRecord.boxShadow as string | undefined;
     if (shadowCss) {
@@ -312,15 +309,14 @@ export async function drawNode(
     }
   }
 
-  // Single q/Q pair for transform + clip — both live in graphics state.
+  // One q/Q pair for both — transform and clip share graphics state.
   const transformCss =
     node.type !== 'text' ? (styleRecord.transform as string | undefined) : undefined;
   const hasCssTransform = Boolean(transformCss);
   if (hasCssTransform || hasClip) {
     page.pushOperators(pushGraphicsState());
     if (hasCssTransform && transformCss) {
-      // CSS rotates/scales around the element's center; buildTransformMatrix
-      // bakes that origin offset into the CTM.
+      // CSS transforms rotate/scale around the element's center; bake that origin into the CTM.
       const ox = geo.x + geo.width / 2;
       const oy = pdfYPos + geo.height / 2;
       const m = buildTransformMatrix(transformCss, ox, oy);
@@ -329,7 +325,7 @@ export async function drawNode(
       }
     }
     if (hasClip) {
-      // `W` sets the clip; pair with `n` so the path isn't also painted.
+      // `W` sets the clip; `n` discards the path so it isn't also stroked/filled.
       page.pushOperators(
         rectangle(geo.x, pdfYPos, Math.max(0, geo.width), Math.max(0, geo.height)),
         clip(),
@@ -399,8 +395,7 @@ export async function drawNode(
             );
           }
         } catch (err) {
-          // The rasterizer path can still throw (sharp/network); fail-soft so
-          // the rest of the page renders. drawSvgString itself never throws.
+          // Only the rasterizer (sharp/network) can throw — drawSvgString won't.
           reportAssetError({ src: src ?? '<inline svg>', kind: 'svg', error: err }, onAssetError);
         }
       }
@@ -408,8 +403,7 @@ export async function drawNode(
     }
   }
 
-  // <Document> children are pages, drawn separately — recursing here would
-  // stack every page onto every other.
+  // Pages are drawn one-by-one above. Recursing here would stack them all on page 1.
   if (node.type !== 'document') {
     const childInherited = { ...inheritedStyle, ...node.style };
     for (const child of node.children) {

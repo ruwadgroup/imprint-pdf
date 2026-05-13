@@ -1,8 +1,7 @@
 # Configuration
 
-All configuration lives in `imprint.config.ts` at the project root. Every field
-is optional — imprint-pdf applies sensible defaults so a minimal config is
-usually enough:
+All config lives in `imprint.config.ts` at the project root. Every field is
+optional — sensible defaults mean a minimal config is usually enough:
 
 ```ts
 import { defineConfig } from '@imprint-pdf/core/config';
@@ -16,12 +15,12 @@ Built-in defaults:
 
 | Field                 | Default                                                                                                                                                                     |
 | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `fonts`               | `[]` — only imprint-pdf's built-in fallbacks are available until you add entries                                                                                            |
+| `fonts`               | `[]` — only the built-in fallbacks are available until you add entries                                                                                                      |
 | `tailwind.stylesheet` | Auto-detected from `src/app.css`, `src/globals.css`, `src/index.css`, `src/styles.css`, `src/styles/{app,globals}.css`, `app/{app,globals}.css`, `styles/{app,globals}.css` |
 | `outDir`              | `'out'`                                                                                                                                                                     |
 | `debug`               | `false`                                                                                                                                                                     |
 
-The full surface — overridable when you need it:
+The full surface, override what you need:
 
 ```ts
 export default defineConfig({
@@ -35,7 +34,7 @@ export default defineConfig({
 
 ## `fonts`
 
-Array of font declarations. Each entry describes one font face.
+Array of font face declarations. One entry per face.
 
 ```ts
 fonts: [
@@ -52,9 +51,9 @@ fonts: [
 
 ## `tailwind`
 
-imprint-pdf runs **Tailwind v4**, which is configured CSS-first. Point
-imprint-pdf at the same stylesheet your web app uses and your design tokens,
-plugins, and custom variants resolve identically in PDFs.
+Tailwind v4 is configured CSS-first. Point imprint-pdf at the same stylesheet
+your web app uses — design tokens, plugins, and custom variants resolve
+identically in PDFs.
 
 ```ts
 tailwind?: {
@@ -63,14 +62,13 @@ tailwind?: {
 }
 ```
 
-`tailwind.stylesheet` is auto-detected — imprint-pdf scans the conventional
-locations listed above and uses the first match. Most projects don't need to set
-it explicitly. If nothing matches, imprint-pdf falls back to a bare
-`@import "tailwindcss";` so the build still succeeds (without your theme).
+`tailwind.stylesheet` is auto-detected from the conventional locations above —
+first match wins. Most projects don't need to set it. If nothing matches, the
+fallback is a bare `@import "tailwindcss";` — build succeeds, but without your
+theme.
 
-The `config` field is a backwards-compatibility shim for projects still on a
-Tailwind v3 JS config — prefer the v4-native approach by referencing your JS
-config from CSS via `@config`:
+`config` is a backwards-compat shim for projects on a Tailwind v3 JS config.
+Prefer the v4-native approach: reference your JS config from CSS via `@config`:
 
 ```css
 /* src/app.css */

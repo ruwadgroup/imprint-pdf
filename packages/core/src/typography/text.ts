@@ -39,7 +39,7 @@ function charWidth(char: string, size: number, font: LoadedFont | undefined): nu
       return font.pdfFont.widthOfTextAtSize(char, size);
     } catch {}
   }
-  // Pre-embed heuristic — replaced by real glyph widths once the font loads.
+  // Heuristic widths used until the font embeds; real glyph widths take over after.
   const code = char.charCodeAt(0);
   if (code === 32) return size * 0.25;
   if (code >= 105 && code <= 108) return size * 0.28;
@@ -210,7 +210,7 @@ export function measureText(
         const w = measure(lineText);
         const xOff = lineIdx === 0 ? indent : 0;
 
-        // Last line of a clamp: re-measure with the ellipsis included.
+        // Last clamped line — re-measure with the ellipsis baked in.
         if (lineClamp > 0 && lines.length === lineClamp - 1) {
           const availW = maxWidth - xOff;
           const truncated = truncateWithEllipsis(lineWords, spaceW, availW, measure);

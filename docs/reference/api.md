@@ -6,8 +6,8 @@ Typed exports per package.
 
 ### Runtime
 
-- `createAssetResolver(options)` → `AssetResolver` Build a resolver from `fetch`
-  / `fs` / custom handlers.
+- `createAssetResolver(options)` → `AssetResolver`. Builds a resolver from
+  `fetch` / `fs` / custom handlers.
 
 ### Config
 
@@ -47,7 +47,7 @@ pdf(element: ReactElement, options: PdfOptions & { as: 'stream' }): Promise<Read
 - `disposition?: 'inline' | 'attachment'` — default `'inline'`.
 
 Auto-loads `imprint.config.ts` from the project root and merges caller options
-on top. Overloads narrow the return type by the literal value of `as`.
+on top. Overloads narrow the return type by the literal `as`.
 
 ```ts
 // Most common — Next.js route handler returning a Response:
@@ -67,9 +67,8 @@ const stream = await pdf(<Doc />, { as: 'stream' });
 ### `@imprint-pdf/react/standalone`
 
 Self-contained build for v8-isolate runtimes (Cloudflare Workers, Vercel Edge,
-Bun). Same `pdf()` surface as the main entry; additionally accepts an optional
-pre-compiled `WebAssembly.Module` so hosts can avoid re-instantiating per
-request.
+Bun). Same `pdf()` surface as the main entry; accepts an optional pre-compiled
+`WebAssembly.Module` so hosts can skip re-instantiation per request.
 
 ```ts
 pdf(element, options?: PdfOptions & { wasm?: WebAssembly.Module }): Promise<Response | Uint8Array | ReadableStream<Uint8Array>>
@@ -97,8 +96,8 @@ withImprint(options?: ImprintPluginOptions): (nextConfig: NextConfig) => NextCon
 imprint(options?: ImprintViteOptions): Plugin[]
 ```
 
-Composite plugin — bundles the Tailwind class extractor, virtual font modules,
-and `.pdf.tsx` HMR. Drop it into your `vite.config.ts`'s `plugins:` array.
+Composite plugin — Tailwind class extractor, virtual font modules, and
+`.pdf.tsx` HMR in one. Drop it into `vite.config.ts`'s `plugins:` array.
 
 ## `@imprint-pdf/print`
 
@@ -133,8 +132,8 @@ import '@imprint-pdf/ua';
 ```
 
 Enables the PDF/UA-1 structure tree, marked content, alt text, and language
-propagation. No new public API — all via JSX props (`alt`, `aria-label`,
-`lang`).
+propagation. No new public API — driven entirely by JSX props (`alt`,
+`aria-label`, `lang`).
 
 ## `@imprint-pdf/eslint`
 

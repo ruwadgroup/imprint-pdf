@@ -1,7 +1,7 @@
 # Fonts
 
-imprint-pdf embeds only the glyphs your document actually uses. A 12 MB CJK font
-becomes ~50 KB in the output PDF. This is done via HarfBuzz's subsetter API.
+Only the glyphs your document uses get embedded. A 12 MB CJK font becomes ~50 KB
+in output, via HarfBuzz's subsetter.
 
 ## Declaring fonts
 
@@ -43,8 +43,8 @@ export default defineConfig({
 
 ## Using fonts
 
-Apply fonts via Tailwind's `font-*` utilities after registering them as `@theme`
-tokens in your Tailwind v4 stylesheet:
+Register fonts as `@theme` tokens in your Tailwind v4 stylesheet, then apply via
+`font-*` utilities:
 
 ```css
 /* src/app.css */
@@ -65,8 +65,8 @@ tokens in your Tailwind v4 stylesheet:
 
 ## Fallback stack
 
-imprint-pdf resolves a font stack left-to-right. The first family that contains
-a glyph for a given codepoint wins. Declare fallbacks in your `@theme` block:
+Font stacks resolve left-to-right. The first family with a glyph for the
+codepoint wins. Declare fallbacks in your `@theme` block:
 
 ```css
 @theme {
@@ -74,9 +74,9 @@ a glyph for a given codepoint wins. Declare fallbacks in your `@theme` block:
 }
 ```
 
-`sans-serif` and `serif` at the end resolve to imprint-pdf's built-in fallback
-fonts (a minimal Latin+CJK coverage set). These are not embedded by default —
-explicitly declare the font files you want in the PDF.
+A trailing `sans-serif` / `serif` resolves to imprint-pdf's built-in fallbacks
+(minimal Latin+CJK coverage). Built-ins are not embedded by default — declare
+the font files you want in the PDF.
 
 ## Font formats
 
@@ -90,16 +90,15 @@ explicitly declare the font files you want in the PDF.
 
 ### \* WOFF2 caveat
 
-imprint-pdf embeds fonts via [`pdf-lib`](https://github.com/Hopding/pdf-lib),
-which uses [`@pdf-lib/fontkit`](https://www.npmjs.com/package/@pdf-lib/fontkit)
-1.1.1 to decode font files. That decoder's WOFF2 path throws
-`RangeError: Index out of range` on some pre-subsetted WOFF2 files in the wild —
-notably Bunny Fonts' Outfit family. The error string is identical to an
-unrelated buffer-aliasing bug fixed in core, which makes diagnosis confusing.
+Fonts go through [`pdf-lib`](https://github.com/Hopding/pdf-lib), which uses
+[`@pdf-lib/fontkit`](https://www.npmjs.com/package/@pdf-lib/fontkit) 1.1.1 for
+decoding. The WOFF2 path throws `RangeError: Index out of range` on some
+pre-subsetted WOFF2 files in the wild — notably Bunny Fonts' Outfit family. The
+error string matches an unrelated buffer-aliasing bug fixed in core, which makes
+diagnosis confusing.
 
-**Workaround when WOFF2 fails to decode**: use the TTF variant of the same font
-(Google Fonts upstream on GitHub, or Fontsource on jsdelivr — both ship TTFs).
-TTF and OTF are unaffected.
+**Workaround when WOFF2 fails**: switch to TTF. Google Fonts upstream on GitHub
+or Fontsource on jsdelivr both ship TTFs. TTF and OTF are unaffected.
 
 ```ts
 // If this throws RangeError…
@@ -111,17 +110,17 @@ TTF and OTF are unaffected.
 
 ## System fonts
 
-System fonts are not accessible at render time on edge runtimes. Declare all
-fonts explicitly in `imprint.config.ts`. For CI reproducibility, commit font
-files to the repo or fetch them from a stable CDN URL.
+System fonts aren't accessible at render time on edge runtimes. Declare every
+font explicitly in `imprint.config.ts`. For CI reproducibility, commit font
+files to the repo or fetch from a stable CDN URL.
 
 ## Subsetting behaviour
 
-HarfBuzz subsetting runs automatically at render time. The subset includes:
+HarfBuzz subsetting runs automatically. The subset includes:
 
 - Every glyph used in the document.
 - OpenType features actually activated (`liga`, `kern`, `calt`, etc.).
 - Variable font axes used in the document.
 
-The original font file is never modified; the subset is generated in-memory and
+The source font file is never modified — the subset is built in-memory and
 embedded directly in the PDF object stream.

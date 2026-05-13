@@ -1,14 +1,13 @@
 # Charts and SVG
 
-PDFs are vector-native. Rasterising charts as PNG screenshots and embedding them
-is lossy, blurry at high zoom, and wastes bytes. imprint-pdf converts chart SVG
-output directly to PDF content stream operators — perfectly crisp at any zoom
-level, printable at any resolution.
+PDFs are vector-native. Rasterising charts as PNG is lossy, blurry at high zoom,
+and wastes bytes. imprint-pdf converts chart SVG directly to PDF content stream
+operators — crisp at any zoom, printable at any resolution.
 
 ## `<Chart>`
 
-The `<Chart>` component wraps any charting library that produces SVG and
-converts the output to PDF vectors.
+`<Chart>` wraps any charting library that emits SVG and converts the output to
+PDF vectors.
 
 ```tsx
 import { Chart } from '@imprint-pdf/react';
@@ -41,14 +40,14 @@ export function RevenueChart() {
 
 ## Supported libraries
 
-| Library         | Adapter                        | Notes                                                  |
-| --------------- | ------------------------------ | ------------------------------------------------------ |
-| Recharts        | Built-in                       | Full support; call `renderToSVG` internally.           |
-| Visx            | Built-in                       | SVG-first; excellent for custom shapes.                |
-| ECharts         | Built-in (`renderToSVGString`) | Enable SVG renderer in ECharts config.                 |
-| Observable Plot | Built-in                       | Uses `plot.plot({ ...opts, document: svgDoc })`.       |
-| D3              | Manual `<Svg src={…} />`       | Render D3 to a detached SVG, pass the string.          |
-| Chart.js        | Via `toBase64Image` workaround | JPEG/PNG fallback; vector not available from Chart.js. |
+| Library         | Adapter                        | Notes                                              |
+| --------------- | ------------------------------ | -------------------------------------------------- |
+| Recharts        | Built-in                       | Full support; calls `renderToSVG` internally.      |
+| Visx            | Built-in                       | SVG-first; great for custom shapes.                |
+| ECharts         | Built-in (`renderToSVGString`) | Enable the SVG renderer in ECharts config.         |
+| Observable Plot | Built-in                       | Uses `plot.plot({ ...opts, document: svgDoc })`.   |
+| D3              | Manual `<Svg src={…} />`       | Render D3 to a detached SVG, pass the string.      |
+| Chart.js        | Via `toBase64Image` workaround | JPEG/PNG fallback; Chart.js doesn't expose vector. |
 
 ## SVG directly
 
@@ -85,7 +84,6 @@ import logoSvg from './logo.svg?raw';
 
 ## CMYK charts
 
-With `@imprint-pdf/print`, colors in charts that use Tailwind's OKLCH values are
-converted to CMYK automatically via lcms2. For explicit CMYK in chart code, use
-the CSS `imprint:cmyk-[c_m_y_k]` custom property or pass pre-computed CMYK
-values to your chart color props.
+With `@imprint-pdf/print`, OKLCH values in charts convert to CMYK via lcms2. For
+explicit CMYK in chart code, use the `imprint:cmyk-[c_m_y_k]` custom property or
+pass pre-computed CMYK values to chart color props.

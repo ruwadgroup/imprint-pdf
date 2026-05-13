@@ -1,5 +1,5 @@
-// Plass total-fit page breaking — Knuth–Plass DP shape, where each "line" is
-// a block and the "line width" is the page height.
+// Plass total-fit page breaking: same DP shape as Knuth–Plass, but each
+// "line" is a block and the "line width" is the page height.
 // Plass, "Optimal Pagination Techniques for Automatic Typesetting Systems", 1981.
 
 const INF = 1e9;
@@ -60,10 +60,8 @@ function pageDemerits(r: number, p: number, widowOrphan: number): number {
   return base + widowOrphan;
 }
 
-/**
- * Splits blocks across pages using Plass total-fit. Falls back to first-fit
- * greedy when no DP solution exists (e.g. a single block taller than the page).
- */
+// Splits blocks across pages using Plass total-fit. Falls back to greedy
+// first-fit when no DP solution exists (e.g. a single block taller than a page).
 export function breakPages(blocks: PageBlock[], options: BreakPagesOptions): PageAssignment[] {
   if (blocks.length === 0) return [];
 
@@ -77,7 +75,7 @@ export function breakPages(blocks: PageBlock[], options: BreakPagesOptions): Pag
   }
 
   const active: ActiveNode[] = [{ position: -1, page: 0, demerits: 0, ratio: 0, previous: null }];
-  // TS narrows `let best = null` to `null` and won't widen at the assignment site.
+  // TS narrows `let best = null` to `null` and refuses to widen on assignment.
   let best = null as ActiveNode | null;
 
   for (let b = 0; b < blocks.length; b++) {

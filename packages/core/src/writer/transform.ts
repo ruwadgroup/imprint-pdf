@@ -17,7 +17,7 @@ function mul(m1: M6, m2: M6): M6 {
 function parseUnit(s: string): number {
   const n = parseFloat(s);
   if (Number.isNaN(n)) return 0;
-  // 1em ≈ 12pt — no font cascade in transforms. Use px if precision matters.
+  // No font cascade inside transforms — `1em` ≈ 12pt. Use px when precision matters.
   if (s.endsWith('em') || s.endsWith('rem')) return n * 12;
   return n;
 }
@@ -30,10 +30,7 @@ function parseDeg(s: string): number {
   return (n * Math.PI) / 180;
 }
 
-/**
- * Parses a CSS `transform` string into a PDF CTM applied around `(ox, oy)`
- * in PDF coordinates (y-up). Returns `null` if nothing parses.
- */
+/** Parse a CSS `transform` into a PDF CTM pivoted at `(ox, oy)` (PDF y-up). `null` if nothing parsed. */
 export function buildTransformMatrix(css: string, ox: number, oy: number): M6 | null {
   let m: M6 = [1, 0, 0, 1, 0, 0];
   let hasAny = false;
@@ -86,7 +83,7 @@ export function buildTransformMatrix(css: string, ox: number, oy: number): M6 | 
 
   if (!hasAny) return null;
 
-  // T(ox,oy) · M · T(-ox,-oy) for transform-origin, expanded inline.
+  // Inline expansion of `T(ox,oy) · M · T(-ox,-oy)` (transform-origin pivot).
   const [ma, mb, mc, md, me, mf] = m;
   return [ma, mb, mc, md, me + ox * (1 - ma) - oy * mc, mf + oy * (1 - md) - ox * mb];
 }

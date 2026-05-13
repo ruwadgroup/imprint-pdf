@@ -23,13 +23,11 @@ export function drawLink(
   rectArr.push(doc.context.obj(x + width));
   rectArr.push(doc.context.obj(pdfYPos + height));
 
-  // Border [H V W] = [horiz radius, vert radius, width]. All zero = no visible
-  // border, which matches what almost everyone wants (web links don't get
-  // boxed by default either).
+  // `[H V W]` = horiz radius, vert radius, width. All zero so links don't get
+  // boxed by default — matches what browsers do.
   const borderArr = doc.context.obj([0, 0, 0]);
 
-  // In-document anchors resolve through the named-dest map and become a
-  // /Dest GoTo. Anything else falls through to a /URI external link below.
+  // `#anchor` resolves to a /Dest GoTo; everything else falls through to /URI.
   if (href.startsWith('#') && namedDests) {
     const anchor = href.slice(1).toLowerCase();
     const targetPage = namedDests.get(anchor);

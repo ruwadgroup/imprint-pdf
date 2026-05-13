@@ -1,8 +1,8 @@
 # Cookbook — Streaming PDFs
 
-imprint-pdf can stream pages as they are rendered. The first byte arrives in <
-50 ms for most documents; the client's PDF viewer can begin rendering while
-remaining pages are still being generated.
+Stream pages as they render. First byte arrives in <50 ms on most documents —
+the client viewer starts drawing while remaining pages are still being
+generated.
 
 ## `pdf(..., { as: 'stream' })`
 
@@ -17,8 +17,8 @@ return new Response(stream, {
 });
 ```
 
-The `'stream'` shape returns a `ReadableStream<Uint8Array>` that emits one chunk
-per page, followed by the cross-reference table when all pages are complete.
+`'stream'` returns a `ReadableStream<Uint8Array>` that emits one chunk per page,
+followed by the cross-reference table once every page is complete.
 
 ## Cloudflare Workers
 

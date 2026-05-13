@@ -1,8 +1,7 @@
 # Migrating from `@react-pdf/renderer`
 
-`@react-pdf/renderer` and imprint-pdf share the same React reconciler concept
-and similar component names. The migration is mostly mechanical, with a few
-deliberate improvements.
+Same React reconciler concept, similar component names. The migration is mostly
+mechanical with a few deliberate upgrades.
 
 ## Key differences
 
@@ -101,8 +100,8 @@ const buffer = await pdf(<Doc />, { as: 'bytes' });   // → Uint8Array
 const stream = await pdf(<Doc />, { as: 'stream' }); // → ReadableStream
 ```
 
-(`renderToBuffer` and `renderToStream` from `@imprint-pdf/react` are still
-exported as lower-level primitives if you want to skip the auto-config-load.)
+(`renderToBuffer` and `renderToStream` are still exported as lower-level
+primitives — use them when you want to skip the auto-config load.)
 
 ## Font loading
 
@@ -126,8 +125,8 @@ export default defineConfig({
 
 ## `react-pdf-tailwind` users
 
-If you were using `react-pdf-tailwind` on top of `@react-pdf/renderer`, your
-`tw('…')` calls become standard `className` props with no translation layer:
+If you stacked `react-pdf-tailwind` on top of `@react-pdf/renderer`, your
+`tw('…')` calls become standard `className` props — no translation layer:
 
 ```tsx
 // Before
@@ -137,5 +136,5 @@ If you were using `react-pdf-tailwind` on top of `@react-pdf/renderer`, your
 <div className="flex flex-row justify-between">
 ```
 
-CSS Grid, arbitrary values, plugins, and `@theme` tokens that
-`react-pdf-tailwind` couldn't support now work.
+CSS Grid, arbitrary values, plugins, and `@theme` tokens — none of which
+`react-pdf-tailwind` could support — all work now.

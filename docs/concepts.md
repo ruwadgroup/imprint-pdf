@@ -1,12 +1,11 @@
 # Concepts
 
-Five things to understand: the IR, layout, typography, Tailwind, and runtime.
+Five things to know: the IR, layout, typography, Tailwind, and runtime.
 
 ## The PdfNode IR
 
-Everything you write in JSX becomes an immutable `PdfNode` tree. The custom
-React reconciler (built with `react-reconciler`) emits this tree; the rest of
-the pipeline consumes it without touching React.
+JSX becomes an immutable `PdfNode` tree. The custom React reconciler emits it;
+the rest of the pipeline consumes it without touching React.
 
 ```
 DocumentNode
@@ -21,27 +20,25 @@ DocumentNode
     └── …
 ```
 
-Every HTML element (`<h1>`, `<p>`, `<table>`, `<ul>`) maps to the same `PdfNode`
-types, with a `role` tag that the PDF/UA writer uses to emit the structure tree.
+HTML elements (`<h1>`, `<p>`, `<table>`, `<ul>`) map to the same `PdfNode` types
+with a `role` tag the PDF/UA writer uses to emit the structure tree.
 
 ## Layout
 
-Layout runs in three passes.
+Three passes:
 
-**1. Style resolution.** The Tailwind resolver produces a CSS property map for
-each node. Lightning CSS normalises it into a stable representation.
+**1. Style resolution.** The Tailwind resolver builds a CSS property map per
+node. Lightning CSS normalises it.
 
-**2. Box layout.** Taffy (Rust→WASM) computes block/flex/grid geometry. Every
-node gets a `x, y, width, height` rectangle plus computed padding, margin, and
-border.
+**2. Box layout.** Taffy (Rust→WASM) computes block/flex/grid geometry. Each
+node gets `x, y, width, height` plus padding, margin, border.
 
-**3. Inline layout and text.** Within a text container, Parley-lite handles
-inline-level boxes. HarfBuzz shapes each run of text, ICU4X provides line-break
-opportunities, and the Knuth–Plass algorithm selects the globally optimal
-paragraph breaks.
+**3. Inline layout and text.** Parley-lite handles inline boxes. HarfBuzz shapes
+runs, ICU4X provides line-break opportunities, Knuth–Plass picks the globally
+optimal paragraph breaks.
 
-Page breaking runs after inline layout: the Plass page algorithm places content
-across pages, minimising widow and orphan lines.
+Page breaking runs after inline layout — Plass places content across pages and
+minimises widow and orphan lines.
 
 ## Typography pipeline
 
@@ -61,32 +58,28 @@ Line boxes
 Embedded font + glyph paths in PDF content stream
 ```
 
-The font subset emitted into the PDF contains only the glyphs actually used. A
-12 MB CJK font becomes ~50 KB in output.
+The embedded subset contains only the glyphs you used. A 12 MB CJK font becomes
+~50 KB.
 
 ## Tailwind in imprint-pdf
 
-imprint-pdf runs the **actual** Tailwind v4 Oxide compiler — not a translator,
-not a subset. The flow:
+The **actual** Tailwind v4 Oxide compiler — not a translator, not a subset.
 
-1. At build time, the Vite/Webpack plugin runs Oxide over your source files and
-   produces a CSS class-to-property map.
-2. At render time, each node's `className` is looked up in that map. Arbitrary
+1. Build time: the Vite/Webpack plugin runs Oxide over your source and emits a
+   CSS class-to-property map.
+2. Render time: each node's `className` is looked up in the map. Arbitrary
    values and dynamic classes fall back to the Oxide WASM runtime.
-3. Lightning CSS normalises the resulting CSS into a property map the layout
-   engine understands.
+3. Lightning CSS normalises into a property map the layout engine understands.
 
-Properties with no PDF analogue are silently dropped: `hover:`, `focus:`,
+Properties with no PDF analogue drop silently: `hover:`, `focus:`,
 `transition-*`, `animation-*`, `position: sticky`, `position: fixed`.
 
-The `print:` variant is always active. imprint-pdf adds its own variants:
-`page-first:`, `page-left:`, `page-right:`, `imprint:cmyk-[…]`, and
-`imprint:spot-[…]`.
+The `print:` variant is always active. Extra variants: `page-first:`,
+`page-left:`, `page-right:`, `imprint:cmyk-[…]`, `imprint:spot-[…]`.
 
 ## Runtime
 
-The rendering pipeline is designed to run identically on every JavaScript
-runtime.
+Same pipeline, every JavaScript runtime.
 
 | Runtime              | WASM loading                            | Asset resolution          |
 | -------------------- | --------------------------------------- | ------------------------- |
@@ -96,8 +89,8 @@ runtime.
 | Cloudflare Workers   | Static WASM module asset (à la Satori)  | `fetch` only              |
 | Vercel Edge / Lambda | Inlined or static asset                 | `fetch` + layer           |
 
-All I/O is behind the `AssetResolver` interface. Swap it to control where fonts
-and images come from without touching your component code.
+All I/O goes through `AssetResolver`. Swap it to control where fonts and images
+come from — without touching your component code.
 
 ## Where to go next
 

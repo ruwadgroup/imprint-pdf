@@ -5,7 +5,7 @@ import type { PdfOptions } from './pdf.js';
 export type { PdfOptions, PdfOutput } from './pdf.js';
 
 export interface StandaloneRenderOptions extends RenderOptions {
-  // v1: will be wired to taffy layout engine and harfbuzz text shaper
+  // v1: will be wired to the taffy layout engine and harfbuzz text shaper.
   wasm?: WebAssembly.Module;
 }
 
@@ -28,9 +28,9 @@ export async function renderToBuffer(
 }
 
 /**
- * Unified entry point — see `@imprint-pdf/react`'s docs for the overloads.
- * Edge variant: skips config auto-load (no `node:fs`), so always pass
- * `options.fonts` and `options.tailwind` explicitly on edge.
+ * Edge entry point. Same overloads as `@imprint-pdf/react`'s `pdf`. Skips
+ * config auto-load (no `node:fs`) — pass `options.fonts` and `options.tailwind`
+ * explicitly on edge.
  */
 export function pdf(
   element: ReactElement,

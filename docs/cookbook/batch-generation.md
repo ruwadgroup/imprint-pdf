@@ -4,12 +4,12 @@ Generating hundreds or thousands of PDFs efficiently.
 
 ## Concurrency model
 
-`pdf()` is CPU-bound (WASM layout + shaping). It does not benefit from Node.js
-event loop concurrency. For true parallelism:
+`pdf()` is CPU-bound (WASM layout + shaping). Node's event loop doesn't help —
+you need real parallelism:
 
-- **Node.js**: use `worker_threads`.
-- **Bun**: use `Worker`.
-- **Cloudflare**: deploy multiple Workers; use a queue.
+- **Node.js**: `worker_threads`.
+- **Bun**: `Worker`.
+- **Cloudflare**: multiple Workers behind a queue.
 
 ## Node.js — worker thread pool
 
@@ -76,8 +76,8 @@ await Promise.all(
 
 ## Throughput estimates
 
-Measured on a 4-core Node 22 / M2 MacBook with `pdf(..., { as: 'bytes' })` in 4
-worker threads:
+4-core Node 22 / M2 MacBook, `pdf(..., { as: 'bytes' })` across 4 worker
+threads:
 
 | Document type                       | Throughput  |
 | ----------------------------------- | ----------- |
@@ -85,5 +85,5 @@ worker threads:
 | 1-page invoice, 50 Tailwind classes | ~80 PDFs/s  |
 | 5-page report with a chart          | ~18 PDFs/s  |
 
-WASM is instantiated once per worker thread. Warm throughput is limited by the
-Knuth–Plass and HarfBuzz shaping passes — scale horizontally by adding workers.
+WASM is instantiated once per worker. Warm throughput is bottlenecked on
+Knuth–Plass and HarfBuzz shaping — scale horizontally by adding workers.

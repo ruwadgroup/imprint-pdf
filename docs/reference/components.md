@@ -1,7 +1,7 @@
 # Component reference
 
-All component props. Every component also accepts `className` (Tailwind) and
-`style` (inline CSS object).
+All component props. Every component accepts `className` (Tailwind) and `style`
+(inline CSS object) on top of what's listed.
 
 ## `<Document>`
 
@@ -28,9 +28,9 @@ All component props. Every component also accepts `className` (Tailwind) and
 
 ## HTML containers
 
-imprint-pdf accepts HTML elements directly — no `<View>` or `<Text>` wrapper.
-They share the same `className` and `style` surface as imprint-pdf components
-and emit the same `PdfNode` types.
+HTML elements are first-class — no `<View>` or `<Text>` wrapper. Same
+`className` and `style` surface as imprint-pdf components, same `PdfNode`
+output.
 
 Recognised: `<div>`, `<span>`, `<p>`, `<h1>`–`<h6>`, `<ul>`, `<ol>`, `<li>`,
 `<table>`, `<thead>`, `<tbody>`, `<tfoot>`, `<tr>`, `<td>`, `<th>`, `<a>` (alias
@@ -62,12 +62,12 @@ for `<Link>`), `<img>` (alias for `<Image>`), `<section>`, `<article>`,
 ## `<Header>` / `<Footer>`
 
 Document-level children of `<Document>`. Re-laid out and stamped on every page.
-No additional props beyond `className` / `style`.
+No extra props beyond `className` / `style`.
 
 ## `<Watermark>`
 
 Document-level child of `<Document>`. Drawn behind page content on every page.
-No additional props beyond `className` / `style`.
+No extra props beyond `className` / `style`.
 
 ## `<Bookmark>`
 

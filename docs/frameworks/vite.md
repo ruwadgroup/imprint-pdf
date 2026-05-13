@@ -1,6 +1,6 @@
 # Vite
 
-Vite + React SPA and SSR support via the `@imprint-pdf/vite` plugin.
+SPA and SSR support via the `@imprint-pdf/vite` plugin.
 
 ## Install
 
@@ -66,18 +66,18 @@ npx imprint dev src/templates/Invoice.tsx
 # → http://localhost:4000
 ```
 
-The `imprint dev` server uses the Vite plugin's HMR integration — edit your
-template, the preview reloads without a full rebuild.
+`imprint dev` reuses the Vite plugin's HMR — edit the template, the preview
+reloads without a full rebuild.
 
 ## SSR (Vike, Astro)
 
-For SSR frameworks built on Vite, `pdf()` runs on the server path normally — no
-special config needed. Add `@imprint-pdf/vite` to the Vite plugin list and call
-`pdf(<Doc/>)` in your server route to get back a `Response`.
+For Vite-based SSR frameworks, `pdf()` runs on the server path normally. Add
+`@imprint-pdf/vite` to the plugin list and call `pdf(<Doc/>)` in your server
+route — it returns a `Response`.
 
 ## Virtual font module
 
-The Vite plugin provides a virtual module for font imports so you can write:
+A virtual module for font imports, so you can write:
 
 ```ts
 import interFont from 'virtual:imprint/font?url&family=Inter';
@@ -87,5 +87,5 @@ instead of managing `fs.readFileSync` paths manually.
 
 ## WASM assets
 
-The plugin handles `.wasm` asset copying and `?url` imports automatically. The
-WASM modules are fingerprinted and cached by the browser after the first load.
+The plugin handles `.wasm` copying and `?url` imports automatically. WASM
+modules are fingerprinted and browser-cached after the first load.

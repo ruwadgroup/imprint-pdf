@@ -1,13 +1,13 @@
 # Components
 
-Every imprint-pdf component maps to a `PdfNode` in the IR. All accept a
-`className` prop for Tailwind styling and a `style` prop for inline overrides.
+Every component maps to a `PdfNode` in the IR. All accept `className` (Tailwind)
+and `style` (inline overrides).
 
 ## Layout
 
 ### `<Document>`
 
-Root component. Required. Carries document-level metadata and config.
+Root. Required. Carries document-level metadata and config.
 
 ```tsx
 <Document
@@ -32,8 +32,8 @@ Root component. Required. Carries document-level metadata and config.
 
 ### `<Page>`
 
-A single page. imprint-pdf computes page breaks automatically — you do not need
-to decide which content goes on which page unless you want explicit control.
+A single page. Page breaks are automatic — you don't decide which content goes
+on which page unless you want explicit control.
 
 ```tsx
 <Page
@@ -54,8 +54,8 @@ to decide which content goes on which page unless you want explicit control.
 
 ### Containers — use HTML
 
-imprint-pdf doesn't ship a `<View>` or `<Text>` component. Use HTML elements
-directly — they're first-class and emit the same `PdfNode` types.
+No `<View>` or `<Text>` component. Use HTML elements directly — they're
+first-class and emit the same `PdfNode` types.
 
 ```tsx
 <div className="grid grid-cols-12 gap-6">
@@ -89,9 +89,9 @@ Raster image. Accepted formats: JPEG, PNG, WebP, AVIF, GIF (first frame).
 
 ### `<Svg>`
 
-SVG subtree. Pass a string or a React SVG element. Converted to PDF vector
-operators (not rasterized) unless the SVG uses unsupported features like CSS
-filters, in which case resvg-wasm rasterizes it.
+SVG subtree — string or React SVG element. Converted to PDF vector operators,
+not rasterized. Unsupported features like CSS filters fall back to resvg-wasm
+rasterization.
 
 ```tsx
 <Svg src={svgString} className="h-24 w-24" />
@@ -99,8 +99,8 @@ filters, in which case resvg-wasm rasterizes it.
 
 ### `<Link>`
 
-Hyperlink annotation. `href` may be an external URL or `#anchor` — the latter
-resolves to a `<Bookmark>` with the matching title in this document.
+Hyperlink annotation. `href` is an external URL or `#anchor` — anchors resolve
+to a `<Bookmark>` with the matching title in this document.
 
 ```tsx
 <Link href="https://acme.com" className="text-blue-600 underline">
@@ -112,13 +112,13 @@ resolves to a `<Bookmark>` with the matching title in this document.
 
 ## Document-level chrome
 
-Place these as direct children of `<Document>` (siblings of `<Page>`). They're
-re-laid out per page and stamped automatically.
+Direct children of `<Document>` (siblings of `<Page>`). Re-laid out per page and
+stamped automatically.
 
 ### `<Header>` / `<Footer>`
 
-Running header and footer. Use `<PageNumber>` / `<TotalPages>` inside to inject
-the current page index.
+Running header and footer. Drop `<PageNumber>` / `<TotalPages>` inside for the
+current page index.
 
 ```tsx
 <Document>
@@ -146,7 +146,7 @@ Drawn behind page content on every page.
 
 ### `<Bookmark>`
 
-Registers an entry in the PDF outline. Doubles as a named destination — any
+Adds an entry to the PDF outline. Doubles as a named destination — any
 `<Link href="#title">` resolves to the page containing the bookmark.
 
 ```tsx
@@ -158,8 +158,7 @@ Registers an entry in the PDF outline. Doubles as a named destination — any
 
 ## HTML aliases
 
-Plain HTML is supported. These elements map to the same `PdfNode` types with
-semantic role tags:
+Plain HTML works. These map to the same `PdfNode` types with semantic role tags:
 
 ```tsx
 <h1 className="text-3xl font-bold">Heading</h1>

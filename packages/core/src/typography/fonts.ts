@@ -75,14 +75,12 @@ function fontKey(family: string, weight: number, style: 'normal' | 'italic'): st
   return `${family}:${weight}:${style}`;
 }
 
-// WOFF2 → TTF / OTF: if fontkit throws RangeError on a .woff2, retry once
-// with a TTF/OTF variant of the same file. Many Fontsource and CDN-hosted
-// fonts ship both formats side-by-side; for `fontsource:` URLs we just swap
-// the format slot. Returns null if no plausible fallback URL exists.
+// Fontkit chokes on some .woff2 with RangeError; retry once with TTF/OTF.
+// Fontsource and most CDNs ship both side-by-side, so swapping the format slot
+// usually just works. Returns null if there's no plausible fallback.
 function ttfFallbackUrl(src: string): string | null {
   if (src.startsWith('fontsource:') || src.startsWith('fontsource-variable:')) {
-    // The format slot is the 5th `:`-separated field; swap woff2 → ttf.
-    // If the URL has fewer fields, append the format with the standard defaults.
+    // Format slot is the 5th `:`-separated field — swap woff2 → ttf.
     if (/[:](woff2|woff)$/i.test(src)) return src.replace(/[:](woff2|woff)$/i, ':ttf');
     return `${src}:ttf`;
   }
@@ -144,8 +142,8 @@ async function loadCustomFont(
         : 400;
   const style: 'normal' | 'italic' = decl.style ?? 'normal';
 
-  // pdf-lib doesn't expose metrics; reach into the embedder for them. The
-  // field renamed across minor versions, hence both lookups.
+  // pdf-lib doesn't expose metrics publicly — reach into the embedder. The
+  // field got renamed across minor versions, so check both.
   let metrics: FontMetrics = DEFAULT_METRICS;
   try {
     // @ts-expect-error — internal fontkit reference
@@ -179,8 +177,8 @@ async function loadStandardFont(
   const canonicalFamily = normalizeFamily(family);
   const fontVariants = STANDARD_FONT_MAP[canonicalFamily] ?? STANDARD_FONT_MAP.Helvetica!;
 
-  // Standard PDF fonts ship with only four variants per family; map any
-  // (weight, style) onto the closest available one.
+  // Standard PDF fonts only ship four variants per family — map any
+  // (weight, style) onto the closest one.
   const exactKey = `${weight}-${style}`;
   const boldKey = `700-${style}`;
   const normalKey = `400-${style}`;
@@ -203,11 +201,8 @@ async function loadStandardFont(
   };
 }
 
-/**
- * Builds HarfBuzz shapers without embedding into a PDF — the layout phase
- * needs glyph advances before a `PDFDocument` exists, and embedding (subsetting,
- * CFF parsing) is the expensive step.
- */
+// HarfBuzz-only loader: layout needs glyph advances before a `PDFDocument`
+// exists, and embedding (subsetting, CFF parsing) is the slow part — skip it.
 export async function loadFontMetricsOnly(
   declarations: FontDeclaration[],
   resolver: AssetResolver,
@@ -240,8 +235,8 @@ export async function loadFonts(
   declarations: FontDeclaration[],
   resolver: AssetResolver,
 ): Promise<Map<string, LoadedFont>> {
-  // fontkit is only needed for non-StandardFonts; skip registering it when
-  // every font in the doc is Helvetica/Times/Courier.
+  // fontkit is only needed for non-StandardFonts — skip registering it when
+  // every font is Helvetica/Times/Courier.
   if (declarations.length > 0) {
     doc.registerFontkit(fontkitLib);
   }
@@ -262,7 +257,7 @@ export async function loadFonts(
     }
   }
 
-  // selectFont's last-resort fallback. Guarantee it's present so a missing
+  // Last-resort fallback for selectFont — guarantee it exists so a missing
   // family never returns undefined.
   const fallbackKey = fontKey('Helvetica', 400, 'normal');
   if (!fonts.has(fallbackKey)) {
@@ -277,11 +272,9 @@ export async function loadFonts(
   return fonts;
 }
 
-/**
- * Resolves `(family, weight, style)` to a loaded font, falling back to the
- * closest weight in the same family, then a family alias (e.g. `Arial` →
- * `Helvetica`), then Helvetica 400 normal.
- */
+// Resolves `(family, weight, style)` to a loaded font. Fallback chain:
+// closest weight in the same family → family alias (Arial → Helvetica) →
+// Helvetica 400 normal.
 export function selectFont(
   fonts: Map<string, LoadedFont>,
   family: string,
@@ -295,8 +288,8 @@ export function selectFont(
   if (families.length > 0) {
     let best: LoadedFont | undefined;
     let bestDiff = Infinity;
-    // Style-mismatch penalty (100) exceeds the maximum weight gap (900-100),
-    // so any matching-style font beats any wrong-style font.
+    // Style mismatch costs 100, which exceeds the max weight gap (800), so
+    // a matching-style font always beats a wrong-style one.
     for (const f of families) {
       const diff = Math.abs(f.weight - weight) + (f.style !== style ? 100 : 0);
       if (diff < bestDiff) {

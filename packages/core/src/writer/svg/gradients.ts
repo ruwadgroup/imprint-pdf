@@ -86,7 +86,7 @@ function buildShadingFunction(page: PDFPage, stops: GradientStop[]): PDFRef {
       N: 1,
     });
     fns.push(ctx.register(f));
-    // Type 3 Bounds must be strictly monotonic; nudge coincident stops.
+    // Type 3 `Bounds` must be strictly monotonic — nudge coincident stops.
     if (i > 0) bounds.push(b.offset === a.offset ? a.offset + 1e-6 : b.offset);
     encode.push(0, 1);
   }
@@ -138,10 +138,8 @@ function unitsToShape(
 }
 
 /**
- * Builds a Type-2 Pattern dict for `fill="url(#id)"`.
- *
- * Returns the Pattern ref plus an optional alpha-shading ref carrying stop
- * opacities (only present when at least one stop has alpha &lt; 1).
+ * Build a Type-2 Pattern dict for `fill="url(#id)"`. Returns the Pattern ref plus
+ * an optional alpha-shading ref for stop opacities (only present when a stop has alpha < 1).
  */
 export function buildGradientPattern(
   page: PDFPage,

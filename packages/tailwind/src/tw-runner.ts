@@ -5,7 +5,7 @@ import type { ResolvedStyle } from '@imprint-pdf/core';
 import { parseCssToStyleMap } from './css-to-styles.js';
 import type { ImprintTailwindOptions } from './index.js';
 
-// Conventional v4 stylesheet / v3 config locations. First match wins.
+// Conventional v4 stylesheet / v3 config paths. First match wins.
 const STYLESHEET_AUTO_PATHS = [
   'src/app.css',
   'src/globals.css',
@@ -30,7 +30,7 @@ function findFirstExisting(projectRoot: string, candidates: string[]): string | 
   return candidates.find((rel) => existsSync(path.join(projectRoot, rel)));
 }
 
-// Tailwind v4 programmatic surface — only present on `tailwindcss@>=4`.
+// Tailwind v4 programmatic surface — only on `tailwindcss@>=4`.
 interface TailwindV4 {
   compile: (
     css: string,
@@ -44,7 +44,7 @@ interface TailwindV4 {
 // v3 default export is a PostCSS plugin factory.
 type TailwindV3 = (config: Record<string, unknown>) => unknown;
 
-// Read the consumer's installed `tailwindcss/package.json` to pick the path.
+// Read the consumer's `tailwindcss/package.json` to pick the dispatch branch.
 function detectTailwindMajor(projectRoot: string): 3 | 4 | null {
   try {
     const req = createRequire(path.join(projectRoot, 'package.json'));
@@ -59,10 +59,10 @@ function detectTailwindMajor(projectRoot: string): 3 | 4 | null {
 }
 
 // Dispatch precedence:
-//   1. options.config        → v3
-//   2. options.stylesheet    → v4
+//   1. options.config                                    → v3
+//   2. options.stylesheet                                → v4
 //   3. auto-detected v3 config + tailwindcss@3 installed → v3
-//   4. otherwise             → v4 (auto-detected stylesheet or bare fallback)
+//   4. fallback                                          → v4 (auto stylesheet or bare)
 export async function runTailwind(
   classes: Set<string>,
   options: ImprintTailwindOptions,
@@ -88,16 +88,19 @@ async function runTailwindV4(
 ): Promise<Map<string, ResolvedStyle>> {
   try {
     const req = createRequire(path.join(projectRoot, 'package.json'));
-    // Dynamic `import()` with a literal specifier so Vercel/Next.js nft
-    // statically traces tailwindcss AND its transitive deps (`@alloc/quick-lru`,
-    // `didyoumean`, `dlv`, `picocolors`, etc.) into `.next/standalone`. Using
-    // createRequire(projectRoot) here would resolve at runtime but nft can't
-    // follow it, so consumer deploys fail with `Cannot find module
-    // '@alloc/quick-lru'` even when tailwindcss itself was traced.
-    const twMod = (await import('tailwindcss')) as unknown as {
+    // Literal-specifier `import()` so nft statically traces tailwindcss AND
+    // its transitive deps (`@alloc/quick-lru`, `didyoumean`, `dlv`,
+    // `picocolors`, ...) into `.next/standalone`. createRequire(projectRoot)
+    // resolves at runtime but nft can't follow it, so consumer deploys would
+    // fail with `Cannot find module '@alloc/quick-lru'`.
+    //
+    // v4 exposes `compile` on the namespace AND has a separate `default`
+    // export (the v4 PostCSS plugin factory). Prefer the namespace; falling
+    // back to `default` would grab the wrong function.
+    const twMod = (await import('tailwindcss')) as unknown as Partial<TailwindV4> & {
       default?: TailwindV4;
-    } & TailwindV4;
-    const tw = (twMod.default ?? twMod) as TailwindV4;
+    };
+    const tw = (typeof twMod.compile === 'function' ? twMod : twMod.default) as TailwindV4;
     const twDir = path.dirname(req.resolve('tailwindcss/package.json'));
 
     async function loadStylesheet(
@@ -133,11 +136,11 @@ async function runTailwindV4(
   }
 }
 
-// Runs the classic v3 PostCSS plugin against a stub
-// `@tailwind base/components/utilities` stylesheet. The full class set is
-// passed as `safelist` so Tailwind doesn't scan the filesystem — we already
-// know every class the document uses. Requires `tailwindcss@3` AND `postcss`
-// installed in the consumer project (both optional peers).
+// Run the classic v3 PostCSS plugin against a stub
+// `@tailwind base/components/utilities` stylesheet. The full class set is the
+// `safelist` so Tailwind skips the filesystem scan — we already know every
+// class the document uses. Needs `tailwindcss@3` and `postcss` in the
+// consumer project (both optional peers).
 async function runTailwindV3(
   classes: Set<string>,
   projectRoot: string,
@@ -149,8 +152,8 @@ async function runTailwindV3(
       ? configPath
       : path.resolve(projectRoot, configPath);
 
-    // `.ts` configs go through Tailwind's own jiti loader; for JS variants we
-    // can `require` directly and unwrap a possible `default` export.
+    // `.ts` configs go through Tailwind's own jiti loader; JS variants we
+    // `require` directly and unwrap a possible `default` export.
     let userConfig: Record<string, unknown> = { content: { relative: true, files: [] } };
     if (!absConfigPath.endsWith('.ts')) {
       const loaded = req(absConfigPath) as
@@ -169,9 +172,9 @@ async function runTailwindV3(
       safelist,
     };
 
-    // See note in runTailwindV4: static-literal `await import()` so nft traces
+    // See runTailwindV4: literal-specifier `await import()` so nft traces
     // tailwindcss's full subgraph (@alloc/quick-lru, picocolors, didyoumean,
-    // dlv, jiti, postcss-import, fast-glob, etc.) into the deploy artifact.
+    // dlv, jiti, postcss-import, fast-glob, ...) into the deploy artifact.
     const twV3Mod = (await import('tailwindcss')) as unknown as {
       default?: TailwindV3;
     } & TailwindV3;

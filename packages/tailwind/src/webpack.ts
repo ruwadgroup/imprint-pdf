@@ -2,7 +2,7 @@ import type { Compilation, Compiler } from 'webpack';
 import type { ImprintTailwindOptions } from './index.js';
 import { runTailwind } from './tw-runner.js';
 
-// NormalModule is typed loosely because @types/webpack may not include it
+// Loose typing — @types/webpack may not include NormalModule.
 type NormalModule = {
   originalSource?: () => { source(): string | Buffer } | null;
   resource?: string;
@@ -52,7 +52,6 @@ class ImprintWebpackPlugin {
     const pluginName = 'ImprintTailwindPlugin';
     const { webpack } = compiler;
     const debug = Boolean(process.env.IMPRINT_DEBUG);
-    // Resolve project root from the compiler context
     const projectRoot = compiler.context ?? process.cwd();
 
     compiler.hooks.thisCompilation.tap(pluginName, (compilation: Compilation) => {

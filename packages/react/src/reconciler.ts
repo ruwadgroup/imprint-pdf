@@ -3,10 +3,8 @@ import { resolveStylesWithVariants, shortHash } from '@imprint-pdf/core';
 import React, { type ReactElement } from 'react';
 import type ReactReconcilerType from 'react-reconciler';
 
-// `createContext` is referenced only in the R19 branch below. Accessing it
-// through `React.createContext` instead of a bare named import keeps Next.js
-// RSC compilation from flagging this module as a Client Component (it
-// pattern-matches bare `createContext` imports at the top of the module).
+// Indirect through `React.createContext` — a bare named import trips Next's
+// RSC heuristic and tags this module as a Client Component.
 const createContext = React.createContext;
 
 const IS_REACT_18 = parseInt(String(React.version ?? '19').split('.')[0] ?? '19', 10) < 19;
@@ -14,16 +12,11 @@ const IS_REACT_18 = parseInt(String(React.version ?? '19').split('.')[0] ?? '19'
 type ReconcilerModuleShape = typeof ReactReconcilerType | { default: typeof ReactReconcilerType };
 type ConstantsModuleShape = { DefaultEventPriority: number; LegacyRoot: number };
 
-// Lazy-loaded via `await import('react-reconciler-XX')` so Vercel/Next.js
-// `nft` traces both packages into `.next/standalone` (it follows dynamic
-// imports with literal specifiers) without paying for either at module load.
-// Routes that import this package for types or unused exports never touch
-// the reconciler. The `import()` calls are inside an async function rather
-// than top-level so the module stays sync-importable.
-//
-// One reconciler is selected per process based on `React.version`; the
-// resolved module + constants are memoised in `reconcilerCache` for the
-// process lifetime.
+// Both reconcilers are loaded via `await import('react-reconciler-XX')` with
+// literal specifiers so nft traces them into `.next/standalone` while routes
+// that never render PDFs pay nothing at module load. The dynamic imports live
+// inside an async function so the module stays sync-importable. One reconciler
+// is picked per process from `React.version` and memoised in `reconcilerCache`.
 interface ReconcilerCache {
   reconciler: {
     createContainer: (...args: unknown[]) => unknown;
@@ -172,13 +165,12 @@ function makeIdGenerator() {
   };
 }
 
-// React 18 and 19 share a large host-config core but diverge: R19 adds 16
-// fields (transition/priority/suspense/form/paint), `commitUpdate` is 4-arg
-// on R19 vs 5-arg on R18, `createContainer` takes 5 args on R18 vs 10 on R19,
-// and `updateContainerSync`/`flushSyncWork` are R19-only. We gate the extras
-// on `IS_REACT_18` and read `newProps` from the last `commitUpdate` arg either
-// way. The final config is cast to `unknown` so the two `@types/react-reconciler`
-// majors don't clash structurally.
+// R18 vs R19 host-config drift: R19 adds 16 transition/priority/suspense/form/paint
+// fields, `commitUpdate` is 4-arg (vs 5-arg on R18), `createContainer` takes
+// 10 args (vs 5), and `updateContainerSync`/`flushSyncWork` are R19-only.
+// Gate the extras on `IS_REACT_18` and read `newProps` from the last
+// `commitUpdate` arg either way. Return type is `unknown` so the two
+// `@types/react-reconciler` majors don't clash structurally.
 function buildHostConfig(DefaultEventPriority: number): unknown {
   const core = {
     isPrimaryRenderer: true,
@@ -218,7 +210,7 @@ function buildHostConfig(DefaultEventPriority: number): unknown {
         style as Record<string, unknown> | undefined,
       );
 
-      // The Tailwind two-pass pipeline reads className back off the tree.
+      // Tailwind's two-pass pipeline reads className back off the tree.
       const nodeProps: Record<string, unknown> = { ...restProps };
       if (className != null) {
         nodeProps.className = className;
@@ -329,14 +321,14 @@ function buildHostConfig(DefaultEventPriority: number): unknown {
     detachDeletedInstance(_node: PdfNode): void {},
     preparePortalMount(_container: Container): void {},
 
-    // R18 only — produces the `updatePayload` arg for `commitUpdate`. `true`
-    // is the standard "do a commit" sentinel for non-DOM hosts. Ignored on R19.
+    // R18 only. `true` is the standard "commit me" sentinel for non-DOM hosts.
+    // Ignored on R19.
     prepareUpdate(): unknown {
       return true;
     },
   };
 
-  // Read newProps from the last arg — it's there on both R18 (5-arg) and R19 (4-arg).
+  // newProps is the last arg on both R18 (5-arg) and R19 (4-arg).
   function commitUpdate(...args: unknown[]): void {
     const instance = args[0] as PdfNode;
     const newProps = args[args.length - 1] as Record<string, unknown>;
@@ -358,13 +350,13 @@ function buildHostConfig(DefaultEventPriority: number): unknown {
     return { ...core, commitUpdate };
   }
 
-  // R19-only fields — inert defaults; R19's reconciler uses them for
-  // transition/suspense/priority bookkeeping the PDF host doesn't care about.
+  // R19-only fields. Inert defaults — R19 uses them for transition/suspense/
+  // priority bookkeeping the PDF host doesn't care about.
   const r19Extensions = {
     commitUpdate,
     resetFormInstance(_form: never): void {},
     NotPendingTransition: null,
-    // Wants a ReactContext<never> whose internals React doesn't expose. Never read here.
+    // Wants a ReactContext<never> with internals React doesn't expose. Never read here.
     HostTransitionContext: createContext<never>(null as never) as never,
     resolveUpdatePriority(): number {
       return DefaultEventPriority;
@@ -404,9 +396,9 @@ if (typeof globalThis !== 'undefined' && !('__REACT_DEVTOOLS_GLOBAL_HOOK__' in g
   (globalThis as Record<string, unknown>).__REACT_DEVTOOLS_GLOBAL_HOOK__ = { isDisabled: true };
 }
 
-// R18: 5-arg createContainer. R19: 10-arg with trailing identifier prefix +
-// error callbacks the PDF host never reads. updateContainer on R18 is already
-// synchronous under LegacyRoot, so the Sync variant is R19-only.
+// R18 createContainer: 5 args. R19: 10 args (trailing id prefix + error callbacks
+// we ignore). updateContainer on R18 is already sync under LegacyRoot, so the
+// Sync variant is R19-only.
 function buildPdfNodeTreeImpl(
   cache: ReconcilerCache,
   container: Container,
@@ -436,8 +428,8 @@ function buildPdfNodeTreeImpl(
   }
 }
 
-// React splits `<Text>Hello {name}</Text>` into separate text instances; Taffy
-// would measure each one independently and break lines wrong. Merge them.
+// React splits `<Text>Hello {name}</Text>` into separate text instances. Taffy
+// would measure each one independently and break lines wrong, so merge them.
 function collapseTextChildren(node: PdfNode): void {
   if (node.children.length > 0 && node.children.every((c) => c.type === 'text')) {
     const merged = node.children.map((c) => (c.type === 'text' ? (c.text ?? '') : '')).join('');

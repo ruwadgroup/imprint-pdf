@@ -118,7 +118,7 @@ export function breakLines(
       s -= first.stretch;
       k -= first.shrink;
     }
-    // Trailing penalty (e.g. hyphen glyph) contributes its width.
+    // Trailing penalty (e.g. a hyphen glyph) contributes its width to the line.
     w += items[to]?.width ?? 0;
     return { w, s, k };
   }
@@ -130,7 +130,7 @@ export function breakLines(
     const item = items[b];
     if (item === undefined) continue;
 
-    // Legal breakpoints: penalties, or glue after a box. Never inside a syllable.
+    // Legal breakpoints are penalties or glue-after-box. Never mid-syllable.
     const prev = b > 0 ? items[b - 1] : undefined;
     const legal =
       item.kind === 'penalty' ? item.penalty < INF : item.kind === 'glue' && prev?.kind === 'box';

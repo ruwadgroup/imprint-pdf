@@ -1,15 +1,12 @@
 # Cookbook — Financial report (multi-page)
 
-A multi-page financial report with a cover page, running headers, a data table,
-and vector charts.
+A multi-page financial report with a cover, running headers, a data table, and
+vector charts.
 
-## What you'll build
-
-- Cover page with company logo and report period
-- Auto-paged content with running headers and page numbers
-- A revenue table with conditional row styling
-- A `<Chart>` (Recharts BarChart) rendered as PDF vectors
-- Section headings that stay with their following content (`break-after-avoid`)
+Cover with company logo and report period. Auto-paged content with running
+headers and page numbers. Revenue table with conditional row styling. A
+`<Chart>` (Recharts BarChart) rendered as PDF vectors. Section headings glued to
+the following content via `break-after-avoid`.
 
 ## Template sketch
 
@@ -108,10 +105,10 @@ export function Report({ report }: ReportProps) {
 
 ## Key patterns
 
-- `break-after-avoid` on headings — keeps headings with the following paragraph.
+- `break-after-avoid` on headings — keeps each heading with the next paragraph.
 - `break-inside-avoid` on the chart block — the chart never splits across pages.
 - `text-justify` + `[widows:3] [orphans:3]` — tight paged typography.
-- `<Header>` uses `absolute` positioning — floated to the page margin,
+- `<Header>` uses `absolute` positioning — pinned to the page margin,
   independent of content flow.
-- `<PageNumber>` and `<TotalPages>` resolve at render time; they correctly
-  account for all pages including the cover.
+- `<PageNumber>` and `<TotalPages>` resolve at draw time and correctly count
+  every page, including the cover.

@@ -1,8 +1,7 @@
 # Tailwind in imprint-pdf
 
-imprint-pdf uses the **actual Tailwind v4 Oxide compiler** — not a translator,
-not a hand-curated subset. If a class works in Tailwind, it works in
-imprint-pdf.
+The **actual Tailwind v4 Oxide compiler** — not a translator, not a curated
+subset. If a class works in Tailwind, it works here.
 
 ## Setup
 
@@ -17,12 +16,12 @@ export default defineConfig({
 });
 ```
 
-That's it — `tailwind.stylesheet` is auto-detected from `src/app.css`,
-`src/globals.css`, and a few other conventional locations. Pass
-`{ tailwind: { stylesheet: './path/to/your.css' } }` only if your CSS entry
+That's it. `tailwind.stylesheet` is auto-detected from `src/app.css`,
+`src/globals.css`, and similar locations. Set
+`{ tailwind: { stylesheet: './path/to/your.css' } }` only when your CSS entry
 lives somewhere unusual.
 
-Your `app.css` is the standard Tailwind v4 CSS-first stylesheet:
+`app.css` is the standard Tailwind v4 CSS-first stylesheet:
 
 ```css
 /* src/app.css */
@@ -46,24 +45,23 @@ export default withImprint()({
 });
 ```
 
-## How it resolves classes
+## How classes resolve
 
-1. **Compile-time** (static classes): Oxide scans your source files, resolves
-   every class to a CSS property map, and embeds the map in the bundle. Zero
-   runtime cost.
+1. **Compile-time** (static classes): Oxide scans source files, resolves each
+   class to a CSS property map, and embeds it in the bundle. Zero runtime cost.
 
-2. **Runtime fallback** (dynamic classes): If a class name is computed at render
-   time (`className={someVar}`), imprint-pdf falls back to the Oxide WASM module
-   at ~5–20 ms per render. Enable with `tailwind: { runtimeFallback: true }`.
+2. **Runtime fallback** (dynamic classes): when a class name is computed at
+   render time (`className={someVar}`), the Oxide WASM module runs at ~5–20
+   ms/render. Enable with `tailwind: { runtimeFallback: true }`.
 
-3. **Always on: `print:` variant.** Unlike the browser, where `print:` only
-   fires in print preview, imprint-pdf treats `print:` as always active. Your
-   print-specific layout applies in every render.
+3. **Always-on `print:`.** Browsers only fire `print:` in print preview;
+   imprint-pdf treats it as always active. Print-specific layout applies in
+   every render.
 
 ## Imprint-specific variants
 
-These are registered by the imprint-pdf preset (auto-loaded when you
-`@import '@imprint-pdf/react/preset'` in your Tailwind stylesheet):
+Registered by the preset (auto-loaded when you
+`@import '@imprint-pdf/react/preset'` in your stylesheet):
 
 | Variant                        | Description                                             |
 | ------------------------------ | ------------------------------------------------------- |
@@ -77,8 +75,8 @@ These are registered by the imprint-pdf preset (auto-loaded when you
 
 ## What gets dropped
 
-CSS properties with no PDF analogue are silently dropped. Pass
-`{ strict: true }` to `pdf()` to get warnings instead.
+CSS properties with no PDF analogue drop silently. Pass `{ strict: true }` to
+`pdf()` to warn instead.
 
 | Dropped category           | Examples                                                                 |
 | -------------------------- | ------------------------------------------------------------------------ |
@@ -90,14 +88,13 @@ CSS properties with no PDF analogue are silently dropped. Pass
 
 ## Responsive utilities
 
-There is no viewport in a PDF. Screen breakpoints (`sm:`, `md:`, `lg:`) are
-treated as always-active — all styles apply regardless of breakpoint. Design
-your PDFs without responsive prefixes, or use `page-first:` / `page-left:` /
-`page-right:` for page-conditional styles.
+PDFs have no viewport. Breakpoints (`sm:`, `md:`, `lg:`) are always active —
+every style applies regardless. Design without responsive prefixes, or use
+`page-first:` / `page-left:` / `page-right:` for page-conditional styles.
 
 ## Arbitrary values
 
-All arbitrary value syntax works:
+All arbitrary-value syntax works:
 
 ```tsx
 <p className="text-[14pt] leading-[1.6] text-[#1a1a1a] mt-[8mm]" />
@@ -105,7 +102,7 @@ All arbitrary value syntax works:
 ```
 
 Length units: `px`, `pt`, `mm`, `cm`, `in`, `em`, `rem`, `%` — all resolved
-correctly by the PDF layout engine.
+correctly by the layout engine.
 
 ## Sharing your design system
 
@@ -132,8 +129,8 @@ export default defineConfig({
 });
 ```
 
-If you still have a Tailwind v3 `tailwind.config.ts`, reference it from your CSS
-via the v4 compatibility directive:
+For a Tailwind v3 `tailwind.config.ts`, reference it from your CSS via the v4
+compat directive:
 
 ```css
 @import 'tailwindcss';

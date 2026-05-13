@@ -1,7 +1,7 @@
 # Typography
 
-imprint-pdf's typography pipeline is categorically better than what browsers
-provide for paged, justified text. Here's what's in it and how to use it.
+The typography pipeline is categorically better than what browsers do for paged,
+justified text. What's in it and how to use it.
 
 ## Font loading
 
@@ -19,8 +19,8 @@ export default defineConfig({
 });
 ```
 
-Accepted formats: `.woff2`, `.woff`, `.otf`, `.ttf`. WOFF2 recommended —
-smallest file, best subsetting.
+Formats: `.woff2`, `.woff`, `.otf`, `.ttf`. WOFF2 is recommended — smallest
+file, best subsetting.
 
 ### URL fonts (Bunny Fonts, Fontsource, self-hosted)
 
@@ -30,12 +30,12 @@ smallest file, best subsetting.
 ```
 
 Avoid `fonts.gstatic.com` directly — Google rotates the version slug (`v15` →
-`v22`) every few months. When that happens, the URL 404s and the font silently
+`v22`) every few months. When it rotates, the URL 404s and the font silently
 disappears from the PDF. Prefer Bunny Fonts, Fontsource via jsdelivr
 (version-pinned npm), or self-hosting from `./public/fonts/`.
 
-Fetched at render time. Cache the response via a custom `AssetResolver` for
-production.
+Fetched at render time. In production, cache the response via a custom
+`AssetResolver`.
 
 ### Variable fonts
 
@@ -52,10 +52,10 @@ Use with Tailwind's `font-variation-settings` or the `font-weight` utilities.
 
 ## Shaping — HarfBuzz
 
-imprint-pdf uses [HarfBuzz](https://harfbuzz.github.io/) (via `harfbuzzjs`, the
-official `-DHB_TINY` WASM build) for shaping. Every OpenType feature is
-available: GSUB/GPOS tables, kerning, ligatures, contextual alternates,
-discretionary ligatures, stylistic sets.
+Shaping runs through [HarfBuzz](https://harfbuzz.github.io/) (via `harfbuzzjs`,
+the official `-DHB_TINY` WASM build). Every OpenType feature is available:
+GSUB/GPOS, kerning, ligatures, contextual alternates, discretionary ligatures,
+stylistic sets.
 
 Enable OpenType features on a `<span>` or with Tailwind's `font-variant-*`
 utilities:
@@ -78,13 +78,13 @@ utilities:
 | CJK (Han, Kana, Hangul)     | ✓                       |
 | Mathematical symbols        | ✓ (with MathML roadmap) |
 
-Bidirectional text is handled by ICU4X (UAX #9 BiDi algorithm). Mixed LTR/RTL
-paragraphs resolve correctly.
+ICU4X handles bidirectional text (UAX #9 BiDi). Mixed LTR/RTL paragraphs resolve
+correctly.
 
 ## Knuth–Plass justification
 
-Enabled by default. Produces globally optimal line breaks across an entire
-paragraph — the same algorithm TeX and InDesign use.
+On by default. Globally optimal line breaks across a paragraph — same algorithm
+TeX and InDesign use.
 
 The difference is visible on justified text: no rivers of white space, no bad
 breaks, no widows.
@@ -96,7 +96,7 @@ breaks, no widows.
 </p>
 ```
 
-To use the greedy fallback (faster for very long documents):
+Greedy fallback for very long documents:
 
 ```tsx
 <span lineBreaking="greedy" className="text-justify">
@@ -119,14 +119,13 @@ defineConfig({
 });
 ```
 
-Pattern files are Liang–Knuth `.dic` files loaded lazily per language. Based on
-`hyphen` (same patterns used by LaTeX and LibreOffice).
+Liang–Knuth `.dic` patterns loaded lazily per language. Based on `hyphen` (same
+patterns LaTeX and LibreOffice use).
 
 ## Page breaking — widows and orphans
 
-The Plass two-pass page breaking algorithm minimises widows (isolated last lines
-of a paragraph at the top of a page) and orphans (isolated first lines at the
-bottom).
+Plass two-pass page breaking minimises widows (isolated last lines at the top of
+a page) and orphans (isolated first lines at the bottom).
 
 ```tsx
 // Per-element control via CSS Paged Media properties
@@ -157,4 +156,4 @@ bottom).
 </Page>
 ```
 
-`<PageNumber>` renders the current page number at render time.
+`<PageNumber>` resolves to the current page number at draw time.

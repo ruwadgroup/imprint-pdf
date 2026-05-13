@@ -50,7 +50,7 @@ function scanDir(dir: string, exts: string[]): string[] {
       }
     }
   } catch {
-    /* unreadable — skip */
+    // unreadable — skip
   }
   return files;
 }
@@ -100,7 +100,7 @@ export function imprintTailwind(options: ImprintTailwindOptions = {}): Plugin {
           try {
             addClasses(readFileSync(file, 'utf8'));
           } catch {
-            /* skip unreadable */
+            // skip unreadable
           }
         }
       }
@@ -155,7 +155,7 @@ export function imprintTailwind(options: ImprintTailwindOptions = {}): Plugin {
           if (mod) server.moduleGraph.invalidateModule(mod);
         }
       } catch {
-        /* skip */
+        // skip
       }
     },
   };

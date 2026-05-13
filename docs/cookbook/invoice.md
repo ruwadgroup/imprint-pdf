@@ -1,15 +1,9 @@
 # Cookbook — Invoice
 
-A production-grade invoice template with line items, totals, and a logo.
+A production-grade invoice with line items, totals, and a logo.
 
-## What you'll build
-
-A single-page A4 invoice with:
-
-- Company logo (SVG)
-- Bill-to / bill-from sections in a 2-column grid
-- Line items table with subtotal, tax, and total
-- A footer with payment terms
+Single-page A4. Company logo (SVG). Bill-to / bill-from in a 2-column grid. Line
+items table with subtotal, tax, and total. Footer with payment terms.
 
 ## Template
 
@@ -185,5 +179,5 @@ export const GET = () =>
   );
 ```
 
-Outside Next.js, `pdf()` from `@imprint-pdf/react` works the same — pass
-`{ as: 'bytes' }` if you need a `Uint8Array` for writing to disk.
+Outside Next.js, `pdf()` from `@imprint-pdf/react` is identical — pass
+`{ as: 'bytes' }` for a `Uint8Array` to write to disk.

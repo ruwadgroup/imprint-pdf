@@ -1,6 +1,6 @@
 # Cookbook — CI validation (PDF/UA, PDF/X)
 
-Run veraPDF in CI to certify that every generated PDF passes PDF/UA-1 or PDF/X-4
+Run veraPDF in CI to certify every generated PDF passes PDF/UA-1 or PDF/X-4
 conformance. Requires `@imprint-pdf/print` or `@imprint-pdf/ua`.
 
 ## Setup
@@ -9,8 +9,8 @@ conformance. Requires `@imprint-pdf/print` or `@imprint-pdf/ua`.
 pnpm add -D @imprint-pdf/cli
 ```
 
-`@imprint-pdf/cli` ships a Node wrapper around veraPDF. Java 11+ must be
-installed on the CI runner.
+`@imprint-pdf/cli` ships a Node wrapper around veraPDF. Java 11+ must be on the
+CI runner.
 
 ## Validate a single file
 
@@ -19,8 +19,7 @@ imprint validate ./dist/report.pdf --profile pdf-ua-1
 # exits 0 on pass, 1 on fail — safe for CI gates
 ```
 
-Supported profiles: `pdf-ua-1`, `pdf-ua-2` (roadmap), `pdf-x-4`, `pdf-a-2b`,
-`pdf-a-3`.
+Profiles: `pdf-ua-1`, `pdf-ua-2` (roadmap), `pdf-x-4`, `pdf-a-2b`, `pdf-a-3`.
 
 ## GitHub Actions
 

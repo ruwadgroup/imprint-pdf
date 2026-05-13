@@ -1,13 +1,12 @@
 # Cloudflare Workers
 
-imprint-pdf generates PDFs on Cloudflare Workers in under 100 ms cold start. No
-dedicated package — use `@imprint-pdf/react/standalone` directly.
+Generates PDFs on Workers in under 100 ms cold start. No dedicated package — use
+`@imprint-pdf/react/standalone` directly.
 
 ## The standalone build
 
-Cloudflare Workers cannot load WASM from the filesystem at runtime. The solution
-(identical to how Satori works) is to import WASM as a static module asset that
-is bundled with the Worker.
+Workers can't load WASM from the filesystem at runtime. The fix (same as Satori)
+is to import WASM as a static module asset bundled into the Worker.
 
 ```ts
 // src/index.ts
@@ -47,7 +46,7 @@ IMPRINT_WASM = "./node_modules/@imprint-pdf/react/dist/imprint.wasm"
 
 ## Fonts on Workers
 
-Workers have no filesystem. Two options:
+No filesystem. Two options.
 
 **Option 1 — Fetch from a CDN at render time:**
 
@@ -57,8 +56,8 @@ defineConfig({
     {
       family: 'Inter',
       // Bunny Fonts / Fontsource via jsdelivr are stable. Avoid
-      // `fonts.gstatic.com` — Google rotates the version slug periodically,
-      // which silently breaks production renders.
+      // `fonts.gstatic.com` — Google rotates the slug periodically and
+      // silently breaks production renders.
       src: 'https://fonts.bunny.net/inter/files/inter-latin-400-normal.woff2',
     },
   ],
@@ -80,15 +79,15 @@ Then import and pass it via `AssetResolver`.
 
 ## Cold start target
 
-< 100 ms for a 1-page A4 invoice. Measured at ~60–80 ms on the free tier with
+< 100 ms for a 1-page A4 invoice. Measured at ~60–80 ms on the free tier under
 `wrangler dev --local`. Production edge timings vary by region.
 
 ## Tailwind on Workers
 
-Static class extraction at build time (via the Vite or Webpack plugin) means
-zero Tailwind processing at request time. The resolved CSS map is bundled in the
-Worker. Dynamic classes and the Oxide WASM fallback are not recommended on
-Workers due to the WASM size budget — keep classes static.
+Static class extraction at build time (Vite or Webpack plugin) means zero
+Tailwind processing per request. The resolved CSS map is bundled into the
+Worker. The Oxide WASM runtime fallback is not recommended on Workers — the size
+budget is tight, so keep classes static.
 
 ## Example
 

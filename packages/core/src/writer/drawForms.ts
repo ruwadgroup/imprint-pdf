@@ -13,7 +13,7 @@ import type {
 import { parseColor, toPt } from './color.js';
 import { pdfY } from './coords.js';
 
-// Field-flag bits, PDF §12.7.3.1 / §12.7.4.2.1 / §12.7.4.4.1.
+// Field-flag bits: PDF §12.7.3.1 / §12.7.4.2.1 / §12.7.4.4.1.
 const FF_REQUIRED = 1 << 1;
 const FF_MULTILINE = 1 << 12;
 const FF_RADIO = 1 << 15;
@@ -21,7 +21,7 @@ const FF_PUSHBUTTON = 1 << 16;
 const FF_COMBO = 1 << 17;
 
 // Default-appearance string per PDF §12.7.3.3. Always Helvetica — embedding
-// custom fonts into a widget's own resource dict is a separate problem.
+// custom fonts into a widget's resource dict is its own problem.
 function buildDA(style: ResolvedStyle): string {
   const fontSize = toPt(style.fontSize, 12);
   const color = parseColor(style.color as string | undefined);
@@ -132,7 +132,7 @@ export function drawRadioGroup(
   const options = props.options ?? [];
   if (options.length === 0) return;
 
-  // PDF §12.7.4.2.3: parent field owns value + flags, children own Rects.
+  // PDF §12.7.4.2.3: parent field owns value + flags; children own Rects.
   const groupDict = doc.context.obj({
     FT: PDFName.of('Btn'),
     Ff: doc.context.obj(FF_RADIO),
@@ -152,7 +152,7 @@ export function drawRadioGroup(
 
   for (let i = 0; i < options.length; i++) {
     const opt = options[i]!;
-    // First option sits at the top; PDF y is up, so it gets the highest y.
+    // First option at top → highest y (PDF coords are up).
     const optCenterY = pdfYPos + height - (i + 0.5) * optH;
     const ry = optCenterY - radioSize / 2;
 

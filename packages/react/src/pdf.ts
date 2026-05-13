@@ -6,13 +6,13 @@ import { renderToBuffer, renderToStream } from './render.js';
 /**
  * Output shape for {@link pdf}.
  *
- * - `'response'` (default) — a `Response` whose body is the rendered PDF bytes,
- *   with `Content-Type: application/pdf` headers wired up. Ideal for Next.js
- *   route handlers, Hono, Bun.serve, etc.
- * - `'bytes'` — a `Uint8Array`. Useful for writing to disk, attaching to email,
- *   or passing into a custom HTTP framework.
- * - `'stream'` — a `ReadableStream<Uint8Array>`. Useful for streaming responses
- *   on edge runtimes where memory is constrained.
+ * - `'response'` (default) — a `Response` with PDF bytes and the right
+ *   `Content-Type` / `Content-Disposition` headers. Drop into Next.js route
+ *   handlers, Hono, Bun.serve, etc.
+ * - `'bytes'` — a `Uint8Array`. For writing to disk, attaching to email, or
+ *   passing into a custom HTTP framework.
+ * - `'stream'` — a `ReadableStream<Uint8Array>`. For memory-constrained edge
+ *   runtimes.
  */
 export type PdfOutput = 'response' | 'bytes' | 'stream';
 
@@ -41,16 +41,16 @@ function buildResponse(
 }
 
 /**
- * Render a React element to a PDF. Single entry point — picks output shape
- * via `options.as`, auto-loads `imprint.config.ts` from `process.cwd()`, and
- * merges caller-supplied options on top.
+ * Render a React element to a PDF. Picks output shape via `options.as`,
+ * auto-loads `imprint.config.ts` from `process.cwd()`, and merges
+ * caller-supplied options on top.
  *
  * @example
  * ```ts
- * // Next.js route handler — default Response output:
+ * // Next.js route handler — Response output by default:
  * export const GET = () => pdf(<Invoice />);
  *
- * // Power-user escape hatches:
+ * // Escape hatches:
  * const bytes  = await pdf(<Doc />, { as: 'bytes'  });
  * const stream = await pdf(<Doc />, { as: 'stream' });
  * ```

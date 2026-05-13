@@ -1,5 +1,6 @@
-// Set by the renderer before layout, cleared after, so layout and draw
-// share one hyphenator without core depending on `@imprint-pdf/font/hyphen`.
+// Module-level slot so layout and draw share one hyphenator without core
+// taking a hard dep on `@imprint-pdf/font/hyphen`. The renderer sets it
+// before layout and clears it after.
 let _hyphenate: ((word: string) => string[]) | null = null;
 
 export function setHyphenator(fn: (word: string) => string[]): void {

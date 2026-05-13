@@ -94,8 +94,8 @@ interface BBoxResult {
   h: number;
 }
 
-// Approximate bbox over raw coordinates — Bézier curves bulge slightly past
-// their endpoints, but it's close enough for objectBoundingBox gradient mapping.
+// Approx bbox over raw coords. Béziers bulge slightly past their endpoints, but
+// that's fine for `objectBoundingBox` gradient mapping.
 function pathBBox(d: string): BBoxResult {
   const nums = (d.match(/-?\d*\.?\d+(?:[eE][-+]?\d+)?/g) ?? []).map(Number);
   if (nums.length < 2) return { x: 0, y: 0, w: 0, h: 0 };
@@ -127,7 +127,7 @@ function ensurePatternResource(ctx: DrawCtx, ref: PDFRef): string {
   if (cached) return cached;
   const name = `Sh${++ctx.patternCounter.n}`;
   ctx.patternNames.set(key, name);
-  // pdf-lib has no Pattern resource API; attach directly to the page dict.
+  // pdf-lib has no Pattern resource API — wire it onto the page dict ourselves.
   const node = (ctx.page as unknown as { node: PDFDict }).node;
   let resources = node.lookup(PDFName.of('Resources')) as PDFDict | undefined;
   if (!resources) {
@@ -143,7 +143,7 @@ function ensurePatternResource(ctx: DrawCtx, ref: PDFRef): string {
   return name;
 }
 
-// pdf-lib doesn't expose pattern-paint operators; emit them by hand.
+// pdf-lib doesn't expose pattern-paint operators — emit them by hand.
 function setFillingColorSpace(name: string): PDFOperator {
   return PDFOperator.of('cs' as never, [PDFName.of(name)]);
 }
@@ -175,7 +175,7 @@ function emitPathOperators(page: PDFPage, d: string): void {
     if (/[MmLlHhVvCcSsQqTtAaZz]/.test(cmd)) {
       i++;
     } else {
-      // Implicit-repeat: after M comes L, after m comes l, others self-repeat.
+      // Implicit-repeat per SVG spec: M→L, m→l, everything else self-repeats.
       cmd = prevCmd === 'M' ? 'L' : prevCmd === 'm' ? 'l' : prevCmd;
     }
     const rel = cmd >= 'a';
@@ -266,7 +266,7 @@ function emitPathOperators(page: PDFPage, d: string): void {
       case 't': {
         const x = num() + (rel ? cx : 0);
         const y = num() + (rel ? cy : 0);
-        // Explicit `: number` to dodge TS's "implicit any from self-reference" misfire.
+        // Explicit `: number` dodges TS's "implicit any from self-reference" misfire.
         const qx: number = lastCtrl ? 2 * cx - (lastCtrl[0] ?? 0) : cx;
         const qy: number = lastCtrl ? 2 * cy - (lastCtrl[1] ?? 0) : cy;
         const x1 = cx + (2 / 3) * (qx - cx);
@@ -309,7 +309,7 @@ function emitPathOperators(page: PDFPage, d: string): void {
   page.pushOperators(...ops);
 }
 
-// Endpoint-parameterization conversion per W3C SVG 1.1 Appendix F.6.5.
+// Endpoint-parameterization conversion, W3C SVG 1.1 Appendix F.6.5.
 function arcToBezier(
   x1: number,
   y1: number,
@@ -392,7 +392,7 @@ function applyClipPath(ctx: DrawCtx, refId: string): void {
     const d = shapeToPath(child);
     if (!d) continue;
     emitPathOperators(ctx.page, d);
-    // `W`/`W*` set the clip; pair with `n` so the path isn't also painted.
+    // `W`/`W*` set the clip; `n` (endPath) keeps it from also painting.
     const rule = (clipNode.attrs['clip-rule'] ?? 'nonzero') === 'evenodd';
     ctx.page.pushOperators(rule ? clipEvenOdd() : clip(), endPath());
   }
@@ -403,9 +403,8 @@ function drawShape(ctx: DrawCtx, el: SvgElement, parentTransform: Mat, opacitySc
   if (!d) return;
 
   ctx.page.pushOperators(pushGraphicsState());
-  // try/finally ensures `Q` is emitted even if a malformed gradient, path, or
-  // clipPath child throws — otherwise the next shape would draw inside this
-  // shape's CTM and clipping.
+  // try/finally so `Q` always lands — a malformed gradient/path/clipPath child
+  // must not leave the next shape inside this shape's CTM and clip.
   try {
     const transform = multiply(parentTransform, parseTransform(el.attrs.transform));
     const fillRule = (attrOrStyle(el, 'fill-rule') ?? 'nonzero') === 'evenodd';
@@ -507,10 +506,9 @@ export interface DrawSvgOptions {
 }
 
 /**
- * Renders an inline SVG document into the given PDF box. Returns `false` if
- * `source` isn't a parseable `<svg>` or a draw error caused the SVG to be
- * skipped. A draw error is logged but never bubbles up — a single malformed
- * `<path>` should not corrupt the rest of the page.
+ * Render an inline SVG into the given PDF box. Returns `false` if `source` isn't
+ * a parseable `<svg>` or if a draw error caused the SVG to be skipped. Draw errors
+ * are logged but never bubble — one malformed `<path>` shouldn't tank the page.
  */
 export function drawSvgString(
   source: string,
@@ -530,13 +528,13 @@ export function drawSvgString(
       h: parseFloat(root.attrs.height ?? `${opts.height}`) || opts.height,
     } as ViewBox);
 
-  // A zero-width/height viewBox would produce a NaN/Infinity scale matrix.
+  // Zero-width/height viewBox produces a NaN/Infinity scale matrix.
   if (!(viewBox.w > 0) || !(viewBox.h > 0)) return false;
 
   const sx = opts.width / viewBox.w;
   const sy = opts.height / viewBox.h;
 
-  // SVG is y-down, PDF y-up — negative y-scale plus an offset flips it.
+  // SVG is y-down, PDF y-up — negative y-scale + offset flips it.
   const pdfTop = pageHeight - opts.y;
 
   page.pushOperators(pushGraphicsState());
@@ -555,13 +553,12 @@ export function drawSvgString(
       patternNames: new Map(),
     };
 
-    // walk recurses into drawShape; drawShape balances its own q/Q in a
-    // try/finally so a malformed child only loses that single shape.
+    // drawShape self-balances its q/Q in try/finally, so one bad shape doesn't
+    // poison the rest.
     walk(ctx, root, IDENTITY, 1);
     return true;
   } catch (err) {
-    // Last-resort guard: drawShape already self-balances, but a future bug
-    // shouldn't be allowed to silently emit an empty page.
+    // Last-resort guard — a future regression shouldn't quietly empty the page.
     console.warn('[imprint] drawSvgString: skipping SVG due to draw error:', err);
     return false;
   } finally {

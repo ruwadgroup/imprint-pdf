@@ -7,10 +7,7 @@ export interface HeaderProps {
   children?: ReactNode;
 }
 
-/**
- * Running page header — rendered once and repeated across all pages by the
- * PDF writer.
- */
+/** Running page header — written once, repeated on every page. */
 export function Header({ children, ...rest }: HeaderProps): React.ReactElement {
   return React.createElement('imprint-header', rest as Record<string, unknown>, children);
 }

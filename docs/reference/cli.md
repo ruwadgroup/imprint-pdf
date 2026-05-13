@@ -22,7 +22,7 @@ Options:
 
 ## `imprint render`
 
-Render a React component file to a PDF.
+Render a React component to a PDF.
 
 ```bash
 imprint render <component> [options]
@@ -62,12 +62,12 @@ imprint dev src/templates/Invoice.tsx --port 4000
 # → http://localhost:4000
 ```
 
-Supports hot-module replacement — edit the template file and the preview updates
-without a full reload. Uses the same Vite plugin integration as your app build.
+HMR — edit the template, preview updates without a full reload. Same Vite plugin
+integration as your app build.
 
 ## `imprint validate`
 
-Validate a PDF file against a conformance profile using veraPDF.
+Validate a PDF against a conformance profile via veraPDF.
 
 Requires `@imprint-pdf/print` or `@imprint-pdf/ua` and Java 11+ on `PATH`.
 
@@ -89,11 +89,11 @@ Exit codes: `0` = pass, `1` = conformance failure, `2` = tool error.
 
 ## `imprint check`
 
-Validate the `imprint.config.ts` schema and that all referenced font files
-exist.
+Validate the `imprint.config.ts` schema and check that every referenced font
+file exists.
 
 ```bash
 imprint check
 ```
 
-Exits non-zero on any configuration error. Safe to add to your pre-commit hook.
+Exits non-zero on any config error. Safe in a pre-commit hook.

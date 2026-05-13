@@ -16,14 +16,14 @@ npx imprint init
 ```
 
 `imprint init` detects your framework (Next.js, Vite, or generic Node) and
-writes the rest: `imprint.config.ts`, the right plugin wired into your
+writes the rest: `imprint.config.ts`, the plugin wired into
 `next.config.{ts,mjs}` or `vite.config.ts`, an `ExamplePdf.tsx` template, and an
 `/api/pdf` route (or `./src/pdf.ts` helper for Vite). Existing files are left
 alone.
 
-Author your Tailwind v4 stylesheet as you normally would. imprint-pdf
-auto-detects it at `src/app.css`, `src/globals.css`, `app/globals.css`, and a
-few other conventional locations:
+Write your Tailwind v4 stylesheet normally. imprint-pdf auto-detects it at
+`src/app.css`, `src/globals.css`, `app/globals.css`, and a few other
+conventional locations:
 
 ```css
 /* src/app.css */
@@ -36,8 +36,7 @@ few other conventional locations:
 ```
 
 `@imprint-pdf/react/preset` registers the page-position variants (`page-first:`,
-`page-left:`, `page-right:`) Tailwind needs to know about so it compiles
-`page-first:p-12` correctly.
+`page-left:`, `page-right:`) so Tailwind compiles `page-first:p-12` correctly.
 
 ```ts
 // imprint.config.ts

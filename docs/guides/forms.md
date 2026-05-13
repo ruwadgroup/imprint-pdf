@@ -1,11 +1,11 @@
 # Forms (AcroForms)
 
-imprint-pdf authors interactive PDF forms as JSX. The renderer creates `pdf-lib`
-`PDFForm` objects from the same layout pass that computes visual geometry —
-widget rectangles are exact.
+Interactive PDF forms authored as JSX. The renderer creates `pdf-lib` `PDFForm`
+objects from the same layout pass that computes visual geometry — widget
+rectangles are exact.
 
-XFA is explicitly **not supported**. XFA is deprecated in PDF 2.0 and disallowed
-in PDF/A. AcroForms are sufficient for every real-world use case.
+XFA is **not supported**. XFA is deprecated in PDF 2.0 and disallowed in PDF/A.
+AcroForms cover every real use case.
 
 ## Basic form
 
@@ -126,8 +126,8 @@ Single-line or multi-line text input.
 
 ### `<Signature>`
 
-Widget for a drawn digital signature. For cryptographic PKCS#7 signing, add the
-`certificate` and `privateKey` props (requires `@imprint-pdf/sign`).
+Widget for a drawn digital signature. For PKCS#7 cryptographic signing, add
+`certificate` and `privateKey` (requires `@imprint-pdf/sign`).
 
 ```tsx
 <Signature name="director" className="h-24 w-full border-b border-gray-400" />
@@ -147,17 +147,17 @@ Submit, reset, or custom JavaScript action button.
 </Button>
 ```
 
-Supported action types: `submitForm`, `resetForm`, `importData`, `JavaScript`.
-Note: JavaScript actions (`type: 'JavaScript'`) run only in Adobe Acrobat and
-PDF.js — not all PDF viewers.
+Action types: `submitForm`, `resetForm`, `importData`, `JavaScript`. Heads up:
+`type: 'JavaScript'` only runs in Adobe Acrobat and PDF.js — not every PDF
+viewer.
 
 ## Field appearance
 
-Field appearance (background, border, text color, font) is controlled by the
-`className` prop, resolved through the Tailwind pipeline. Fields inherit
-document fonts — set `font-sans` or `font-serif` on the nearest parent.
+Field appearance (background, border, text color, font) comes from `className`
+through the Tailwind pipeline. Fields inherit document fonts — set `font-sans`
+or `font-serif` on the nearest parent.
 
 ## Flattening forms
 
-To render a filled-in form as a non-interactive PDF (flatten the fields into the
-page content), pass `{ flattenForms: true }` to `pdf()`.
+To render a filled-in form as non-interactive content, pass
+`{ flattenForms: true }` to `pdf()`.

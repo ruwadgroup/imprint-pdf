@@ -7,10 +7,7 @@ export interface FooterProps {
   children?: ReactNode;
 }
 
-/**
- * Running page footer — rendered once and repeated across all pages by the
- * PDF writer.
- */
+/** Running page footer — written once, repeated on every page. */
 export function Footer({ children, ...rest }: FooterProps): React.ReactElement {
   return React.createElement('imprint-footer', rest as Record<string, unknown>, children);
 }

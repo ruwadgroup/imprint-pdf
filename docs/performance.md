@@ -1,6 +1,6 @@
 # Performance
 
-Numbers measured on Apple Silicon M2 / Node 22 unless noted. Reproduce locally:
+All numbers on Apple Silicon M2 / Node 22 unless noted. Reproduce locally:
 
 ```bash
 pnpm --filter @imprint-pdf/core bench
@@ -16,11 +16,11 @@ pnpm --filter @imprint-pdf/core bench
 | Node.js (local)      | ~30 ms                         | ~10 ms |
 | Chromium (Puppeteer) | 800–2,000 ms                   | 300 ms |
 
-The perf budget is **< 100 ms cold for a 1-page A4 invoice on Cloudflare**.
-Chromium cold starts are 10–20× slower.
+Budget: **< 100 ms cold for a 1-page A4 invoice on Cloudflare**. Chromium is
+10–20× slower.
 
-WASM module instantiation dominates cold start (~30–60 ms). This is a fixed cost
-independent of document complexity.
+WASM instantiation dominates cold start (~30–60 ms) — a fixed cost independent
+of document complexity.
 
 ## Render throughput (warm)
 
@@ -31,8 +31,8 @@ independent of document complexity.
 | 5-page report, Recharts vector chart   | ~35 ms |
 | 20-page report with tables             | ~80 ms |
 
-Typography is the dominant cost for text-heavy documents. Knuth–Plass runs at ~1
-ms per paragraph in practice.
+Typography dominates the cost on text-heavy documents. Knuth–Plass runs at ~1 ms
+per paragraph.
 
 ## Bundle size (browser)
 
@@ -43,8 +43,8 @@ ms per paragraph in practice.
 | With runtime Tailwind Oxide WASM fallback    | +~350 KB |
 | `@imprint-pdf/react/standalone` (CF Workers) | ~750 KB  |
 
-Tree-shaking removes feature flags you don't import. An invoice-only client that
-uses only Flexbox and skips the Oxide fallback is ~600 KB gzipped.
+Tree-shaking drops unused feature flags. An invoice-only client using only
+Flexbox without the Oxide fallback comes in around ~600 KB gzipped.
 
 ## Font subsetting
 
@@ -54,8 +54,8 @@ uses only Flexbox and skips the Oxide fallback is ~600 KB gzipped.
 | Noto Sans CJK (full) | 500             | ~80 KB      |
 | Noto Sans CJK (full) | 5,000           | ~600 KB     |
 
-Subsetting uses HarfBuzz's subsetter API — only glyphs actually used are
-embedded. The full 12 MB font is never in the PDF.
+Subsetting uses HarfBuzz's subsetter — only used glyphs are embedded. The full
+12 MB font never lands in the PDF.
 
 ## Reproducing
 
@@ -69,9 +69,9 @@ pnpm --filter @imprint-pdf/example-cloudflare-worker deploy --dry-run
 
 ## Methodology notes
 
-- Times use `performance.now()` around `pdf(..., { as: 'bytes' })` calls (no
-  Response wrapping). The first run in a process is excluded (V8 warm-up);
-  reported numbers are median of 100 runs on warm WASM.
-- Cloudflare Worker numbers are from `wrangler dev` with `--local` flag and the
-  Workers Unbound resource tier. Production edge may vary ±20%.
-- Gzip sizes from `gzip -9` of the production bundle output.
+- Times via `performance.now()` around `pdf(..., { as: 'bytes' })` (no Response
+  wrapping). First run per process excluded (V8 warm-up); reported numbers are
+  median of 100 runs on warm WASM.
+- Cloudflare numbers from `wrangler dev --local` on Workers Unbound. Production
+  edge varies ±20%.
+- Gzip sizes via `gzip -9` of the production bundle.

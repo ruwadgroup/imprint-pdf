@@ -28,12 +28,12 @@ function esc(s: string): string {
   return s.replace(/[&<>"']/g, (c) => XML_ESCAPE[c]!);
 }
 
-// XMP requires ISO-8601 without milliseconds.
+// XMP wants ISO-8601 without milliseconds.
 function isoDate(d: Date): string {
   return d.toISOString().replace(/\.\d{3}Z$/, 'Z');
 }
 
-// `crypto.randomUUID` isn't on older Workers / some Deno builds.
+// `crypto.randomUUID` isn't on older Workers / some Deno builds — roll our own.
 function uuidV4(): string {
   const bytes = new Uint8Array(16);
   const c = (globalThis as { crypto?: { getRandomValues?: (b: Uint8Array) => Uint8Array } }).crypto;
@@ -76,8 +76,8 @@ export function buildXmpPacket(input: XmpInput): string {
     dc.push(`<dc:language><rdf:Bag><rdf:li>${esc(input.lang)}</rdf:li></rdf:Bag></dc:language>`);
   }
 
-  // BOM + magic id + `end="w"?>` trailer per XMP Spec Part 1 §10.5. The 2 KB
-  // pad lets external tools rewrite the packet without shifting xref offsets.
+  // BOM + magic id + `end="w"?>` trailer per XMP Spec Part 1 §10.5.
+  // The 2 KB pad lets external tools rewrite the packet without shifting xref offsets.
   return [
     '<?xpacket begin="﻿" id="W5M0MpCehiHzreSzNTczkc9d"?>',
     '<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="imprint XMP">',
@@ -107,9 +107,9 @@ export function buildXmpPacket(input: XmpInput): string {
 }
 
 /**
- * Attaches an XMP `/Metadata` stream to the document catalog. Emitted raw
- * (no `/Filter`) per PDF/A-1 (ISO 19005-1 §6.7.3); the Info dict carries
- * the same data, so we silently skip on failure.
+ * Attaches an XMP `/Metadata` stream to the document catalog. Emitted raw (no `/Filter`)
+ * per PDF/A-1 (ISO 19005-1 §6.7.3). The Info dict carries the same data, so we silently
+ * skip on failure.
  */
 export function addXmpMetadata(doc: PDFDocument, document: DocumentNode): void {
   const props = document.props;

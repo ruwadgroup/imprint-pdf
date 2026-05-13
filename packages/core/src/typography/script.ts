@@ -19,7 +19,7 @@ interface Range {
   tag: ScriptTag;
 }
 
-// Ordered by frequency so the Latin path exits first.
+// Ordered by frequency — the Latin range comes first so common text exits early.
 const RANGES: Range[] = [
   { lo: 0x0000, hi: 0x024f, tag: 'latn' },
   { lo: 0x0370, hi: 0x03ff, tag: 'grek' },
@@ -59,11 +59,9 @@ export interface ScriptRun {
   script: ScriptTag;
 }
 
-/**
- * Splits `text` into runs of contiguous script. Common-class chars (digits,
- * punctuation, whitespace) inherit the surrounding script — matches Uniscribe
- * / DWrite behavior and keeps shaper invocations to one per visible script.
- */
+// Splits `text` into contiguous-script runs. Common-class chars (digits,
+// punctuation, whitespace) inherit the surrounding script — matches Uniscribe /
+// DWrite, and keeps the shaper down to one call per visible script.
 export function splitByScript(text: string): ScriptRun[] {
   if (!text.length) return [];
   const result: ScriptRun[] = [];

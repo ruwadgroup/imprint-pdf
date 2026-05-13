@@ -1,19 +1,19 @@
 # Paged layout
 
 PDFs are paged by definition. imprint-pdf implements the CSS Paged Media
-features browsers support only in print-preview mode — and adds Plass-style
-global page breaking that browsers still do not have.
+features browsers only support in print preview — and adds the Plass-style
+global page breaking browsers still don't have.
 
 ## Automatic page breaking
 
-imprint-pdf breaks pages automatically. You do not need to decide which content
-goes on which page. The Plass two-pass page algorithm:
+Pages break automatically. You don't decide which content goes where. The Plass
+two-pass algorithm:
 
-1. Runs Knuth–Plass paragraph breaking to get optimal line boxes.
-2. Distributes line boxes across pages using a dynamic-programming cost function
-   that penalises widows, orphans, and bad float interactions.
+1. Run Knuth–Plass paragraph breaking for optimal line boxes.
+2. Distribute line boxes across pages via a DP cost function that penalises
+   widows, orphans, and bad float interactions.
 
-The result: widows and orphans are minimised across the whole document, not just
+Result: widows and orphans minimised across the whole document, not just
 per-paragraph.
 
 ## Manual break control
@@ -35,9 +35,9 @@ per-paragraph.
 <h3 className="break-after-avoid">Section title</h3>
 ```
 
-Supported values: `break-before-auto`, `break-before-page`, `break-before-left`,
-`break-before-right`, `break-before-avoid`, and the same for `break-after` and
-`break-inside`.
+Supported: `break-before-auto`, `break-before-page`, `break-before-left`,
+`break-before-right`, `break-before-avoid`, and the equivalents for
+`break-after` and `break-inside`.
 
 ## Widows and orphans
 
@@ -68,8 +68,8 @@ Default: `orphans: 2`, `widows: 2`.
 
 ## Running headers and footers
 
-Use `position: absolute` inside a `<Page>` to pin elements to the page margins.
-The `<PageNumber>` and `<TotalPages>` components resolve at render time.
+Use `position: absolute` inside a `<Page>` to pin elements to the margins.
+`<PageNumber>` and `<TotalPages>` resolve at draw time.
 
 ```tsx
 <Page className="relative pt-16 pb-12 px-12">
@@ -95,7 +95,7 @@ The `<PageNumber>` and `<TotalPages>` components resolve at render time.
 
 ## `@page` equivalents
 
-CSS `@page` rules are expressed as `<Page>` and `<Document>` props:
+CSS `@page` rules become `<Page>` and `<Document>` props:
 
 | CSS `@page`         | imprint-pdf equivalent                    |
 | ------------------- | ----------------------------------------- |
@@ -108,5 +108,5 @@ CSS `@page` rules are expressed as `<Page>` and `<Document>` props:
 
 ## Footnotes
 
-Footnotes are on the v1.5 roadmap. The current pattern is to use a fixed
+Footnotes are on the v1.5 roadmap. For now, use a fixed
 `<div className="absolute bottom-12 …">` inside `<Page>`.

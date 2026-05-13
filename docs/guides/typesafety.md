@@ -1,11 +1,11 @@
 # Type safety
 
-imprint-pdf's JSX surface is fully typed. Every component prop is typed. Nothing
-accepts `any` where a specific type is expected.
+The JSX surface is fully typed. Every prop is typed. Nothing accepts `any` where
+a specific type is expected.
 
 ## Component props
 
-All components ship strict TypeScript types:
+All components ship strict types:
 
 ```tsx
 // TypeScript error — 'invalid' is not a valid size
@@ -18,8 +18,8 @@ All components ship strict TypeScript types:
 
 ## `defineConfig` is type-preserving
 
-The `defineConfig` helper from `@imprint-pdf/core/config` returns the input
-type, not a widened `AutotranslateConfig`. Your IDE autocompletes every field.
+`defineConfig` from `@imprint-pdf/core/config` returns the input type, not a
+widened `AutotranslateConfig`. IDE autocomplete works on every field.
 
 ```ts
 // ✓ Autocompletes; errors on unknown fields
@@ -50,9 +50,9 @@ const stream = await pdf(<Invoice data={data} />, { as: 'stream' });
 
 ## JSX namespace
 
-imprint-pdf registers its own JSX namespace for the `className`-bearing document
-components. Applying `className` to a `<Page>` from a different namespace would
-be a type error.
+imprint-pdf registers its own JSX namespace for `className`-bearing document
+components. Applying `className` to a `<Page>` from a different namespace is a
+type error.
 
 ```ts
 // tsconfig.json
@@ -72,7 +72,7 @@ import { Document, Page } from '@imprint-pdf/react';
 
 ## ESLint plugin
 
-The `@imprint-pdf/eslint` catches PDF-specific errors before TypeScript does:
+`@imprint-pdf/eslint` catches PDF-specific errors before TypeScript does:
 
 - `imprint/no-unsupported-css` — warns on CSS properties that have no PDF
   output.
@@ -83,24 +83,22 @@ See the [ESLint plugin README](../../packages/eslint/README.md).
 
 ## React version & compiler compatibility
 
-imprint-pdf runs on **React 18 and React 19** with zero extra installs.
-`@imprint-pdf/react` bundles both `react-reconciler@^0.29` (React 18) and
-`^0.33` (React 19) under aliased package names and picks the matching one at
-module load via `React.version`.
+Runs on **React 18 and React 19** with no extra installs. `@imprint-pdf/react`
+bundles both `react-reconciler@^0.29` (R18) and `^0.33` (R19) under aliased
+names and picks one at module load via `React.version`.
 
 ```bash
 # React 18 or React 19 — same install
 pnpm add @imprint-pdf/react react@^18  # or react@^19
 ```
 
-**JSX transforms.** imprint-pdf works under both the automatic runtime
-(`jsx: react-jsx`, the default since TypeScript 4.1) and the classic runtime
-(`jsx: react`, requires `import React from 'react'`). The library itself emits
-`react-jsx` output but never touches React-19-only JSX features (refs as plain
-props, async components, etc.), so the compiled distribution runs on either
-runtime.
+**JSX transforms.** Works under both the automatic runtime (`jsx: react-jsx`,
+the TS 4.1+ default) and the classic runtime (`jsx: react`, requires
+`import React from 'react'`). imprint-pdf emits `react-jsx` output but never
+touches R19-only JSX features (refs as plain props, async components, etc.), so
+the compiled distribution runs on either.
 
-**React Compiler.** imprint-pdf is compatible with — but does **not** require —
-`babel-plugin-react-compiler`. None of the public components rely on
-Compiler-only invariants. If you enable the Compiler in your app, imprint-pdf
-components compile cleanly alongside it; if you don't, nothing breaks.
+**React Compiler.** Compatible with — but does **not** require —
+`babel-plugin-react-compiler`. No public component relies on Compiler-only
+invariants. Enable it in your app and imprint-pdf compiles alongside it. Disable
+it and nothing breaks.

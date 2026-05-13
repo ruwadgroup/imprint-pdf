@@ -153,8 +153,8 @@ function toTaffyStyle(style: ResolvedStyle, containerWidth: number): Style {
   const isFlex = display === 'flex' || display === 'inline-flex';
   if (display === 'grid') s.display = Display.Grid;
   else if (display === 'none') s.display = Display.None;
-  // Taffy's Block doesn't propagate available width into leaf measure callbacks;
-  // emulate it via flex-column + alignItems:Stretch (Yoga uses the same trick).
+  // Taffy's Block doesn't propagate available width into leaf measure callbacks —
+  // emulate it with flex-column + alignItems:Stretch (Yoga uses the same trick).
   else s.display = Display.Flex;
 
   const pos = style.position ?? 'static';
@@ -202,7 +202,7 @@ function toTaffyStyle(style: ResolvedStyle, containerWidth: number): Style {
   else if (jc === 'space-evenly') s.justifyContent = JustifyContent.SpaceEvenly;
   else s.justifyContent = JustifyContent.FlexStart;
 
-  // `flex: 1` expands to `1 1 0%`; preserve the 0 basis when no longhand
+  // `flex: 1` expands to `1 1 0%` — keep the 0 basis when no longhand
   // flex-basis follows, so `flex-1` columns share width equally.
   let basisSetByShorthand = false;
   if (style.flex !== undefined) {
@@ -308,14 +308,11 @@ function toTaffyStyle(style: ResolvedStyle, containerWidth: number): Style {
 interface LeafContext {
   node: PdfNode;
   fixed?: boolean;
-  /**
-   * Cascaded typography from ancestors. The reconciler creates text nodes
-   * with `style: {}` (parent's `<span className="text-[6.5pt]">` sits one
-   * level above), so the measure callback must use this cascade — or it
-   * measures every text leaf at the 12pt × 1.2 default and the drawn glyphs
-   * (which `drawNode` cascades correctly) sit inside an over-sized layout
-   * box, misaligning siblings.
-   */
+  // Cascaded typography from ancestors. The reconciler creates text nodes with
+  // `style: {}` (parent's `<span className="text-[6.5pt]">` lives one level up),
+  // so the measure callback has to read this cascade — otherwise every leaf
+  // measures at the 12pt × 1.2 default and the drawn glyphs (which `drawNode`
+  // cascades correctly) sit inside an oversized box, misaligning siblings.
   inheritedStyle?: ResolvedStyle;
 }
 
@@ -333,8 +330,8 @@ function buildNode(
 ): BuildResult {
   const isLeafFixed = node.type === 'image' || node.type === 'svg' || node.type === 'chart';
 
-  // Typography cascades; geometry doesn't. measureText only reads typography
-  // fields so we can merge the whole style and let unrelated keys fall through.
+  // Typography cascades, geometry doesn't. measureText only reads typography
+  // fields, so we merge the whole style and let unrelated keys fall through.
   const cascaded: ResolvedStyle = { ...(inheritedStyle ?? {}), ...node.style };
 
   if (node.type === 'text') {
@@ -388,7 +385,7 @@ function extractGeometries(
     contentHeight: layout.contentHeight,
   });
 
-  // Taffy already folds parent padding into child layout.x/y.
+  // Taffy already folds parent padding into child layout.x / y.
   for (const child of result.children) {
     extractGeometries(child, tree, absX, absY, geometries);
   }
@@ -417,8 +414,8 @@ async function layoutPage(
   fontMetrics: Map<string, LoadedFont> = new Map(),
 ): Promise<void> {
   const tree = new TaffyTree();
-  // PDF measures in fractional points; Taffy's pixel rounding would cause
-  // line-breaker disagreement between layout and draw.
+  // PDF measures in fractional points — Taffy's pixel rounding would make
+  // the line-breaker disagree between layout and draw.
   tree.disableRounding();
 
   const rootStyle = toTaffyStyle(pageNode.style, pageW);
@@ -469,9 +466,9 @@ async function layoutPage(
       if (node.type === 'text') {
         const textNode = node as TextNode;
         const effectiveWidth = knownDimensions.width ?? (availW > 0 ? availW : pageW);
-        // The text node's own style is empty (reconciler creates text leaves
-        // with `style: {}`); the visible styling lives on the parent element.
-        // Use the cascade so measure matches what drawText renders.
+        // The text node's own style is empty (reconciler makes text leaves
+        // with `style: {}`); visible styling lives on the parent. Use the
+        // cascade so measure matches what drawText renders.
         const style: ResolvedStyle = { ...(ctx.inheritedStyle ?? {}), ...textNode.style };
         const familyRaw = (style.fontFamily as string | undefined) ?? 'Helvetica';
         const family =

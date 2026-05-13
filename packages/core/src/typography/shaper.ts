@@ -14,10 +14,10 @@ export interface HbFont {
 }
 
 export function createHbFont(fontBytes: Uint8Array): HbFont {
-  // `Uint8Array` can be a partial view into a larger ArrayBuffer (Node's
-  // Buffer pool, sub-allocations, etc.). HarfBuzz parses every byte of the
-  // ArrayBuffer it's handed and throws `RangeError: Index out of range` when
-  // it walks past the font's actual end. Hand it just the font's slice.
+  // A `Uint8Array` can be a partial view into a larger ArrayBuffer (Node's
+  // Buffer pool, sub-allocations, ...). HarfBuzz reads every byte of the
+  // ArrayBuffer and throws `RangeError: Index out of range` once it walks
+  // past the font. Hand it a tight slice.
   const isTight =
     fontBytes.byteOffset === 0 && fontBytes.byteLength === fontBytes.buffer.byteLength;
   const ab = isTight
@@ -55,11 +55,9 @@ function shapeRun(hbFont: HbFont, text: string, script: ScriptTag, options: Shap
   return total;
 }
 
-/**
- * Shapes `text` and returns its total advance in points. Splits into per-script
- * runs first — HarfBuzz's `guessSegmentProperties` only reads the first strong
- * character, which mis-shapes mixed-script text.
- */
+// Shapes `text` and returns its total advance in points. Splits into per-script
+// runs first — HarfBuzz's `guessSegmentProperties` only reads the first strong
+// character, which mis-shapes mixed-script text.
 export function shapeAdvance(
   hbFont: HbFont,
   text: string,

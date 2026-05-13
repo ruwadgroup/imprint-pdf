@@ -23,10 +23,8 @@ const STRETCH_PERCENTS: Record<string, number> = {
   'ultra-expanded': 200,
 };
 
-/**
- * Lifts plain `font-weight` / `font-stretch` onto the `wght` / `wdth`
- * variation axes when no explicit `font-variation-settings` is set.
- */
+// Lifts `font-weight` / `font-stretch` onto the `wght` / `wdth` axes when
+// no explicit `font-variation-settings` is set.
 export function deriveAxesFromStyle(style: {
   fontVariationSettings?: string;
   fontWeight?: string | number;

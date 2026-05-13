@@ -17,8 +17,8 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } {
   };
 }
 
-// OKLCH → sRGB via Oklab. Constants from Ottosson's Oklab spec
-// (https://bottosson.github.io/posts/oklab/). Out-of-gamut channels clamp.
+// OKLCH → sRGB via Oklab. Constants from https://bottosson.github.io/posts/oklab/.
+// Out-of-gamut channels clamp.
 function oklchToRgb(l: number, c: number, h: number): { r: number; g: number; b: number } {
   const hRad = (h * Math.PI) / 180;
   const a = c * Math.cos(hRad);
@@ -115,7 +115,7 @@ export function parseColor(colorStr: string | undefined): Color | undefined {
     return rgb(r, g, b);
   }
 
-  // CSS Color 4 device-cmyk() — fractional and percent forms can interleave.
+  // CSS Color 4 device-cmyk(): fractional and percent forms can interleave.
   const deviceCmyk = colorStr.match(
     /device-cmyk\(\s*(\d*\.?\d+)(%?)\s+(\d*\.?\d+)(%?)\s+(\d*\.?\d+)(%?)\s+(\d*\.?\d+)(%?)\s*\)/,
   );
@@ -129,7 +129,7 @@ export function parseColor(colorStr: string | undefined): Color | undefined {
     );
   }
 
-  // print-pipeline cmyk() is 0–100; CSS device-cmyk() above is 0–1.
+  // Print-pipeline `cmyk()` is 0–100; CSS `device-cmyk()` above is 0–1.
   const cmykFn = colorStr.match(
     /cmyk\(\s*(\d*\.?\d+)%?\s*,\s*(\d*\.?\d+)%?\s*,\s*(\d*\.?\d+)%?\s*,\s*(\d*\.?\d+)%?\s*\)/,
   );

@@ -9,10 +9,9 @@ export interface ResolvedImprintConfig {
   };
 }
 
-// Best-effort dynamic-load of `imprint.config.{ts,js,mjs,cjs}` from the
-// project root. Node only — edge runtimes lack `node:fs` / `node:url` and
-// will fall through to the `{}` return, which is fine because users on edge
-// pass options explicitly.
+// Best-effort load of `imprint.config.{ts,js,mjs,cjs}` from the project root.
+// Node-only; on edge runtimes `node:fs` / `node:url` aren't there and we fall
+// through to `{}`, which is fine since edge callers pass options explicitly.
 let cached: Promise<ResolvedImprintConfig> | undefined;
 
 const CONFIG_CANDIDATES = [
@@ -45,7 +44,7 @@ async function tryLoad(): Promise<ResolvedImprintConfig> {
       const config = mod.default ?? mod;
       if (config && typeof config === 'object') return config;
     } catch {
-      // try the next candidate
+      // try next candidate
     }
   }
   return {};
@@ -56,8 +55,8 @@ export function loadImprintConfig(): Promise<ResolvedImprintConfig> {
   return cached;
 }
 
-// Caller-supplied options win over config. Undefined values are stripped so
-// downstream `exactOptionalPropertyTypes` is happy.
+// Caller options win over config. Undefined keys are stripped to keep
+// `exactOptionalPropertyTypes` happy downstream.
 export async function mergeWithConfig(options: RenderOptions): Promise<RenderOptions> {
   const config = await loadImprintConfig();
   const merged: RenderOptions = { ...options };
