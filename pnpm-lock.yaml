@@ -238,17 +238,17 @@ importers:
   examples/react18-tailwind3-nextjs:
     dependencies:
       '@imprint-pdf/core':
-        specifier: 1.0.0-alpha.5
-        version: 1.0.0-alpha.5
+        specifier: 1.0.0-alpha.10
+        version: 1.0.0-alpha.10
       '@imprint-pdf/fonts':
         specifier: 1.0.0-alpha.6
         version: 1.0.0-alpha.6
       '@imprint-pdf/next':
-        specifier: 1.0.0-alpha.5
-        version: 1.0.0-alpha.5(next@14.2.35(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(postcss@8.5.14)(react@18.3.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))
+        specifier: 1.0.0-alpha.10
+        version: 1.0.0-alpha.10(next@14.2.35(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(postcss@8.5.14)(react@18.3.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))
       '@imprint-pdf/react':
-        specifier: 1.0.0-alpha.5
-        version: 1.0.0-alpha.5(postcss@8.5.14)(react@18.3.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))
+        specifier: 1.0.0-alpha.10
+        version: 1.0.0-alpha.10(postcss@8.5.14)(react@18.3.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))
       next:
         specifier: 14.2.35
         version: 14.2.35(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1995,17 +1995,31 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@imprint-pdf/core@1.0.0-alpha.4':
-    resolution: {integrity: sha512-ApVRdqYe6mITLGfhf2s2HLe696uFIgLtmNdWTBKP4uEp+WTtD+uNgcEZqWN62jO98US3nUeY+jDx+DqzK71Z8w==}
+  '@imprint-pdf/core@1.0.0-alpha.10':
+    resolution: {integrity: sha512-mjRFTiKwZWIinkD+Wrf0eRWTm+Mgd2UrR6YstqyRRrS+x2V5aTIlcyXENVqOIXIiECjJkTMgtL83Fs/OMT6YSA==}
     engines: {node: '>=20.0.0'}
 
-  '@imprint-pdf/core@1.0.0-alpha.5':
-    resolution: {integrity: sha512-p/9/voK8XfaH5nULSRAxOyjqw+s9O/T/snhyQy+wLaUYfJErcFZxjjObxCcVJ4hz4C0MQOOAsdVE+NlpJxPHYw==}
+  '@imprint-pdf/core@1.0.0-alpha.4':
+    resolution: {integrity: sha512-ApVRdqYe6mITLGfhf2s2HLe696uFIgLtmNdWTBKP4uEp+WTtD+uNgcEZqWN62jO98US3nUeY+jDx+DqzK71Z8w==}
     engines: {node: '>=20.0.0'}
 
   '@imprint-pdf/fonts@1.0.0-alpha.6':
     resolution: {integrity: sha512-hQ4gqoiI9/Th+46KcFlyZ3pt0cjWBGcjTolqG2+tvhz6pAoiNiZJHm4s6ewiP70GXz5/NBgfD2ZNBa21bNwajQ==}
     engines: {node: '>=20.0.0'}
+
+  '@imprint-pdf/next@1.0.0-alpha.10':
+    resolution: {integrity: sha512-Neg+OzgEONhMfhT06oSoQ0VnLgqa321UfCtwhHl++oUuE3Hqww+Jl9+WLpV/Ho8kW9HCrc+3qdt2nPvo0bpSlg==}
+    engines: {node: '>=20.0.0'}
+    peerDependencies:
+      next: ^14.0.0 || ^15.0.0 || ^16.0.0
+      postcss: ^8.4.0
+      react: '>=18.2.0 <20'
+      tailwindcss: ^3.4.0 || ^4.0.0
+    peerDependenciesMeta:
+      postcss:
+        optional: true
+      tailwindcss:
+        optional: true
 
   '@imprint-pdf/next@1.0.0-alpha.4':
     resolution: {integrity: sha512-UnVGAWEIa9n/y5pEd0vcYCoSIwABXgw1zJSfZ0D0s18MeVnrSIQWw/YNL+XL1V1SB3QAVukXJBnIQG0YQWT+Cg==}
@@ -2021,11 +2035,10 @@ packages:
       tailwindcss:
         optional: true
 
-  '@imprint-pdf/next@1.0.0-alpha.5':
-    resolution: {integrity: sha512-0FeVeAERUKCLDAZzTkywdjyuuOnMTqkqComAZjEmDhqumdHKLfA/uwmMtIvWVbknivcXMKI6d7HXDswmIcazIQ==}
+  '@imprint-pdf/react@1.0.0-alpha.10':
+    resolution: {integrity: sha512-3u9xUhkUd7srjk93pzUCnyuqUOSMhhBIkfeiqupI6fsv0o26nkfr85MB2PMPdgoYv+ojecRxZufqFaaifY2Sgw==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
-      next: ^14.0.0 || ^15.0.0 || ^16.0.0
       postcss: ^8.4.0
       react: '>=18.2.0 <20'
       tailwindcss: ^3.4.0 || ^4.0.0
@@ -2037,19 +2050,6 @@ packages:
 
   '@imprint-pdf/react@1.0.0-alpha.4':
     resolution: {integrity: sha512-JnA6Pgl+twT02OAUO0rIHDqZx80PGe9PJzoAl1NR4U7ulJEwAMn6ULXOSB9M7K7PkMr8Jsqsgtfji33uRZFJOQ==}
-    engines: {node: '>=20.0.0'}
-    peerDependencies:
-      postcss: ^8.4.0
-      react: '>=18.2.0 <20'
-      tailwindcss: ^3.4.0 || ^4.0.0
-    peerDependenciesMeta:
-      postcss:
-        optional: true
-      tailwindcss:
-        optional: true
-
-  '@imprint-pdf/react@1.0.0-alpha.5':
-    resolution: {integrity: sha512-eMqMBBS1+eVdYEPFuGim0RJRR2ribfrmKQdjIzHcoC/loYQPFUQ2o7eDsmAkkgn1CKbycWoLshmP+HbLnNDsRw==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       postcss: ^8.4.0
@@ -6722,7 +6722,7 @@ snapshots:
   '@img/sharp-win32-x64@0.34.5':
     optional: true
 
-  '@imprint-pdf/core@1.0.0-alpha.4':
+  '@imprint-pdf/core@1.0.0-alpha.10':
     dependencies:
       '@pdf-lib/fontkit': 1.1.1
       fontkit: 2.0.4
@@ -6731,7 +6731,7 @@ snapshots:
       taffy-wasm: 0.9.10
       zod: 4.3.6
 
-  '@imprint-pdf/core@1.0.0-alpha.5':
+  '@imprint-pdf/core@1.0.0-alpha.4':
     dependencies:
       '@pdf-lib/fontkit': 1.1.1
       fontkit: 2.0.4
@@ -6744,6 +6744,16 @@ snapshots:
     dependencies:
       '@imprint-pdf/core': link:packages/core
 
+  '@imprint-pdf/next@1.0.0-alpha.10(next@14.2.35(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(postcss@8.5.14)(react@18.3.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))':
+    dependencies:
+      '@imprint-pdf/core': 1.0.0-alpha.10
+      '@imprint-pdf/react': 1.0.0-alpha.10(postcss@8.5.14)(react@18.3.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))
+      next: 14.2.35(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react: 18.3.1
+    optionalDependencies:
+      postcss: 8.5.14
+      tailwindcss: 3.4.19(tsx@4.21.0)(yaml@2.8.3)
+
   '@imprint-pdf/next@1.0.0-alpha.4(next@15.5.15(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(postcss@8.5.14)(react@19.2.5)(tailwindcss@4.2.4)':
     dependencies:
       '@imprint-pdf/core': 1.0.0-alpha.4
@@ -6754,12 +6764,12 @@ snapshots:
       postcss: 8.5.14
       tailwindcss: 4.2.4
 
-  '@imprint-pdf/next@1.0.0-alpha.5(next@14.2.35(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(postcss@8.5.14)(react@18.3.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))':
+  '@imprint-pdf/react@1.0.0-alpha.10(postcss@8.5.14)(react@18.3.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))':
     dependencies:
-      '@imprint-pdf/core': 1.0.0-alpha.5
-      '@imprint-pdf/react': 1.0.0-alpha.5(postcss@8.5.14)(react@18.3.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))
-      next: 14.2.35(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@imprint-pdf/core': 1.0.0-alpha.10
       react: 18.3.1
+      react-reconciler-18: react-reconciler@0.29.2(react@18.3.1)
+      react-reconciler-19: react-reconciler@0.33.0(react@18.3.1)
     optionalDependencies:
       postcss: 8.5.14
       tailwindcss: 3.4.19(tsx@4.21.0)(yaml@2.8.3)
@@ -6773,16 +6783,6 @@ snapshots:
     optionalDependencies:
       postcss: 8.5.14
       tailwindcss: 4.2.4
-
-  '@imprint-pdf/react@1.0.0-alpha.5(postcss@8.5.14)(react@18.3.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))':
-    dependencies:
-      '@imprint-pdf/core': 1.0.0-alpha.5
-      react: 18.3.1
-      react-reconciler-18: react-reconciler@0.29.2(react@18.3.1)
-      react-reconciler-19: react-reconciler@0.33.0(react@18.3.1)
-    optionalDependencies:
-      postcss: 8.5.14
-      tailwindcss: 3.4.19(tsx@4.21.0)(yaml@2.8.3)
 
   '@inquirer/external-editor@1.0.3(@types/node@25.6.0)':
     dependencies:
