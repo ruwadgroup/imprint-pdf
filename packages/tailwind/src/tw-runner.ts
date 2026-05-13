@@ -88,7 +88,16 @@ async function runTailwindV4(
 ): Promise<Map<string, ResolvedStyle>> {
   try {
     const req = createRequire(path.join(projectRoot, 'package.json'));
-    const tw = req('tailwindcss') as TailwindV4;
+    // Dynamic `import()` with a literal specifier so Vercel/Next.js nft
+    // statically traces tailwindcss AND its transitive deps (`@alloc/quick-lru`,
+    // `didyoumean`, `dlv`, `picocolors`, etc.) into `.next/standalone`. Using
+    // createRequire(projectRoot) here would resolve at runtime but nft can't
+    // follow it, so consumer deploys fail with `Cannot find module
+    // '@alloc/quick-lru'` even when tailwindcss itself was traced.
+    const twMod = (await import('tailwindcss')) as unknown as {
+      default?: TailwindV4;
+    } & TailwindV4;
+    const tw = (twMod.default ?? twMod) as TailwindV4;
     const twDir = path.dirname(req.resolve('tailwindcss/package.json'));
 
     async function loadStylesheet(
@@ -160,10 +169,21 @@ async function runTailwindV3(
       safelist,
     };
 
-    const tailwindV3 = req('tailwindcss') as TailwindV3;
-    const postcss = req('postcss') as (plugins: unknown[]) => {
+    // See note in runTailwindV4: static-literal `await import()` so nft traces
+    // tailwindcss's full subgraph (@alloc/quick-lru, picocolors, didyoumean,
+    // dlv, jiti, postcss-import, fast-glob, etc.) into the deploy artifact.
+    const twV3Mod = (await import('tailwindcss')) as unknown as {
+      default?: TailwindV3;
+    } & TailwindV3;
+    const tailwindV3 = (twV3Mod.default ?? twV3Mod) as TailwindV3;
+
+    type PostCss = (plugins: unknown[]) => {
       process: (css: string, opts?: { from?: string | undefined }) => Promise<{ css: string }>;
     };
+    const postcssMod = (await import('postcss')) as unknown as {
+      default?: PostCss;
+    } & PostCss;
+    const postcss = (postcssMod.default ?? postcssMod) as PostCss;
 
     const stubCss = '@tailwind base;\n@tailwind components;\n@tailwind utilities;\n';
     const result = await postcss([tailwindV3(mergedConfig)]).process(stubCss, { from: undefined });

@@ -94,8 +94,8 @@ next command to run.
 | 1.x              | 18.2 – 19.x | 14 – 16 | 5 – 7 | 3.4 – 4.x | ≥20  |
 
 Current published alphas (under the `alpha` dist-tag):
-`@imprint-pdf/core@1.0.0-alpha.7`, `@imprint-pdf/react@1.0.0-alpha.8`,
-`@imprint-pdf/next@1.0.0-alpha.8`, `@imprint-pdf/fonts@1.0.0-alpha.6`. Pin
+`@imprint-pdf/core@1.0.0-alpha.9`, `@imprint-pdf/react@1.0.0-alpha.9`,
+`@imprint-pdf/next@1.0.0-alpha.9`, `@imprint-pdf/fonts@1.0.0-alpha.6`. Pin
 explicitly while pre-1.0.
 
 ## Deploying to production?

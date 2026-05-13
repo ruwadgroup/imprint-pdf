@@ -238,6 +238,25 @@ describeOrSkip('standalone deployment smoke', () => {
       expect(tracedPackageLocation('postcss'), 'postcss not in standalone trace').toBeDefined();
     });
 
+    it('traces tailwindcss transitive deps (was missing pre-alpha.9)', () => {
+      // Tailwindcss v3 requires `@alloc/quick-lru` at runtime. If we load
+      // tailwindcss via createRequire(projectRoot) instead of `await import()`,
+      // nft sees no static path into the tailwindcss subgraph and skips its
+      // deps even when tailwindcss itself is traced — runtime then crashes
+      // with `Cannot find module '@alloc/quick-lru'`.
+      const candidates = [
+        '@alloc/quick-lru', // alpha.9 regression
+        'didyoumean',
+        'picocolors',
+        'dlv',
+      ];
+      const found = candidates.some((pkg) => tracedPackageLocation(pkg) !== undefined);
+      expect(
+        found,
+        `none of tailwindcss's transitive deps were traced: ${candidates.join(', ')}`,
+      ).toBe(true);
+    });
+
     it('the resolved tailwindcss copy exposes a require()-able entry', () => {
       // Beyond "the directory is there" — make sure it has a real index, not
       // an empty placeholder. Catches the case where a glob copies the

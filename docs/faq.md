@@ -109,8 +109,8 @@ Cloudflare Workers or Vercel Edge Functions.
 
 This means your `next build` produced a `.next/standalone/` artifact (Docker /
 Coolify / self-hosted Vercel) but Next's file tracer didn't copy
-`react-reconciler` into it. Upgrade to `@imprint-pdf/react@1.0.0-alpha.7+` and
-`@imprint-pdf/next@1.0.0-alpha.8+`, and make sure `next.config.{js,mjs,ts}` uses
+`react-reconciler` into it. Upgrade to `@imprint-pdf/react@1.0.0-alpha.9+` and
+`@imprint-pdf/next@1.0.0-alpha.9+`, and make sure `next.config.{js,mjs,ts}` uses
 `withImprint()` from `@imprint-pdf/next/plugin`. Full explanation in the
 [Next.js standalone deployments guide](frameworks/nextjs.md#standalone-deployments).
 

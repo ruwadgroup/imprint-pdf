@@ -16,7 +16,7 @@ pnpm add -D @imprint-pdf/cli
 npx imprint init
 ```
 
-Latest published versions (alpha): `@imprint-pdf/core@1.0.0-alpha.7`, `@imprint-pdf/react@1.0.0-alpha.8`, `@imprint-pdf/next@1.0.0-alpha.8`, `@imprint-pdf/fonts@1.0.0-alpha.6`. The `alpha` dist-tag points at the latest each.
+Latest published versions (alpha): `@imprint-pdf/core@1.0.0-alpha.9`, `@imprint-pdf/react@1.0.0-alpha.9`, `@imprint-pdf/next@1.0.0-alpha.9`, `@imprint-pdf/fonts@1.0.0-alpha.6`. The `alpha` dist-tag points at the latest each.
 
 `imprint init` detects your framework (Next.js, Vite, generic Node), wires the correct plugin into your config, and scaffolds an example route + template.
 
