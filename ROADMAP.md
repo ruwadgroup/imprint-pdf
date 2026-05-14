@@ -123,6 +123,40 @@ milestone matters to you.
 - [ ] More cookbook recipes — packing slips, certificates, transcripts,
       brochures
 
+## v1.x — Custom PDF writer (gated)
+
+Replace `pdf-lib` with a native object model, content-stream emitter, font
+subsetter, and image embedder. ~5-8k LOC of new code with byte-level correctness
+invariants against PDF/A and PDF/UA validators, so it only ships when funding
+and demand justify the time. **Phase 0** (a passthrough facade under
+`@imprint-pdf/core/pdfio` so consumers stop importing `pdf-lib` directly) starts
+as soon as the gate is met — every week we wait, the pdf-lib-typed API surface
+grows.
+
+Gate (all three required to start Phase 0):
+
+- [ ] **≥ 1,000 GitHub stars**
+- [ ] **Sustained funding** — GitHub Sponsors / Open Collective / Polar at a
+      level that covers 2–3 focused days/month of work
+- [ ] **≥ 3 issues** citing `pdf-lib` (bundle size, blocker bug, missing
+      feature) — see the
+      [`migration-from-pdf-lib`](https://github.com/tamimbinhakim/imprint-pdf/labels/migration-from-pdf-lib)
+      label
+
+Phases once gated:
+
+- [ ] **Phase 0** — passthrough facade in `@imprint-pdf/core/pdfio`; migrate
+      `print/`, `ua/`, `sign/`, and `PdfPostProcessHook` to import from it
+- [ ] **Phase 1** — native `PDFContext`, xref table, indirect-object serializer;
+      target PDF 2.0 (ISO 32000-2)
+- [ ] **Phase 2** — content-stream operator emitter; replace
+      `drawText/Image/Rectangle/Line/SvgPath`
+- [ ] **Phase 3** — font embedding (CFF/TrueType subsetter on `fontkit`),
+      standard 14 AFM tables, `/ToUnicode` CMap
+- [ ] **Phase 4** — JPEG (`/DCTDecode`) and PNG (transcode to `/FlateDecode` +
+      `/SMask` for alpha) embedders
+- [ ] **Phase 5** — drop `pdf-lib` + `@pdf-lib/fontkit` dependencies
+
 ## Beyond v1
 
 - PDF/UA-2 + Well-Tagged PDF

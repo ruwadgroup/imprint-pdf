@@ -1,1 +1,8 @@
+# Platforms surface as the "Sponsor" button on the repo page.
+# Sign up for each before uncommenting — broken links here look unprofessional.
 github: [tamimbinhakim]
+# open_collective: imprint-pdf       # https://opencollective.com/ — fiscal host, transparent ledger, ~10% fee
+# polar: tamimbinhakim                # https://polar.sh/ — issue bounties + subscriptions, 4% fee
+# ko_fi: tamimbinhakim                # https://ko-fi.com/ — one-off tips, 0% on direct
+# patreon: tamimbinhakim               # https://patreon.com/ — recurring tiers, 5-12% fee
+# custom: ['https://imprint-pdf.dev/sponsor']  # add when the landing page exists

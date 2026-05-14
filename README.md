@@ -12,6 +12,8 @@
 [![pnpm](https://img.shields.io/badge/pnpm-monorepo-f69220.svg?logo=pnpm&logoColor=white)](https://pnpm.io/)
 [![Conventional Commits](https://img.shields.io/badge/conventional_commits-1.0.0-fa6673.svg)](https://www.conventionalcommits.org)
 [![Status: 1.0.0-alpha](https://img.shields.io/badge/status-1.0.0--alpha-red.svg)](#status)
+[![GitHub Repo stars](https://img.shields.io/github/stars/tamimbinhakim/imprint-pdf?style=flat&logo=github)](https://github.com/tamimbinhakim/imprint-pdf/stargazers)
+[![Sponsor](https://img.shields.io/badge/sponsor-%E2%9D%A4-ec4899.svg?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/tamimbinhakim)
 
 **A typesafe, edge-native, framework-agnostic PDF library for React. Real
 Tailwind. Real typography. No Chromium.**
@@ -234,6 +236,17 @@ the API is close. Pin exact versions.
 | Post-1.0 | `1.x.y+`        | Backwards-compatible features and fixes.       |
 
 See [`STABILITY.md`](STABILITY.md) for the full contract.
+
+## Sponsor
+
+imprint-pdf is Apache-2.0 and self-funded. If your company ships PDFs through it
+— or you'd like to — sponsorship is what unlocks the next milestones on the
+[roadmap](ROADMAP.md), including the v1.x custom PDF writer that drops the
+`pdf-lib` runtime dependency for a smaller bundle and edge-friendlier output.
+
+[**GitHub Sponsors → `@tamimbinhakim`**](https://github.com/sponsors/tamimbinhakim)
+
+Backers and sponsors will be credited in releases and the repo README.
 
 ## License
 
