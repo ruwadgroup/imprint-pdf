@@ -5,6 +5,7 @@ import {
   Face as HbFace,
   Font as HbFont2,
   shape,
+  Variation,
 } from 'harfbuzzjs';
 import { type ScriptTag, splitByScript } from './script.js';
 
@@ -65,7 +66,9 @@ export function shapeAdvance(
   options: ShapeOptions = {},
 ): number {
   if (options.variations && Object.keys(options.variations).length > 0) {
-    hbFont.font.setVariations(options.variations);
+    hbFont.font.setVariations(
+      Object.entries(options.variations).map(([axis, value]) => new Variation(axis, value)),
+    );
   }
 
   const runs = splitByScript(text);
