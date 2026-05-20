@@ -80,7 +80,7 @@
     "pdf-lib": "catalog:",
     "fontkit": "catalog:",
     "@pdf-lib/fontkit": "catalog:",
-    "harfbuzzjs": "1.0.0",
+    "harfbuzzjs": "1.2.0",
     "taffy-wasm": "^0.9.10"
   },
   "devDependencies": {

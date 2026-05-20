@@ -444,8 +444,8 @@ importers:
         specifier: 'catalog:'
         version: 2.0.4
       harfbuzzjs:
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.2.0
+        version: 1.2.0
       pdf-lib:
         specifier: 'catalog:'
         version: 1.17.1
@@ -931,6 +931,11 @@ packages:
 
   '@babel/parser@7.29.2':
     resolution: {integrity: sha512-4GgRzy/+fsBa72/RZVJmGKPmZu9Byn8o4MoLpmNe1m8ZfYnz5emHLQz3U4gLud6Zwl0RZIcgiLD7Uq7ySFuDLA==}
+    engines: {node: '>=6.0.0'}
+    hasBin: true
+
+  '@babel/parser@7.29.3':
+    resolution: {integrity: sha512-b3ctpQwp+PROvU/cttc4OYl4MzfJUWy6FZg+PMXfzmt/+39iHVF0sDfqay8TQM3JA2EUOyKcFZt75jWriQijsA==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -4020,11 +4025,11 @@ packages:
   graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
 
-  harfbuzzjs@1.0.0:
-    resolution: {integrity: sha512-oP289VVQnAfTP8qbNKUNPqjpJzowB3fiFNl/tu7cXmu+ogLxcYA2fOt+WvZQF5alZQHVoyVzoOgs/MIlf0+P7A==}
-
   harfbuzzjs@1.0.0-beta.1:
     resolution: {integrity: sha512-a7NY74Lu9Cvt4Vt+lLimQ9k5k1blO8rs0DFNPyaYNUZX1/ZVkkWx5eaXkUJ/Uo/Z/y92vN6uoZ6ZvXIYd4aiRg==}
+
+  harfbuzzjs@1.2.0:
+    resolution: {integrity: sha512-ZBH5yFhRG1hzdbGHrOTNx6UJjPcYVTXjMiUf3/ZtDmjnRFH8F/kiqe/8a3PqJPsIU8fuK8UxlumPT+0Ar/Y6tQ==}
 
   has-bigints@1.1.0:
     resolution: {integrity: sha512-R3pbpkcIqv2Pm3dUwgjclDRVmWpTJW2DcMzcIhEXEx1oh/CEMObMm3KLmRJOdvhM7o4uQBnwr8pzRK2sJWIqfg==}
@@ -4447,6 +4452,9 @@ packages:
 
   magicast@0.5.2:
     resolution: {integrity: sha512-E3ZJh4J3S9KfwdjZhe2afj6R9lGIN5Pher1pF39UGrXRqq/VDaGVIGN13BjHd2u8B61hArAGOnso7nBOouW3TQ==}
+
+  magicast@0.5.3:
+    resolution: {integrity: sha512-pVKE4UdSQ7DvHzivsCIFx2BJn1mHG6KsyrFcaxFx6tONdneEuThrDx0Cj3AMg58KyN4pzYT+LHOotxDQDjNvkw==}
 
   make-dir@4.0.0:
     resolution: {integrity: sha512-hXdUTZYIVOt1Ex//jAQi+wTZZpUpwBj/0QsOzqegb3rGMMeJiSEu5xLHnYfBrRV4RH2+OCSOO95Is/7x1WJ4bw==}
@@ -5912,6 +5920,11 @@ snapshots:
   '@babel/parser@7.29.2':
     dependencies:
       '@babel/types': 7.29.0
+
+  '@babel/parser@7.29.3':
+    dependencies:
+      '@babel/types': 7.29.0
+    optional: true
 
   '@babel/plugin-transform-react-jsx-self@7.27.1(@babel/core@7.29.0)':
     dependencies:
@@ -7618,7 +7631,7 @@ snapshots:
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-report: 3.0.1
       istanbul-reports: 3.2.0
-      magicast: 0.5.2
+      magicast: 0.5.3
       obug: 2.1.1
       std-env: 4.1.0
       tinyrainbow: 3.1.0
@@ -9109,9 +9122,9 @@ snapshots:
 
   graphemer@1.4.0: {}
 
-  harfbuzzjs@1.0.0: {}
-
   harfbuzzjs@1.0.0-beta.1: {}
+
+  harfbuzzjs@1.2.0: {}
 
   has-bigints@1.1.0: {}
 
@@ -9521,6 +9534,13 @@ snapshots:
       '@babel/parser': 7.29.2
       '@babel/types': 7.29.0
       source-map-js: 1.2.1
+
+  magicast@0.5.3:
+    dependencies:
+      '@babel/parser': 7.29.3
+      '@babel/types': 7.29.0
+      source-map-js: 1.2.1
+    optional: true
 
   make-dir@4.0.0:
     dependencies:
