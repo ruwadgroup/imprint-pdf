@@ -13,9 +13,9 @@
     "react": "catalog:"
   },
   "devDependencies": {
-    "@types/bun": "^1.0.0",
+    "@types/bun": "^1.3.14",
     "@types/react": "catalog:",
-    "bun-types": "^1.0.0",
+    "bun-types": "^1.3.14",
     "typescript": "catalog:"
   }
 }

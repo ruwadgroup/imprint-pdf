@@ -15,7 +15,7 @@
     "@imprint-pdf/tailwind": "workspace:*"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260511.1",
+    "@cloudflare/workers-types": "^4.20260603.1",
     "@types/node": "catalog:",
     "@types/react": "^19.0.0",
     "tsx": "^4.21.0",
