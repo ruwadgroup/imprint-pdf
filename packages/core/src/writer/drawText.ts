@@ -1,8 +1,8 @@
 import type { PDFPage } from 'pdf-lib';
 import { degrees, rgb } from 'pdf-lib';
 import type { ComputedGeometry, TextNode } from '../types.js';
-import type { LoadedFont } from '../typography/fonts.js';
-import { selectFont } from '../typography/fonts.js';
+import type { LoadedFont } from '../typography/font-common.js';
+import { selectFont } from '../typography/font-common.js';
 import { measureText } from '../typography/text.js';
 import { parseColor, toPt } from './color.js';
 import { alignTextX } from './coords.js';

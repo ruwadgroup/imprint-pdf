@@ -1,6 +1,6 @@
-import { runLayout } from '../layout/engine.js';
+import { runLayout } from '../layout/browser-engine.js';
 import type { AssetResolver, ComputedGeometry, DocumentNode, FontDeclaration } from '../types.js';
-import { loadFonts } from '../typography/fonts.js';
+import { loadFonts } from '../typography/fonts-browser.js';
 import { type WritePdfOptions, writePdfWith } from './shared.js';
 
 export type { WritePdfOptions } from './shared.js';

@@ -4,15 +4,8 @@ export interface AssetResolver {
 }
 
 export interface AssetResolverOptions {
-  basePath?: string;
   fetch?: typeof globalThis.fetch;
 }
-
-// No top-level `node:fs` — this file ships to browser/edge too.
-const isNode =
-  typeof process !== 'undefined' &&
-  typeof process.versions !== 'undefined' &&
-  typeof process.versions.node !== 'undefined';
 
 function decodeDataUri(src: string): Uint8Array {
   const commaIdx = src.indexOf(',');
@@ -26,21 +19,6 @@ function decodeDataUri(src: string): Uint8Array {
   return new TextEncoder().encode(decodeURIComponent(data));
 }
 
-async function readFileNode(filePath: string): Promise<Uint8Array> {
-  const nodeBuiltin = (name: string) => `node:${name}`;
-  const { readFile } = (await import(
-    nodeBuiltin('fs/promises')
-  )) as typeof import('node:fs/promises');
-  const buf = await readFile(filePath);
-  // Node's `Buffer` is a view into a shared pool — `buf.buffer` is often much
-  // larger than the file. Copy into a fresh ArrayBuffer so WASM consumers
-  // (HarfBuzz, fontkit) that walk `.buffer` don't read pool padding and
-  // RangeError on us.
-  const bytes = new Uint8Array(buf.byteLength);
-  bytes.set(buf);
-  return bytes;
-}
-
 async function fetchBytes(url: string, fetchFn: typeof globalThis.fetch): Promise<Uint8Array> {
   const res = await fetchFn(url);
   if (!res.ok) {
@@ -50,22 +28,7 @@ async function fetchBytes(url: string, fetchFn: typeof globalThis.fetch): Promis
 }
 
 /**
- * Resolves a `fontsource:` URL to a jsdelivr CDN URL — no hand-written CDN paths.
- *
- * Shape: `fontsource:<family>[@<version>][:<weight>[:<style>[:<subset>[:<format>]]]]`.
- * Defaults: version=`5`, weight=`400`, style=`normal`, subset=`latin`, format=`woff2`.
- *
- * Variable fonts use the `fontsource-variable:` prefix and an axis name (e.g. `wght`)
- * in the weight slot: `fontsource-variable:inter@5:wght`.
- *
- * Family is the Fontsource slug (kebab-case): `inter`, `jetbrains-mono`, `noto-sans-arabic`.
- *
- * @example
- *   fontsource:inter                              // Inter regular, latin, WOFF2
- *   fontsource:inter@5:700                        // Inter bold
- *   fontsource:inter@5:400:italic                 // Inter italic
- *   fontsource:noto-sans-arabic@5:400:normal:arabic
- *   fontsource-variable:inter@5:wght              // Inter variable (wght axis)
+ * Resolves a `fontsource:` URL to a jsdelivr CDN URL.
  */
 export function resolveFontsourceUrl(src: string): string {
   const isVariable = src.startsWith('fontsource-variable:');
@@ -87,28 +50,21 @@ export function resolveFontsourceUrl(src: string): string {
   return `https://cdn.jsdelivr.net/npm/${pkg}@${version}/files/${family}-${subset}-${weight}-${style}.${format}`;
 }
 
-function resolveFilePath(src: string, basePath?: string): string {
-  if (src.startsWith('file://')) {
-    return new URL(src).pathname;
-  }
-  if (basePath && !src.startsWith('/')) {
-    return `${basePath.replace(/\/$/, '')}/${src}`;
-  }
-  return src;
-}
-
 export function createAssetResolver(options: AssetResolverOptions = {}): AssetResolver {
-  const { basePath, fetch: customFetch } = options;
-  const fetchFn: typeof globalThis.fetch = customFetch ?? globalThis.fetch;
+  const fetchFn: typeof globalThis.fetch | undefined = options.fetch ?? globalThis.fetch;
 
   async function resolve(src: string): Promise<Uint8Array> {
     if (src.startsWith('data:')) {
       return decodeDataUri(src);
     }
 
-    // `fontsource:` / `fontsource-variable:` rewrite to jsdelivr URLs.
     const isFontsource = src.startsWith('fontsource:') || src.startsWith('fontsource-variable:');
-    if (isFontsource || src.startsWith('http://') || src.startsWith('https://')) {
+    if (
+      isFontsource ||
+      src.startsWith('http://') ||
+      src.startsWith('https://') ||
+      src.startsWith('blob:')
+    ) {
       const url = isFontsource ? resolveFontsourceUrl(src) : src;
       if (!fetchFn) {
         throw new Error(
@@ -119,17 +75,13 @@ export function createAssetResolver(options: AssetResolverOptions = {}): AssetRe
       return fetchBytes(url, fetchFn);
     }
 
-    if (src.startsWith('file://') || (!src.startsWith('blob:') && isNode)) {
-      return readFileNode(resolveFilePath(src, basePath));
-    }
-
     if (fetchFn) {
       return fetchBytes(src, fetchFn);
     }
 
     throw new Error(
-      `Cannot resolve asset "${src}": not a data URI, HTTP URL, or file path, ` +
-        'and no fetch implementation is available.',
+      `Cannot resolve asset "${src}": browser rendering supports data URIs, HTTP(S), blob URLs, ` +
+        'or a custom fetch implementation.',
     );
   }
 

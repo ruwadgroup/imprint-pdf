@@ -6,6 +6,9 @@ export interface ResolvedImprintConfig {
     config?: string;
     stylesheet?: string;
     projectRoot?: string;
+    runtimeFallback?: boolean;
+    safelist?: string[];
+    content?: string[];
   };
 }
 
@@ -75,6 +78,12 @@ export async function mergeWithConfig(options: RenderOptions): Promise<RenderOpt
     if (c !== undefined) tw.config = c;
     const s = callerTw?.stylesheet ?? configTw?.stylesheet;
     if (s !== undefined) tw.stylesheet = s;
+    const r = callerTw?.runtimeFallback ?? configTw?.runtimeFallback;
+    if (r !== undefined) tw.runtimeFallback = r;
+    const safelist = callerTw?.safelist ?? configTw?.safelist;
+    if (safelist !== undefined) tw.safelist = safelist;
+    const content = callerTw?.content ?? configTw?.content;
+    if (content !== undefined) tw.content = content;
     tw.projectRoot =
       callerTw?.projectRoot ??
       configTw?.projectRoot ??

@@ -26,47 +26,23 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
-      },
-      "require": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs"
-      }
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
     "./vite": {
       "types": "./dist/vite.d.ts",
-      "import": {
-        "types": "./dist/vite.d.ts",
-        "default": "./dist/vite.js"
-      },
-      "require": {
-        "types": "./dist/vite.d.cts",
-        "default": "./dist/vite.cjs"
-      }
+      "import": "./dist/vite.js",
+      "require": "./dist/vite.cjs"
     },
     "./webpack": {
       "types": "./dist/webpack.d.ts",
-      "import": {
-        "types": "./dist/webpack.d.ts",
-        "default": "./dist/webpack.js"
-      },
-      "require": {
-        "types": "./dist/webpack.d.cts",
-        "default": "./dist/webpack.cjs"
-      }
+      "import": "./dist/webpack.js",
+      "require": "./dist/webpack.cjs"
     },
     "./runtime": {
       "types": "./dist/runtime.d.ts",
-      "import": {
-        "types": "./dist/runtime.d.ts",
-        "default": "./dist/runtime.js"
-      },
-      "require": {
-        "types": "./dist/runtime.d.cts",
-        "default": "./dist/runtime.cjs"
-      }
+      "import": "./dist/runtime.js",
+      "require": "./dist/runtime.cjs"
     },
     "./preset.css": "./preset.css",
     "./preset": "./preset.css",

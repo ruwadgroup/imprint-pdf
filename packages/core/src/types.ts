@@ -414,9 +414,21 @@ export interface AssetResolver {
   resolveText(src: string): Promise<string>;
 }
 
+export type TailwindClassMapInput = Map<string, ResolvedStyle> | Record<string, ResolvedStyle>;
+
+export interface TailwindRenderOptions {
+  config?: string;
+  stylesheet?: string;
+  projectRoot?: string;
+  runtimeFallback?: boolean;
+  safelist?: string[];
+  content?: string[];
+  classMap?: TailwindClassMapInput;
+}
+
 export interface RenderOptions {
   fonts?: FontDeclaration[];
-  tailwind?: { config?: string; stylesheet?: string; projectRoot?: string };
+  tailwind?: TailwindRenderOptions;
   assetResolver?: AssetResolver;
   debug?: boolean;
   /** Splits a word into syllables for paragraph hyphenation; typically `loadHyphenator(lang).hyphenate`. */

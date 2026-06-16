@@ -8,19 +8,9 @@ import type {
   MaxTrackSizingFunction,
   MinTrackSizingFunction,
   Size,
-  TrackSizingFunction,
-} from 'taffy-wasm';
-import taffyInit, {
-  AlignContent,
-  AlignItems,
-  AlignSelf,
-  Display,
-  FlexDirection,
-  FlexWrap,
-  JustifyContent,
-  Position,
   Style,
   TaffyTree,
+  TrackSizingFunction,
 } from 'taffy-wasm';
 import type { ComputedGeometry, PdfNode, ResolvedStyle, TextNode } from '../types.js';
 import type { LoadedFont } from '../typography/fonts.js';
@@ -30,16 +20,27 @@ import { resolveEdges } from './edges.js';
 import { resolvePageDimensions } from './pages.js';
 import { resolvePt } from './units.js';
 
+type TaffyModule = typeof import('taffy-wasm');
+
+let taffyModule: TaffyModule | undefined;
+
+function getTaffy(): TaffyModule {
+  if (!taffyModule) throw new Error('[imprint] Taffy layout engine has not initialized.');
+  return taffyModule;
+}
+
 async function loadTaffy(): Promise<void> {
+  const mod = await import('taffy-wasm');
+  taffyModule = mod;
   if (typeof process !== 'undefined' && process.versions?.node) {
     const { readFile } = await import('node:fs/promises');
     const { createRequire } = await import('node:module');
     const req = createRequire(import.meta.url);
     const wasmPath: string = req.resolve('taffy-wasm/taffy_wasm_bg.wasm');
     const bytes = await readFile(wasmPath);
-    await taffyInit(bytes);
+    await mod.default(bytes);
   } else {
-    await taffyInit();
+    await mod.default();
   }
 }
 
@@ -73,45 +74,6 @@ function lpa(v: number | string | undefined): LengthPercentageAuto {
 function toFloat(v: number | string): number {
   return typeof v === 'number' ? v : parseFloat(String(v));
 }
-
-const AI_MAP: Record<string, AlignItems> = {
-  'flex-start': AlignItems.FlexStart,
-  start: AlignItems.FlexStart,
-  'flex-end': AlignItems.FlexEnd,
-  end: AlignItems.FlexEnd,
-  center: AlignItems.Center,
-  baseline: AlignItems.Baseline,
-};
-
-const AC_MAP: Record<string, AlignContent> = {
-  'flex-start': AlignContent.FlexStart,
-  start: AlignContent.FlexStart,
-  'flex-end': AlignContent.FlexEnd,
-  end: AlignContent.FlexEnd,
-  center: AlignContent.Center,
-  'space-between': AlignContent.SpaceBetween,
-  'space-around': AlignContent.SpaceAround,
-  'space-evenly': AlignContent.SpaceEvenly,
-};
-
-const AS_MAP: Record<string, AlignSelf> = {
-  'flex-start': AlignSelf.FlexStart,
-  start: AlignSelf.FlexStart,
-  'flex-end': AlignSelf.FlexEnd,
-  end: AlignSelf.FlexEnd,
-  center: AlignSelf.Center,
-  baseline: AlignSelf.Baseline,
-  stretch: AlignSelf.Stretch,
-};
-
-const JC_MAP: Record<string, JustifyContent> = {
-  'flex-end': JustifyContent.FlexEnd,
-  end: JustifyContent.FlexEnd,
-  center: JustifyContent.Center,
-  'space-between': JustifyContent.SpaceBetween,
-  'space-around': JustifyContent.SpaceAround,
-  'space-evenly': JustifyContent.SpaceEvenly,
-};
 
 function parseGridPlacement(v: string | number | undefined): GridPlacement {
   if (v === undefined || v === 'auto') return 'auto';
@@ -186,37 +148,75 @@ function parseGridTemplate(template: string | undefined): GridTemplateComponent[
 }
 
 function toTaffyStyle(style: ResolvedStyle, containerWidth: number): Style {
-  const s = new Style();
+  const taffy = getTaffy();
+  const s = new taffy.Style();
 
   const display = style.display ?? 'block';
   const isFlex = display === 'flex' || display === 'inline-flex';
-  if (display === 'grid') s.display = Display.Grid;
-  else if (display === 'none') s.display = Display.None;
+  if (display === 'grid') s.display = taffy.Display.Grid;
+  else if (display === 'none') s.display = taffy.Display.None;
   // Taffy's Block doesn't propagate available width into leaf measure callbacks —
   // emulate it with flex-column + alignItems:Stretch (Yoga uses the same trick).
-  else s.display = Display.Flex;
+  else s.display = taffy.Display.Flex;
 
   const pos = style.position ?? 'static';
-  s.position = pos === 'absolute' ? Position.Absolute : Position.Relative;
+  s.position = pos === 'absolute' ? taffy.Position.Absolute : taffy.Position.Relative;
 
   const flexDir = isFlex ? (style.flexDirection ?? 'row') : 'column';
-  if (flexDir === 'column') s.flexDirection = FlexDirection.Column;
-  else if (flexDir === 'row-reverse') s.flexDirection = FlexDirection.RowReverse;
-  else if (flexDir === 'column-reverse') s.flexDirection = FlexDirection.ColumnReverse;
-  else s.flexDirection = FlexDirection.Row;
+  if (flexDir === 'column') s.flexDirection = taffy.FlexDirection.Column;
+  else if (flexDir === 'row-reverse') s.flexDirection = taffy.FlexDirection.RowReverse;
+  else if (flexDir === 'column-reverse') s.flexDirection = taffy.FlexDirection.ColumnReverse;
+  else s.flexDirection = taffy.FlexDirection.Row;
 
   const wrap = style.flexWrap ?? 'nowrap';
-  if (wrap === 'wrap') s.flexWrap = FlexWrap.Wrap;
-  else if (wrap === 'wrap-reverse') s.flexWrap = FlexWrap.WrapReverse;
-  else s.flexWrap = FlexWrap.NoWrap;
+  if (wrap === 'wrap') s.flexWrap = taffy.FlexWrap.Wrap;
+  else if (wrap === 'wrap-reverse') s.flexWrap = taffy.FlexWrap.WrapReverse;
+  else s.flexWrap = taffy.FlexWrap.NoWrap;
 
-  s.alignItems = AI_MAP[style.alignItems ?? ''] ?? AlignItems.Stretch;
-  s.alignContent = AC_MAP[style.alignContent ?? ''] ?? AlignContent.Stretch;
+  const aiMap = {
+    'flex-start': taffy.AlignItems.FlexStart,
+    start: taffy.AlignItems.FlexStart,
+    'flex-end': taffy.AlignItems.FlexEnd,
+    end: taffy.AlignItems.FlexEnd,
+    center: taffy.AlignItems.Center,
+    baseline: taffy.AlignItems.Baseline,
+  };
+  const acMap = {
+    'flex-start': taffy.AlignContent.FlexStart,
+    start: taffy.AlignContent.FlexStart,
+    'flex-end': taffy.AlignContent.FlexEnd,
+    end: taffy.AlignContent.FlexEnd,
+    center: taffy.AlignContent.Center,
+    'space-between': taffy.AlignContent.SpaceBetween,
+    'space-around': taffy.AlignContent.SpaceAround,
+    'space-evenly': taffy.AlignContent.SpaceEvenly,
+  };
+  const asMap = {
+    'flex-start': taffy.AlignSelf.FlexStart,
+    start: taffy.AlignSelf.FlexStart,
+    'flex-end': taffy.AlignSelf.FlexEnd,
+    end: taffy.AlignSelf.FlexEnd,
+    center: taffy.AlignSelf.Center,
+    baseline: taffy.AlignSelf.Baseline,
+    stretch: taffy.AlignSelf.Stretch,
+  };
+  const jcMap = {
+    'flex-end': taffy.JustifyContent.FlexEnd,
+    end: taffy.JustifyContent.FlexEnd,
+    center: taffy.JustifyContent.Center,
+    'space-between': taffy.JustifyContent.SpaceBetween,
+    'space-around': taffy.JustifyContent.SpaceAround,
+    'space-evenly': taffy.JustifyContent.SpaceEvenly,
+  };
 
-  const asMapped = AS_MAP[style.alignSelf ?? ''];
+  s.alignItems = aiMap[style.alignItems as keyof typeof aiMap] ?? taffy.AlignItems.Stretch;
+  s.alignContent = acMap[style.alignContent as keyof typeof acMap] ?? taffy.AlignContent.Stretch;
+
+  const asMapped = asMap[style.alignSelf as keyof typeof asMap];
   if (asMapped !== undefined) s.alignSelf = asMapped;
 
-  s.justifyContent = JC_MAP[style.justifyContent ?? ''] ?? JustifyContent.FlexStart;
+  s.justifyContent =
+    jcMap[style.justifyContent as keyof typeof jcMap] ?? taffy.JustifyContent.FlexStart;
 
   // `flex: 1` expands to `1 1 0%` — keep the 0 basis when no longhand
   // flex-basis follows, so `flex-1` columns share width equally.
@@ -349,8 +349,9 @@ function buildNode(
   const cascaded: ResolvedStyle = { ...(inheritedStyle ?? {}), ...node.style };
 
   if (node.type === 'text') {
-    const s = new Style();
-    s.display = Display.Flex;
+    const taffy = getTaffy();
+    const s = new taffy.Style();
+    s.display = taffy.Display.Flex;
     const ctx: LeafContext = { node, inheritedStyle: cascaded };
     const taffyId = tree.newLeafWithContext(s, ctx);
     return { taffyId, imprintId: node.id, children: [] };
@@ -427,14 +428,15 @@ async function layoutPage(
   geometries: Map<string, ComputedGeometry>,
   fontMetrics: Map<string, LoadedFont> = new Map(),
 ): Promise<void> {
-  const tree = new TaffyTree();
+  const taffy = getTaffy();
+  const tree = new taffy.TaffyTree();
   // PDF measures in fractional points — Taffy's pixel rounding would make
   // the line-breaker disagree between layout and draw.
   tree.disableRounding();
 
   const rootStyle = toTaffyStyle(pageNode.style, pageW);
   rootStyle.size = { width: pageW, height: pageH };
-  rootStyle.position = Position.Relative;
+  rootStyle.position = taffy.Position.Relative;
 
   const padding = resolveEdges(pageNode.style, 'padding', pageW);
   const contentW = pageW - padding.left - padding.right;

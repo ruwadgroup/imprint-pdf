@@ -1,6 +1,7 @@
 export interface ImprintTailwindOptions {
   config?: string;
   stylesheet?: string;
+  runtimeFallback?: boolean;
   content?: string[];
   safelist?: string[];
 }

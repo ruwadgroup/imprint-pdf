@@ -1,20 +1,12 @@
-import {
-  Direction,
-  Blob as HbBlob,
-  Buffer as HbBuffer,
-  Face as HbFace,
-  Font as HbFont2,
-  shape,
-  Variation,
-} from 'harfbuzzjs';
 import { type ScriptTag, splitByScript } from './script.js';
 
 export interface HbFont {
-  font: HbFont2;
   upem: number;
+  shapeAdvance(text: string, sizePt: number, options?: ShapeOptions): number;
 }
 
-export function createHbFont(fontBytes: Uint8Array): HbFont {
+export async function createHbFont(fontBytes: Uint8Array): Promise<HbFont> {
+  const hb = await import('harfbuzzjs');
   // A `Uint8Array` can be a partial view into a larger ArrayBuffer (Node's
   // Buffer pool, sub-allocations, ...). HarfBuzz reads every byte of the
   // ArrayBuffer and throws `RangeError: Index out of range` once it walks
@@ -24,11 +16,17 @@ export function createHbFont(fontBytes: Uint8Array): HbFont {
   const ab = isTight
     ? (fontBytes.buffer as ArrayBuffer)
     : (fontBytes.slice().buffer as ArrayBuffer);
-  const blob = new HbBlob(ab);
-  const face = new HbFace(blob);
-  const font = new HbFont2(face);
+  const blob = new hb.Blob(ab);
+  const face = new hb.Face(blob);
+  const font = new hb.Font(face);
   font.setScale(face.upem, face.upem);
-  return { font, upem: face.upem };
+  const upem = face.upem;
+  return {
+    upem,
+    shapeAdvance(text: string, sizePt: number, options: ShapeOptions = {}) {
+      return shapeAdvance(hb, font, upem, text, sizePt, options);
+    },
+  };
 }
 
 export interface ShapeOptions {
@@ -40,15 +38,28 @@ export interface ShapeOptions {
 
 const RTL_SCRIPTS = new Set<ScriptTag>(['arab', 'hebr']);
 
-function shapeRun(hbFont: HbFont, text: string, script: ScriptTag, options: ShapeOptions): number {
-  const buf = new HbBuffer();
+type HarfbuzzModule = typeof import('harfbuzzjs');
+type HarfbuzzFont = InstanceType<HarfbuzzModule['Font']>;
+
+function shapeRun(
+  hb: HarfbuzzModule,
+  font: HarfbuzzFont,
+  text: string,
+  script: ScriptTag,
+  options: ShapeOptions,
+): number {
+  const buf = new hb.Buffer();
   buf.addText(text);
   buf.setScript(script);
   buf.setDirection(
-    options.vertical ? Direction.TTB : RTL_SCRIPTS.has(script) ? Direction.RTL : Direction.LTR,
+    options.vertical
+      ? hb.Direction.TTB
+      : RTL_SCRIPTS.has(script)
+        ? hb.Direction.RTL
+        : hb.Direction.LTR,
   );
   if (options.language) buf.setLanguage(options.language);
-  shape(hbFont.font, buf);
+  hb.shape(font, buf);
   let total = 0;
   for (const p of buf.getGlyphPositions()) {
     total += options.vertical ? -p.yAdvance : p.xAdvance;
@@ -59,21 +70,23 @@ function shapeRun(hbFont: HbFont, text: string, script: ScriptTag, options: Shap
 // Shapes `text` and returns its total advance in points. Splits into per-script
 // runs first — HarfBuzz's `guessSegmentProperties` only reads the first strong
 // character, which mis-shapes mixed-script text.
-export function shapeAdvance(
-  hbFont: HbFont,
+function shapeAdvance(
+  hb: HarfbuzzModule,
+  font: HarfbuzzFont,
+  upem: number,
   text: string,
   sizePt: number,
   options: ShapeOptions = {},
 ): number {
   if (options.variations && Object.keys(options.variations).length > 0) {
-    hbFont.font.setVariations(
-      Object.entries(options.variations).map(([axis, value]) => new Variation(axis, value)),
+    font.setVariations(
+      Object.entries(options.variations).map(([axis, value]) => new hb.Variation(axis, value)),
     );
   }
 
   const runs = splitByScript(text);
   if (runs.length === 0) return 0;
   let total = 0;
-  for (const run of runs) total += shapeRun(hbFont, run.text, run.script, options);
-  return (total / hbFont.upem) * sizePt;
+  for (const run of runs) total += shapeRun(hb, font, run.text, run.script, options);
+  return (total / upem) * sizePt;
 }
