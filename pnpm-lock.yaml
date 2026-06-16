@@ -206,9 +206,9 @@ importers:
       '@imprint-pdf/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@imprint-pdf/font':
+      '@imprint-pdf/fonts':
         specifier: workspace:*
-        version: link:../../packages/font
+        version: link:../../packages/fonts
       '@imprint-pdf/react':
         specifier: workspace:*
         version: link:../../packages/react
@@ -474,9 +474,9 @@ importers:
       '@imprint-pdf/core':
         specifier: workspace:*
         version: link:../core
-      '@imprint-pdf/font':
+      '@imprint-pdf/fonts':
         specifier: workspace:*
-        version: link:../font
+        version: link:../fonts
       '@imprint-pdf/react':
         specifier: workspace:*
         version: link:../react
@@ -526,25 +526,6 @@ importers:
       eslint:
         specifier: ^9.0.0
         version: 9.39.4(jiti@2.6.1)
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.1(jiti@2.6.1)(postcss@8.5.14)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.3)
-      typescript:
-        specifier: 'catalog:'
-        version: 5.9.3
-      vitest:
-        specifier: 'catalog:'
-        version: 4.1.6(@types/node@20.19.41)(@vitest/coverage-v8@4.1.6)(vite@6.4.2(@types/node@20.19.41)(jiti@2.6.1)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
-
-  packages/font:
-    dependencies:
-      '@imprint-pdf/core':
-        specifier: workspace:*
-        version: link:../core
-    devDependencies:
-      '@types/node':
-        specifier: 'catalog:'
-        version: 20.19.41
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(jiti@2.6.1)(postcss@8.5.14)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.3)

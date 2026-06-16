@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@imprint-pdf/core": "workspace:*",
-    "@imprint-pdf/font": "workspace:*",
+    "@imprint-pdf/fonts": "workspace:*",
     "@imprint-pdf/react": "workspace:*",
     "@imprint-pdf/tailwind": "workspace:*",
     "pdf-lib": "1.17.1",

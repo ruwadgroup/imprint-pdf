@@ -53,8 +53,8 @@ milestone matters to you.
 - [x] Devanagari, Thai, CJK shaping + vertical writing mode
 - [x] Plass-style two-pass page breaking (widows / orphans; footnotes deferred
       to v0.4)
-- [x] `@imprint-pdf/font` — Google Fonts, Bunny Fonts, Fontsource, and local
-      providers behind a single `loadFont(provider, family, opts)` API
+- [x] `@imprint-pdf/fonts` — ergonomic `googleFont()` plus Google, Bunny,
+      Fontsource, and local providers behind a single `loadFont()` API
 
 ## v0.4 — Forms + charts + drawing
 

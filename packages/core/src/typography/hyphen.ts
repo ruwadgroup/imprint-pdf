@@ -1,5 +1,5 @@
 // Module-level slot so layout and draw share one hyphenator without core
-// taking a hard dep on `@imprint-pdf/font/hyphen`. The renderer sets it
+// taking a hard dep on `@imprint-pdf/fonts/hyphen`. The renderer sets it
 // before layout and clears it after.
 let _hyphenate: ((word: string) => string[]) | null = null;
 

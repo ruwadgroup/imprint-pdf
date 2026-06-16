@@ -9,7 +9,7 @@
  * stayed on one line in the same equal-width flex columns.
  */
 
-import { googleProvider, loadFont } from '@imprint-pdf/font';
+import { googleProvider, loadFont } from '@imprint-pdf/fonts';
 import { Document, Page } from '@imprint-pdf/react';
 import { describe, expect, it } from 'vitest';
 import { extractText, render } from '../../src/helpers/index.js';

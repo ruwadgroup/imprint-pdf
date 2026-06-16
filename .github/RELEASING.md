@@ -21,7 +21,6 @@ These are marked `"private": true` and never get published:
 @imprint-pdf/bench         @imprint-pdf/icu-wasm     @imprint-pdf/tailwind
 @imprint-pdf/chart         @imprint-pdf/svg-rasterize @imprint-pdf/testing
 @imprint-pdf/e2e           @imprint-pdf/taffy-wasm
-@imprint-pdf/font
 ```
 
 `@imprint-pdf/tailwind` is intentionally kept as a private workspace package and

@@ -39,9 +39,20 @@
         "default": "./dist/google.cjs"
       }
     },
+    "./hyphen": {
+      "types": "./dist/hyphen.d.ts",
+      "import": {
+        "types": "./dist/hyphen.d.ts",
+        "default": "./dist/hyphen.js"
+      },
+      "require": {
+        "types": "./dist/hyphen.d.cts",
+        "default": "./dist/hyphen.cjs"
+      }
+    },
     "./package.json": "./package.json"
   },
-  "files": ["dist", "README.md", "CHANGELOG.md", "LICENSE"],
+  "files": ["dist", "data", "README.md", "CHANGELOG.md", "LICENSE"],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
@@ -49,6 +60,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
     "test:ci": "vitest run --coverage",
+    "codegen": "tsx scripts/codegen-hyphen.ts",
     "clean": "rm -rf dist .turbo *.tsbuildinfo"
   },
   "dependencies": {

@@ -9,7 +9,7 @@
 
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { googleProvider, loadFont } from '@imprint-pdf/font';
+import { googleProvider, loadFont } from '@imprint-pdf/fonts';
 import { describe, expect, it } from 'vitest';
 import { invoice } from '../../../../examples/pdf-test/src/data/invoice.js';
 import { report } from '../../../../examples/pdf-test/src/data/report.js';
