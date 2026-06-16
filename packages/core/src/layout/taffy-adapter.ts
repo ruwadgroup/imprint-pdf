@@ -29,19 +29,12 @@ function getTaffy(): TaffyModule {
   return taffyModule;
 }
 
-function importRuntime<T>(specifier: string): Promise<T> {
-  return import(specifier) as Promise<T>;
-}
-
 async function loadTaffy(): Promise<void> {
-  const mod = await importRuntime<TaffyModule>('taffy-wasm');
+  const mod = await import('taffy-wasm');
   taffyModule = mod;
   if (typeof process !== 'undefined' && process.versions?.node) {
-    const nodeBuiltin = (name: string) => `node:${name}`;
-    const { readFile } = (await import(
-      nodeBuiltin('fs/promises')
-    )) as typeof import('node:fs/promises');
-    const { createRequire } = (await import(nodeBuiltin('module'))) as typeof import('node:module');
+    const { readFile } = await import('node:fs/promises');
+    const { createRequire } = await import('node:module');
     const req = createRequire(import.meta.url);
     const wasmPath: string = req.resolve('taffy-wasm/taffy_wasm_bg.wasm');
     const bytes = await readFile(wasmPath);

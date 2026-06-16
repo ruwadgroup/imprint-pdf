@@ -5,12 +5,8 @@ export interface HbFont {
   shapeAdvance(text: string, sizePt: number, options?: ShapeOptions): number;
 }
 
-function importRuntime<T>(specifier: string): Promise<T> {
-  return import(specifier) as Promise<T>;
-}
-
 export async function createHbFont(fontBytes: Uint8Array): Promise<HbFont> {
-  const hb = await importRuntime<typeof import('harfbuzzjs')>('harfbuzzjs');
+  const hb = await import('harfbuzzjs');
   // A `Uint8Array` can be a partial view into a larger ArrayBuffer (Node's
   // Buffer pool, sub-allocations, ...). HarfBuzz reads every byte of the
   // ArrayBuffer and throws `RangeError: Index out of range` once it walks
