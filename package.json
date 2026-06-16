@@ -62,13 +62,5 @@
     "turbo": "^2.9.12",
     "typescript": "^5.7.2",
     "vitest": "^4.1.6"
-  },
-  "lint-staged": {
-    "*.{ts,tsx,js,jsx,json}": [
-      "biome check --write --no-errors-on-unmatched"
-    ],
-    "*.{md,yml,yaml}": [
-      "prettier --write"
-    ]
   }
 }
