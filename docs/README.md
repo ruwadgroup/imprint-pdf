@@ -49,6 +49,23 @@ The features, in depth.
   cold start
 - **[Bun](frameworks/bun.md)** — native WASM, Bun.serve
 
+## Python 🚧 Upcoming
+
+A first-class Python adapter is on the roadmap — same engine, same PdfNode IR,
+no Node and no headless browser. Two authoring syntaxes (callable components and
+PEP 750 t-string JSX), Django / FastAPI / Flask / Litestar adapters, manylinux +
+macOS + Windows wheels. See [Python overview](python/README.md) for the design
+proposal.
+
+- **[Overview](python/README.md)** — packages, install, requirements
+- **[Quick start](python/quick-start.md)** — first PDF from Python in five
+  minutes
+- **[Authoring](python/authoring.md)** — callable components vs t-string JSX
+- **[Integrations](python/integrations.md)** — Django, FastAPI, Flask, Litestar,
+  Airflow, Celery, Jupyter
+- **[Architecture](python/architecture.md)** — how the Python adapter compiles
+  to the IR and runs the WASM core in-process
+
 ## Integrations
 
 - **[Recharts](integrations/recharts.md)** — vector chart embedding

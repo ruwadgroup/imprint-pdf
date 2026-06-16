@@ -22,7 +22,7 @@ import type {
   TextFieldNode,
   TextNode,
 } from '../types.js';
-import type { LoadedFont } from '../typography/fonts.js';
+import type { LoadedFont } from '../typography/font-common.js';
 import { parseColor, toPt } from './color.js';
 import { pdfY } from './coords.js';
 import {

@@ -1,9 +1,8 @@
 import type { ResolvedStyle } from '../types.js';
 import { detectBaseDir, hasRtlChars, reorderLine } from './bidi.js';
-import type { LoadedFont } from './fonts.js';
+import type { LoadedFont } from './font-common.js';
 import { getHyphenator } from './hyphen.js';
 import { breakLines } from './knuth-plass.js';
-import { shapeAdvance } from './shaper.js';
 import { deriveAxesFromStyle } from './variations.js';
 
 export interface TextLine {
@@ -61,8 +60,7 @@ function wordWidth(
   variations?: Record<string, number>,
 ): number {
   if (font?.hbFont) {
-    return shapeAdvance(
-      font.hbFont,
+    return font.hbFont.shapeAdvance(
       word,
       size,
       variations && Object.keys(variations).length > 0 ? { variations } : {},

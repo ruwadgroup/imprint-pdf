@@ -20,6 +20,11 @@ interface WebpackConfig {
   [key: string]: unknown;
 }
 
+interface TurbopackConfig {
+  resolveAlias?: Record<string, string>;
+  [key: string]: unknown;
+}
+
 export interface ImprintFontDef {
   family: string;
   src: string;
@@ -83,6 +88,14 @@ export function withImprint(pluginOptions: ImprintPluginOptions = {}) {
 
     return {
       ...nextConfig,
+
+      turbopack: {
+        ...((nextConfig as { turbopack?: TurbopackConfig }).turbopack ?? {}),
+        resolveAlias: {
+          ...((nextConfig as { turbopack?: TurbopackConfig }).turbopack?.resolveAlias ?? {}),
+          'virtual:imprint-classes': '@imprint-pdf/tailwind/runtime',
+        },
+      },
 
       serverExternalPackages: [
         ...(nextConfig.serverExternalPackages ?? []),

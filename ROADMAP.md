@@ -123,6 +123,101 @@ milestone matters to you.
 - [ ] More cookbook recipes — packing slips, certificates, transcripts,
       brochures
 
+## v0.x — Python adapter (Upcoming)
+
+A first-class Python front end emitting the same `PdfNode` IR the React
+reconciler emits. Same engine, no Node subprocess, no headless browser. Docs
+proposal lives at [`docs/python/`](docs/python/README.md).
+
+**Hard prerequisites** (all required to start):
+
+- [ ] IR contract frozen and versioned (currently an internal artifact)
+- [ ] IR JSON schema published and validated in CI
+- [ ] Engine compiled as a standalone WASM module (no JS glue) consumable from
+      `wasmtime-py`
+
+**Phase 1 — Runtime + callable API on the v0 stack**
+
+The floor. Ships something usable in pure `.py` before any tooling exists.
+
+- [ ] `imprint-pdf` PyPI package — `Document`, `Page`, HTML callables (`Div`,
+      `H1`, …), imprint primitives (`Image`, `Svg`, `Chart`, AcroForm
+      components, running header/footer, watermark, bookmark, page-number)
+- [ ] `pdf()` and `pdf_async()` returning `bytes` / `AsyncIterator[bytes]`
+- [ ] `imprint.toml` config + asset resolver (`filesystem`, `s3`, `gcs`, custom)
+- [ ] `imprint init` / `imprint render` / `imprint validate` via a Python CLI
+      entry point (no Node)
+- [ ] Wheels: manylinux_2_28 (x86_64, aarch64), macOS 12+ universal, Win 10+
+- [ ] Cold start ≤ 250 ms on AWS Lambda ARM64 with `[print]` extra installed
+
+**Phase 2 — `.impy` file format + compiler**
+
+The canonical authoring surface. JSX/TSX for Python.
+
+- [ ] Lexer that interleaves Python tokens with JSX markup tokens
+- [ ] JSX parser supporting elements, attributes, fragments, spreads,
+      `{expression}` interpolation, `if` / `for` / `while` control flow inside
+      markup
+- [ ] Lowering pass: JSX AST → Python AST (`<div class="p">x</div>` →
+      `Div("x", class_="p")`)
+- [ ] `sys.meta_path` finder + `__pycache__/<name>.impy.<hash>.pyc` caching
+- [ ] `linecache` integration so tracebacks point to `.impy` source lines
+- [ ] `imprint show <file.impy>` — print generated Python
+- [ ] `imprint build` / `imprint build --watch` — pre-compile `.impy` → `.py`
+      for production deploys
+- [ ] Black integration for embedded Python statement blocks
+- [ ] Compile budget: ≤ 5 ms for a 200-line file, cold
+
+**Phase 3 — Language server + editor plugins**
+
+The reason `.impy` is worth a file extension.
+
+- [ ] `imprint-lsp` — Rust + Salsa, demand-driven incremental analysis
+- [ ] Auto-generated `.pyi` per `.impy` so mypy / pyright / pylance see fully
+      typed components without a custom plugin
+- [ ] Diagnostics: unknown elements, unknown props, prop type mismatches,
+      missing required props, malformed JSX
+- [ ] Completions: element names, props, Tailwind classes (via Tailwind LSP),
+      imported component names
+- [ ] Hover: prop types from dataclasses, component docstrings
+- [ ] Jump-to-definition across `.py` ↔ `.impy`
+- [ ] First-party editor plugins:
+  - [ ] VS Code (`imprint-pdf.imprint-vscode`)
+  - [ ] Zed (`imprint-pdf/imprint-zed`)
+  - [ ] JetBrains (`imprint-pdf-pycharm`)
+  - [ ] Neovim — `nvim-lspconfig` snippet
+  - [ ] Helix — `languages.toml` snippet
+- [ ] `imprint dev` — preview server with hot reload on `.impy` + CSS + `.py`
+      changes; reuses the inspector protocol shared with the JS dev server
+
+**Phase 4 — Framework adapters**
+
+- [ ] `imprint-pdf-django` — `PdfResponse`, `StreamingPdfResponse`,
+      `PdfResponseMixin`, `as_pdf` model helper, admin action
+- [ ] `imprint-pdf-fastapi` — `PdfResponse`, `StreamingPdfResponse`,
+      `render_to_storage` background helper
+- [ ] `imprint-pdf-flask` — `send_pdf`
+- [ ] `imprint-pdf-litestar` — `PdfResponse`
+- [ ] `imprint-pdf-celery` — `@pdf_task` decorator, S3/GCS upload helper
+- [ ] `imprint-pdf-airflow` — `RenderPdfOperator` with dynamic mapping
+- [ ] `imprint-pdf-jupyter` — `display_pdf` inline-iframe preview
+
+**Phase 5 — PyO3 bindings on v1 writer** (blocked on
+[v1.x](#v1x--custom-pdf-writer-gated) Phase 1)
+
+- [ ] Native compiled extension via PyO3 for the writer
+- [ ] Same public API; `pdf()` switches backends behind a feature flag
+- [ ] ~30–40% lower latency on multi-page documents
+
+**Out of scope for v0.x Python:**
+
+- No headless browser fallback. Ever.
+- No subprocess to Node CLI.
+- No source-rewriting decorator on `.py` files (Pyxl-style). The `.impy`
+  extension scopes the problem so existing tooling isn't broken.
+- No Jinja-style template-string DSL. Templates are typed source files.
+- No React-in-Python — components are plain functions.
+
 ## v1.x — Custom PDF writer (gated)
 
 Replace `pdf-lib` with a native object model, content-stream emitter, font

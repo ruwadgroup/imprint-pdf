@@ -1,5 +1,5 @@
-import type { PdfNode, PdfNodeType, ResolvedStyle, VariantStyles } from '@imprint-pdf/core';
-import { resolveStylesWithVariants, shortHash } from '@imprint-pdf/core';
+import type { PdfNode, PdfNodeType, ResolvedStyle, VariantStyles } from '@imprint-pdf/core/browser';
+import { resolveStylesWithVariants, shortHash } from '@imprint-pdf/core/browser';
 import React, { type ReactElement } from 'react';
 import type ReactReconcilerType from 'react-reconciler';
 

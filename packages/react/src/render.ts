@@ -1,87 +1,32 @@
-import type { ComputedGeometry, DocumentNode, PdfNode, RenderOptions } from '@imprint-pdf/core';
-import {
-  applyImprintVariants,
-  clearCompiledClassMap,
-  clearHyphenator,
-  clearSvgRasterizer,
-  collectClassNames,
-  createAssetResolver,
-  loadFontMetricsOnly,
-  runLayout,
-  setCompiledClassMap,
-  setHyphenator,
-  setSvgRasterizer,
-  writePdf,
-} from '@imprint-pdf/core';
+import type { RenderOptions, ResolvedStyle } from '@imprint-pdf/core';
 import type { ReactElement } from 'react';
-import { buildPdfNodeTree } from './reconciler.js';
+import { type InspectorRenderResult, renderInternal } from './render-pipeline.js';
 
-export interface InspectorRenderResult {
-  pdf: Uint8Array;
-  tree: DocumentNode;
-  geometries: Map<string, ComputedGeometry>;
-}
+export type { InspectorRenderResult } from './render-pipeline.js';
 
-async function renderInternal(
-  element: ReactElement,
+async function resolveNodeTailwindClassMap(
+  classes: Set<string>,
   options: RenderOptions,
-): Promise<InspectorRenderResult> {
-  const resolver = options.assetResolver ?? createAssetResolver();
-
-  // Two-pass reconcile to break the Tailwind ↔ resolved-style cycle: dry pass
-  // harvests class names, second pass reconciles with the compiled map.
-  if (options.tailwind) {
-    const { runTailwind } = await import('@imprint-pdf/tailwind');
-    const dryRoot = await buildPdfNodeTree(element);
-    const classes = collectClassNames(dryRoot);
-    if (classes.size > 0) {
-      const projectRoot = (options.tailwind as { projectRoot?: string }).projectRoot;
-      if (!projectRoot) {
-        throw new Error(
-          '[imprint] options.tailwind.projectRoot is required when using Tailwind. ' +
-            'Set it to the directory containing your tailwind config / package.json.',
-        );
-      }
-      const compiled = await runTailwind(classes, options.tailwind, projectRoot);
-      setCompiledClassMap(compiled);
-    }
+): Promise<Map<string, ResolvedStyle> | undefined> {
+  if (!options.tailwind) return undefined;
+  const projectRoot = options.tailwind.projectRoot;
+  if (!projectRoot) {
+    throw new Error(
+      '[imprint] options.tailwind.projectRoot is required when using Tailwind on the server. ' +
+        'Set it to the directory containing your tailwind config / package.json, or pass options.tailwind.classMap.',
+    );
   }
-
-  try {
-    const rootNode: PdfNode = await buildPdfNodeTree(element);
-
-    if (rootNode.type !== 'document') {
-      throw new Error(
-        `[imprint] renderToBuffer: root element must be <Document> (got type="${rootNode.type}"). Wrap your content in <Document>.`,
-      );
-    }
-    // Fold page-* / imprint-* variants into each node's style before layout.
-    const documentNode = applyImprintVariants(rootNode as DocumentNode);
-
-    if (options.hyphenate) setHyphenator(options.hyphenate);
-    if (options.svgRasterizer) setSvgRasterizer(options.svgRasterizer);
-
-    const fonts = options.fonts ?? [];
-    const fontMetrics = await loadFontMetricsOnly(fonts, resolver, options.onAssetError);
-    const geometries = await runLayout(documentNode, 0, 0, fontMetrics);
-    const pdf = await writePdf(documentNode, geometries, fonts, resolver, {
-      ...(options.postProcess && { postProcess: options.postProcess }),
-      ...(options.postBytes && { postBytes: options.postBytes }),
-      ...(options.onAssetError && { onAssetError: options.onAssetError }),
-    });
-    return { pdf, tree: documentNode, geometries };
-  } finally {
-    if (options.tailwind) clearCompiledClassMap();
-    clearHyphenator();
-    clearSvgRasterizer();
-  }
+  const { runTailwind } = await import('@imprint-pdf/tailwind');
+  return runTailwind(classes, options.tailwind, projectRoot);
 }
 
 export async function renderToBuffer(
   element: ReactElement,
   options: RenderOptions = {},
 ): Promise<Uint8Array> {
-  const { pdf } = await renderInternal(element, options);
+  const { pdf } = await renderInternal(element, options, resolveNodeTailwindClassMap, (opts) =>
+    Boolean(opts.tailwind),
+  );
   return pdf;
 }
 
@@ -117,5 +62,7 @@ export function renderForInspector(
   element: ReactElement,
   options: RenderOptions = {},
 ): Promise<InspectorRenderResult> {
-  return renderInternal(element, options);
+  return renderInternal(element, options, resolveNodeTailwindClassMap, (opts) =>
+    Boolean(opts.tailwind),
+  );
 }

@@ -7,6 +7,9 @@ import { pdfY } from './coords.js';
 const CLIENT_ONLY_SCHEMES = ['blob:', 'data-url:', 'chrome-extension:', 'moz-extension:'];
 
 function isClientOnlyScheme(src: string): boolean {
+  if (src.startsWith('blob:') && typeof window !== 'undefined' && typeof fetch !== 'undefined') {
+    return false;
+  }
   return CLIENT_ONLY_SCHEMES.some((s) => src.startsWith(s));
 }
 

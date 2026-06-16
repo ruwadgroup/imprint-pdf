@@ -219,7 +219,7 @@ export async function loadFontMetricsOnly(
         weight,
         style,
         metrics: DEFAULT_METRICS,
-        hbFont: createHbFont(bytes),
+        hbFont: await createHbFont(bytes),
       });
     } catch (err) {
       reportAssetError({ src: decl.src, kind: 'font', error: err }, onAssetError);
@@ -260,7 +260,7 @@ export async function loadFonts(
   }
 
   for (const f of fonts.values()) {
-    if (f.rawBytes !== undefined) f.hbFont = createHbFont(f.rawBytes);
+    if (f.rawBytes !== undefined) f.hbFont = await createHbFont(f.rawBytes);
   }
 
   return fonts;

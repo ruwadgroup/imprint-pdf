@@ -101,6 +101,27 @@ describe('withImprint() — outputFileTracingIncludes', () => {
   });
 });
 
+describe('withImprint() — Turbopack', () => {
+  it('aliases virtual Tailwind classes to the browser-safe runtime fallback', () => {
+    const out = withImprint()({});
+    const turbopack = (out as { turbopack?: { resolveAlias?: Record<string, string> } }).turbopack;
+    expect(turbopack?.resolveAlias?.['virtual:imprint-classes']).toBe(
+      '@imprint-pdf/tailwind/runtime',
+    );
+  });
+
+  it('preserves existing Turbopack aliases', () => {
+    const out = withImprint()({
+      turbopack: { resolveAlias: { '@app': './src' } },
+    } as NextConfig);
+    const turbopack = (out as { turbopack?: { resolveAlias?: Record<string, string> } }).turbopack;
+    expect(turbopack?.resolveAlias?.['@app']).toBe('./src');
+    expect(turbopack?.resolveAlias?.['virtual:imprint-classes']).toBe(
+      '@imprint-pdf/tailwind/runtime',
+    );
+  });
+});
+
 describe('withImprint() — webpack hook', () => {
   it('enables asyncWebAssembly and layers experiments', () => {
     const out = withImprint()({});
