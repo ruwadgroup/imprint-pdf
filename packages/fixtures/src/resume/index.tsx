@@ -1,4 +1,4 @@
-import { Document, Page } from '@imprint-pdf/react';
+import { Document, Page } from '@imprint-pdf/react/standalone';
 import type { ResumeData } from './sample.js';
 
 export type {

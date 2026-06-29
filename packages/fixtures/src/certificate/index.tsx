@@ -1,4 +1,4 @@
-import { Document, Page, Watermark } from '@imprint-pdf/react';
+import { Document, Page, Watermark } from '@imprint-pdf/react/standalone';
 import type { CertificateData } from './sample.js';
 
 export type { CertificateData } from './sample.js';

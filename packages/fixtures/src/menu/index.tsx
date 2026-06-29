@@ -1,4 +1,4 @@
-import { Document, Page } from '@imprint-pdf/react';
+import { Document, Page } from '@imprint-pdf/react/standalone';
 import { money } from '../lib/format.js';
 import type { MenuData, MenuItem, MenuSection } from './sample.js';
 

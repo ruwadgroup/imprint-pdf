@@ -1,4 +1,4 @@
-import { Document, Page } from '@imprint-pdf/react';
+import { Document, Page } from '@imprint-pdf/react/standalone';
 import { QrCode } from '../components/Barcode.js';
 import type { EventTicketData } from './sample.js';
 

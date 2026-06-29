@@ -1,4 +1,4 @@
-import { Document, Page, Signature } from '@imprint-pdf/react';
+import { Document, Page, Signature } from '@imprint-pdf/react/standalone';
 import type { ContractData, ContractParty } from './sample.js';
 
 export type { ContractClause, ContractData, ContractParty } from './sample.js';

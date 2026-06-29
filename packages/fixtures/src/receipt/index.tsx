@@ -1,4 +1,4 @@
-import { Document, Page } from '@imprint-pdf/react';
+import { Document, Page } from '@imprint-pdf/react/standalone';
 import { Barcode } from '../components/Barcode.js';
 import { money, sumBy } from '../lib/format.js';
 import type { ReceiptData } from './sample.js';

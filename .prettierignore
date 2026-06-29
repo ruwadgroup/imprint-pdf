@@ -4,6 +4,17 @@ build
 coverage
 .turbo
 .next
+.nuxt
+.svelte-kit
+.astro
+.react-router
+.tanstack
+.output
+.vercel
+.netlify
+.wrangler
+out
+**/routeTree.gen.ts
 pnpm-lock.yaml
 CHANGELOG.md
 **/wasm/dist
