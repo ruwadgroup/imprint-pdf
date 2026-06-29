@@ -1,0 +1,19 @@
+{
+  "name": "@imprint-pdf/example-browser-standalone",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "imprint-pdf example - no-bundler ES-module page that renders a fixture and offers a Blob download.",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@imprint-pdf/react": "workspace:*",
+    "@imprint-pdf/fixtures": "workspace:*",
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:",
+    "typescript": "catalog:"
+  }
+}

@@ -1,29 +1,34 @@
-# example — bun-server
+# example - bun-server
 
-Bun HTTP server demo for
-[imprint-pdf](https://github.com/tamimbinhakim/imprint-pdf). Uses Bun's native
-WASM support for fast cold starts.
+Bun HTTP server that renders the `invoice` fixture and returns the standalone
+`pdf()` `Response` straight out of `Bun.serve`'s `fetch`.
+
+## What's shown
+
+The Category D glue: pull a pre-built document from `@imprint-pdf/fixtures` and
+hand the `Response` from `@imprint-pdf/react/standalone`'s `pdf()` directly to
+`Bun.serve`. No buffering, no header wiring - `fetch` returns a `Response`, and
+that's exactly what `pdf()` produces.
+
+```ts
+Bun.serve({
+  port: 3000,
+  fetch: () => pdf(byId('invoice')!.render()),
+});
+```
+
+## Run
 
 ```bash
 pnpm --filter @imprint-pdf/example-bun-server dev
 # → http://localhost:3000
 ```
 
-## What's demonstrated
+## DX notes
 
-- **`src/index.ts`** — a Bun.serve HTTP handler that generates a PDF invoice on
-  `GET /invoice/:id`.
-- Bun's native WASM loading — no `WebAssembly.instantiateStreaming` ceremony;
-  just `import wasm from '…'`.
-- Batch generation: `POST /batch` accepts a JSON array and returns a ZIP of
-  rendered PDFs using streaming.
-
-## Structure
-
-```
-examples/bun-server/
-├── src/
-│   ├── index.ts
-│   └── templates/Invoice.tsx
-└── imprint.config.ts
-```
+- **Category:** D (standalone WASM runtime, `Response` → reply)
+- **Entry:** standalone - `import { pdf } from '@imprint-pdf/react/standalone'`
+- **Glue:** 1 line - `fetch` returns the `pdf()` `Response` verbatim.
+- **Rating:** 🟢 - Bun's `fetch` contract is the Web `Response`; `pdf()` returns
+  one, so there is zero adapter code. Typechecks under plain `tsc --noEmit` with
+  `bun-types` supplying the `Bun` global.

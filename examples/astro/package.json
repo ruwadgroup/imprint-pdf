@@ -1,0 +1,26 @@
+{
+  "name": "@imprint-pdf/example-astro",
+  "version": "0.0.0",
+  "private": true,
+  "description": "imprint-pdf example - Astro endpoint that returns a PDF Response.",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "sync": "astro sync",
+    "typecheck": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/node": "^9.0.0",
+    "@imprint-pdf/fixtures": "workspace:*",
+    "@imprint-pdf/react": "workspace:*",
+    "astro": "^5.0.0",
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.0",
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
+  }
+}

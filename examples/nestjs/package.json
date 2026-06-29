@@ -1,0 +1,27 @@
+{
+  "name": "@imprint-pdf/example-nestjs",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "imprint-pdf example - NestJS controller that streams a fixture invoice as application/pdf.",
+  "scripts": {
+    "dev": "tsx src/main.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@imprint-pdf/react": "workspace:*",
+    "@imprint-pdf/fixtures": "workspace:*",
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/platform-express": "^11.0.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "tsx": "catalog:"
+  }
+}

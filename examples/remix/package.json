@@ -1,0 +1,31 @@
+{
+  "name": "@imprint-pdf/example-remix",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "imprint-pdf example - React Router v7 (Remix) resource route whose loader returns a PDF Response.",
+  "scripts": {
+    "dev": "react-router dev",
+    "build": "react-router build",
+    "start": "react-router-serve ./build/server/index.js",
+    "typecheck": "react-router typegen && tsc --noEmit"
+  },
+  "dependencies": {
+    "@imprint-pdf/fixtures": "workspace:*",
+    "@imprint-pdf/react": "workspace:*",
+    "@react-router/node": "^7.18.0",
+    "@react-router/serve": "^7.18.0",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "react-router": "^7.18.0",
+    "isbot": "^5"
+  },
+  "devDependencies": {
+    "@react-router/dev": "^7.18.0",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "typescript": "catalog:",
+    "vite": "^6.0.0"
+  }
+}

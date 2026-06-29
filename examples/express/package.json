@@ -1,0 +1,23 @@
+{
+  "name": "@imprint-pdf/example-express",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "imprint-pdf example - Express 5 server that renders a fixture invoice to PDF bytes.",
+  "scripts": {
+    "dev": "tsx src/server.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@imprint-pdf/react": "workspace:*",
+    "@imprint-pdf/fixtures": "workspace:*",
+    "express": "^5.0.0",
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "tsx": "catalog:"
+  }
+}

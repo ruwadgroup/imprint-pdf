@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "rootDirs": [".", "./.react-router/types"],
+    "types": ["@react-router/node", "vite/client"],
+    "noEmit": true
+  },
+  "include": ["app/**/*", "vite.config.ts", "react-router.config.ts", ".react-router/types/**/*"],
+  "exclude": ["node_modules", "build"]
+}

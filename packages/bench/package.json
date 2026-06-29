@@ -11,9 +11,11 @@
     "bench:complexity": "tsx src/index.ts --suite complexity",
     "bench:pipeline": "tsx src/index.ts --suite pipeline",
     "bench:features": "tsx src/index.ts --suite features",
+    "bench:documents": "tsx src/index.ts --suite documents",
     "bench:chromium": "tsx src/index.ts --suite chromium"
   },
   "dependencies": {
+    "@imprint-pdf/fixtures": "workspace:*",
     "@imprint-pdf/core": "workspace:*",
     "@imprint-pdf/react": "workspace:*",
     "@imprint-pdf/print": "workspace:*",

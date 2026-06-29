@@ -49,6 +49,10 @@ The features, in depth.
   cold start
 - **[Bun](frameworks/bun.md)** — native WASM, Bun.serve
 
+See **[Examples](examples.md)** for a runnable adapter per runtime (25+ runtimes
+across Next.js, Remix, SvelteKit, Nuxt, Astro, Express, Fastify, tRPC,
+Cloudflare, Deno, Bun, AWS Lambda, the browser, and more).
+
 ## Python 🚧 Upcoming
 
 A first-class Python adapter is on the roadmap — same engine, same PdfNode IR,

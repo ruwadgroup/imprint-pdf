@@ -1,0 +1,25 @@
+{
+  "name": "@imprint-pdf/example-nuxt",
+  "version": "0.0.0",
+  "private": true,
+  "description": "imprint-pdf example - Nuxt 3 (Nitro) server route that returns a PDF Response.",
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "nuxt:prepare": "nuxi prepare",
+    "typecheck": "nuxt typecheck"
+  },
+  "dependencies": {
+    "@imprint-pdf/fixtures": "workspace:*",
+    "@imprint-pdf/react": "workspace:*",
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "nuxt": "^3.0.0",
+    "typescript": "catalog:",
+    "vue": "^3.0.0",
+    "vue-tsc": "^2.0.0"
+  }
+}

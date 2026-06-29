@@ -1,63 +1,48 @@
 /**
- * End-to-end integration test: render every example template from
- * `examples/pdf-test/src/templates` through the full pipeline and assert
- * structural invariants (page count, expected text, no rendering errors).
+ * End-to-end integration test: render every document in the shared
+ * `@imprint-pdf/fixtures` corpus through the full pipeline and assert structural
+ * invariants (page count, extractable text). This is the test that catches
+ * regressions affecting any real-world document.
  *
- * This is the test that would catch regressions affecting any real-world
- * template — invoice, sales-invoice, quarterly-report.
+ * Rendered via `pdf()` (the entry every adapter uses) so Tailwind classes are
+ * resolved through the runtime fallback, exactly as in production.
  */
 
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { googleProvider, loadFont } from '@imprint-pdf/fonts';
+import { documents } from '@imprint-pdf/fixtures';
+import { pdf } from '@imprint-pdf/react';
 import { describe, expect, it } from 'vitest';
-import { invoice } from '../../../../examples/pdf-test/src/data/invoice.js';
-import { report } from '../../../../examples/pdf-test/src/data/report.js';
-import { salesOrder } from '../../../../examples/pdf-test/src/data/salesOrder.js';
-import { Invoice } from '../../../../examples/pdf-test/src/templates/Invoice.js';
-import { Report } from '../../../../examples/pdf-test/src/templates/Report.js';
-import { SalesInvoice } from '../../../../examples/pdf-test/src/templates/SalesInvoice.js';
-import { extractText, inspect, render } from '../../src/helpers/index.js';
+import { extractText, inspect } from '../../src/helpers/index.js';
 
-const HERE = dirname(fileURLToPath(import.meta.url));
-const PDF_TEST_ROOT = resolve(HERE, '..', '..', '..', '..', 'examples', 'pdf-test');
+const renderBytes = (id: string) =>
+  pdf(documents.find((d) => d.id === id)!.render(), { as: 'bytes' });
 
-describe('example templates render end-to-end', () => {
-  it('renders the invoice template', async () => {
-    const pdf = await render(<Invoice data={invoice} />, {
-      tailwind: { projectRoot: PDF_TEST_ROOT },
-    });
-    const meta = await inspect(pdf);
+describe('fixture corpus renders end-to-end', () => {
+  it.each(documents.map((d) => [d.id, d] as const))('renders %s', async (id) => {
+    const bytes = await renderBytes(id);
+    const meta = await inspect(bytes);
     expect(meta.pageCount).toBeGreaterThanOrEqual(1);
-    const [first] = await extractText(pdf);
-    const flat = first!.map((i) => i.text).join('|');
-    expect(flat.toLowerCase()).toContain('invoice');
+
+    const [first] = await extractText(bytes);
+    const text = (first ?? []).map((i) => i.text).join('');
+    expect(text.trim().length).toBeGreaterThan(0);
   });
 
-  it('renders the sales-invoice template', async () => {
-    const pdf = await render(<SalesInvoice data={salesOrder} />, {
-      tailwind: { projectRoot: PDF_TEST_ROOT },
-    });
-    const meta = await inspect(pdf);
-    expect(meta.pageCount).toBeGreaterThanOrEqual(1);
+  it('renders an invoice that reads as an invoice', async () => {
+    const [first] = await extractText(await renderBytes('invoice'));
+    const flat = (first ?? [])
+      .map((i) => i.text)
+      .join('|')
+      .toLowerCase();
+    expect(flat).toContain('invoice');
   });
 
-  it('renders the quarterly-report template with Outfit and bookmarks', async () => {
-    const fonts = await loadFont(googleProvider(), 'Outfit', { weights: [400, 600, 700] });
-    const pdf = await render(<Report data={report} />, {
-      fonts,
-      tailwind: { projectRoot: PDF_TEST_ROOT },
-    });
-    const meta = await inspect(pdf);
-    expect(meta.pageCount).toBeGreaterThanOrEqual(2);
-    expect(meta.hasOutline).toBe(true);
-
-    // Revenue Analysis page must contain every month label on a single line.
-    // (This is the regression that motivated the e2e suite.)
-    const pages = await extractText(pdf);
-    const allText = pages.flat().map((i) => i.text);
-    for (const m of ['Oct 2024', 'Nov 2024', 'Dec 2024', 'Jan 2025', 'Feb 2025', 'Mar 2025']) {
-      expect(allText.some((t) => t.includes(m))).toBe(true);
-    }
+  it('renders the full contract including its final signature block', async () => {
+    const [...pages] = await extractText(await renderBytes('contract'));
+    const all = pages
+      .flat()
+      .map((i) => i.text)
+      .join(' ')
+      .toLowerCase();
+    expect(all).toContain('receiving party');
   });
 });

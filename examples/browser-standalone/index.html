@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>imprint-pdf - no-bundler</title>
+  </head>
+  <body>
+    <h1>imprint-pdf - no-bundler</h1>
+    <p>Render the invoice fixture in the browser, no build step.</p>
+    <button id="download" type="button">Download invoice PDF</button>
+
+    <!--
+      No bundler: in real use, serve this page and load the module straight from
+      a CDN (esm.sh). `app.ts` is the typecheck source for the same glue.
+    -->
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

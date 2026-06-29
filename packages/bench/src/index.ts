@@ -16,6 +16,7 @@ import type { BenchResult } from './runner.js';
 import { runChromium } from './suites/chromium.js';
 import { runCompetitors } from './suites/competitors.js';
 import { runComplexity } from './suites/complexity.js';
+import { runDocuments } from './suites/documents.js';
 import { runFeatures } from './suites/features.js';
 import { runPipeline } from './suites/pipeline.js';
 
@@ -56,6 +57,7 @@ const SUITES: Record<string, { label: string; run: SuiteRunner }> = {
   complexity: { label: 'Complexity — page count scaling', run: runComplexity },
   pipeline: { label: 'Pipeline — cumulative hook cost', run: runPipeline },
   features: { label: 'Features — rendering path comparison', run: runFeatures },
+  documents: { label: 'Documents — full fixtures corpus', run: runDocuments },
   chromium: { label: 'Chromium — Puppeteer (warm + cold)', run: runChromium },
 };
 

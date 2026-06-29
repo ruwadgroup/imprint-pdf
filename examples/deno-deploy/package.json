@@ -1,0 +1,20 @@
+{
+  "name": "@imprint-pdf/example-deno-deploy",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "imprint-pdf example - Deno.serve handler returning the standalone pdf() Response, typechecked with plain tsc via a Deno global shim.",
+  "scripts": {
+    "dev": "deno run --allow-net main.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@imprint-pdf/react": "workspace:*",
+    "@imprint-pdf/fixtures": "workspace:*",
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
+  }
+}

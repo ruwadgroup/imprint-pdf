@@ -15,10 +15,8 @@
     "strict": true,
     "noImplicitAny": true,
     "skipLibCheck": true,
-    "types": ["@cloudflare/workers-types"],
-    "jsx": "react-jsx",
-    "jsxImportSource": "react"
+    "types": ["@cloudflare/workers-types"]
   },
-  "include": ["src/index.tsx"],
+  "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }

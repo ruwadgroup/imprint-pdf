@@ -1,8 +1,25 @@
-# example — cloudflare-worker
+# example - cloudflare-worker
 
-Cloudflare Worker demo for
-[imprint-pdf](https://github.com/tamimbinhakim/imprint-pdf). Renders a
-tailwind-styled PDF receipt on the edge.
+Cloudflare Worker that renders the `invoice` fixture to a PDF on the edge using
+the standalone WASM build of imprint-pdf.
+
+## What's shown
+
+The Category D glue: pull a pre-built document from `@imprint-pdf/fixtures` and
+return `pdf(...)` straight from the Worker's `fetch` handler. `pdf()` already
+returns a web `Response` with the right `Content-Type`, so there is nothing to
+adapt.
+
+```ts
+import { byId } from '@imprint-pdf/fixtures';
+import { pdf } from '@imprint-pdf/react/standalone';
+
+export default {
+  fetch: () => pdf(byId('invoice')!.render()),
+} satisfies ExportedHandler;
+```
+
+## Run
 
 ```bash
 pnpm --filter @imprint-pdf/example-cloudflare-worker dev
@@ -10,15 +27,6 @@ pnpm --filter @imprint-pdf/example-cloudflare-worker dev
 
 pnpm --filter @imprint-pdf/example-cloudflare-worker deploy
 # → https://imprint-cloudflare-worker.<account>.workers.dev
-```
-
-## Layout
-
-```
-examples/cloudflare-worker/
-├── src/index.tsx       # Receipt component + fetch handler
-├── scripts/bench.ts    # Latency benchmark
-└── wrangler.toml       # Worker config (nodejs_compat enabled)
 ```
 
 ## Bench
@@ -41,7 +49,7 @@ pnpm --filter @imprint-pdf/example-cloudflare-worker bench:verify <url>
 
 `bench:verify` runs `--cold-runs 5 --max-cold-ms 100 --out bench-results.json`.
 That's the harness the roadmap "sub-100 ms cold benchmark verified on a real
-deploy" item gates on — run it once against your deployed Worker and commit the
+deploy" item gates on - run it once against your deployed Worker and commit the
 results JSON as evidence.
 
 Flags:
@@ -60,10 +68,14 @@ Each flag has a `BENCH_*` env equivalent (`BENCH_RUNS`, `BENCH_COLD_RUNS`,
 Cold-start depends on whether Cloudflare keeps your isolate hot and is outside
 your direct control beyond keeping the bundle small.
 
-## Notes
+## DX notes
 
-- `compatibility_flags = ["nodejs_compat"]` is required — pdf-lib uses `Buffer`
-  and a small handful of other Node built-ins.
-- The standalone build (`@imprint-pdf/react/standalone`) is currently a thin
-  re-export of `@imprint-pdf/react`. The dedicated WASM-bundled standalone path
-  arrives alongside the `@imprint-pdf/print` add-on.
+- **Category:** D (edge runtime, standalone WASM, `Response` out)
+- **Entry:** `standalone` -
+  `import { pdf } from '@imprint-pdf/react/standalone'`
+- **Glue:** 1 line (`fetch: () => pdf(...)` - `pdf()` returns a `Response`)
+- **Rating:** 🟢 - the `Response`-returning overload is exactly the Workers
+  `fetch` contract; zero adaptation.
+- `compatibility_flags = ["nodejs_compat"]` is required - pdf-lib reaches for
+  `Buffer` and a small handful of other Node built-ins, which `nodejs_compat`
+  polyfills without pulling literal `node:*` imports into the bundle.

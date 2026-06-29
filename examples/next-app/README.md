@@ -1,40 +1,32 @@
-# example — next-app
+# example - next-app
 
-Next.js 15 App Router demo for
-[imprint-pdf](https://github.com/tamimbinhakim/imprint-pdf).
+**What's shown:** Next.js App Router route handler that renders the shared
+`invoice` fixture to a PDF `Response` via `@imprint-pdf/next`.
 
 ```bash
 pnpm --filter @imprint-pdf/example-next-app dev
+# then GET http://localhost:3000/api/invoice
 ```
 
-## What's demonstrated
+The document lives in `@imprint-pdf/fixtures`; this adapter is pure runtime
+glue. `src/app/api/invoice/route.ts`:
 
-- **`app/api/invoice/[id]/route.ts`** — App Router route handler that renders an
-  `<Invoice>` component to a PDF and streams the bytes back.
-- **`app/api/invoice/[id]/route.ts` (Edge variant)** — same route with
-  `export const runtime = 'edge'` using the standalone WASM build.
-- **`components/Invoice.tsx`** — a real-looking invoice with Tailwind classes,
-  `<Chart>` (Recharts → vector), and a `<Signature>` widget.
-- **`components/Report.tsx`** — multi-page financial report with running headers
-  and a `<table>`.
-- **`next.config.ts`** — `withImprint()` plugin wiring.
-- **`app/globals.css`** — Tailwind v4 stylesheet with shared `@theme` design
-  tokens (consumed by both the app and imprint-pdf).
+```ts
+import { pdf } from '@imprint-pdf/next';
+import { byId } from '@imprint-pdf/fixtures';
 
-## Structure
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
+export const GET = () =>
+  pdf(byId('invoice')!.render(), { filename: 'invoice.pdf' });
 ```
-examples/next-app/
-├── app/
-│   ├── api/
-│   │   └── invoice/[id]/
-│   │       └── route.ts
-│   ├── globals.css
-│   └── page.tsx
-├── components/
-│   ├── Invoice.tsx
-│   └── Report.tsx
-├── public/fonts/
-├── imprint.config.ts
-└── next.config.ts
-```
+
+## DX notes
+
+- **Category:** A - React meta-framework, returns a `Response`.
+- **Glue LoC:** 4 (route handler body + two route segment configs).
+- **Entry:** `@imprint-pdf/next` `pdf` (Node `runtime = 'nodejs'`). Not the
+  `standalone` build - App Router route handlers run on Node here.
+- **Friction:** 🟢 - `pdf()` returns a `Response` directly, so the handler is a
+  one-liner. `next.config.ts` keeps the WASM/externals webpack tweaks inline.

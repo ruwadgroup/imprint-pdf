@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@imprint-pdf/core": "workspace:*",
+    "@imprint-pdf/fixtures": "workspace:*",
     "@imprint-pdf/fonts": "workspace:*",
     "@imprint-pdf/react": "workspace:*",
     "@imprint-pdf/tailwind": "workspace:*",

@@ -1,0 +1,33 @@
+{
+  "name": "@imprint-pdf/fixtures",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Internal imprint-pdf document corpus — real-world PDF fixtures authored once, consumed by the test matrix, the benchmark suite, and the per-runtime example adapters. Never published.",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@imprint-pdf/core": "workspace:*",
+    "@imprint-pdf/react": "workspace:*",
+    "react": "catalog:",
+    "tailwindcss": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "tsup": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

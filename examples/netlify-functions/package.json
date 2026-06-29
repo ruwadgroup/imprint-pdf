@@ -1,0 +1,21 @@
+{
+  "name": "@imprint-pdf/example-netlify-functions",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "imprint-pdf example - Netlify Function (v2) that renders a fixture invoice to PDF using the standalone WASM build.",
+  "scripts": {
+    "dev": "netlify dev",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@imprint-pdf/react": "workspace:*",
+    "@imprint-pdf/fixtures": "workspace:*",
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@netlify/functions": "^2.8.0",
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@imprint-pdf/example-queue-worker",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "imprint-pdf example - BullMQ worker that renders a fixture per job and writes the PDF to disk.",
+  "scripts": {
+    "worker": "tsx src/worker.ts",
+    "enqueue": "tsx src/enqueue.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@imprint-pdf/react": "workspace:*",
+    "@imprint-pdf/fixtures": "workspace:*",
+    "bullmq": "^5.0.0",
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "tsx": "catalog:"
+  }
+}

@@ -2,18 +2,19 @@
   "name": "@imprint-pdf/example-bun-server",
   "version": "0.0.0",
   "private": true,
-  "description": "imprint-pdf example — Bun HTTP server that generates PDFs using Bun's native WASM support.",
+  "type": "module",
+  "description": "imprint-pdf example - Bun.serve handler that returns the standalone pdf() Response directly.",
   "scripts": {
-    "dev": "bun run --watch src/index.tsx",
-    "start": "bun run src/index.tsx"
+    "dev": "bun run --watch src/index.ts",
+    "start": "bun run src/index.ts",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@imprint-pdf/core": "workspace:*",
     "@imprint-pdf/react": "workspace:*",
+    "@imprint-pdf/fixtures": "workspace:*",
     "react": "catalog:"
   },
   "devDependencies": {
-    "@types/bun": "^1.0.0",
     "@types/react": "catalog:",
     "bun-types": "^1.0.0",
     "typescript": "catalog:"

@@ -1,2 +1,6 @@
-// Entry point moved to index.tsx (JSX + Tailwind).  Deploy: wrangler deploy src/index.tsx
-export * from './index.tsx';
+import { byId } from '@imprint-pdf/fixtures';
+import { pdf } from '@imprint-pdf/react/standalone';
+
+export default {
+  fetch: () => pdf(byId('invoice')!.render()),
+} satisfies ExportedHandler;

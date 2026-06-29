@@ -1,0 +1,8 @@
+{
+  "imports": {
+    "@imprint-pdf/react/standalone": "npm:@imprint-pdf/react/standalone",
+    "@imprint-pdf/fixtures": "npm:@imprint-pdf/fixtures",
+    "react": "npm:react@^19.0.0"
+  },
+  "nodeModulesDir": "auto"
+}

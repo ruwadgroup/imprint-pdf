@@ -2,24 +2,25 @@
   "name": "@imprint-pdf/example-cloudflare-worker",
   "version": "0.0.0",
   "private": true,
-  "description": "imprint-pdf example — Cloudflare Worker that generates PDFs in < 100 ms using the standalone WASM build.",
+  "type": "module",
+  "description": "imprint-pdf example - Cloudflare Worker that renders a fixture invoice to PDF on the edge using the standalone WASM build.",
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit",
     "bench": "tsx scripts/bench.ts",
     "bench:verify": "tsx scripts/bench.ts --cold-runs 5 --max-cold-ms 100 --out bench-results.json"
   },
   "dependencies": {
-    "@imprint-pdf/core": "workspace:*",
     "@imprint-pdf/react": "workspace:*",
-    "@imprint-pdf/tailwind": "workspace:*"
+    "@imprint-pdf/fixtures": "workspace:*",
+    "react": "catalog:"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260511.1",
     "@types/node": "catalog:",
-    "@types/react": "^19.0.0",
-    "tsx": "^4.21.0",
     "typescript": "catalog:",
+    "tsx": "catalog:",
     "wrangler": "^3.0.0"
   }
 }

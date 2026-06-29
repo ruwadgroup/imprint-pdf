@@ -1,0 +1,20 @@
+{
+  "name": "@imprint-pdf/example-aws-lambda",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "imprint-pdf example - AWS Lambda + API Gateway handler that renders a fixture invoice to PDF using the standalone WASM build.",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@imprint-pdf/react": "workspace:*",
+    "@imprint-pdf/fixtures": "workspace:*",
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.145",
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
+  }
+}

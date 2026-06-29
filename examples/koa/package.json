@@ -1,0 +1,25 @@
+{
+  "name": "@imprint-pdf/example-koa",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "imprint-pdf example - Koa server that renders a fixture invoice to PDF bytes.",
+  "scripts": {
+    "dev": "tsx src/server.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@imprint-pdf/react": "workspace:*",
+    "@imprint-pdf/fixtures": "workspace:*",
+    "@koa/router": "^13.0.0",
+    "koa": "^2.15.0",
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.15.0",
+    "@types/koa__router": "^12.0.0",
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "tsx": "catalog:"
+  }
+}

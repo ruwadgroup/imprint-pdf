@@ -1,0 +1,29 @@
+{
+  "name": "@imprint-pdf/example-sveltekit",
+  "version": "0.0.0",
+  "private": true,
+  "description": "imprint-pdf example - SvelteKit endpoint that returns a PDF Response.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "sync": "svelte-kit sync",
+    "typecheck": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
+  },
+  "dependencies": {
+    "@imprint-pdf/fixtures": "workspace:*",
+    "@imprint-pdf/react": "workspace:*",
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-auto": "^3.0.0",
+    "@sveltejs/kit": "^2.0.0",
+    "@sveltejs/vite-plugin-svelte": "^5.0.0",
+    "@types/node": "catalog:",
+    "svelte": "^5.0.0",
+    "svelte-check": "^4.0.0",
+    "typescript": "catalog:",
+    "vite": "^6.0.0"
+  }
+}

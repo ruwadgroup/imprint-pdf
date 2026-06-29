@@ -1,5 +1,5 @@
 name = "imprint-cloudflare-worker"
-main = "src/index.tsx"
+main = "src/index.ts"
 compatibility_date = "2025-04-01"
 
 # pdf-lib uses Buffer + a handful of other Node built-ins.

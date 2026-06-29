@@ -1,0 +1,23 @@
+{
+  "name": "@imprint-pdf/example-bun-elysia",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "imprint-pdf example - Elysia on Bun returning the standalone pdf() Response from a route.",
+  "scripts": {
+    "dev": "bun run --watch src/index.ts",
+    "start": "bun run src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@imprint-pdf/react": "workspace:*",
+    "@imprint-pdf/fixtures": "workspace:*",
+    "elysia": "^1.0.0",
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:",
+    "bun-types": "^1.0.0",
+    "typescript": "catalog:"
+  }
+}

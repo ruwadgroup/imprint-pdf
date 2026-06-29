@@ -1,0 +1,29 @@
+{
+  "name": "@imprint-pdf/example-tanstack-start",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "imprint-pdf example - TanStack Start server route whose GET handler returns a PDF Response.",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "typecheck": "tsr generate && tsc --noEmit"
+  },
+  "dependencies": {
+    "@imprint-pdf/fixtures": "workspace:*",
+    "@imprint-pdf/react": "workspace:*",
+    "@tanstack/react-router": "^1.170.16",
+    "@tanstack/react-start": "^1.168.26",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@tanstack/router-cli": "^1.167.17",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "catalog:",
+    "vite": "^6.0.0"
+  }
+}
