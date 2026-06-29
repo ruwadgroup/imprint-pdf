@@ -115,7 +115,7 @@ export const GET = () => pdf(<Invoice data={data} />);
 
 ```ts
 // Cloudflare Worker — same `pdf()`, edge-friendly build
-import { pdf } from '@imprint-pdf/react/standalone';
+import { pdf } from '@imprint-pdf/react';
 import wasm from '@imprint-pdf/react/imprint.wasm';
 
 export default {

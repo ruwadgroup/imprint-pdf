@@ -1,16 +1,21 @@
 # Cloudflare Workers
 
 Generates PDFs on Workers in under 100 ms cold start. No dedicated package — use
-`@imprint-pdf/react/standalone` directly.
+`@imprint-pdf/react` directly.
 
-## The standalone build
+## The WASM build
+
+`@imprint-pdf/react` is isomorphic: its package `exports` route Workers (the
+`worker`/`workerd` conditions) to the pure-WASM build automatically, so you just
+`import { pdf } from '@imprint-pdf/react'` - there is no separate `/standalone`
+entry to import.
 
 Workers can't load WASM from the filesystem at runtime. The fix (same as Satori)
 is to import WASM as a static module asset bundled into the Worker.
 
 ```ts
 // src/index.ts
-import { pdf } from '@imprint-pdf/react/standalone';
+import { pdf } from '@imprint-pdf/react';
 import wasm from '@imprint-pdf/react/imprint.wasm';
 import React from 'react';
 import { Invoice } from './templates/Invoice';

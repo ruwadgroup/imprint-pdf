@@ -32,8 +32,8 @@ pnpm add @imprint-pdf/next
 pnpm add -D @imprint-pdf/vite
 ```
 
-Cloudflare Workers and Bun import `@imprint-pdf/react/standalone` directly — no
-adapter package needed. See [Cloudflare](frameworks/cloudflare.md) and
+Cloudflare Workers and Bun import `@imprint-pdf/react` directly — no adapter
+package needed. See [Cloudflare](frameworks/cloudflare.md) and
 [Bun](frameworks/bun.md).
 
 ## Tailwind

@@ -27,8 +27,7 @@ See **[`examples/README.md`](../examples/README.md)** for the full table.
 ## The two `pdf()` entries
 
 - `@imprint-pdf/react` - Node host.
-- `@imprint-pdf/react/standalone` - pure-WASM build for edge and browser (no
-  `node:*`).
+- `@imprint-pdf/react` - pure-WASM build for edge and browser (no `node:*`).
 - `@imprint-pdf/next` - auto-picks node vs edge for Next.js.
 
 ## Document corpus

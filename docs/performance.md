@@ -36,12 +36,12 @@ per paragraph.
 
 ## Bundle size (browser)
 
-| Build target                                 | Gzipped  |
-| -------------------------------------------- | -------- |
-| `@imprint-pdf/react` default (Flex + Knuth)  | ~800 KB  |
-| With CSS Grid (Taffy full build)             | ~850 KB  |
-| With runtime Tailwind Oxide WASM fallback    | +~350 KB |
-| `@imprint-pdf/react/standalone` (CF Workers) | ~750 KB  |
+| Build target                                | Gzipped  |
+| ------------------------------------------- | -------- |
+| `@imprint-pdf/react` default (Flex + Knuth) | ~800 KB  |
+| With CSS Grid (Taffy full build)            | ~850 KB  |
+| With runtime Tailwind Oxide WASM fallback   | +~350 KB |
+| `@imprint-pdf/react` (CF Workers)           | ~750 KB  |
 
 Tree-shaking drops unused feature flags. An invoice-only client using only
 Flexbox without the Oxide fallback comes in around ~600 KB gzipped.

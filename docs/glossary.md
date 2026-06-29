@@ -5,7 +5,7 @@ Project terms in one place.
 ## `pdf()`
 
 The unified render entry point. Exported from `@imprint-pdf/react`,
-`@imprint-pdf/react/standalone`, and `@imprint-pdf/next`.
+`@imprint-pdf/react`, and `@imprint-pdf/next`.
 
 ```ts
 pdf(element: ReactElement, options?: PdfOptions): Promise<Response | Uint8Array | ReadableStream<Uint8Array>>
@@ -68,7 +68,7 @@ import { imprint } from '@imprint-pdf/vite';
 export default defineConfig({ plugins: [imprint()] });
 ```
 
-## `@imprint-pdf/react/standalone`
+## `@imprint-pdf/react`
 
 The edge-friendly build of `@imprint-pdf/react`. Used on Cloudflare Workers,
 Vercel Edge, and Bun (where you import WASM as a static asset). Same `pdf()`

@@ -64,7 +64,7 @@ const stream = await pdf(<Doc />, { as: 'stream' });
 `PageNumber`, `TotalPages`, `Form`, `TextField`, `Checkbox`, `RadioGroup`,
 `Dropdown`, `Signature`, `Button`, `Chart`.
 
-### `@imprint-pdf/react/standalone`
+### `@imprint-pdf/react`
 
 Self-contained build for v8-isolate runtimes (Cloudflare Workers, Vercel Edge,
 Bun). Same `pdf()` surface as the main entry; accepts an optional pre-compiled

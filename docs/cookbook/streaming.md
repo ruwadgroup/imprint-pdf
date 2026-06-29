@@ -23,7 +23,7 @@ followed by the cross-reference table once every page is complete.
 ## Cloudflare Workers
 
 ```ts
-import { pdf } from '@imprint-pdf/react/standalone';
+import { pdf } from '@imprint-pdf/react';
 import wasm from '@imprint-pdf/react/imprint.wasm';
 
 // Default shape is Response, which is what most edge handlers want anyway.
