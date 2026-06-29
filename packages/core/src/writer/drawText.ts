@@ -1,5 +1,5 @@
 import type { Color, PDFPage } from 'pdf-lib';
-import { degrees, rgb } from 'pdf-lib';
+import { degrees, rgb, setCharacterSpacing } from 'pdf-lib';
 import type { ComputedGeometry, TextNode } from '../types.js';
 import type { LoadedFont } from '../typography/font-common.js';
 import { selectFont } from '../typography/font-common.js';
@@ -56,6 +56,16 @@ function parseTextShadows(value: string | undefined, fallback: Color): TextShado
   return layers;
 }
 
+/** Resolve `letter-spacing` to points. Mirrors measureText so the drawn glyph
+ * advance matches the measured line width. em is relative to the font size. */
+function resolveLetterSpacing(raw: unknown, fontSize: number): number {
+  if (raw === undefined) return 0;
+  if (typeof raw === 'number') return raw;
+  const ls = String(raw);
+  if (ls === 'normal' || ls === '') return 0;
+  return ls.endsWith('em') ? parseFloat(ls) * fontSize : toPt(ls, fontSize);
+}
+
 function firstFontFamily(value: string | undefined): string | undefined {
   return (
     value
@@ -81,6 +91,7 @@ export async function drawText(
 
   const loadedFont = selectFont(fonts, fontFamily, fontWeight, fontStyle);
   if (!loadedFont?.pdfFont) return;
+  const pdfFont = loadedFont.pdfFont;
 
   const color = parseColor(style.color as string | undefined) ?? rgb(0, 0, 0);
   const opacity = normalizeOpacity(style.opacity) ?? 1;
@@ -122,13 +133,37 @@ export async function drawText(
   // so reverse the list to draw furthest-back first.
   const textShadows = parseTextShadows(style.textShadow as string | undefined, color).reverse();
 
+  // letter-spacing (`tracking-*`). pdf-lib's drawText can't space glyphs, so
+  // apply the PDF `Tc` text-state operator. measureText folds the same value
+  // into the line width, so rendering it here keeps the drawn width equal to
+  // the measured box - without this, centered (`items-center`) text drifts left.
+  const letterSpacing = resolveLetterSpacing(style.letterSpacing, fontSize);
+  if (letterSpacing) page.pushOperators(setCharacterSpacing(letterSpacing));
+
+  // Layout sizes boxes with HarfBuzz advances (kept for wrap consistency, so
+  // nothing overlaps), but pdf-lib draws with its own glyph advances which can
+  // differ (notably for fonts with heavy shaping). Align each line by the width
+  // pdf-lib will ACTUALLY draw, so centered/right text lands on the true centre
+  // instead of drifting by the measure-vs-render delta.
+  const renderedWidth = (text: string): number => {
+    let base: number;
+    try {
+      base = pdfFont.widthOfTextAtSize(text, fontSize);
+    } catch {
+      return -1;
+    }
+    return base + [...text].length * letterSpacing;
+  };
+
   for (const line of metrics.lines) {
     const xOffset = line.xOffset ?? 0;
+    const rendered = renderedWidth(line.text);
+    const drawWidth = rendered >= 0 ? rendered : line.width;
     const lineX = alignTextX(
       textAlign,
       geo.x + geo.paddingLeft + xOffset,
       wrapWidth - xOffset,
-      line.width,
+      drawWidth,
     );
     const lineY = pageHeight - (geo.y + geo.paddingTop + line.y + metrics.baseline);
     // One-fontSize slop each side so edge-straddling glyphs survive.
@@ -160,7 +195,7 @@ export async function drawText(
 
     if (!line.width || !(hasUnderline || hasStrikethrough || hasOverline)) continue;
 
-    const lineEnd = lineX + line.width;
+    const lineEnd = lineX + drawWidth;
     const drawDecoration = (yOffset: number): void => {
       const y = lineY + yOffset;
       page.drawLine({
@@ -176,4 +211,7 @@ export async function drawText(
     if (hasStrikethrough) drawDecoration(fontSize * 0.38);
     if (hasOverline) drawDecoration(fontSize * 1.05);
   }
+
+  // Reset character spacing so it never leaks into the next text run.
+  if (letterSpacing) page.pushOperators(setCharacterSpacing(0));
 }

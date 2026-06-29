@@ -3,7 +3,7 @@ import { detectBaseDir, hasRtlChars, reorderLine } from './bidi.js';
 import { DEFAULT_METRICS, type LoadedFont } from './font-common.js';
 import { getHyphenator } from './hyphen.js';
 import { breakLines } from './knuth-plass.js';
-import { deriveAxesFromStyle } from './variations.js';
+import { parseVariationSettings } from './variations.js';
 
 export interface TextLine {
   text: string;
@@ -176,7 +176,13 @@ export function measureText(
     if (ws !== 'normal') extraSpaceW = parsePx(ws, size);
   }
 
-  const variations = deriveAxesFromStyle(style);
+  // Only EXPLICIT `font-variation-settings` feed advance measurement. The
+  // weight/width are already baked into the per-weight font file picked by
+  // selectFont, so auto-lifting font-weight onto the `wght` axis (which some
+  // Fontsource files still expose via fvar) would make HarfBuzz measure a
+  // heavier, wider instance than pdf-lib actually draws - causing centered text
+  // to drift and wrapped lines to overlap. Keep measure == render.
+  const variations = parseVariationSettings(style.fontVariationSettings as string | undefined);
   const measure = (w: string) =>
     wordWidth(w, size, font, variations) + [...w].length * letterSpacing;
   const spaceW = measure(' ') + extraSpaceW;
