@@ -7,20 +7,20 @@ fallback (npm token, emergency)**.
 
 ## Publishable packages
 
-The 9 packages that ship to npm:
+The 11 packages that ship to npm:
 
 ```
 @imprint-pdf/core    @imprint-pdf/eslint   @imprint-pdf/sign
 @imprint-pdf/react   @imprint-pdf/print    @imprint-pdf/ua
 @imprint-pdf/next    @imprint-pdf/cli      @imprint-pdf/vite
+@imprint-pdf/fonts   @imprint-pdf/svg-rasterize
 ```
 
 These are marked `"private": true` and never get published:
 
 ```
-@imprint-pdf/bench         @imprint-pdf/icu-wasm     @imprint-pdf/tailwind
-@imprint-pdf/chart         @imprint-pdf/svg-rasterize @imprint-pdf/testing
-@imprint-pdf/e2e           @imprint-pdf/taffy-wasm
+@imprint-pdf/bench   @imprint-pdf/icu-wasm    @imprint-pdf/tailwind
+@imprint-pdf/e2e     @imprint-pdf/taffy-wasm  @imprint-pdf/testing
 ```
 
 `@imprint-pdf/tailwind` is intentionally kept as a private workspace package and

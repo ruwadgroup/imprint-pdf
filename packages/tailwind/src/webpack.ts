@@ -1,4 +1,5 @@
 import type { Compilation, Compiler } from 'webpack';
+import { extractClasses } from './extract.js';
 import type { ImprintTailwindOptions } from './index.js';
 import { runTailwind } from './tw-runner.js';
 
@@ -7,27 +8,6 @@ type NormalModule = {
   originalSource?: () => { source(): string | Buffer } | null;
   resource?: string;
 };
-
-const STATIC_CLASS_RE = /className\s*=\s*["']([^"']+)["']/g;
-const TEMPLATE_CLASS_RE = /className\s*=\s*\{`([^`${}]+)`\}/g;
-const EXPRESSION_STRING_RE = /className\s*=\s*\{["']([^"']+)["']\}/g;
-
-function extractClasses(source: string): string[] {
-  const found: string[] = [];
-  for (const re of [STATIC_CLASS_RE, TEMPLATE_CLASS_RE, EXPRESSION_STRING_RE]) {
-    re.lastIndex = 0;
-    let match = re.exec(source);
-    while (match !== null) {
-      if (match[1]) {
-        for (const cls of match[1].split(/\s+/)) {
-          if (cls) found.push(cls);
-        }
-      }
-      match = re.exec(source);
-    }
-  }
-  return found;
-}
 
 class ImprintWebpackPlugin {
   private readonly options: ImprintTailwindOptions;

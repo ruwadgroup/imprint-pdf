@@ -29,9 +29,5 @@
     "build": "wasm-pack build --target web --out-dir pkg",
     "build:node": "wasm-pack build --target nodejs --out-dir pkg-node",
     "clean": "rm -rf pkg pkg-node target"
-  },
-  "publishConfig": {
-    "access": "public",
-    "provenance": true
   }
 }

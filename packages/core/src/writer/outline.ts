@@ -1,12 +1,7 @@
 import type { PDFDocument, PDFPage } from 'pdf-lib';
 import { type PDFDict, PDFHexString, PDFName, PDFNull, PDFNumber } from 'pdf-lib';
-import type { BookmarkNode, DocumentNode, PdfNode } from '../types.js';
-
-function collectBookmarks(node: PdfNode, result: BookmarkNode[] = []): BookmarkNode[] {
-  if (node.type === 'bookmark') result.push(node as BookmarkNode);
-  for (const child of node.children) collectBookmarks(child, result);
-  return result;
-}
+import type { BookmarkNode, DocumentNode } from '../types.js';
+import { collectBookmarks } from './bookmarks.js';
 
 interface BookmarkEntry {
   node: BookmarkNode;

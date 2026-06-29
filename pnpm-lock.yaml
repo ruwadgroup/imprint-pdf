@@ -18,9 +18,6 @@ catalogs:
     '@types/react':
       specifier: ^19.0.0
       version: 19.2.14
-    '@types/react-dom':
-      specifier: ^19.0.0
-      version: 19.2.3
     '@types/react-reconciler':
       specifier: ^0.33.0
       version: 0.33.0
@@ -43,9 +40,6 @@ catalogs:
       specifier: 1.17.1
       version: 1.17.1
     react:
-      specifier: ^19.0.0
-      version: 19.2.5
-    react-dom:
       specifier: ^19.0.0
       version: 19.2.5
     tsup:
@@ -369,37 +363,6 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
-
-  packages/chart:
-    dependencies:
-      '@imprint-pdf/react':
-        specifier: workspace:*
-        version: link:../react
-    devDependencies:
-      '@types/node':
-        specifier: 'catalog:'
-        version: 20.19.41
-      '@types/react':
-        specifier: 'catalog:'
-        version: 19.2.14
-      '@types/react-dom':
-        specifier: 'catalog:'
-        version: 19.2.3(@types/react@19.2.14)
-      react:
-        specifier: 'catalog:'
-        version: 19.2.5
-      react-dom:
-        specifier: 'catalog:'
-        version: 19.2.5(react@19.2.5)
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.1(jiti@2.6.1)(postcss@8.5.14)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.3)
-      typescript:
-        specifier: 'catalog:'
-        version: 5.9.3
-      vitest:
-        specifier: 'catalog:'
-        version: 4.1.6(@types/node@20.19.41)(@vitest/coverage-v8@4.1.6)(vite@6.4.2(@types/node@20.19.41)(jiti@2.6.1)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
 
   packages/cli:
     dependencies:

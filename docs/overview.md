@@ -76,21 +76,15 @@ Response | Uint8Array | ReadableStream
 
 ## How it compares
 
-| Capability                        | `@react-pdf/renderer` | Satori | Forme | Chromium SaaS  | imprint-pdf |
-| --------------------------------- | :-------------------: | :----: | :---: | :------------: | :---------: |
-| Real Tailwind classes             |          ❌           |   ⚠️   |  ✅   |       ✅       |     ✅      |
-| React / JSX components            |          ✅           |   ✅   |  ✅   |       ❌       |     ✅      |
-| Edge runtimes (CF Workers)        |          ⚠️           |   ✅   |  ✅   |       ❌       |     ✅      |
-| CSS Grid                          |          ❌           |   ❌   |  ❓   |       ✅       |     ✅      |
-| HarfBuzz shaping                  |          ❌           |   ❌   |  ✅   |       ✅       |     ✅      |
-| Knuth–Plass justification         |          ❌           |   ❌   |  ❌   |       ❌       |     ✅      |
-| Vector charts                     |          ❌           |   ❌   |  ❓   |       ✅       |     ✅      |
-| AcroForms in JSX                  |          ❌           |  n/a   |  ✅   |       ❌       |     ✅      |
-| PDF/X-4 + CMYK                    |          ❌           |   ❌   |  ⚠️   | DocRaptor only |     ✅      |
-| PDF/UA-1 tagged PDF               |          ❌           |   ❌   |  ✅   | DocRaptor only |     ✅      |
-| Sub-100 ms edge cold start        |          n/a          |   ✅   |  ✅   |       ❌       |     ✅      |
-| Same code: client + edge + server |        partial        |   ✅   |  ✅   |      n/a       |     ✅      |
-| Open source                       |          ✅           |   ✅   |  ❌   |       ❌       |     ✅      |
+Unlike Chromium-based services, imprint-pdf is Chromium-free: the whole pipeline
+is JavaScript plus WASM, so it runs isomorphically on Node, Bun, edge runtimes,
+and the browser. Against other JSX-driven libraries it pairs real Tailwind (the
+actual compiler, not a translator) with true vector output, HarfBuzz shaping,
+and Knuth–Plass justification.
+
+See the [full comparison table](../README.md#how-it-compares) in the root README
+for the per-capability breakdown across @react-pdf, Satori, pdfme, Forme,
+Chromium SaaS, and Typst.
 
 ## Status
 

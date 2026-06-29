@@ -11,6 +11,7 @@ import {
   PDFStream,
   PDFString,
 } from 'pdf-lib';
+import { latin1ToBytes, toHex } from './bytes.js';
 
 export interface EncryptOptions {
   /** Owner password — full permissions when supplied at open time. */
@@ -304,17 +305,5 @@ function randomBytes(n: number): Uint8Array {
 function asString(bytes: Uint8Array): string {
   let s = '';
   for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]!);
-  return s;
-}
-
-function latin1ToBytes(s: string): Uint8Array {
-  const out = new Uint8Array(s.length);
-  for (let i = 0; i < s.length; i++) out[i] = s.charCodeAt(i) & 0xff;
-  return out;
-}
-
-function toHex(bytes: Uint8Array): string {
-  let s = '';
-  for (let i = 0; i < bytes.length; i++) s += bytes[i]!.toString(16).padStart(2, '0');
   return s;
 }

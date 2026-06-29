@@ -82,6 +82,32 @@ import logoSvg from './logo.svg?raw';
 - Text inside SVG → converted to glyph paths so no font embedding is needed for
   chart labels.
 
+## SVG rasterization fallback
+
+Most SVG renders straight to PDF vectors and stays crisp at any zoom. A few
+features have no PDF vector equivalent and need rasterization: `<filter>`, soft
+`<mask>`, and `<foreignObject>`. For those, opt in to the resvg-WASM rasterizer;
+everything else keeps the vector path.
+
+```bash
+pnpm add @imprint-pdf/svg-rasterize
+```
+
+Wire it through the `pdf()` option and only the unsupported nodes get
+rasterized:
+
+```tsx
+import { pdf } from '@imprint-pdf/react';
+import { rasterize } from '@imprint-pdf/svg-rasterize';
+
+const bytes = await pdf(<Doc />, { svgRasterizer: rasterize });
+```
+
+For non-React entry points, pass the same function to
+`setSvgRasterizer(rasterize)` from `@imprint-pdf/core`. On edge runtimes that
+can't auto-locate the `.wasm`, call `initRasterizer(wasmSource)` once at startup
+(or pass `wasm` in the rasterize options).
+
 ## CMYK charts
 
 With `@imprint-pdf/print`, OKLCH values in charts convert to CMYK via lcms2. For
