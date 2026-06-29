@@ -93,8 +93,13 @@ async function loadCustomFont(
   };
 }
 
-// HarfBuzz-only loader: layout needs glyph advances before a `PDFDocument`
-// exists, and embedding (subsetting, CFF parsing) is the slow part — skip it.
+// Layout-time loader. It embeds each font into a throwaway document so the
+// layout pass measures glyph advances with the SAME pdf-lib widths the writer
+// will draw with. Measuring with HarfBuzz instead (which it used to do) made the
+// layout boxes disagree with the drawn glyphs - centered text drifted and
+// justified/right-aligned values never reached their edge - because HarfBuzz's
+// shaped advances differ from pdf-lib's for many fonts. Consistency matters more
+// than the embedding cost.
 export async function loadFontMetricsOnly(
   declarations: FontDeclaration[],
   resolver: AssetResolver,
@@ -104,21 +109,20 @@ export async function loadFontMetricsOnly(
   // Times/Courier identically to how the writer draws them. Copy the cached set
   // so per-render custom fonts don't mutate it.
   const fonts = new Map<string, LoadedFont>(await getStandardFontMetrics());
+  const { PDFDocument } = await import('pdf-lib');
+  const doc = await PDFDocument.create();
+  doc.registerFontkit(fontkitLib);
   for (const decl of declarations) {
-    try {
-      const bytes = await resolver.resolve(decl.src);
-      const weight = declWeight(decl.weight);
-      const style: 'normal' | 'italic' = decl.style ?? 'normal';
-      fonts.set(fontKey(decl.family, weight, style), {
-        family: decl.family,
-        weight,
-        style,
-        metrics: DEFAULT_METRICS,
-        hbFont: await createHbFont(bytes),
-      });
-    } catch (err) {
-      reportAssetError({ src: decl.src, kind: 'font', error: err }, onAssetError);
+    const font = await loadCustomFont(doc, decl, resolver, onAssetError);
+    if (!font) continue;
+    // HarfBuzz stays available for shaping/bidi, but advance width now comes
+    // from pdfFont (see wordWidth) so it equals what the writer draws.
+    if (font.rawBytes !== undefined) {
+      try {
+        font.hbFont = await createHbFont(font.rawBytes);
+      } catch {}
     }
+    fonts.set(fontKey(font.family, font.weight, font.style), font);
   }
   return fonts;
 }

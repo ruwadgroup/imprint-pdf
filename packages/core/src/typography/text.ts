@@ -69,17 +69,21 @@ function wordWidth(
   font: LoadedFont | undefined,
   variations?: Record<string, number>,
 ): number {
+  // Prefer the pdf-lib advance: it is exactly what the writer draws, so layout
+  // boxes match the rendered glyphs (no drift, no overlap). Both the layout pass
+  // and the writer now carry a pdfFont. HarfBuzz is the fallback when a glyph
+  // isn't measurable (and for the metrics-only path before embedding).
+  if (font?.pdfFont) {
+    try {
+      return font.pdfFont.widthOfTextAtSize(word, size);
+    } catch {}
+  }
   if (font?.hbFont) {
     return font.hbFont.shapeAdvance(
       word,
       size,
       variations && Object.keys(variations).length > 0 ? { variations } : {},
     );
-  }
-  if (font?.pdfFont) {
-    try {
-      return font.pdfFont.widthOfTextAtSize(word, size);
-    } catch {}
   }
   let w = 0;
   for (const ch of word) w += charWidth(ch, size, font);
