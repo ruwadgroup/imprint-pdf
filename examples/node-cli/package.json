@@ -16,6 +16,7 @@
   "devDependencies": {
     "@types/node": "catalog:",
     "typescript": "catalog:",
-    "tsx": "catalog:"
+    "tsx": "catalog:",
+    "tailwindcss": "^4.0.0"
   }
 }

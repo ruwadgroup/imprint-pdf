@@ -27,4 +27,27 @@ describe('precompiled tailwind classMap', () => {
     expect(new TextDecoder().decode(bytes.slice(0, 5))).toBe('%PDF-');
     expect(bytes.byteLength).toBeGreaterThan(1024);
   });
+
+  // Guards the module-duplication bug where the node pipeline set the compiled
+  // class map on `@imprint-pdf/core` while the reconciler read it from
+  // `@imprint-pdf/core/browser` — every class resolved to {} and docs rendered
+  // unstyled. A styled render MUST differ from an unstyled one.
+  it('actually applies the classMap (styled output differs from unstyled)', async () => {
+    const doc = () => (
+      <Document title="bg">
+        <Page size="A4" className="bg-indigo-600 p-12">
+          <span className="text-white">x</span>
+        </Page>
+      </Document>
+    );
+    const styled = await pdf(doc(), {
+      as: 'bytes',
+      tailwind: {
+        classMap: { 'bg-indigo-600': { backgroundColor: '#4f39f6' }, 'p-12': { padding: 36 } },
+      },
+    });
+    const unstyled = await pdf(doc(), { as: 'bytes' });
+    // A page-filling indigo background embeds drawing ops the blank page lacks.
+    expect(styled.byteLength).not.toBe(unstyled.byteLength);
+  });
 });

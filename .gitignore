@@ -80,3 +80,6 @@ tools/verapdf/
 
 # Local-only packed tarballs (used for testing against the smoke example)
 .local-tgz/
+
+# Claude Code worktrees / local session state
+.claude/

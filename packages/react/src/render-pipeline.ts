@@ -7,18 +7,21 @@ import type {
 } from '@imprint-pdf/core';
 import {
   applyImprintVariants,
-  clearCompiledClassMap,
   clearHyphenator,
   clearSvgRasterizer,
   collectClassNames,
   createAssetResolver,
   loadFontMetricsOnly,
   runLayout,
-  setCompiledClassMap,
   setHyphenator,
   setSvgRasterizer,
   writePdf,
 } from '@imprint-pdf/core';
+// The compiled class map is module-level state in `style/resolver.ts`. The
+// reconciler reads it via `@imprint-pdf/core/browser`, so the map MUST be set on
+// that same bundle instance — setting it on `@imprint-pdf/core` writes a
+// different copy and the reconciler sees an empty map (every class → {}).
+import { clearCompiledClassMap, setCompiledClassMap } from '@imprint-pdf/core/browser';
 import type { ReactElement } from 'react';
 import { normalizeClassMap } from './class-map.js';
 import { buildPdfNodeTree } from './reconciler.js';
