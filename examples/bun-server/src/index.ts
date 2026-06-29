@@ -1,5 +1,5 @@
 import { byId } from '@imprint-pdf/fixtures';
-import { pdf } from '@imprint-pdf/react/standalone';
+import { pdf } from '@imprint-pdf/react';
 
 const server = Bun.serve({
   port: 3000,

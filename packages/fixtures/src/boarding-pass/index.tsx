@@ -1,4 +1,4 @@
-import { Document, Page } from '@imprint-pdf/react/standalone';
+import { Document, Page } from '@imprint-pdf/react';
 import { Barcode, QrCode } from '../components/Barcode.js';
 import type { BoardingPassData } from './sample.js';
 

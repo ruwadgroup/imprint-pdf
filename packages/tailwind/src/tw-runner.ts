@@ -1,9 +1,31 @@
-import { existsSync, readFileSync } from 'node:fs';
-import { createRequire } from 'node:module';
-import path from 'node:path';
 import type { ResolvedStyle } from '@imprint-pdf/core';
 import { parseCssToStyleMap } from './css-to-styles.js';
 import type { ImprintTailwindOptions } from './index.js';
+
+// Node built-ins are loaded lazily so this module has no static `node:*` imports
+// and can be bundled into the browser-facing `@imprint-pdf/react` entry without
+// breaking browser builds. `runTailwind` only ever runs on Node (it needs a
+// `projectRoot` on disk), so the dynamic import always resolves there.
+interface NodeBuiltins {
+  existsSync: (p: string) => boolean;
+  readFileSync: (p: string, enc: 'utf8') => string;
+  createRequire: (p: string) => NodeRequire;
+  path: typeof import('node:path');
+}
+
+async function loadNodeBuiltins(): Promise<NodeBuiltins> {
+  const [fs, mod, pathMod] = await Promise.all([
+    import('node:fs'),
+    import('node:module'),
+    import('node:path'),
+  ]);
+  return {
+    existsSync: fs.existsSync,
+    readFileSync: fs.readFileSync as NodeBuiltins['readFileSync'],
+    createRequire: mod.createRequire,
+    path: pathMod.default ?? (pathMod as unknown as typeof import('node:path')),
+  };
+}
 
 // Conventional v4 stylesheet / v3 config paths. First match wins.
 const STYLESHEET_AUTO_PATHS = [
@@ -26,8 +48,12 @@ const V3_CONFIG_AUTO_PATHS = [
   'tailwind.config.cjs',
 ];
 
-function findFirstExisting(projectRoot: string, candidates: string[]): string | undefined {
-  return candidates.find((rel) => existsSync(path.join(projectRoot, rel)));
+function findFirstExisting(
+  node: NodeBuiltins,
+  projectRoot: string,
+  candidates: string[],
+): string | undefined {
+  return candidates.find((rel) => node.existsSync(node.path.join(projectRoot, rel)));
 }
 
 // Tailwind v4 programmatic surface — only on `tailwindcss@>=4`.
@@ -45,10 +71,10 @@ interface TailwindV4 {
 type TailwindV3 = (config: Record<string, unknown>) => unknown;
 
 // Read the consumer's `tailwindcss/package.json` to pick the dispatch branch.
-function detectTailwindMajor(projectRoot: string): 3 | 4 | null {
+function detectTailwindMajor(node: NodeBuiltins, projectRoot: string): 3 | 4 | null {
   try {
-    const req = createRequire(path.join(projectRoot, 'package.json'));
-    const pkg = JSON.parse(readFileSync(req.resolve('tailwindcss/package.json'), 'utf8')) as {
+    const req = node.createRequire(node.path.join(projectRoot, 'package.json'));
+    const pkg = JSON.parse(node.readFileSync(req.resolve('tailwindcss/package.json'), 'utf8')) as {
       version?: string;
     };
     const major = parseInt(String(pkg.version ?? '').split('.')[0] ?? '0', 10);
@@ -70,22 +96,26 @@ export async function runTailwind(
 ): Promise<Map<string, ResolvedStyle>> {
   if (classes.size === 0) return new Map();
 
+  const node = await loadNodeBuiltins();
+
   const v3ConfigPath =
     options.config ??
-    (!options.stylesheet && detectTailwindMajor(projectRoot) === 3
-      ? findFirstExisting(projectRoot, V3_CONFIG_AUTO_PATHS)
+    (!options.stylesheet && detectTailwindMajor(node, projectRoot) === 3
+      ? findFirstExisting(node, projectRoot, V3_CONFIG_AUTO_PATHS)
       : undefined);
 
   return v3ConfigPath
-    ? runTailwindV3(classes, projectRoot, v3ConfigPath)
-    : runTailwindV4(classes, options, projectRoot);
+    ? runTailwindV3(node, classes, projectRoot, v3ConfigPath)
+    : runTailwindV4(node, classes, options, projectRoot);
 }
 
 async function runTailwindV4(
+  node: NodeBuiltins,
   classes: Set<string>,
   options: ImprintTailwindOptions,
   projectRoot: string,
 ): Promise<Map<string, ResolvedStyle>> {
+  const { createRequire, readFileSync, path } = node;
   try {
     const req = createRequire(path.join(projectRoot, 'package.json'));
     // Literal-specifier `import()` so nft statically traces tailwindcss AND
@@ -124,7 +154,8 @@ async function runTailwindV4(
       }
     }
 
-    const stylesheet = options.stylesheet ?? findFirstExisting(projectRoot, STYLESHEET_AUTO_PATHS);
+    const stylesheet =
+      options.stylesheet ?? findFirstExisting(node, projectRoot, STYLESHEET_AUTO_PATHS);
     const inputCss = stylesheet
       ? `@import "${path.resolve(projectRoot, stylesheet)}";`
       : '@import "tailwindcss";';
@@ -145,10 +176,12 @@ async function runTailwindV4(
 // class the document uses. Needs `tailwindcss@3` and `postcss` in the
 // consumer project (both optional peers).
 async function runTailwindV3(
+  node: NodeBuiltins,
   classes: Set<string>,
   projectRoot: string,
   configPath: string,
 ): Promise<Map<string, ResolvedStyle>> {
+  const { createRequire, path } = node;
   try {
     const req = createRequire(path.join(projectRoot, 'package.json'));
     const absConfigPath = path.isAbsolute(configPath)

@@ -1,6 +1,6 @@
 {
   "imports": {
-    "@imprint-pdf/react/standalone": "npm:@imprint-pdf/react/standalone",
+    "@imprint-pdf/react": "npm:@imprint-pdf/react",
     "@imprint-pdf/fixtures": "npm:@imprint-pdf/fixtures",
     "react": "npm:react@^19.0.0"
   },

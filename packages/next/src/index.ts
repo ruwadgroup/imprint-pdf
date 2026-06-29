@@ -48,16 +48,12 @@ export async function pdf(
   return mod.pdf(element, options);
 }
 
-// The Node entry pulls in pdf-lib's native bindings; `/standalone` ships
-// WASM with no `node:*` imports. Next sets `NEXT_RUNTIME=edge` on edge routes;
-// `globalThis.EdgeRuntime` is the generic Vercel/Cloudflare signal.
-function isEdgeRuntime(): boolean {
-  if (typeof process !== 'undefined' && process.env?.NEXT_RUNTIME === 'edge') return true;
-  return typeof (globalThis as { EdgeRuntime?: unknown }).EdgeRuntime !== 'undefined';
-}
-
+// `@imprint-pdf/react` is isomorphic: its package `exports` route browser/edge
+// bundlers (the `browser`/`edge-light`/`workerd`/`worker` conditions) to the
+// pure-WASM build and Node to the native pdf-lib build. Next bundles edge and
+// node routes separately, so this single import resolves correctly per route.
 function loadReactEntry(): Promise<unknown> {
-  return isEdgeRuntime() ? import('@imprint-pdf/react/standalone') : import('@imprint-pdf/react');
+  return import('@imprint-pdf/react');
 }
 
 /** @deprecated Use `pdf(element, { as: 'bytes' })` instead. */

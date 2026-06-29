@@ -1,11 +1,4 @@
-import {
-  Document,
-  Footer,
-  Header,
-  Page,
-  PageNumber,
-  TotalPages,
-} from '@imprint-pdf/react/standalone';
+import { Document, Footer, Header, Page, PageNumber, TotalPages } from '@imprint-pdf/react';
 import { Table, Td, Th, Tr } from '../components/Table.js';
 import { money, sumBy } from '../lib/format.js';
 import type { BankStatementData } from './sample.js';

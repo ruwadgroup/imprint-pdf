@@ -24,18 +24,12 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
+      "browser": "./dist/standalone.js",
+      "edge-light": "./dist/standalone.js",
+      "workerd": "./dist/standalone.js",
+      "worker": "./dist/standalone.js",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    },
-    "./standalone": {
-      "types": "./dist/standalone.d.ts",
-      "import": "./dist/standalone.js",
-      "require": "./dist/standalone.cjs"
-    },
-    "./standalone.js": {
-      "types": "./standalone.d.ts",
-      "import": "./standalone.js",
-      "require": "./dist/standalone.cjs"
     },
     "./server": {
       "types": "./dist/server.d.ts",
@@ -48,8 +42,6 @@
   },
   "files": [
     "dist",
-    "standalone.d.ts",
-    "standalone.js",
     "preset.css",
     "README.md",
     "CHANGELOG.md",

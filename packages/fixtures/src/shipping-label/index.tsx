@@ -1,4 +1,4 @@
-import { Document, Page } from '@imprint-pdf/react/standalone';
+import { Document, Page } from '@imprint-pdf/react';
 import { Barcode } from '../components/Barcode.js';
 import type { Address, ShippingLabelData } from './sample.js';
 

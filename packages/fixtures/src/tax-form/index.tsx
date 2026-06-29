@@ -6,7 +6,7 @@ import {
   Page,
   RadioGroup,
   TextField,
-} from '@imprint-pdf/react/standalone';
+} from '@imprint-pdf/react';
 import type { TaxFormData } from './sample.js';
 
 export type { TaxFormData } from './sample.js';

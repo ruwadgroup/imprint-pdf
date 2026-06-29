@@ -1,4 +1,4 @@
-import { Document, Page } from '@imprint-pdf/react/standalone';
+import { Document, Page } from '@imprint-pdf/react';
 import { Table, Td, Th, Tr } from '../components/Table.js';
 import { num } from '../lib/format.js';
 import type { AnalyticsBar, AnalyticsData } from './sample.js';

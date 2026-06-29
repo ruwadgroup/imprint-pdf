@@ -26,6 +26,10 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
+      "browser": "./dist/browser.js",
+      "edge-light": "./dist/browser.js",
+      "workerd": "./dist/browser.js",
+      "worker": "./dist/browser.js",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },

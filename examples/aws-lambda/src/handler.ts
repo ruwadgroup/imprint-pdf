@@ -1,5 +1,5 @@
 import { byId } from '@imprint-pdf/fixtures';
-import { pdf } from '@imprint-pdf/react/standalone';
+import { pdf } from '@imprint-pdf/react';
 import type { APIGatewayProxyHandlerV2 } from 'aws-lambda';
 
 export const handler: APIGatewayProxyHandlerV2 = async () => {

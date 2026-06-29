@@ -1,5 +1,5 @@
 import { byId } from '@imprint-pdf/fixtures';
-import { pdf } from '@imprint-pdf/react/standalone';
+import { pdf } from '@imprint-pdf/react';
 
 export default {
   fetch: () => pdf(byId('invoice')!.render()),

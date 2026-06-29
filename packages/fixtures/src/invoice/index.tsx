@@ -1,4 +1,4 @@
-import { Document, Page } from '@imprint-pdf/react/standalone';
+import { Document, Page } from '@imprint-pdf/react';
 import { Table, Td, Th, Tr } from '../components/Table.js';
 import { money, sumBy } from '../lib/format.js';
 import type { InvoiceData } from './sample.js';

@@ -1,4 +1,4 @@
-import { Document, Page } from '@imprint-pdf/react/standalone';
+import { Document, Page } from '@imprint-pdf/react';
 import type { CoverLetterData } from './sample.js';
 
 export type { CoverLetterData } from './sample.js';

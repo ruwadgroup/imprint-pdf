@@ -1,5 +1,5 @@
 import { byId } from '@imprint-pdf/fixtures';
-import { pdf } from '@imprint-pdf/react/standalone';
+import { pdf } from '@imprint-pdf/react';
 import type { Config } from '@netlify/functions';
 
 export default async () => pdf(byId('invoice')!.render());

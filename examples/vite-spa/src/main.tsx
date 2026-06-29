@@ -1,5 +1,5 @@
 import { byId } from '@imprint-pdf/fixtures';
-import { pdf } from '@imprint-pdf/react/standalone';
+import { pdf } from '@imprint-pdf/react';
 import { StrictMode, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 

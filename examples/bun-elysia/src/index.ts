@@ -1,5 +1,5 @@
 import { byId } from '@imprint-pdf/fixtures';
-import { pdf } from '@imprint-pdf/react/standalone';
+import { pdf } from '@imprint-pdf/react';
 import { Elysia } from 'elysia';
 
 new Elysia().get('/invoice', () => pdf(byId('invoice')!.render())).listen(3000);
