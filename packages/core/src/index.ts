@@ -72,7 +72,7 @@ export type {
   VariantStyles,
   ViewNode,
 } from './types.js';
-export type { FontMetrics, LoadedFont } from './typography/fonts.js';
+export type { FontMetrics, HbFont, LoadedFont } from './typography/font-common.js';
 export { loadFontMetricsOnly, loadFonts, selectFont } from './typography/fonts.js';
 export { clearHyphenator, getHyphenator, setHyphenator } from './typography/hyphen.js';
 export type { BreakPagesOptions, PageAssignment, PageBlock } from './typography/plass.js';

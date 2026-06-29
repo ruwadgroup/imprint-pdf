@@ -10,6 +10,17 @@ export interface InvoiceProps {
   data: InvoiceData;
 }
 
+function MetaRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex flex-row items-baseline border-l-2 border-indigo-600 pl-2.5">
+      <span className="w-20 text-[8px] font-semibold uppercase tracking-[1.5pt] text-slate-400">
+        {label}
+      </span>
+      <span className="text-[10px] font-semibold text-slate-900">{value}</span>
+    </div>
+  );
+}
+
 export function Invoice({ data }: InvoiceProps) {
   const subtotal = sumBy(data.items, (i) => i.qty * i.rate);
   const tax = subtotal * data.taxRate;
@@ -17,86 +28,105 @@ export function Invoice({ data }: InvoiceProps) {
 
   return (
     <Document title={`Invoice ${data.number}`} author={data.from.name}>
-      <Page size="A4" className="bg-white px-14 py-12 font-sans text-slate-900">
-        <div className="flex flex-row justify-between items-start mb-12">
-          <div>
-            <h2 className="text-2xl font-bold text-indigo-600">{data.from.name}</h2>
-            <p className="text-xs text-slate-500 mt-1">{data.from.email}</p>
+      <Page size="A4" className="flex flex-col bg-white px-16 pb-14 pt-14 font-sans text-slate-900">
+        {/* Masthead */}
+        <div className="flex flex-row items-start justify-between">
+          <div className="flex flex-col">
+            <h1 className="text-[34px] font-bold leading-none tracking-[-1pt]">Invoice</h1>
+            <span className="mt-2 text-[12px] font-semibold text-indigo-600">{data.number}</span>
           </div>
-          <div className="flex flex-col items-end">
-            <span className="text-sm font-bold text-slate-400 tracking-[2pt]">INVOICE</span>
-            <p className="text-xl font-bold text-slate-900 mt-1">{data.number}</p>
-            <div className="flex flex-row mt-2">
-              <div className="mr-4 flex flex-col">
-                <span className="text-xs text-slate-500 mb-0.5">Issue date</span>
-                <p className="text-xs font-semibold text-slate-900">{data.date}</p>
+          <div className="flex flex-col items-end gap-2.5">
+            <div className="flex flex-row items-center gap-2">
+              <div className="relative h-[18px] w-[18px]">
+                <div className="absolute left-0 top-0 h-[13px] w-[13px] rounded-sm bg-indigo-600" />
+                <div className="absolute bottom-0 right-0 h-[13px] w-[13px] rounded-sm bg-slate-900" />
               </div>
-              <div className="flex flex-col">
-                <span className="text-xs text-slate-500 mb-0.5">Due date</span>
-                <p className="text-xs font-semibold text-slate-900">{data.dueDate}</p>
-              </div>
+              <span className="text-[12px] font-bold tracking-[-0.2pt]">{data.from.name}</span>
             </div>
+            <p className="text-[9px] text-slate-500">{data.from.email}</p>
           </div>
         </div>
 
-        <div className="mb-8 flex flex-col">
-          <span className="text-xs text-slate-400 font-semibold tracking-[1pt] mb-1">BILL TO</span>
-          <p className="text-sm font-semibold text-slate-900">{data.to.name}</p>
-          <p className="text-xs text-slate-500 mt-0.5">{data.to.address}</p>
+        <div className="my-10 h-px bg-slate-200" />
+
+        {/* Bill-to + meta */}
+        <div className="mb-10 flex flex-row items-start justify-between">
+          <div className="flex flex-col">
+            <span className="text-[8px] font-semibold uppercase tracking-[1.5pt] text-slate-400">
+              Billed to
+            </span>
+            <p className="mt-1.5 text-[13px] font-bold">{data.to.name}</p>
+            <p className="mt-1 max-w-[220px] text-[10px] leading-relaxed text-slate-500">
+              {data.to.address}
+            </p>
+          </div>
+          <div className="flex flex-col gap-2.5">
+            <MetaRow label="Issued" value={data.date} />
+            <MetaRow label="Due" value={data.dueDate} />
+          </div>
         </div>
 
         <Table>
-          <Tr className="bg-indigo-600 rounded-t px-4">
+          <Tr className="bg-indigo-600 px-4">
             <Th flex>Description</Th>
-            <Th align="right" width={60}>
+            <Th align="right" width={50}>
               Qty
             </Th>
             <Th align="right" width={90}>
               Rate
             </Th>
-            <Th align="right" width={100}>
+            <Th align="right" width={104}>
               Amount
             </Th>
           </Tr>
           {data.items.map((item, i) => (
-            <Tr key={i} className={`px-4 ${i % 2 === 1 ? 'bg-slate-50' : 'bg-white'}`}>
-              <Td flex>{item.description}</Td>
-              <Td align="right" width={60}>
+            <Tr key={i} className="border-b border-slate-100 px-4">
+              <Td flex className="text-[11px] font-semibold text-slate-900">
+                {item.description}
+              </Td>
+              <Td align="right" width={50} className="text-[10px] text-slate-600">
                 {item.qty}
               </Td>
-              <Td align="right" width={90}>
+              <Td align="right" width={90} className="text-[10px] text-slate-600">
                 {money(item.rate)}
               </Td>
-              <Td align="right" width={100}>
+              <Td align="right" width={104} className="text-[11px] font-bold text-slate-900">
                 {money(item.qty * item.rate)}
               </Td>
             </Tr>
           ))}
         </Table>
 
-        <div className="flex flex-row justify-end mt-6">
-          <div className="flex flex-col" style={{ width: 240 }}>
-            <div className="flex flex-row justify-between py-1">
-              <span className="text-xs text-slate-500">Subtotal</span>
-              <span className="text-xs text-slate-900">{money(subtotal)}</span>
+        <div className="mt-8 flex flex-row justify-end">
+          <div className="flex w-[270px] flex-col">
+            <div className="flex flex-row justify-between py-1.5">
+              <span className="text-[10px] text-slate-500">Subtotal</span>
+              <span className="text-[10px] font-semibold text-slate-900">{money(subtotal)}</span>
             </div>
-            <div className="flex flex-row justify-between py-1">
-              <span className="text-xs text-slate-500">
+            <div className="flex flex-row justify-between border-b border-slate-200 py-1.5">
+              <span className="text-[10px] text-slate-500">
                 Tax ({(data.taxRate * 100).toFixed(2)}%)
               </span>
-              <span className="text-xs text-slate-900">{money(tax)}</span>
+              <span className="text-[10px] font-semibold text-slate-900">{money(tax)}</span>
             </div>
-            <div className="flex flex-row justify-between py-2 mt-1 border-t border-slate-200">
-              <span className="text-sm font-bold text-slate-900">Total</span>
-              <span className="text-sm font-bold text-indigo-600">{money(total)}</span>
+            <div className="mt-3 flex flex-row items-center justify-between rounded-md bg-slate-900 px-4 py-3">
+              <span className="text-[9px] font-semibold uppercase tracking-[1.5pt] text-slate-300">
+                Total due
+              </span>
+              <span className="text-[19px] font-bold text-white">{money(total)}</span>
             </div>
           </div>
         </div>
 
         <div className="flex-1" />
-        <div className="border-t border-slate-200 pt-4 mt-8">
-          <span className="text-xs text-slate-400 font-semibold tracking-[1pt]">NOTES</span>
-          <p className="text-xs text-slate-500 mt-1 leading-relaxed">{data.notes}</p>
+        <div className="mt-10 flex flex-row items-stretch gap-3 rounded-md bg-slate-50 px-4 py-3">
+          <div className="w-[3px] rounded-sm bg-indigo-600" />
+          <div className="flex flex-col">
+            <span className="text-[8px] font-semibold uppercase tracking-[1.5pt] text-slate-400">
+              Notes
+            </span>
+            <p className="mt-1 text-[9.5px] leading-relaxed text-slate-500">{data.notes}</p>
+          </div>
         </div>
       </Page>
     </Document>

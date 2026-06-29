@@ -248,9 +248,17 @@ function toTaffyStyle(style: ResolvedStyle, containerWidth: number): Style {
     width: dim(style.width, containerWidth),
     height: dim(style.height, containerWidth),
   };
+  // CSS flex items default to `min-height: auto`, which resolves to the content
+  // size and stops an item shrinking below its content height. Defaulting to 0
+  // instead let an overflowing flex container (e.g. a Page with more content
+  // than fits) crush its children to zero height, so their text overlapped.
+  // `auto` makes vertical overflow spill/clip - matching the browser - rather
+  // than overlap. Width stays 0: text columns must still be free to shrink and
+  // re-wrap to the space the row allots them (min-content auto would force the
+  // longest line and overflow the page horizontally).
   s.minSize = {
     width: dim(style.minWidth, containerWidth, 0),
-    height: dim(style.minHeight, containerWidth, 0),
+    height: dim(style.minHeight, containerWidth, 'auto'),
   };
   s.maxSize = {
     width: dimBounded(style.maxWidth, containerWidth),

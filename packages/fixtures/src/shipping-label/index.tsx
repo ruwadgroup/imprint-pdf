@@ -1,6 +1,6 @@
 import { Document, Page } from '@imprint-pdf/react';
 import { Barcode } from '../components/Barcode.js';
-import type { Address, ShippingLabelData } from './sample.js';
+import type { ShippingLabelData } from './sample.js';
 
 export type { Address, ShippingLabelData } from './sample.js';
 export { shippingLabelSample } from './sample.js';
@@ -9,55 +9,108 @@ export interface ShippingLabelProps {
   data: ShippingLabelData;
 }
 
-function AddressBlock({ label, address }: { label: string; address: Address }) {
-  return (
-    <div className="flex flex-col">
-      <span className="text-[8px] font-bold text-slate-500 tracking-[1pt] mb-1">{label}</span>
-      <span className="text-[11px] font-bold text-slate-900">{address.name}</span>
-      <span className="text-[10px] text-slate-800">{address.line1}</span>
-      {address.line2 ? <span className="text-[10px] text-slate-800">{address.line2}</span> : null}
-      <span className="text-[10px] text-slate-800">{address.cityStateZip}</span>
-      <span className="text-[10px] text-slate-800">{address.country}</span>
-    </div>
-  );
-}
-
 export function ShippingLabel({ data }: ShippingLabelProps) {
   return (
     <Document title={`Shipping Label ${data.trackingNumber}`} author={data.carrier}>
-      <Page className="bg-white p-3 font-sans text-slate-900" style={{ width: 288, height: 432 }}>
-        <div className="flex flex-row justify-between items-center bg-black px-3 py-2">
-          <span className="text-base font-bold text-white tracking-[1pt]">{data.carrier}</span>
-          <span className="text-[10px] font-bold text-white">{data.service}</span>
-        </div>
-
-        <div className="flex flex-row justify-between border-x border-b border-black px-3 py-2">
-          <div className="flex flex-col">
-            <span className="text-[8px] text-slate-500">SHIP DATE</span>
-            <span className="text-[11px] font-bold text-slate-900">{data.shipDate}</span>
+      <Page
+        size={[288, 432]}
+        sizeUnit="pt"
+        className="flex flex-col bg-white p-2 font-sans text-black"
+      >
+        <div className="flex h-full flex-col border-[3px] border-black">
+          {/* Inverted carrier bar with country badge */}
+          <div className="flex flex-row items-center justify-between bg-black px-3 py-2.5">
+            <span className="text-[20px] font-bold uppercase tracking-[0.5pt] text-white">
+              {data.carrier}
+            </span>
+            <div className="flex items-center justify-center border-2 border-white px-2 py-0.5">
+              <span className="text-[10px] font-bold uppercase tracking-[1pt] text-white">
+                {data.to.country}
+              </span>
+            </div>
           </div>
-          <div className="flex flex-col items-end">
-            <span className="text-[8px] text-slate-500">WEIGHT</span>
-            <span className="text-[11px] font-bold text-slate-900">{data.weight}</span>
+
+          {/* Inverted service-class strip (mono weight) */}
+          <div className="flex flex-row items-center justify-between border-b-[3px] border-black bg-black px-3 py-1.5">
+            <span className="text-[15px] font-bold uppercase tracking-[1.5pt] text-white">
+              {data.service}
+            </span>
+            <span className="font-mono text-[11px] font-bold uppercase tracking-[1pt] text-white">
+              {data.weight}
+            </span>
           </div>
-        </div>
 
-        <div className="flex flex-col border-x border-b border-black px-3 py-3">
-          <AddressBlock label="FROM" address={data.from} />
-        </div>
+          {/* FROM block - small */}
+          <div className="flex flex-col border-b-[3px] border-black px-3 py-2">
+            <span className="text-[7px] font-bold uppercase tracking-[1.5pt] text-black">From</span>
+            <span className="mt-0.5 text-[9px] font-bold uppercase leading-tight text-black">
+              {data.from.name}
+            </span>
+            <span className="text-[8px] font-semibold uppercase leading-snug text-black">
+              {data.from.line1}
+              {data.from.line2 ? `, ${data.from.line2}` : ''} · {data.from.cityStateZip} ·{' '}
+              {data.from.country}
+            </span>
+          </div>
 
-        <div className="flex flex-col border-x border-b-2 border-black px-3 py-3">
-          <AddressBlock label="SHIP TO" address={data.to} />
-        </div>
+          {/* SHIP TO block - dominant, fills remaining space */}
+          <div className="flex flex-1 flex-col border-b-[3px] border-black px-3 pb-3 pt-3.5">
+            <span className="text-[7px] font-bold uppercase tracking-[1.5pt] text-black">
+              Ship To
+            </span>
+            <span className="mt-1 text-[26px] font-bold uppercase leading-none text-black">
+              {data.to.name}
+            </span>
+            <span className="mt-2.5 text-[15px] font-bold uppercase leading-tight text-black">
+              {data.to.line1}
+            </span>
+            {data.to.line2 ? (
+              <span className="text-[15px] font-bold uppercase leading-tight text-black">
+                {data.to.line2}
+              </span>
+            ) : null}
+            <span className="mt-1 text-[18px] font-bold uppercase leading-tight text-black">
+              {data.to.cityStateZip}
+            </span>
+            <span className="mt-1 text-[13px] font-bold uppercase leading-tight text-black">
+              {data.to.country}
+            </span>
+          </div>
 
-        <div className="flex-1" />
+          {/* Boxed ship-date / weight / class row (mono) */}
+          <div className="flex flex-row border-b-[3px] border-black">
+            <div className="flex flex-1 flex-col border-r-2 border-black px-3 py-1.5">
+              <span className="text-[7px] font-bold uppercase tracking-[1.5pt] text-black">
+                Ship Date
+              </span>
+              <span className="font-mono text-[11px] font-bold text-black">{data.shipDate}</span>
+            </div>
+            <div className="flex flex-1 flex-col border-r-2 border-black px-3 py-1.5">
+              <span className="text-[7px] font-bold uppercase tracking-[1.5pt] text-black">
+                Weight
+              </span>
+              <span className="font-mono text-[11px] font-bold text-black">{data.weight}</span>
+            </div>
+            <div className="flex flex-[1.4] flex-col px-3 py-1.5">
+              <span className="text-[7px] font-bold uppercase tracking-[1.5pt] text-black">
+                Class
+              </span>
+              <span className="font-mono text-[11px] font-bold uppercase leading-tight text-black">
+                {data.service}
+              </span>
+            </div>
+          </div>
 
-        <div className="flex flex-col items-center border-2 border-t-0 border-black px-3 pt-3 pb-3">
-          <Barcode value={data.trackingNumber} width={260} height={64} />
-          <span className="text-[12px] font-mono font-bold text-slate-900 mt-2 tracking-[1pt]">
-            {data.trackingNumber}
-          </span>
-          <span className="text-[8px] text-slate-500 mt-0.5 tracking-[2pt]">TRACKING NUMBER</span>
+          {/* Full-width tracking barcode */}
+          <div className="flex flex-col items-center px-3 pb-2 pt-2.5">
+            <Barcode value={data.trackingNumber} width={262} height={62} />
+            <span className="mt-1.5 font-mono text-[13px] font-bold tracking-[1pt] text-black">
+              {data.trackingNumber}
+            </span>
+            <span className="mt-0.5 text-[7px] font-bold uppercase tracking-[2.5pt] text-black">
+              Tracking Number
+            </span>
+          </div>
         </div>
       </Page>
     </Document>

@@ -1,14 +1,14 @@
 import fontkitLib from '@pdf-lib/fontkit';
-import type { PDFDocument } from 'pdf-lib';
+import { PDFDocument } from 'pdf-lib';
 import type { AssetResolver, FontDeclaration, RenderOptions } from '../types.js';
 import { reportAssetError } from '../writer/drawImage.js';
 import {
   DEFAULT_METRICS,
   declWeight,
+  embedStandardFontSet,
   type FontMetrics,
   fontKey,
   type LoadedFont,
-  loadStandardFont,
   ttfFallbackUrl,
 } from './font-common.js';
 
@@ -81,12 +81,18 @@ async function loadCustomFont(
   };
 }
 
+// The browser has no HarfBuzz, so the layout pass must measure with the same
+// embedded `pdfFont` the writer draws with. Embed into a throwaway document
+// (discarded) so measure and draw compute identical glyph advances - the
+// node path reuses a cached set, but here every render re-embeds since custom
+// fonts vary per render.
 export async function loadFontMetricsOnly(
-  _declarations: FontDeclaration[],
-  _resolver: AssetResolver,
-  _onAssetError?: RenderOptions['onAssetError'],
+  declarations: FontDeclaration[],
+  resolver: AssetResolver,
+  onAssetError?: RenderOptions['onAssetError'],
 ): Promise<Map<string, LoadedFont>> {
-  return new Map();
+  const doc = await PDFDocument.create();
+  return loadFonts(doc, declarations, resolver, onAssetError);
 }
 
 export async function loadFonts(
@@ -110,10 +116,11 @@ export async function loadFonts(
     }
   }
 
-  const fallbackKey = fontKey('Helvetica', 400, 'normal');
-  if (!fonts.has(fallbackKey)) {
-    const fallback = await loadStandardFont(doc, 'Helvetica', 400, 'normal');
-    fonts.set(fallbackKey, fallback);
+  // Embed the full standard set so font-serif/font-mono draw as real Times/
+  // Courier and every (family, weight, style) has a real fallback. Custom fonts
+  // declared above keep priority on shared keys.
+  for (const [key, font] of await embedStandardFontSet(doc)) {
+    if (!fonts.has(key)) fonts.set(key, font);
   }
 
   return fonts;

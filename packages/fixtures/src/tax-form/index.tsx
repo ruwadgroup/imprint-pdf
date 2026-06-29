@@ -16,187 +16,213 @@ export interface TaxFormProps {
   data: TaxFormData;
 }
 
+const fieldClass =
+  'h-7 w-full rounded-sm border border-slate-300 bg-white px-2 text-[11px] text-slate-900';
+
+/** Uppercase tracked eyebrow label sitting above a bordered input. */
+function FieldLabel({ index, children }: { index?: string; children: string }) {
+  return (
+    <span className="text-[8px] font-semibold uppercase tracking-[1.2pt] text-slate-600">
+      {index ? <span className="text-blue-700">{index} </span> : null}
+      {children}
+    </span>
+  );
+}
+
+/** Numbered section heading with an accent eyebrow and trailing rule. */
+function PartHeading({ part, children }: { part: string; children: string }) {
+  return (
+    <div className="flex flex-row items-center gap-2.5">
+      <span className="rounded-sm bg-blue-700 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[1.5pt] text-white">
+        {part}
+      </span>
+      <span className="text-[12px] font-bold tracking-[-0.2pt] text-slate-900">{children}</span>
+      <div className="h-px flex-1 bg-slate-300" />
+    </div>
+  );
+}
+
 export function TaxForm({ data }: TaxFormProps) {
   const d = data.defaults;
   return (
     <Document title={`${data.formCode} - ${data.formTitle}`} author={data.agency}>
-      <Page size="A4" className="bg-white px-12 py-10 font-sans text-slate-900">
-        <div className="flex flex-row items-start justify-between border-b-2 border-slate-900 pb-3">
-          <div className="flex flex-col">
-            <span className="text-2xl font-bold tracking-[1pt]">{data.formCode}</span>
-            <span className="text-[9px] text-slate-500">{data.revision}</span>
+      <Page size="A4" className="bg-white px-12 pb-10 pt-0 font-sans text-slate-900">
+        {/* Bold colored masthead band, bleeding to the page edges */}
+        <div className="-mx-12 flex flex-row items-stretch justify-between gap-6 bg-blue-900 px-12 pb-6 pt-9">
+          <div className="flex flex-col justify-center">
+            {/* Brand mark: two offset coloured squares + wordmark */}
+            <div className="flex flex-row items-center gap-2">
+              <div className="relative h-[18px] w-[18px]">
+                <div className="absolute left-0 top-0 h-[13px] w-[13px] rounded-sm bg-white" />
+                <div className="absolute bottom-0 right-0 h-[13px] w-[13px] rounded-sm bg-blue-300" />
+              </div>
+              <span className="text-[12px] font-bold tracking-[-0.2pt] text-white">
+                {data.agency}
+              </span>
+            </div>
+            <div className="mt-3 flex flex-row items-baseline gap-3">
+              <h1 className="text-[40px] font-bold leading-none tracking-[-1pt] text-white">
+                {data.formCode}
+              </h1>
+              <span className="rounded-full bg-blue-200 px-2 py-0.5 text-[8px] font-bold uppercase tracking-[1pt] text-blue-900">
+                {data.revision}
+              </span>
+            </div>
+            <p className="mt-2.5 max-w-[340px] text-[10.5px] font-medium leading-snug text-blue-100">
+              {data.formTitle}
+            </p>
           </div>
-          <div className="flex flex-1 flex-col px-6">
-            <h1 className="text-sm font-bold leading-tight text-slate-900">{data.formTitle}</h1>
-            <span className="mt-1 text-[9px] text-slate-500">{data.agency}</span>
-          </div>
-          <div className="flex flex-col items-end">
-            <span className="text-[9px] text-slate-500">Give Form to the</span>
-            <span className="text-[9px] text-slate-500">requester. Do not</span>
-            <span className="text-[9px] text-slate-500">send to the IRS.</span>
+          <div className="flex w-[160px] flex-col justify-center rounded-sm border border-white/30 bg-white/10 px-3 py-2.5">
+            <span className="text-[7px] font-bold uppercase tracking-[1.5pt] text-blue-200">
+              Instructions
+            </span>
+            <p className="mt-1.5 text-[8.5px] leading-snug text-blue-50">
+              Give this form to the requester. Do not send it to the IRS.
+            </p>
           </div>
         </div>
 
-        <Form name="w9" className="mt-5 flex flex-col gap-4">
+        <Form name="w9" className="mt-6 flex flex-col gap-4">
+          {/* Part I - Identification */}
+          <PartHeading part="Part I">Taxpayer identification</PartHeading>
+
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-bold uppercase tracking-[1pt] text-slate-600">
-              1. Name (as shown on your income tax return)
-            </span>
-            <TextField
-              name="legal_name"
-              required
-              defaultValue={d.name}
-              className="h-8 w-full rounded border border-slate-400 px-2 text-sm"
-            />
+            <FieldLabel index="1.">Name (as shown on your income tax return)</FieldLabel>
+            <TextField name="legal_name" required defaultValue={d.name} className={fieldClass} />
           </div>
 
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-bold uppercase tracking-[1pt] text-slate-600">
-              2. Business name / disregarded entity name, if different from above
-            </span>
-            <TextField
-              name="business_name"
-              defaultValue={d.businessName}
-              className="h-8 w-full rounded border border-slate-400 px-2 text-sm"
-            />
+            <FieldLabel index="2.">
+              Business name / disregarded entity, if different from above
+            </FieldLabel>
+            <TextField name="business_name" defaultValue={d.businessName} className={fieldClass} />
           </div>
 
-          <div className="flex flex-col gap-2">
-            <span className="text-[10px] font-bold uppercase tracking-[1pt] text-slate-600">
-              3. Federal tax classification
-            </span>
-            <RadioGroup
-              name="tax_classification"
-              options={data.classifications}
-              defaultValue={d.classification}
-              className="flex flex-col gap-1 text-xs text-slate-800"
-            />
-          </div>
-
-          <div className="flex flex-row gap-4">
-            <div className="flex flex-1 flex-col gap-1">
-              <span className="text-[10px] font-bold uppercase tracking-[1pt] text-slate-600">
-                4. Address (number, street, and apt. or suite no.)
-              </span>
-              <TextField
-                name="street_address"
-                defaultValue={d.address}
-                className="h-8 w-full rounded border border-slate-400 px-2 text-sm"
+          <div className="flex flex-col gap-1.5">
+            <FieldLabel index="3.">Federal tax classification</FieldLabel>
+            <div className="rounded-sm border border-slate-300 bg-slate-50 p-2.5">
+              <RadioGroup
+                name="tax_classification"
+                options={data.classifications}
+                defaultValue={d.classification}
+                className="grid grid-cols-3 gap-x-4 gap-y-2 text-[10px] text-slate-900"
               />
             </div>
           </div>
 
           <div className="flex flex-row gap-4">
             <div className="flex flex-1 flex-col gap-1">
-              <span className="text-[10px] font-bold uppercase tracking-[1pt] text-slate-600">
-                5. City, state, and ZIP code
-              </span>
+              <FieldLabel index="4.">Address (number, street, and apt. or suite no.)</FieldLabel>
+              <TextField name="street_address" defaultValue={d.address} className={fieldClass} />
+            </div>
+          </div>
+
+          <div className="flex flex-row gap-4">
+            <div className="flex flex-1 flex-col gap-1">
+              <FieldLabel index="5.">City, state, and ZIP code</FieldLabel>
               <TextField
                 name="city_state_zip"
                 defaultValue={d.cityStateZip}
-                className="h-8 w-full rounded border border-slate-400 px-2 text-sm"
+                className={fieldClass}
               />
             </div>
-            <div className="flex w-40 flex-col gap-1">
-              <span className="text-[10px] font-bold uppercase tracking-[1pt] text-slate-600">
-                State
-              </span>
+            <div className="flex w-44 flex-col gap-1">
+              <FieldLabel>State</FieldLabel>
               <Dropdown
                 name="state"
                 options={data.states}
                 defaultValue={d.state}
-                className="h-8 w-full rounded border border-slate-400 px-2 text-sm"
+                className={fieldClass}
               />
             </div>
           </div>
 
           <div className="flex flex-row gap-4">
             <div className="flex flex-1 flex-col gap-1">
-              <span className="text-[10px] font-bold uppercase tracking-[1pt] text-slate-600">
-                6. Social security number
-              </span>
+              <FieldLabel index="6.">Social security number</FieldLabel>
               <TextField
                 name="ssn"
                 placeholder="___ - __ - ____"
                 defaultValue={d.ssn}
-                className="h-8 w-full rounded border border-slate-400 px-2 text-sm"
+                className={fieldClass}
               />
             </div>
             <div className="flex flex-1 flex-col gap-1">
-              <span className="text-[10px] font-bold uppercase tracking-[1pt] text-slate-600">
-                7. Employer identification number
-              </span>
-              <TextField
-                name="ein"
-                defaultValue={d.ein}
-                className="h-8 w-full rounded border border-slate-400 px-2 text-sm"
-              />
+              <FieldLabel index="7.">Employer identification number</FieldLabel>
+              <TextField name="ein" defaultValue={d.ein} className={fieldClass} />
             </div>
           </div>
 
-          <div className="mt-2 flex flex-col gap-2 rounded border border-slate-300 bg-slate-50 p-3">
-            <span className="text-[10px] font-bold uppercase tracking-[1pt] text-slate-600">
-              Exemptions
-            </span>
-            <div className="flex flex-row items-center gap-2">
-              <Checkbox name="exempt_payee" className="h-4 w-4 border border-slate-500" />
-              <span className="text-xs text-slate-800">
-                I am exempt from backup withholding (exempt payee).
-              </span>
+          {/* Panelled exemptions box */}
+          <div className="mt-1 flex flex-col rounded-sm border border-slate-300">
+            <div className="rounded-t-sm border-b border-slate-300 bg-slate-50 px-3 py-1.5">
+              <FieldLabel>Exemptions (codes apply only to certain entities)</FieldLabel>
             </div>
-            <div className="flex flex-row items-center gap-2">
-              <Checkbox name="exempt_fatca" className="h-4 w-4 border border-slate-500" />
-              <span className="text-xs text-slate-800">
-                I am exempt from FATCA reporting requirements.
-              </span>
+            <div className="flex flex-col gap-2 px-3 py-2.5">
+              <div className="flex flex-row items-center gap-2">
+                <Checkbox
+                  name="exempt_payee"
+                  className="h-3.5 w-3.5 rounded-sm border border-slate-600"
+                />
+                <span className="text-[10px] text-slate-900">
+                  I am exempt from backup withholding (exempt payee).
+                </span>
+              </div>
+              <div className="flex flex-row items-center gap-2">
+                <Checkbox
+                  name="exempt_fatca"
+                  className="h-3.5 w-3.5 rounded-sm border border-slate-600"
+                />
+                <span className="text-[10px] text-slate-900">
+                  I am exempt from FATCA reporting requirements.
+                </span>
+              </div>
             </div>
           </div>
 
-          <div className="mt-2 flex flex-col gap-2 border-t-2 border-slate-900 pt-3">
-            <span className="text-[10px] font-bold uppercase tracking-[1pt] text-slate-600">
-              Part II - Certification
-            </span>
-            <p className="text-[10px] leading-relaxed text-slate-700">
+          {/* Part II - Certification */}
+          <div className="mt-2 flex flex-col gap-2.5">
+            <PartHeading part="Part II">Certification</PartHeading>
+            <p className="text-[9.5px] leading-relaxed text-slate-600">
               Under penalties of perjury, I certify that: (1) the number shown on this form is my
               correct taxpayer identification number; (2) I am not subject to backup withholding;
               and (3) I am a U.S. citizen or other U.S. person. The Internal Revenue Service does
               not require your consent to any provision of this document other than the
               certifications required to avoid backup withholding.
             </p>
-            <div className="mt-1 flex flex-row items-center gap-2">
+            <div className="mt-1 flex flex-row items-center gap-2.5 rounded-sm border-l-[3px] border-blue-700 bg-blue-50 px-3 py-2.5">
               <Checkbox
                 name="certification"
                 required
                 defaultChecked
-                className="h-4 w-4 border border-slate-500"
+                className="h-3.5 w-3.5 rounded-sm border border-blue-700"
               />
-              <span className="text-xs font-semibold text-slate-900">
+              <span className="text-[10px] font-semibold text-slate-900">
                 I have read and agree to the certification above.
               </span>
             </div>
-            <div className="mt-3 flex flex-row gap-4">
+            <div className="mt-3 flex flex-row items-end gap-4">
               <div className="flex flex-1 flex-col gap-1">
-                <span className="text-[10px] font-bold uppercase tracking-[1pt] text-slate-600">
-                  Signature of U.S. person
-                </span>
-                <TextField
-                  name="signer_name"
-                  className="h-8 w-full rounded border border-slate-400 px-2 text-sm"
-                />
+                <FieldLabel>Signature of U.S. person</FieldLabel>
+                <TextField name="signer_name" className={fieldClass} />
               </div>
-              <div className="flex w-40 flex-col gap-1">
-                <span className="text-[10px] font-bold uppercase tracking-[1pt] text-slate-600">
-                  Date
-                </span>
-                <TextField
-                  name="signed_date"
-                  type="date"
-                  className="h-8 w-full rounded border border-slate-400 px-2 text-sm"
-                />
+              <div className="flex w-44 flex-col gap-1">
+                <FieldLabel>Date</FieldLabel>
+                <TextField name="signed_date" type="date" className={fieldClass} />
               </div>
             </div>
           </div>
         </Form>
+
+        <div className="flex-1" />
+        <div className="mt-8 flex flex-row items-center justify-between border-t border-slate-300 pt-3">
+          <span className="text-[8px] uppercase tracking-[1.5pt] text-slate-400">
+            {data.formCode} &middot; {data.revision}
+          </span>
+          <span className="text-[8px] uppercase tracking-[1.5pt] text-slate-400">
+            {data.agency}
+          </span>
+        </div>
       </Page>
     </Document>
   );

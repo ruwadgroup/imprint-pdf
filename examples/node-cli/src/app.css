@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+/* Maps the curated corpus fonts onto Tailwind's `font-*` utilities so the
+   templates style typography the Tailwind way: `font-sans`, `font-serif`,
+   `font-display`, `font-mono`, `font-script`. The families must match the
+   `FONT` names loaded via each document's `fonts` bundle. imprint resolves the
+   `var(--font-*)` Tailwind emits back to these names at render time. */
+@theme {
+  --font-sans: "Inter", "Helvetica", sans-serif;
+  --font-serif: "Source Serif 4", "Times New Roman", serif;
+  --font-display: "Cormorant Garamond", "Georgia", serif;
+  --font-mono: "JetBrains Mono", "Courier New", monospace;
+  --font-script: "Pinyon Script", cursive;
+}

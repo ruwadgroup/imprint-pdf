@@ -7,6 +7,7 @@ import { CoverLetter, coverLetterSample } from './cover-letter/index.js';
 import { Datasheet, datasheetSample } from './datasheet/index.js';
 import { EventTicket, eventTicketSample } from './event-ticket/index.js';
 import { Invoice, invoiceSample } from './invoice/index.js';
+import { fontSets } from './lib/fonts.js';
 import { Menu, menuSample } from './menu/index.js';
 import { Receipt, receiptSample } from './receipt/index.js';
 import { Report, reportSample } from './report/index.js';
@@ -29,6 +30,7 @@ export const documents: DocEntry[] = [
     title: 'Invoice',
     description: 'Line-item invoice with a totals block and tax.',
     features: ['tables', 'totals', 'tailwind'],
+    fonts: fontSets.corporate,
     Component: Invoice,
     sampleProps: { data: invoiceSample },
   }),
@@ -37,6 +39,7 @@ export const documents: DocEntry[] = [
     title: 'Receipt',
     description: 'Narrow ~80mm thermal-style receipt with line items, totals, and a scan barcode.',
     features: ['narrow', 'compact', 'barcode'],
+    fonts: fontSets.mono,
     Component: Receipt,
     sampleProps: { data: receiptSample },
   }),
@@ -45,6 +48,7 @@ export const documents: DocEntry[] = [
     title: 'Resume',
     description: 'Two-column CV with a colored sidebar and a typographic main column.',
     features: ['two-column', 'typography'],
+    fonts: fontSets.editorial,
     Component: Resume,
     sampleProps: { data: resumeSample },
   }),
@@ -54,6 +58,7 @@ export const documents: DocEntry[] = [
     description:
       'Formal serif cover letter with letterhead, recipient block, and prose paragraphs.',
     features: ['prose', 'letterhead'],
+    fonts: fontSets.editorial,
     Component: CoverLetter,
     sampleProps: { data: coverLetterSample },
   }),
@@ -62,6 +67,7 @@ export const documents: DocEntry[] = [
     title: 'Certificate',
     description: 'Landscape certificate of achievement with double border, watermark, and seal.',
     features: ['centered', 'watermark', 'landscape'],
+    fonts: fontSets.ceremonial,
     Component: Certificate,
     sampleProps: { data: certificateSample },
   }),
@@ -71,6 +77,7 @@ export const documents: DocEntry[] = [
     description:
       'Quarterly report with KPI cards, a revenue bar chart, and a multi-page ledger with running header, footer, and page numbers.',
     features: ['multi-page', 'header-footer', 'page-numbers', 'charts'],
+    fonts: fontSets.corporateMono,
     Component: Report,
     sampleProps: { data: reportSample },
   }),
@@ -80,6 +87,7 @@ export const documents: DocEntry[] = [
     description:
       'Monthly statement with masked account details, balance summary, and a dense multi-page transaction table with running balance.',
     features: ['dense-table', 'multi-page', 'running-balance'],
+    fonts: fontSets.corporateMono,
     Component: BankStatement,
     sampleProps: { data: bankStatementSample },
   }),
@@ -88,6 +96,7 @@ export const documents: DocEntry[] = [
     title: 'Boarding pass',
     description: 'Fixed-size airline boarding pass with a dashed stub, QR code, and barcode strip.',
     features: ['qr', 'barcode', 'fixed-layout'],
+    fonts: fontSets.corporate,
     Component: BoardingPass,
     sampleProps: { data: boardingPassSample },
   }),
@@ -96,6 +105,7 @@ export const documents: DocEntry[] = [
     title: 'Event ticket',
     description: 'Wide branded event ticket with a QR code and a perforated ADMIT ONE stub.',
     features: ['qr', 'branding'],
+    fonts: fontSets.corporate,
     Component: EventTicket,
     sampleProps: { data: eventTicketSample },
   }),
@@ -104,6 +114,7 @@ export const documents: DocEntry[] = [
     title: 'Shipping label',
     description: '4×6 in carrier label with FROM/TO blocks, service class, and a tracking barcode.',
     features: ['label', 'barcode', 'fixed-size'],
+    fonts: fontSets.corporateMono,
     Component: ShippingLabel,
     sampleProps: { data: shippingLabelSample },
   }),
@@ -112,6 +123,7 @@ export const documents: DocEntry[] = [
     title: 'Restaurant menu',
     description: 'Editorial two-column menu with dotted price leaders and section headers.',
     features: ['multi-column', 'editorial'],
+    fonts: fontSets.menu,
     Component: Menu,
     sampleProps: { data: menuSample },
   }),
@@ -120,6 +132,7 @@ export const documents: DocEntry[] = [
     title: 'Contract (NDA)',
     description: 'Multi-page mutual NDA with numbered clauses and a two-party signature block.',
     features: ['long-text', 'signature', 'page-breaks'],
+    fonts: fontSets.editorial,
     Component: Contract,
     sampleProps: { data: contractSample },
   }),
@@ -129,6 +142,7 @@ export const documents: DocEntry[] = [
     description:
       'Fillable W-9-style AcroForm with text fields, radios, checkboxes, and a dropdown.',
     features: ['acroform', 'fillable'],
+    fonts: fontSets.corporate,
     Component: TaxForm,
     sampleProps: { data: taxFormSample },
   }),
@@ -138,6 +152,7 @@ export const documents: DocEntry[] = [
     description:
       'A4 spec sheet with an inline-SVG illustration and a technical specifications table.',
     features: ['spec-table', 'image'],
+    fonts: fontSets.corporate,
     Component: Datasheet,
     sampleProps: { data: datasheetSample },
   }),
@@ -147,6 +162,7 @@ export const documents: DocEntry[] = [
     description:
       'KPI card grid with an inline-SVG bar chart, a conversion line chart, and a ranked table.',
     features: ['charts', 'dashboard', 'svg'],
+    fonts: fontSets.corporateMono,
     Component: Analytics,
     sampleProps: { data: analyticsSample },
   }),

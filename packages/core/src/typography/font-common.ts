@@ -1,4 +1,4 @@
-import { type PDFDocument, type PDFFont, StandardFonts } from 'pdf-lib';
+import { PDFDocument, type PDFFont, StandardFonts } from 'pdf-lib';
 import type { FontDeclaration } from '../types.js';
 
 export interface HbFont {
@@ -101,37 +101,49 @@ export function ttfFallbackUrl(src: string): string | null {
   return null;
 }
 
-export async function loadStandardFont(
-  doc: PDFDocument,
-  family: string,
-  weight: number,
-  style: 'normal' | 'italic',
-): Promise<LoadedFont> {
-  const canonicalFamily = normalizeFamily(family);
-  const fontVariants = STANDARD_FONT_MAP[canonicalFamily] ?? STANDARD_FONT_MAP.Helvetica!;
+// The four variants every standard PDF family ships.
+const STANDARD_VARIANTS: ReadonlyArray<{ weight: number; style: 'normal' | 'italic' }> = [
+  { weight: 400, style: 'normal' },
+  { weight: 700, style: 'normal' },
+  { weight: 400, style: 'italic' },
+  { weight: 700, style: 'italic' },
+];
 
-  // Standard PDF fonts only ship four variants per family; map any
-  // (weight, style) onto the closest one.
-  const exactKey = `${weight}-${style}`;
-  const boldKey = `700-${style}`;
-  const normalKey = `400-${style}`;
-  const plainKey = '400-normal';
+// Embed all 12 standard variants (Helvetica/Times/Courier x 4) into `doc`,
+// keyed by canonical family. Both the layout (measure) pass and the writer
+// (draw) pass embed this same set so `font-serif`/`font-mono` resolve to real
+// Times/Courier - not a silent Helvetica fallback - and, critically, so the
+// two passes compute identical glyph advances. A width mismatch between measure
+// and draw makes a shrink-to-content box too narrow for the text the writer
+// then lays out, which wraps an extra line and overlaps whatever follows.
+export async function embedStandardFontSet(doc: PDFDocument): Promise<Map<string, LoadedFont>> {
+  const fonts = new Map<string, LoadedFont>();
+  for (const [family, variants] of Object.entries(STANDARD_FONT_MAP)) {
+    for (const { weight, style } of STANDARD_VARIANTS) {
+      const standardFont = variants[`${weight}-${style}`];
+      if (!standardFont) continue;
+      const pdfFont = await doc.embedFont(standardFont);
+      fonts.set(fontKey(family, weight, style), {
+        family,
+        weight,
+        style,
+        pdfFont,
+        metrics: DEFAULT_METRICS,
+      });
+    }
+  }
+  return fonts;
+}
 
-  const standardFont =
-    fontVariants[exactKey] ??
-    (weight >= 600 ? fontVariants[boldKey] : fontVariants[normalKey]) ??
-    fontVariants[plainKey] ??
-    StandardFonts.Helvetica;
-
-  const pdfFont = await doc.embedFont(standardFont);
-
-  return {
-    family,
-    weight,
-    style,
-    pdfFont,
-    metrics: DEFAULT_METRICS,
-  };
+// Standard-font AFM widths are document-independent, so the layout pass can
+// reuse one cached set embedded in a throwaway document instead of re-embedding
+// every render. (The writer must still embed into its own output document.)
+let standardMetricsCache: Promise<Map<string, LoadedFont>> | undefined;
+export function getStandardFontMetrics(): Promise<Map<string, LoadedFont>> {
+  if (!standardMetricsCache) {
+    standardMetricsCache = PDFDocument.create().then(embedStandardFontSet);
+  }
+  return standardMetricsCache;
 }
 
 // Resolves `(family, weight, style)` to a loaded font. Fallback chain:

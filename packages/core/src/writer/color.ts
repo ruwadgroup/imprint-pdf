@@ -144,3 +144,15 @@ export function toPt(value: string | number | undefined, fallback: number): numb
   if (value.endsWith('in')) return n * 72;
   return Number.isNaN(n) ? fallback : n;
 }
+
+// PDF opacity is 0–1. CSS/Tailwind can hand us a percentage (`40%`) or a bare
+// 0–100 number (`opacity-40` compiles to `40%`); normalise and clamp so pdf-lib
+// never throws on an out-of-range alpha.
+export function normalizeOpacity(raw: unknown): number | undefined {
+  if (raw === undefined || raw === null || raw === '') return undefined;
+  const s = String(raw);
+  const n = parseFloat(s);
+  if (Number.isNaN(n)) return undefined;
+  const v = s.includes('%') || n > 1 ? n / 100 : n;
+  return Math.max(0, Math.min(1, v));
+}

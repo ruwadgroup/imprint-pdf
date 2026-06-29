@@ -11,7 +11,11 @@ const PROJECT_ROOT = fileURLToPath(new URL('../', import.meta.url));
 await mkdir(OUT_DIR, { recursive: true });
 
 for (const doc of documents) {
-  const bytes = await pdf(doc.render(), { as: 'bytes', tailwind: { projectRoot: PROJECT_ROOT } });
+  const bytes = await pdf(doc.render(), {
+    as: 'bytes',
+    fonts: doc.fonts,
+    tailwind: { projectRoot: PROJECT_ROOT },
+  });
   await writeFile(new URL(`${doc.id}.pdf`, OUT_DIR), bytes);
   console.log(`  ✓  ${doc.id}.pdf  ${(bytes.byteLength / 1024).toFixed(1)} KB`);
 }

@@ -1,87 +1,24 @@
 import fontkitLib from '@pdf-lib/fontkit';
-import { type PDFDocument, type PDFFont, StandardFonts } from 'pdf-lib';
+import type { PDFDocument } from 'pdf-lib';
 import type { AssetResolver, FontDeclaration, RenderOptions } from '../types.js';
 import { reportAssetError } from '../writer/drawImage.js';
-import { ttfFallbackUrl } from './font-common.js';
-import { createHbFont, type HbFont } from './shaper.js';
+// Shared font primitives (metrics, keying, weight parsing, family resolution,
+// the standard-font set, and selectFont) live in font-common so the node and
+// browser loaders stay in sync - this file only adds node-specific embedding.
+import {
+  DEFAULT_METRICS,
+  declWeight,
+  embedStandardFontSet,
+  type FontMetrics,
+  fontKey,
+  getStandardFontMetrics,
+  type LoadedFont,
+  ttfFallbackUrl,
+} from './font-common.js';
+import { createHbFont } from './shaper.js';
 
-export interface FontMetrics {
-  unitsPerEm: number;
-  ascent: number;
-  descent: number;
-  lineGap: number;
-}
-
-export interface LoadedFont {
-  family: string;
-  weight: number;
-  style: 'normal' | 'italic';
-  pdfFont?: PDFFont;
-  metrics: FontMetrics;
-  rawBytes?: Uint8Array;
-  hbFont?: HbFont;
-}
-
-const DEFAULT_METRICS: FontMetrics = {
-  unitsPerEm: 1000,
-  ascent: 800,
-  descent: -200,
-  lineGap: 0,
-};
-
-const STANDARD_FONT_MAP: Record<string, Record<string, StandardFonts>> = {
-  Helvetica: {
-    '400-normal': StandardFonts.Helvetica,
-    '700-normal': StandardFonts.HelveticaBold,
-    '400-italic': StandardFonts.HelveticaOblique,
-    '700-italic': StandardFonts.HelveticaBoldOblique,
-  },
-  'Times-Roman': {
-    '400-normal': StandardFonts.TimesRoman,
-    '700-normal': StandardFonts.TimesRomanBold,
-    '400-italic': StandardFonts.TimesRomanItalic,
-    '700-italic': StandardFonts.TimesRomanBoldItalic,
-  },
-  Courier: {
-    '400-normal': StandardFonts.Courier,
-    '700-normal': StandardFonts.CourierBold,
-    '400-italic': StandardFonts.CourierOblique,
-    '700-italic': StandardFonts.CourierBoldOblique,
-  },
-};
-
-const FAMILY_ALIAS: Record<string, string> = {
-  helvetica: 'Helvetica',
-  arial: 'Helvetica',
-  'sans-serif': 'Helvetica',
-  'ui-sans-serif': 'Helvetica',
-  'system-ui': 'Helvetica',
-  times: 'Times-Roman',
-  'times new roman': 'Times-Roman',
-  'times-roman': 'Times-Roman',
-  serif: 'Times-Roman',
-  'ui-serif': 'Times-Roman',
-  georgia: 'Times-Roman',
-  courier: 'Courier',
-  'courier new': 'Courier',
-  monospace: 'Courier',
-  'ui-monospace': 'Courier',
-};
-
-function normalizeFamily(family: string): string {
-  const lower = family.split(',')[0]?.trim().toLowerCase() ?? family.toLowerCase();
-  return FAMILY_ALIAS[lower] ?? family;
-}
-
-function fontKey(family: string, weight: number, style: 'normal' | 'italic'): string {
-  return `${family}:${weight}:${style}`;
-}
-
-function declWeight(weight: FontDeclaration['weight']): number {
-  if (typeof weight === 'number') return weight;
-  if (weight === undefined) return 400;
-  return parseInt(String(weight), 10);
-}
+export type { FontMetrics, HbFont, LoadedFont } from './font-common.js';
+export { selectFont } from './font-common.js';
 
 async function tryLoadFontBytes(
   doc: PDFDocument,
@@ -156,39 +93,6 @@ async function loadCustomFont(
   };
 }
 
-async function loadStandardFont(
-  doc: PDFDocument,
-  family: string,
-  weight: number,
-  style: 'normal' | 'italic',
-): Promise<LoadedFont> {
-  const canonicalFamily = normalizeFamily(family);
-  const fontVariants = STANDARD_FONT_MAP[canonicalFamily] ?? STANDARD_FONT_MAP.Helvetica!;
-
-  // Standard PDF fonts only ship four variants per family — map any
-  // (weight, style) onto the closest one.
-  const exactKey = `${weight}-${style}`;
-  const boldKey = `700-${style}`;
-  const normalKey = `400-${style}`;
-  const plainKey = '400-normal';
-
-  const standardFont =
-    fontVariants[exactKey] ??
-    (weight >= 600 ? fontVariants[boldKey] : fontVariants[normalKey]) ??
-    fontVariants[plainKey] ??
-    StandardFonts.Helvetica;
-
-  const pdfFont = await doc.embedFont(standardFont);
-
-  return {
-    family,
-    weight,
-    style,
-    pdfFont,
-    metrics: DEFAULT_METRICS,
-  };
-}
-
 // HarfBuzz-only loader: layout needs glyph advances before a `PDFDocument`
 // exists, and embedding (subsetting, CFF parsing) is the slow part — skip it.
 export async function loadFontMetricsOnly(
@@ -196,7 +100,10 @@ export async function loadFontMetricsOnly(
   resolver: AssetResolver,
   onAssetError?: RenderOptions['onAssetError'],
 ): Promise<Map<string, LoadedFont>> {
-  const fonts = new Map<string, LoadedFont>();
+  // Seed with real standard-font widths so the layout pass measures Helvetica/
+  // Times/Courier identically to how the writer draws them. Copy the cached set
+  // so per-render custom fonts don't mutate it.
+  const fonts = new Map<string, LoadedFont>(await getStandardFontMetrics());
   for (const decl of declarations) {
     try {
       const bytes = await resolver.resolve(decl.src);
@@ -239,12 +146,11 @@ export async function loadFonts(
     }
   }
 
-  // Last-resort fallback for selectFont — guarantee it exists so a missing
-  // family never returns undefined.
-  const fallbackKey = fontKey('Helvetica', 400, 'normal');
-  if (!fonts.has(fallbackKey)) {
-    const fallback = await loadStandardFont(doc, 'Helvetica', 400, 'normal');
-    fonts.set(fallbackKey, fallback);
+  // Embed the full standard set so font-serif/font-mono draw as real Times/
+  // Courier and every (family, weight, style) has a real fallback. Custom fonts
+  // declared above keep priority on shared keys.
+  for (const [key, font] of await embedStandardFontSet(doc)) {
+    if (!fonts.has(key)) fonts.set(key, font);
   }
 
   for (const f of fonts.values()) {
@@ -252,38 +158,4 @@ export async function loadFonts(
   }
 
   return fonts;
-}
-
-// Resolves `(family, weight, style)` to a loaded font. Fallback chain:
-// closest weight in the same family → family alias (Arial → Helvetica) →
-// Helvetica 400 normal.
-export function selectFont(
-  fonts: Map<string, LoadedFont>,
-  family: string,
-  weight: number,
-  style: 'normal' | 'italic',
-): LoadedFont | undefined {
-  const exact = fonts.get(fontKey(family, weight, style));
-  if (exact) return exact;
-
-  // Style mismatch costs 100, which exceeds the max weight gap (800), so
-  // a matching-style font always beats a wrong-style one.
-  let best: LoadedFont | undefined;
-  let bestDiff = Infinity;
-  for (const f of fonts.values()) {
-    if (f.family !== family) continue;
-    const diff = Math.abs(f.weight - weight) + (f.style !== style ? 100 : 0);
-    if (diff < bestDiff) {
-      bestDiff = diff;
-      best = f;
-    }
-  }
-  if (best) return best;
-
-  const canonical = normalizeFamily(family);
-  if (canonical !== family) {
-    return selectFont(fonts, canonical, weight, style);
-  }
-
-  return fonts.get(fontKey('Helvetica', 400, 'normal'));
 }

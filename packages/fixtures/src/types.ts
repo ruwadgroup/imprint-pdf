@@ -1,3 +1,4 @@
+import type { FontDeclaration } from '@imprint-pdf/core';
 import { type ComponentType, createElement, type ReactElement } from 'react';
 
 /**
@@ -13,6 +14,11 @@ export interface DocEntry {
   title: string;
   description: string;
   features: string[];
+  /**
+   * Custom fonts this document's design needs, passed to `pdf()` by consumers.
+   * Empty when the template uses only the standard PDF base-14 fonts.
+   */
+  fonts: FontDeclaration[];
   render: () => ReactElement;
 }
 
@@ -21,14 +27,16 @@ export function defineDoc<P>(entry: {
   title: string;
   description: string;
   features: string[];
+  /** Custom fonts the design depends on (Fontsource declarations). */
+  fonts?: FontDeclaration[];
   Component: ComponentType<P>;
   /** Deterministic sample props (no clock or RNG). */
   sampleProps: P;
 }): DocEntry {
-  const { Component, sampleProps, ...meta } = entry;
+  const { Component, sampleProps, fonts = [], ...meta } = entry;
   // The public signature already pins `sampleProps: P` to `Component`'s props;
   // erase here so createElement isn't fighting the generic's class-component variance.
   const C = Component as ComponentType<Record<string, unknown>>;
   const props = sampleProps as Record<string, unknown>;
-  return { ...meta, render: () => createElement(C, props) };
+  return { ...meta, fonts, render: () => createElement(C, props) };
 }

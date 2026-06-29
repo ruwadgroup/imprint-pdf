@@ -121,3 +121,28 @@ describe('parseCssToStyleMap', () => {
     expect(parseCssToStyleMap(css).get('foo')).toMatchObject({ color: 'red' });
   });
 });
+
+describe('opacity normalization', () => {
+  it('converts percentage opacity to a 0-1 decimal', () => {
+    const css = '.opacity-40 { opacity: 40% }';
+    expect(parseCssToStyleMap(css).get('opacity-40')).toMatchObject({ opacity: '0.4' });
+  });
+  it('clamps a bare 0-100 opacity into range', () => {
+    const css = '.o { opacity: 70 }';
+    expect(parseCssToStyleMap(css).get('o')).toMatchObject({ opacity: '0.7' });
+  });
+});
+
+describe('transform utilities', () => {
+  it('composes rotate/scale/translate properties into a transform', () => {
+    const css = `
+      @property --tw-scale-x { syntax: "*"; inherits: false; initial-value: 1 }
+      @property --tw-scale-y { syntax: "*"; inherits: false; initial-value: 1 }
+      .-rotate-90 { rotate: calc(90deg * -1) }
+      .scale-x-flip { --tw-scale-x: -1; scale: var(--tw-scale-x) var(--tw-scale-y) }
+    `;
+    const map = parseCssToStyleMap(css);
+    expect(map.get('-rotate-90')).toMatchObject({ transform: 'rotate(-90deg)' });
+    expect(map.get('scale-x-flip')).toMatchObject({ transform: 'scale(-1 1)' });
+  });
+});

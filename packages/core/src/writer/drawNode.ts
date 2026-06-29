@@ -23,7 +23,7 @@ import type {
   TextNode,
 } from '../types.js';
 import type { LoadedFont } from '../typography/font-common.js';
-import { parseColor, toPt } from './color.js';
+import { normalizeOpacity, parseColor, toPt } from './color.js';
 import { pdfY } from './coords.js';
 import {
   drawButton,
@@ -121,7 +121,7 @@ function drawBackground(
   const br = resolvePt(style, 'borderBottomRightRadius', uniformR);
   const bl = resolvePt(style, 'borderBottomLeftRadius', uniformR);
   const hasRadius = tl > 0 || tr > 0 || br > 0 || bl > 0;
-  const opacity = style.opacity !== undefined ? parseFloat(String(style.opacity)) : undefined;
+  const opacity = normalizeOpacity(style.opacity);
 
   if (bgColor || (allBorderColor && allBorderW > 0)) {
     if (hasRadius) {

@@ -108,6 +108,17 @@ function parseCssVars(css: string): Map<string, string> {
     }
     m = rootRe.exec(css);
   }
+  // Tailwind v4 declares transform vars (`--tw-scale-x`, `--tw-translate-y`, …)
+  // via `@property` with an `initial-value` rather than on `:root`. Capture
+  // those defaults so a `scale: var(--tw-scale-x) var(--tw-scale-y)` rule that
+  // only sets one axis still resolves the other to its 1/0 default.
+  const propRe = /@property\s+(--[\w-]+)\s*\{[^}]*?initial-value:\s*([^;}]+)/gs;
+  let p = propRe.exec(css);
+  while (p !== null) {
+    const name = p[1]!.trim();
+    if (!vars.has(name)) vars.set(name, p[2]!.trim());
+    p = propRe.exec(css);
+  }
   return vars;
 }
 
@@ -185,13 +196,14 @@ function resolveCalc(value: string): string {
   if (!value.includes('calc(')) return value;
   return value.replace(/calc\(([^)]+)\)/g, (_, expr: string) => {
     try {
+      const hasDeg = /deg/.test(expr);
       const hasDimension = /\d(?:\.\d+)?(?:rem|px|em|pt)/.test(expr);
       const withPx = expr.replace(/(\d*\.?\d+)rem/g, (__, n: string) => `${parseFloat(n) * 16}`);
-      const noUnits = withPx.replace(/(\d*\.?\d+)px/g, '$1');
+      const noUnits = withPx.replace(/(\d*\.?\d+)px/g, '$1').replace(/deg/g, '');
       if (/^[\d\s+\-*/().]+$/.test(noUnits)) {
         // biome-ignore lint/security/noGlobalEval: input is regex-restricted to digits and operators
         const result = eval(noUnits) as number;
-        return hasDimension ? `${result}px` : `${result}`;
+        return hasDeg ? `${result}deg` : hasDimension ? `${result}px` : `${result}`;
       }
     } catch {}
     return expr;
@@ -311,6 +323,15 @@ function stripAtRules(css: string): string {
   return out;
 }
 
+// Clamp an opacity declaration to the PDF-legal 0–1 range. Accepts a percentage
+// (`40%`), a bare 0–100 number, or an already-normalised 0–1 decimal.
+function normalizeOpacity(v: string): string {
+  let n = parseFloat(v);
+  if (Number.isNaN(n)) return v;
+  if (v.includes('%') || n > 1) n /= 100;
+  return String(Math.max(0, Math.min(1, n)));
+}
+
 export function parseCssToStyleMap(css: string): Map<string, ResolvedStyle> {
   const map = new Map<string, ResolvedStyle>();
   const vars = parseCssVars(css);
@@ -335,24 +356,56 @@ export function parseCssToStyleMap(css: string): Map<string, ResolvedStyle> {
     const className = rawName.replace(/\\(.)/g, '$1');
 
     const style: Partial<Record<keyof ResolvedStyle, unknown>> = {};
+
+    // Tailwind sets transform vars (`--tw-scale-x: -1`) on the same rule as the
+    // `scale: var(--tw-scale-x) …` declaration, so var() must resolve against
+    // this rule's own custom properties layered over the globals/defaults.
+    const localVars = new Map(vars);
+    const localVarRe = /(--[\w-]+)\s*:\s*([^;!]+)/g;
+    let lv = localVarRe.exec(decls);
+    while (lv !== null) {
+      localVars.set(lv[1]!.trim(), resolveVars(lv[2]!.trim(), vars));
+      lv = localVarRe.exec(decls);
+    }
+
+    // CSS individual transform properties → a single `transform` the writer
+    // understands (CSS applies them translate → rotate → scale).
+    const tfm: { translate?: string; rotate?: string; scale?: string } = {};
+
     const declRe = /([\w-]+)\s*:\s*([^;!]+)/g;
     let d = declRe.exec(decls);
     while (d !== null) {
       const prop = d[1]?.trim() ?? '';
       const rawVal = d[2]?.trim() ?? '';
       if (!prop.startsWith('--')) {
-        const key = PROP_MAP[prop];
-        if (key !== undefined) {
-          const val = resolveValue(rawVal, vars);
-          if (val) {
-            style[key] = val;
-            // Logical shorthands fan out to both physical sides.
-            if (prop === 'padding-inline') style.paddingRight = val;
-            else if (prop === 'padding-block') style.paddingBottom = val;
+        if (prop === 'translate' || prop === 'rotate' || prop === 'scale') {
+          const v = resolveValue(rawVal, localVars);
+          if (v && v !== 'none') tfm[prop] = v;
+        } else {
+          const key = PROP_MAP[prop];
+          if (key !== undefined) {
+            const val = resolveValue(rawVal, localVars);
+            if (val) {
+              // `opacity`/`fill-opacity`/etc. are 0–1 in PDF, but Tailwind emits
+              // them as a percentage (`opacity-40` → `40%`). Normalise so the
+              // writer never gets a 0–100 value.
+              style[key] = prop.endsWith('opacity') ? normalizeOpacity(val) : val;
+              // Logical shorthands fan out to both physical sides.
+              if (prop === 'padding-inline') style.paddingRight = val;
+              else if (prop === 'padding-block') style.paddingBottom = val;
+            }
           }
         }
       }
       d = declRe.exec(decls);
+    }
+
+    if (style.transform === undefined && (tfm.translate || tfm.rotate || tfm.scale)) {
+      const parts: string[] = [];
+      if (tfm.translate) parts.push(`translate(${tfm.translate})`);
+      if (tfm.rotate) parts.push(`rotate(${tfm.rotate})`);
+      if (tfm.scale) parts.push(`scale(${tfm.scale})`);
+      style.transform = parts.join(' ');
     }
 
     if (Object.keys(style).length > 0) {

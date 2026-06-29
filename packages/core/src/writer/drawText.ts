@@ -4,7 +4,7 @@ import type { ComputedGeometry, TextNode } from '../types.js';
 import type { LoadedFont } from '../typography/font-common.js';
 import { selectFont } from '../typography/font-common.js';
 import { measureText } from '../typography/text.js';
-import { parseColor, toPt } from './color.js';
+import { normalizeOpacity, parseColor, toPt } from './color.js';
 import { alignTextX } from './coords.js';
 
 function firstFontFamily(value: string | undefined): string | undefined {
@@ -34,7 +34,7 @@ export async function drawText(
   if (!loadedFont?.pdfFont) return;
 
   const color = parseColor(style.color as string | undefined) ?? rgb(0, 0, 0);
-  const opacity = style.opacity !== undefined ? parseFloat(String(style.opacity)) : 1;
+  const opacity = normalizeOpacity(style.opacity) ?? 1;
   const textAlign = (style.textAlign as string | undefined) ?? 'left';
   const wrapWidth = geo.width - geo.paddingLeft - geo.paddingRight;
   const metrics = measureText(node.text, style, wrapWidth, loadedFont);

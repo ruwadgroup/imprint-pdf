@@ -71,7 +71,14 @@ export function resolveFontsourceUrl(src: string): string {
   const weight = (rest[0] ?? (isVariable ? 'wght' : '400')).trim();
   const style = (rest[1] ?? 'normal').trim();
   const subset = (rest[2] ?? 'latin').trim();
-  const format = (rest[3] ?? 'woff2').trim();
+  // Default static fonts to WOFF, not WOFF2. fontkit's subsetter crashes with an
+  // uncaught `RangeError` re-encoding the glyf table of some WOFF2 fonts (Inter
+  // is one), and the throw comes off a deferred timer that no try/catch around
+  // embed or save can trap - so one WOFF2 font kills the whole render. WOFF is
+  // plain zlib-compressed sfnt that fontkit subsets cleanly, and Fontsource
+  // ships it for every static family (some no longer ship TTF). Variable fonts
+  // are WOFF2-only on Fontsource, so they keep it.
+  const format = (rest[3] ?? (isVariable ? 'woff2' : 'woff')).trim();
 
   const pkg = isVariable ? `@fontsource-variable/${family}` : `@fontsource/${family}`;
   return `https://cdn.jsdelivr.net/npm/${pkg}@${version}/files/${family}-${subset}-${weight}-${style}.${format}`;
