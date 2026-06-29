@@ -28,9 +28,5 @@
   "scripts": {
     "build": "wasm-pack build --target web --out-dir pkg",
     "clean": "rm -rf pkg target"
-  },
-  "publishConfig": {
-    "access": "public",
-    "provenance": true
   }
 }

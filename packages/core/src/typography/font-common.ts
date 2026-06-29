@@ -88,6 +88,19 @@ export function declWeight(weight: FontDeclaration['weight']): number {
   return parseInt(String(weight), 10);
 }
 
+// Fontkit chokes on some .woff2 with RangeError; retry once with TTF/OTF.
+// Fontsource and most CDNs ship both side-by-side, so swapping the format slot
+// usually just works. Returns null if there's no plausible fallback.
+export function ttfFallbackUrl(src: string): string | null {
+  if (src.startsWith('fontsource:') || src.startsWith('fontsource-variable:')) {
+    // Format slot is the 5th `:`-separated field — swap woff2 → ttf.
+    if (/[:](woff2|woff)$/i.test(src)) return src.replace(/[:](woff2|woff)$/i, ':ttf');
+    return `${src}:ttf`;
+  }
+  if (/\.woff2(\?|$)/i.test(src)) return src.replace(/\.woff2/i, '.ttf');
+  return null;
+}
+
 export async function loadStandardFont(
   doc: PDFDocument,
   family: string,

@@ -49,27 +49,6 @@ The features, in depth.
   cold start
 - **[Bun](frameworks/bun.md)** — native WASM, Bun.serve
 
-See **[Examples](examples.md)** for a runnable adapter per runtime (25+ runtimes
-across Next.js, Remix, SvelteKit, Nuxt, Astro, Express, Fastify, tRPC,
-Cloudflare, Deno, Bun, AWS Lambda, the browser, and more).
-
-## Python 🚧 Upcoming
-
-A first-class Python adapter is on the roadmap — same engine, same PdfNode IR,
-no Node and no headless browser. Two authoring syntaxes (callable components and
-PEP 750 t-string JSX), Django / FastAPI / Flask / Litestar adapters, manylinux +
-macOS + Windows wheels. See [Python overview](python/README.md) for the design
-proposal.
-
-- **[Overview](python/README.md)** — packages, install, requirements
-- **[Quick start](python/quick-start.md)** — first PDF from Python in five
-  minutes
-- **[Authoring](python/authoring.md)** — callable components vs t-string JSX
-- **[Integrations](python/integrations.md)** — Django, FastAPI, Flask, Litestar,
-  Airflow, Celery, Jupyter
-- **[Architecture](python/architecture.md)** — how the Python adapter compiles
-  to the IR and runs the WASM core in-process
-
 ## Integrations
 
 - **[Recharts](integrations/recharts.md)** — vector chart embedding
@@ -108,8 +87,9 @@ Task-oriented recipes for patterns that actually come up.
 
 ## Examples
 
-- **[`examples/next-app`](../examples/next-app)** — Next.js App Router demo
-- **[`examples/vite-react`](../examples/vite-react)** — Vite + React SPA
-- **[`examples/cloudflare-worker`](../examples/cloudflare-worker)** — edge PDF
-  generation
-- **[`examples/bun-server`](../examples/bun-server)** — Bun HTTP server
+See **[Examples](examples.md)** for the full runtime matrix - a runnable adapter
+per runtime (25+ runtimes across Next.js, Remix, SvelteKit, Nuxt, Astro,
+Express, Fastify, tRPC, Cloudflare, Deno, Bun, AWS Lambda, the browser, and
+more), each rendering the shared
+[`@imprint-pdf/fixtures`](../examples/README.md#document-corpus) document
+corpus. Folder index: [`examples/README.md`](../examples/README.md).

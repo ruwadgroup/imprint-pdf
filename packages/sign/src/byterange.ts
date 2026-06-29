@@ -1,3 +1,4 @@
+import { latin1ToBytes, toHex } from './bytes.js';
 import { buildSignedData, type SignDataOptions } from './pkcs7.js';
 
 export interface SignWithByteRangeOptions extends SignDataOptions {
@@ -273,16 +274,4 @@ function bytesToLatin1(bytes: Uint8Array): string {
     out += String.fromCharCode(...bytes.subarray(i, Math.min(i + chunk, bytes.length)));
   }
   return out;
-}
-
-function latin1ToBytes(s: string): Uint8Array {
-  const out = new Uint8Array(s.length);
-  for (let i = 0; i < s.length; i++) out[i] = s.charCodeAt(i) & 0xff;
-  return out;
-}
-
-function toHex(bytes: Uint8Array): string {
-  let s = '';
-  for (let i = 0; i < bytes.length; i++) s += bytes[i]!.toString(16).padStart(2, '0');
-  return s;
 }

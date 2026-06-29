@@ -1,32 +1,12 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import type { HmrContext, Plugin, ResolvedConfig } from 'vite';
+import { extractClasses } from './extract.js';
 import type { ImprintTailwindOptions } from './index.js';
 import { runTailwind } from './tw-runner.js';
 
 const VIRTUAL_MODULE_ID = 'virtual:imprint-classes';
 const RESOLVED_VIRTUAL_ID = `\0${VIRTUAL_MODULE_ID}`;
-
-const STATIC_CLASS_RE = /className\s*=\s*["']([^"']+)["']/g;
-const TEMPLATE_CLASS_RE = /className\s*=\s*\{`([^`${}]+)`\}/g;
-const EXPRESSION_STRING_RE = /className\s*=\s*\{["']([^"']+)["']\}/g;
-
-function extractClasses(code: string): string[] {
-  const found: string[] = [];
-  for (const re of [STATIC_CLASS_RE, TEMPLATE_CLASS_RE, EXPRESSION_STRING_RE]) {
-    re.lastIndex = 0;
-    let match = re.exec(code);
-    while (match !== null) {
-      if (match[1]) {
-        for (const cls of match[1].split(/\s+/)) {
-          if (cls) found.push(cls);
-        }
-      }
-      match = re.exec(code);
-    }
-  }
-  return found;
-}
 
 function scanDir(dir: string, exts: string[]): string[] {
   const files: string[] = [];

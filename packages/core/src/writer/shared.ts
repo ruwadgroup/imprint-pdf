@@ -4,7 +4,6 @@ import { resolvePageDimensions } from '../layout/pages.js';
 import { substitutePageMarkers } from '../style/variants.js';
 import type {
   AssetResolver,
-  BookmarkNode,
   ComputedGeometry,
   DocumentNode,
   FontDeclaration,
@@ -19,6 +18,7 @@ import type {
   WatermarkNode,
 } from '../types.js';
 import type { LoadedFont } from '../typography/font-common.js';
+import { collectBookmarks } from './bookmarks.js';
 import { drawNode } from './drawNode.js';
 import { addOutline } from './outline.js';
 import { addXmpMetadata } from './xmp.js';
@@ -49,12 +49,6 @@ export type RunLayout = (
 export interface WritePdfRuntime {
   loadFonts: LoadFonts;
   runLayout: RunLayout;
-}
-
-function collectBookmarks(node: PdfNode, result: BookmarkNode[] = []): BookmarkNode[] {
-  if (node.type === 'bookmark') result.push(node as BookmarkNode);
-  for (const child of node.children) collectBookmarks(child, result);
-  return result;
 }
 
 // Each bookmark contributes two keys: slug (`my-section`) and verbatim

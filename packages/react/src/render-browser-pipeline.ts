@@ -4,7 +4,6 @@ import type {
   PdfNode,
   RenderOptions,
   ResolvedStyle,
-  TailwindClassMapInput,
 } from '@imprint-pdf/core/browser';
 import {
   applyImprintVariants,
@@ -21,6 +20,7 @@ import {
   writePdf,
 } from '@imprint-pdf/core/browser';
 import type { ReactElement } from 'react';
+import { normalizeClassMap } from './class-map.js';
 import { buildPdfNodeTree } from './reconciler.js';
 
 export interface InspectorRenderResult {
@@ -35,11 +35,6 @@ export type TailwindClassMapResolver = (
 ) => Promise<Map<string, ResolvedStyle> | undefined>;
 
 export type ShouldResolveTailwindClassMap = (options: RenderOptions) => boolean;
-
-function normalizeClassMap(input: TailwindClassMapInput | undefined): Map<string, ResolvedStyle> {
-  if (!input) return new Map();
-  return input instanceof Map ? input : new Map(Object.entries(input));
-}
 
 export async function renderInternal(
   element: ReactElement,

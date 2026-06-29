@@ -9,19 +9,11 @@ import {
   fontKey,
   type LoadedFont,
   loadStandardFont,
+  ttfFallbackUrl,
 } from './font-common.js';
 
 export type { FontMetrics, HbFont, LoadedFont } from './font-common.js';
 export { selectFont } from './font-common.js';
-
-function ttfFallbackUrl(src: string): string | null {
-  if (src.startsWith('fontsource:') || src.startsWith('fontsource-variable:')) {
-    if (/[:](woff2|woff)$/i.test(src)) return src.replace(/[:](woff2|woff)$/i, ':ttf');
-    return `${src}:ttf`;
-  }
-  if (/\.woff2(\?|$)/i.test(src)) return src.replace(/\.woff2/i, '.ttf');
-  return null;
-}
 
 async function tryLoadFontBytes(
   doc: PDFDocument,
