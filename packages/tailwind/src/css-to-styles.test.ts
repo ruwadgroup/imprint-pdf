@@ -146,3 +146,61 @@ describe('transform utilities', () => {
     expect(map.get('scale-x-flip')).toMatchObject({ transform: 'scale(-1 1)' });
   });
 });
+
+describe('logical margin shorthands', () => {
+  it('fans margin-inline out to both horizontal sides', () => {
+    const css = '.mx-2 { margin-inline: 6pt }';
+    expect(parseCssToStyleMap(css).get('mx-2')).toMatchObject({
+      marginLeft: '6pt',
+      marginRight: '6pt',
+    });
+  });
+  it('fans margin-block out to both vertical sides', () => {
+    const css = '.my-2 { margin-block: 6pt }';
+    expect(parseCssToStyleMap(css).get('my-2')).toMatchObject({
+      marginTop: '6pt',
+      marginBottom: '6pt',
+    });
+  });
+  it('passes margin-inline: auto through for centering', () => {
+    const css = '.mx-auto { margin-inline: auto }';
+    expect(parseCssToStyleMap(css).get('mx-auto')).toMatchObject({
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    });
+  });
+});
+
+describe('arbitrary values with parentheses in the selector', () => {
+  it('does not drop a rule whose escaped selector contains ( ) ,', () => {
+    // Tailwind escapes these into the selector; the rule must still be parsed.
+    const css =
+      '.bg-\\[linear-gradient\\(to_right\\,\\#4f46e5\\,\\#06b6d4\\)\\] { background-image: linear-gradient(to right,#4f46e5,#06b6d4) }';
+    const out = parseCssToStyleMap(css).get('bg-[linear-gradient(to_right,#4f46e5,#06b6d4)]');
+    expect(out?.backgroundImage).toBe('linear-gradient(to right,#4f46e5,#06b6d4)');
+  });
+  it('parses a calc() arbitrary width (was dropped before the selector fix)', () => {
+    const css = '.w-\\[calc\\(100\\%-2rem\\)\\] { width: calc(100% - 2rem) }';
+    // The rule must be parsed at all; calc itself is normalised by resolveValue.
+    expect(parseCssToStyleMap(css).get('w-[calc(100%-2rem)]')?.width).toBe('100% - 24pt');
+  });
+});
+
+describe('border-style', () => {
+  it('lifts the --tw-border-style custom property onto borderStyle', () => {
+    // Tailwind v4 carries border-style across classes via this custom property.
+    const css = '.border-dashed { --tw-border-style: dashed }';
+    expect(parseCssToStyleMap(css).get('border-dashed')).toMatchObject({
+      borderStyle: 'dashed',
+    });
+  });
+  it('does not emit borderStyle from a width utility default (no clobber)', () => {
+    const css = `
+      @property --tw-border-style { syntax: "*"; inherits: false; initial-value: solid }
+      .border-2 { border-style: var(--tw-border-style); border-width: 1.5pt }
+    `;
+    const out = parseCssToStyleMap(css).get('border-2');
+    expect(out?.borderStyle).toBeUndefined();
+    expect(out?.borderWidth).toBe('1.5pt');
+  });
+});

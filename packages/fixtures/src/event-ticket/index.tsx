@@ -27,11 +27,9 @@ function Detail({
 }) {
   return (
     <div className={`flex flex-col ${className ?? ''}`}>
-      <span className="text-[6.5px] font-bold uppercase tracking-[1.5pt] text-violet-300">
-        {label}
-      </span>
-      <span className="mt-0.5 text-[12px] font-bold leading-none text-white">{value}</span>
-      {sub && <span className="mt-0.5 text-[7px] leading-snug text-violet-200">{sub}</span>}
+      <span className="text-2xs font-bold uppercase tracking-[1.5pt] text-violet-300">{label}</span>
+      <span className="mt-0.5 text-base font-bold leading-none text-white">{value}</span>
+      {sub && <span className="mt-0.5 text-2xs leading-snug text-violet-200">{sub}</span>}
     </div>
   );
 }
@@ -48,12 +46,12 @@ export function EventTicket({ data }: EventTicketProps) {
         <div className="flex flex-1 flex-col bg-violet-700 px-6 py-4">
           {/* Top row: brand + LIVE pill */}
           <div className="flex flex-row items-center justify-between">
-            <span className="text-[9px] font-bold uppercase tracking-[3pt] text-violet-200">
+            <span className="text-xs font-bold uppercase tracking-[3pt] text-violet-200">
               {data.brand}
             </span>
             <span className="flex flex-row items-center gap-1 rounded-full bg-white px-2.5 py-1">
               <span className="h-1 w-1 rounded-full bg-violet-700" />
-              <span className="text-[7px] font-bold uppercase tracking-[2pt] text-violet-700">
+              <span className="text-2xs font-bold uppercase tracking-[2pt] text-violet-700">
                 Live
               </span>
             </span>
@@ -61,13 +59,13 @@ export function EventTicket({ data }: EventTicketProps) {
 
           {/* Hero: BIG confident event title */}
           <div className="mt-3">
-            <span className="text-[7px] font-bold uppercase tracking-[2pt] text-violet-300">
+            <span className="text-2xs font-bold uppercase tracking-[2pt] text-violet-300">
               Presenting
             </span>
-            <h1 className="mt-1 text-[30px] font-bold leading-[0.92] tracking-[-0.6pt] text-white">
+            <h1 className="mt-1 text-3xl font-bold leading-[0.92] tracking-[-0.6pt] text-white">
               {data.eventName}
             </h1>
-            <p className="mt-1.5 text-[8px] leading-snug text-violet-200">{data.subtitle}</p>
+            <p className="mt-1.5 text-2xs leading-snug text-violet-200">{data.subtitle}</p>
           </div>
 
           <div className="flex-1" />
@@ -98,10 +96,10 @@ export function EventTicket({ data }: EventTicketProps) {
         <div className="flex w-[156px] flex-col items-center justify-between border-l-[1.5px] border-dashed border-white/45 bg-indigo-900 px-4 py-4">
           {/* Stacked ADMIT ONE */}
           <div className="flex flex-col items-center">
-            <span className="text-[12px] font-bold uppercase leading-none tracking-[4pt] text-white">
+            <span className="text-base font-bold uppercase leading-none tracking-[4pt] text-white">
               Admit
             </span>
-            <span className="mt-1 text-[12px] font-bold uppercase leading-none tracking-[4pt] text-violet-300">
+            <span className="mt-1 text-base font-bold uppercase leading-none tracking-[4pt] text-violet-300">
               One
             </span>
           </div>
@@ -113,10 +111,10 @@ export function EventTicket({ data }: EventTicketProps) {
 
           {/* Scan caption + mono ticket id */}
           <div className="flex flex-col items-center">
-            <span className="text-[6.5px] font-bold uppercase tracking-[2pt] text-violet-300">
+            <span className="text-2xs font-bold uppercase tracking-[2pt] text-violet-300">
               Scan at gate
             </span>
-            <span className="mt-1 font-mono text-[8px] font-bold tracking-[0.5pt] text-white">
+            <span className="mt-1 font-mono text-2xs font-bold tracking-[0.5pt] text-white">
               {data.ticketId}
             </span>
           </div>

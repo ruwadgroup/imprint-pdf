@@ -102,6 +102,42 @@ Recognised: `<div>`, `<span>`, `<p>`, `<h1>`–`<h6>`, `<ul>`, `<ol>`, `<li>`,
 | `@imprint-pdf/react/standalone` | Edge build for Cloudflare Workers / Vercel Edge / Bun. |
 | `@imprint-pdf/react/preset`     | Tailwind preset — `@import` it from your `app.css`.    |
 
+## Print type scale
+
+Tailwind's default type scale is tuned for screens. imprint ships a print-native
+remap so `text-xs … text-9xl` resolve to correct point sizes out of the box —
+import it alongside `tailwindcss`:
+
+```css
+@import 'tailwindcss';
+@import '@imprint-pdf/react/preset';
+```
+
+imprint converts CSS to PDF points as `rem → px` (×16) `→ pt` (×0.75), so
+**`pt = rem × 12`**. The preset sets each `--text-*` var accordingly:
+
+| Token       | pt   | rem       |
+| ----------- | ---- | --------- |
+| `text-2xs`  | 6pt  | 0.5rem    |
+| `text-xs`   | 7pt  | 0.5833rem |
+| `text-sm`   | 8pt  | 0.6667rem |
+| `text-base` | 9pt  | 0.75rem   |
+| `text-lg`   | 11pt | 0.9167rem |
+| `text-xl`   | 15pt | 1.25rem   |
+| `text-2xl`  | 18pt | 1.5rem    |
+| `text-3xl`  | 22pt | 1.8333rem |
+| `text-4xl`  | 28pt | 2.3333rem |
+| `text-5xl`  | 36pt | 3rem      |
+| `text-6xl`  | 48pt | 4rem      |
+| `text-7xl`  | 60pt | 5rem      |
+| `text-8xl`  | 72pt | 6rem      |
+| `text-9xl`  | 96pt | 8rem      |
+
+`text-2xs` is an imprint-only addition for footnote-sized copy. Each size
+carries a paired print line-height, and `leading-*` / `tracking-*` track
+Tailwind's defaults (with `tracking-tight` nudged to -0.01em). The 0.25rem
+spacing step is already print-sane (3pt), so it is left untouched.
+
 See the
 [imprint-pdf docs](https://github.com/tamimbinhakim/imprint-pdf/tree/main/docs)
 for the full surface.

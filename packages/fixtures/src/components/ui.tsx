@@ -14,7 +14,7 @@ export function Eyebrow({
   className?: string;
 }) {
   return (
-    <span className={`text-[8px] font-semibold uppercase tracking-[1.5pt] ${className}`}>
+    <span className={`text-2xs font-semibold uppercase tracking-[1.5pt] ${className}`}>
       {children}
     </span>
   );
@@ -29,7 +29,7 @@ export function Pill({
   className?: string;
 }) {
   return (
-    <span className={`rounded-full px-2 py-0.5 text-[8px] font-bold tracking-[0.3pt] ${className}`}>
+    <span className={`rounded-full px-2 py-0.5 text-2xs font-bold tracking-[0.3pt] ${className}`}>
       {children}
     </span>
   );

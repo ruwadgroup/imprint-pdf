@@ -369,3 +369,46 @@ Implement each (all are statically representable):
 - [ ] No subtle baseline regression in dense body copy (contract, report,
       tax-form) that a unit test would miss.
 - [ ] The one-line preset import is the DX we want; token names read naturally.
+
+## Execution notes (post-implementation)
+
+Recorded during EXECUTE so the diff reads honestly against the plan.
+
+- **Unit B - real root cause was dropped logical margins, not min-content.**
+  Geometry probing showed the boarding-pass "overlap" was `margin-inline` /
+  `margin-block` (every `mx-*` / `my-*`, including `mx-auto`) being silently
+  dropped by `css-to-styles` - `padding-inline/block` were mapped but the margin
+  equivalents were not. Fixed by adding them to `PROP_MAP` + the fan-out. The
+  planned Taffy/WASM min-content rebuild was therefore **not** needed: with
+  margins applied, no real text overlap remains and the resume two-column layout
+  (the reason the `width:0` hack exists) still works. WASM left untouched.
+
+- **Bonus engine fix - arbitrary-value selector regex.** The rule selector regex
+  in `css-to-styles` did not allow `(`, `)`, `,` (etc.), so EVERY arbitrary
+  class whose escaped selector contained them - `bg-[linear-gradient(...)]`,
+  `w-[calc(...)]`, `grid-cols-[repeat(...)]` - was skipped and its declarations
+  silently dropped. Broadened the character class. This was the actual blocker
+  for Unit D and fixes a whole category of arbitrary utilities.
+
+- **Unit D - gradients.** CSS `linear-gradient` / `radial-gradient` backgrounds
+  render via PDF shading dicts painted with the `sh` operator inside a clip
+  (`packages/core/src/writer/css-gradient.ts`). Covers raw/arbitrary gradient
+  values + angle/keyword directions + multi-stop. Known bounds: the clip is the
+  element's rectangle (rounded corners not yet clipped); the Tailwind
+  `from-/via-/to-` utility sugar (oklab + `--tw-gradient-*` cross-class vars) is
+  not wired - raw gradients only.
+
+- **Unit E - scoped honestly.** `text-shadow` implemented (layered offset draw;
+  PDF has no blur). `inline-block`, `columns`, and `list-style` were NOT
+  stubbed: imprint has no inline flow, no column fragmentation, and no list-item
+  nodes, so each needs a real architectural feature and none of the 15 templates
+  use them. Recommended as their own follow-up PRDs rather than
+  half-implementations. `background-size/position/repeat` apply only to `url()`
+  backgrounds (also unused) and were left for the same reason.
+
+- **Pre-existing failure (not 005).** `packages/e2e` `standalone-build.test.ts`
+  fails at `next build` ("Failed to collect page data") - a harfbuzz top-level-
+  await bundling issue that also breaks the remix/next example builds on the
+  base branch. Untouched by this PRD. The flawed `space-between` glyph-position
+  assertion in `flex-and-grid.test.tsx` was made deterministic (fixed-width
+  items) since it surfaced during verification.

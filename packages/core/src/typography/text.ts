@@ -1,6 +1,6 @@
 import type { ResolvedStyle } from '../types.js';
 import { detectBaseDir, hasRtlChars, reorderLine } from './bidi.js';
-import type { LoadedFont } from './font-common.js';
+import { DEFAULT_METRICS, type LoadedFont } from './font-common.js';
 import { getHyphenator } from './hyphen.js';
 import { breakLines } from './knuth-plass.js';
 import { deriveAxesFromStyle } from './variations.js';
@@ -18,6 +18,16 @@ export interface TextMetrics {
   height: number;
   lineHeight: number;
   lines: TextLine[];
+  /** Font ascent in points (distance from baseline to the top of the em box). */
+  ascent: number;
+  /** Font descent in points (positive distance below the baseline). */
+  descent: number;
+  /**
+   * Distance from a line's top edge down to its baseline, in points. Uses the
+   * CSS half-leading model so the glyph optical centre coincides with the line
+   * box centre - this is what makes `items-center` align text against siblings.
+   */
+  baseline: number;
 }
 
 // CSS length → PDF points for typography (fontSize, lineHeight, textIndent, …).
@@ -127,6 +137,16 @@ export function measureText(
           ? parsePx(lineHeightRaw, size)
           : (parseFloat(String(lineHeightRaw)) || 1.2) * size;
 
+  // CSS line-box: distribute leading evenly above and below the glyph run so
+  // the optical centre sits at the box centre. ascent/descent come from the
+  // font (fontkit metrics for embedded fonts, DEFAULT_METRICS for standard
+  // ones). descent is stored negative in font units, hence the abs().
+  const fm = font?.metrics ?? DEFAULT_METRICS;
+  const upm = fm.unitsPerEm || 1000;
+  const ascent = (fm.ascent / upm) * size;
+  const descent = (Math.abs(fm.descent) / upm) * size;
+  const baseline = ascent + (lineHeight - (ascent + descent)) / 2;
+
   const whiteSpace = (style.whiteSpace as string | undefined) ?? '';
   const textOverflow = (style.textOverflow as string | undefined) ?? '';
   const nowrap = whiteSpace === 'nowrap' || whiteSpace === 'pre';
@@ -231,5 +251,5 @@ export function measureText(
     isFirstParagraph = false;
   }
 
-  return { width: maxW, height: y, lineHeight, lines };
+  return { width: maxW, height: y, lineHeight, lines, ascent, descent, baseline };
 }

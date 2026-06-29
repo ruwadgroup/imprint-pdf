@@ -17,9 +17,7 @@ function Monogram({ name }: { name: string }) {
     .join('');
   return (
     <div className="flex h-[38px] w-[38px] items-center justify-center rounded-[5px] bg-blue-900">
-      <span className="font-sans text-[15px] font-bold tracking-[0.5pt] text-white">
-        {initials}
-      </span>
+      <span className="font-sans text-lg font-bold tracking-[0.5pt] text-white">{initials}</span>
     </div>
   );
 }
@@ -35,23 +33,23 @@ export function CoverLetter({ data }: CoverLetterProps) {
             <div className="flex flex-row items-center gap-3.5">
               <Monogram name={data.sender.name} />
               <div className="flex flex-col">
-                <h1 className="font-sans text-[26px] font-bold leading-none tracking-[-0.5pt] text-stone-900">
+                <h1 className="font-sans text-2xl font-bold leading-none tracking-[-0.5pt] text-stone-900">
                   {data.sender.name}
                 </h1>
-                <span className="mt-2 font-sans text-[8.5px] font-semibold uppercase tracking-[2.5pt] text-blue-900">
+                <span className="mt-2 font-sans text-2xs font-semibold uppercase tracking-[2.5pt] text-blue-900">
                   {data.sender.title}
                 </span>
               </div>
             </div>
             {/* Right: contact details */}
             <div className="flex flex-col items-end gap-1 pt-1">
-              <span className="font-sans text-[8.5px] tracking-[0.3pt] text-stone-900">
+              <span className="font-sans text-2xs tracking-[0.3pt] text-stone-900">
                 {data.sender.email}
               </span>
-              <span className="font-sans text-[8.5px] tracking-[0.3pt] text-stone-600">
+              <span className="font-sans text-2xs tracking-[0.3pt] text-stone-600">
                 {data.sender.phone}
               </span>
-              <span className="font-sans text-[8.5px] tracking-[0.3pt] text-stone-600">
+              <span className="font-sans text-2xs tracking-[0.3pt] text-stone-600">
                 {data.sender.location}
               </span>
             </div>
@@ -64,28 +62,28 @@ export function CoverLetter({ data }: CoverLetterProps) {
         </header>
 
         {/* Date */}
-        <p className="mt-11 text-[10.5px] text-stone-600">{data.date}</p>
+        <p className="mt-11 text-sm text-stone-600">{data.date}</p>
 
         {/* Recipient address block */}
         <div className="mt-7 flex flex-col">
-          <span className="mb-2 font-sans text-[8px] font-semibold uppercase tracking-[2pt] text-stone-400">
+          <span className="mb-2 font-sans text-2xs font-semibold uppercase tracking-[2pt] text-stone-400">
             Addressed to
           </span>
-          <p className="text-[11px] font-semibold text-stone-900">{data.recipient.name}</p>
-          <p className="mt-0.5 text-[11px] text-stone-600">{data.recipient.title}</p>
-          <p className="text-[11px] text-stone-600">{data.recipient.company}</p>
-          <p className="mt-0.5 max-w-[300px] text-[11px] leading-relaxed text-stone-600">
+          <p className="text-sm font-semibold text-stone-900">{data.recipient.name}</p>
+          <p className="mt-0.5 text-sm text-stone-600">{data.recipient.title}</p>
+          <p className="text-sm text-stone-600">{data.recipient.company}</p>
+          <p className="mt-0.5 max-w-[300px] text-sm leading-relaxed text-stone-600">
             {data.recipient.address}
           </p>
         </div>
 
         {/* Salutation */}
-        <p className="mt-9 text-[11px] text-stone-900">{data.salutation}</p>
+        <p className="mt-9 text-sm text-stone-900">{data.salutation}</p>
 
         {/* Body */}
         <div className="mt-4 flex flex-col gap-4">
           {data.paragraphs.map((para, i) => (
-            <p key={i} className="text-[11px] leading-relaxed text-pretty text-stone-900">
+            <p key={i} className="text-sm leading-relaxed text-pretty text-stone-900">
               {para}
             </p>
           ))}
@@ -93,12 +91,12 @@ export function CoverLetter({ data }: CoverLetterProps) {
 
         {/* Closing + signature */}
         <div className="mt-9 flex flex-col items-start">
-          <p className="text-[11px] text-stone-900">{data.closing}</p>
-          <p className="mt-7 text-[22px] font-semibold italic leading-none tracking-[-0.2pt] text-blue-900">
+          <p className="text-sm text-stone-900">{data.closing}</p>
+          <p className="mt-7 text-2xl font-semibold italic leading-none tracking-[-0.2pt] text-blue-900">
             {data.sender.name}
           </p>
           <div className="mb-2 mt-3 h-[1.5px] w-12 bg-blue-900" />
-          <p className="font-sans text-[8px] font-semibold uppercase tracking-[2pt] text-stone-400">
+          <p className="font-sans text-2xs font-semibold uppercase tracking-[2pt] text-stone-400">
             {data.sender.title}
           </p>
         </div>

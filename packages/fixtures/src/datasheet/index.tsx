@@ -49,9 +49,9 @@ export function Datasheet({ data }: DatasheetProps) {
               <div className="absolute left-0 top-0 h-[13px] w-[13px] rounded-sm bg-blue-600" />
               <div className="absolute bottom-0 right-0 h-[13px] w-[13px] rounded-sm bg-slate-700" />
             </div>
-            <span className="text-[12px] font-bold tracking-[-0.2pt] text-white">Sonance Labs</span>
+            <span className="text-base font-bold tracking-[-0.2pt] text-white">Sonance Labs</span>
           </div>
-          <span className="text-[8px] font-semibold uppercase tracking-[2pt] text-slate-400">
+          <span className="text-2xs font-semibold uppercase tracking-[2pt] text-slate-400">
             Product Datasheet
           </span>
         </div>
@@ -60,10 +60,10 @@ export function Datasheet({ data }: DatasheetProps) {
         <div className="mb-12 flex flex-row items-center justify-between">
           <div className="flex flex-1 flex-col justify-center pr-10">
             <Eyebrow className="text-blue-600">{`${data.model} · Studio Series`}</Eyebrow>
-            <h1 className="mt-2.5 text-[38px] font-bold leading-[1.02] tracking-[-1pt] text-slate-900">
+            <h1 className="mt-2.5 text-4xl font-bold leading-[1.02] tracking-[-1pt] text-slate-900">
               {data.product}
             </h1>
-            <p className="mt-3 max-w-[320px] text-[12px] leading-relaxed text-slate-500">
+            <p className="mt-3 max-w-[320px] text-base leading-relaxed text-slate-500">
               {data.tagline}
             </p>
           </div>
@@ -74,7 +74,7 @@ export function Datasheet({ data }: DatasheetProps) {
         <div className="mb-12 flex flex-col">
           <div className="mb-4 flex flex-row items-center gap-2">
             <div className="h-3.5 w-1 rounded-sm bg-blue-600" />
-            <span className="text-[13px] font-bold tracking-[-0.2pt] text-slate-900">
+            <span className="text-base font-bold tracking-[-0.2pt] text-slate-900">
               Key Features
             </span>
           </div>
@@ -84,7 +84,7 @@ export function Datasheet({ data }: DatasheetProps) {
                 {col.map((feature, i) => (
                   <div key={i} className="mb-3.5 flex flex-row items-start">
                     <div className="mr-3 mt-[3px] h-[7px] w-[7px] rounded-[2px] bg-blue-600" />
-                    <p className="flex-1 text-[10px] leading-relaxed text-slate-700">{feature}</p>
+                    <p className="flex-1 text-sm leading-relaxed text-slate-700">{feature}</p>
                   </div>
                 ))}
               </div>
@@ -96,7 +96,7 @@ export function Datasheet({ data }: DatasheetProps) {
         <div className="flex flex-col">
           <div className="mb-4 flex flex-row items-center gap-2">
             <div className="h-3.5 w-1 rounded-sm bg-blue-600" />
-            <span className="text-[13px] font-bold tracking-[-0.2pt] text-slate-900">
+            <span className="text-base font-bold tracking-[-0.2pt] text-slate-900">
               Technical Specifications
             </span>
           </div>
@@ -112,10 +112,10 @@ export function Datasheet({ data }: DatasheetProps) {
                 key={i}
                 className={`border-b border-slate-200 px-4 ${i % 2 === 1 ? 'bg-slate-50' : 'bg-white'}`}
               >
-                <Td flex className="text-[10px] font-semibold text-slate-700">
+                <Td flex className="text-sm font-semibold text-slate-700">
                   {spec.key}
                 </Td>
-                <Td flex align="right" className="text-[10px] font-bold text-slate-900">
+                <Td flex align="right" className="text-sm font-bold text-slate-900">
                   {spec.value}
                 </Td>
               </Tr>
@@ -129,7 +129,7 @@ export function Datasheet({ data }: DatasheetProps) {
         <div className="mt-10 flex flex-row items-start gap-3 rounded-r border-l-[3px] border-blue-600 bg-slate-50 px-4 py-3">
           <div className="flex flex-col">
             <Eyebrow className="text-slate-400">Notes</Eyebrow>
-            <p className="mt-1 text-[9px] leading-relaxed text-slate-500">{data.footnote}</p>
+            <p className="mt-1 text-xs leading-relaxed text-slate-500">{data.footnote}</p>
           </div>
         </div>
       </Page>

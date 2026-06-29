@@ -3,6 +3,7 @@ import {
   clip,
   concatTransformationMatrix,
   endPath,
+  LineCapStyle,
   popGraphicsState,
   pushGraphicsState,
   rectangle,
@@ -25,6 +26,7 @@ import type {
 import type { LoadedFont } from '../typography/font-common.js';
 import { normalizeOpacity, parseColor, toPt } from './color.js';
 import { pdfY } from './coords.js';
+import { paintCssGradient, parseCssGradient } from './css-gradient.js';
 import {
   drawButton,
   drawCheckbox,
@@ -122,6 +124,8 @@ function drawBackground(
   const bl = resolvePt(style, 'borderBottomLeftRadius', uniformR);
   const hasRadius = tl > 0 || tr > 0 || br > 0 || bl > 0;
   const opacity = normalizeOpacity(style.opacity);
+  const uniformStyle = (style.borderStyle as string | undefined) ?? 'solid';
+  const uniformDash = borderDash(uniformStyle, allBorderW);
 
   if (bgColor || (allBorderColor && allBorderW > 0)) {
     if (hasRadius) {
@@ -142,7 +146,7 @@ function drawBackground(
         y: pageHeight,
         ...(bgColor ? { color: bgColor } : {}),
         ...(allBorderColor && allBorderW > 0
-          ? { borderColor: allBorderColor, borderWidth: allBorderW }
+          ? { borderColor: allBorderColor, borderWidth: allBorderW, ...uniformDash }
           : {}),
         ...(opacity !== undefined ? { opacity, borderOpacity: opacity } : {}),
       });
@@ -154,7 +158,7 @@ function drawBackground(
         height: Math.max(0, geo.height),
         ...(bgColor ? { color: bgColor } : {}),
         ...(allBorderColor && allBorderW > 0
-          ? { borderColor: allBorderColor, borderWidth: allBorderW }
+          ? { borderColor: allBorderColor, borderWidth: allBorderW, ...uniformDash }
           : {}),
         ...(opacity !== undefined ? { opacity } : {}),
       });
@@ -168,6 +172,7 @@ function drawBackground(
     {
       wKey: 'borderTopWidth',
       cKey: 'borderTopColor',
+      sKey: 'borderTopStyle',
       x1: geo.x,
       y1: pdfYPos + geo.height,
       x2: geo.x + geo.width,
@@ -176,6 +181,7 @@ function drawBackground(
     {
       wKey: 'borderBottomWidth',
       cKey: 'borderBottomColor',
+      sKey: 'borderBottomStyle',
       x1: geo.x,
       y1: pdfYPos,
       x2: geo.x + geo.width,
@@ -184,6 +190,7 @@ function drawBackground(
     {
       wKey: 'borderLeftWidth',
       cKey: 'borderLeftColor',
+      sKey: 'borderLeftStyle',
       x1: geo.x,
       y1: pdfYPos,
       x2: geo.x,
@@ -192,6 +199,7 @@ function drawBackground(
     {
       wKey: 'borderRightWidth',
       cKey: 'borderRightColor',
+      sKey: 'borderRightStyle',
       x1: geo.x + geo.width,
       y1: pdfYPos,
       x2: geo.x + geo.width,
@@ -206,13 +214,37 @@ function drawBackground(
       parseColor(style[side.cKey] as string | undefined) ??
       parseColor(style.borderColor as string | undefined);
     if (!c) continue;
+    const sideStyle =
+      (style[side.sKey] as string | undefined) ??
+      (style.borderStyle as string | undefined) ??
+      'solid';
+    const dash = borderDash(sideStyle, w);
     page.drawLine({
       start: { x: side.x1, y: side.y1 },
       end: { x: side.x2, y: side.y2 },
       thickness: w,
       color: c,
+      ...(dash.borderDashArray ? { dashArray: dash.borderDashArray } : {}),
+      ...(dash.borderLineCap !== undefined ? { lineCap: dash.borderLineCap } : {}),
     });
   }
+}
+
+/**
+ * CSS `border-style` -> pdf-lib dash options. `solid` returns nothing (a plain
+ * stroke). `dashed` is a square-cap dash scaled to the stroke width; `dotted`
+ * is a round-cap near-zero dash so each on-segment renders as a round dot.
+ * `double` has no native PDF equivalent and falls back to solid.
+ */
+function borderDash(
+  styleVal: string | undefined,
+  width: number,
+): { borderDashArray?: number[]; borderLineCap?: LineCapStyle } {
+  const w = Math.max(0.5, width);
+  if (styleVal === 'dashed') return { borderDashArray: [w * 2.5, w * 1.75] };
+  if (styleVal === 'dotted')
+    return { borderDashArray: [0.01, w * 2], borderLineCap: LineCapStyle.Round };
+  return {};
 }
 
 // PDF clipping is all-or-nothing; asymmetric `overflow-x/y: hidden` becomes
@@ -338,7 +370,17 @@ export async function drawNode(
   if (node.type !== 'text') {
     const bgImg = styleRecord.backgroundImage as string | undefined;
     if (bgImg && bgImg !== 'none') {
-      await drawBackgroundImage(page, geo, pdfYPos, bgImg, resolver, doc, onAssetError);
+      const gradient = parseCssGradient(bgImg);
+      if (gradient) {
+        paintCssGradient(page, gradient, {
+          x: geo.x,
+          y: pdfYPos,
+          w: Math.max(0, geo.width),
+          h: Math.max(0, geo.height),
+        });
+      } else {
+        await drawBackgroundImage(page, geo, pdfYPos, bgImg, resolver, doc, onAssetError);
+      }
     }
   }
 

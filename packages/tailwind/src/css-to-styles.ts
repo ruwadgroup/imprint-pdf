@@ -38,6 +38,9 @@ const PROP_MAP: Partial<Record<string, keyof ResolvedStyle>> = {
   'margin-right': 'marginRight',
   'margin-bottom': 'marginBottom',
   'margin-left': 'marginLeft',
+  // Logical shorthands — the parse loop fans these out to both physical sides.
+  'margin-inline': 'marginLeft',
+  'margin-block': 'marginTop',
   'border-width': 'borderWidth',
   'border-top-width': 'borderTopWidth',
   'border-right-width': 'borderRightWidth',
@@ -48,6 +51,12 @@ const PROP_MAP: Partial<Record<string, keyof ResolvedStyle>> = {
   'border-right-color': 'borderRightColor',
   'border-bottom-color': 'borderBottomColor',
   'border-left-color': 'borderLeftColor',
+  // NOTE: `border-style` is intentionally NOT mapped here. Tailwind v4 emits it
+  // as `border-style: var(--tw-border-style)` on every width utility, defaulting
+  // to `solid` via @property - mapping that would clobber an explicit
+  // `border-dashed` whose value lives in the `--tw-border-style` custom property
+  // on a different class. We capture that custom property directly instead (see
+  // the var loop in parseCssToStyleMap).
   'border-radius': 'borderRadius',
   'border-top-left-radius': 'borderTopLeftRadius',
   'border-top-right-radius': 'borderTopRightRadius',
@@ -74,6 +83,7 @@ const PROP_MAP: Partial<Record<string, keyof ResolvedStyle>> = {
   'line-clamp': 'lineClamp',
   'text-indent': 'textIndent',
   color: 'color',
+  'text-shadow': 'textShadow',
   opacity: 'opacity',
   'background-color': 'backgroundColor',
   position: 'position',
@@ -339,8 +349,11 @@ export function parseCssToStyleMap(css: string): Map<string, ResolvedStyle> {
 
   // Tailwind class names contain CSS-escape-required chars (`/`, `[`, `]`,
   // `%`, ...), so the selector regex accepts the escape and we strip the
-  // backslash later.
-  const ruleRe = /\.((?:[a-zA-Z0-9_\-\\:./[\]%@#!])+)\s*\{([^}]*)\}/g;
+  // backslash later. Arbitrary values like `bg-[linear-gradient(...)]` or
+  // `w-[calc(...)]` put `(`, `)`, `,`, `*`, `+`, `#`, `'`, `"` (all escaped)
+  // in the selector too, so they must be in the class or the whole rule is
+  // skipped and its declarations are silently dropped.
+  const ruleRe = /\.((?:[a-zA-Z0-9_\-\\:./[\]%@#!(),*+'"=&~<>$])+)\s*\{([^}]*)\}/g;
   let m = ruleRe.exec(cleaned);
   while (m !== null) {
     const rawName = m[1] ?? '';
@@ -364,7 +377,15 @@ export function parseCssToStyleMap(css: string): Map<string, ResolvedStyle> {
     const localVarRe = /(--[\w-]+)\s*:\s*([^;!]+)/g;
     let lv = localVarRe.exec(decls);
     while (lv !== null) {
-      localVars.set(lv[1]!.trim(), resolveVars(lv[2]!.trim(), vars));
+      const varName = lv[1]!.trim();
+      const varVal = resolveVars(lv[2]!.trim(), vars);
+      localVars.set(varName, varVal);
+      // `border-dashed`/`border-dotted`/`border-double` only set this custom
+      // property (no border-* declaration of their own), so lift it onto the
+      // resolved style as the concrete border-style keyword.
+      if (varName === '--tw-border-style' && /^(solid|dashed|dotted|double|none)$/.test(varVal)) {
+        style.borderStyle = varVal;
+      }
       lv = localVarRe.exec(decls);
     }
 
@@ -393,6 +414,8 @@ export function parseCssToStyleMap(css: string): Map<string, ResolvedStyle> {
               // Logical shorthands fan out to both physical sides.
               if (prop === 'padding-inline') style.paddingRight = val;
               else if (prop === 'padding-block') style.paddingBottom = val;
+              else if (prop === 'margin-inline') style.marginRight = val;
+              else if (prop === 'margin-block') style.marginBottom = val;
             }
           }
         }

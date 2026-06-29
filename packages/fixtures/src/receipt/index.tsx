@@ -23,12 +23,12 @@ function Line({ name, qty, price }: { name: string; qty: number; price: number }
   return (
     <div className="flex flex-row items-baseline justify-between py-[1.5px]">
       <div className="flex flex-1 flex-col pr-3">
-        <span className="text-[9px] leading-tight text-slate-900">{name}</span>
-        <span className="text-[8px] leading-tight text-slate-400">
+        <span className="text-xs leading-tight text-slate-900">{name}</span>
+        <span className="text-2xs leading-tight text-slate-400">
           {qty} &times; {money(price)}
         </span>
       </div>
-      <span className="text-[9px] tabular-nums text-slate-900">{money(qty * price)}</span>
+      <span className="text-xs tabular-nums text-slate-900">{money(qty * price)}</span>
     </div>
   );
 }
@@ -37,8 +37,8 @@ function Line({ name, qty, price }: { name: string; qty: number; price: number }
 function Summary({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-row items-baseline justify-between py-[1.5px]">
-      <span className="text-[9px] text-slate-500">{label}</span>
-      <span className="text-[9px] tabular-nums text-slate-900">{value}</span>
+      <span className="text-xs text-slate-500">{label}</span>
+      <span className="text-xs tabular-nums text-slate-900">{value}</span>
     </div>
   );
 }
@@ -61,15 +61,15 @@ export function Receipt({ data }: ReceiptProps) {
             name + contact. */}
         <div className="flex flex-col items-center">
           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-teal-700">
-            <span className="text-[13px] font-bold text-white">{monogram}</span>
+            <span className="text-base font-bold text-white">{monogram}</span>
           </div>
-          <h1 className="mt-2 text-center text-[12px] font-bold uppercase tracking-[2pt] text-slate-900">
+          <h1 className="mt-2 text-center text-base font-bold uppercase tracking-[2pt] text-slate-900">
             {data.merchant}
           </h1>
-          <p className="mt-1.5 max-w-[150px] text-center text-[8px] leading-snug text-slate-500">
+          <p className="mt-1.5 max-w-[150px] text-center text-2xs leading-snug text-slate-500">
             {data.address}
           </p>
-          <p className="text-[8px] leading-snug text-slate-500">{data.phone}</p>
+          <p className="text-2xs leading-snug text-slate-500">{data.phone}</p>
         </div>
 
         <Dotted />
@@ -77,16 +77,16 @@ export function Receipt({ data }: ReceiptProps) {
         {/* Transaction meta. */}
         <div className="flex flex-col gap-[1px]">
           <div className="flex flex-row justify-between">
-            <span className="text-[8px] text-slate-500">RECEIPT</span>
-            <span className="text-[8px] tabular-nums text-slate-900">{data.receiptNo}</span>
+            <span className="text-2xs text-slate-500">RECEIPT</span>
+            <span className="text-2xs tabular-nums text-slate-900">{data.receiptNo}</span>
           </div>
           <div className="flex flex-row justify-between">
-            <span className="text-[8px] text-slate-500">DATE</span>
-            <span className="text-[8px] tabular-nums text-slate-900">{data.date}</span>
+            <span className="text-2xs text-slate-500">DATE</span>
+            <span className="text-2xs tabular-nums text-slate-900">{data.date}</span>
           </div>
           <div className="flex flex-row justify-between">
-            <span className="text-[8px] text-slate-500">CASHIER</span>
-            <span className="text-[8px] text-slate-900">{data.cashier}</span>
+            <span className="text-2xs text-slate-500">CASHIER</span>
+            <span className="text-2xs text-slate-900">{data.cashier}</span>
           </div>
         </div>
 
@@ -94,8 +94,8 @@ export function Receipt({ data }: ReceiptProps) {
 
         {/* Column header for the ledger. */}
         <div className="flex flex-row justify-between pb-1">
-          <span className="text-[7px] uppercase tracking-[1pt] text-slate-400">Item</span>
-          <span className="text-[7px] uppercase tracking-[1pt] text-slate-400">Amount</span>
+          <span className="text-2xs uppercase tracking-[1pt] text-slate-400">Item</span>
+          <span className="text-2xs uppercase tracking-[1pt] text-slate-400">Amount</span>
         </div>
 
         <div className="flex flex-col">
@@ -114,18 +114,18 @@ export function Receipt({ data }: ReceiptProps) {
 
         {/* Bold total emphasis row. */}
         <div className="mt-2 flex flex-row items-center justify-between bg-teal-700 px-2.5 py-1.5">
-          <span className="text-[11px] font-bold uppercase tracking-[1.5pt] text-white">Total</span>
-          <span className="text-[13px] font-bold tabular-nums text-white">{money(total)}</span>
+          <span className="text-sm font-bold uppercase tracking-[1.5pt] text-white">Total</span>
+          <span className="text-base font-bold tabular-nums text-white">{money(total)}</span>
         </div>
 
         {/* Payment line. */}
         <div className="mt-2 flex flex-row items-baseline justify-between">
-          <span className="text-[8px] text-slate-500">PAID</span>
-          <span className="text-[8px] text-slate-900">{data.paymentMethod}</span>
+          <span className="text-2xs text-slate-500">PAID</span>
+          <span className="text-2xs text-slate-900">{data.paymentMethod}</span>
         </div>
         <div className="flex flex-row items-baseline justify-between">
-          <span className="text-[8px] text-slate-500">ITEMS</span>
-          <span className="text-[8px] tabular-nums text-slate-900">{count}</span>
+          <span className="text-2xs text-slate-500">ITEMS</span>
+          <span className="text-2xs tabular-nums text-slate-900">{count}</span>
         </div>
 
         <Dotted />
@@ -133,17 +133,17 @@ export function Receipt({ data }: ReceiptProps) {
         {/* Centered barcode with caption. */}
         <div className="mt-1 flex flex-col items-center">
           <Barcode value={data.barcodeValue} width={170} height={42} />
-          <span className="mt-1.5 text-[8px] tracking-[1.5pt] text-slate-500">
+          <span className="mt-1.5 text-2xs tracking-[1.5pt] text-slate-500">
             {data.barcodeValue}
           </span>
         </div>
 
         {/* Footer. */}
         <div className="mt-4 flex flex-col items-center">
-          <span className="text-[10px] font-bold uppercase tracking-[3pt] text-teal-700">
+          <span className="text-sm font-bold uppercase tracking-[3pt] text-teal-700">
             Thank You
           </span>
-          <span className="mt-1 text-[8px] text-slate-400">Please come again</span>
+          <span className="mt-1 text-2xs text-slate-400">Please come again</span>
         </div>
       </Page>
     </Document>

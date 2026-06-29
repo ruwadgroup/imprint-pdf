@@ -12,12 +12,12 @@ export interface ContractProps {
 function PartyCard({ party }: { party: ContractParty }) {
   return (
     <div className="flex flex-1 flex-col rounded border border-slate-200 bg-slate-50 px-4 py-3.5">
-      <span className="font-sans text-[8px] font-semibold uppercase tracking-[2pt] text-[#1e3a5f]">
+      <span className="font-sans text-2xs font-semibold uppercase tracking-[2pt] text-[#1e3a5f]">
         {party.role}
       </span>
-      <p className="mt-2 text-[12px] font-bold text-slate-900">{party.entity}</p>
-      <p className="mt-0.5 text-[10px] text-slate-600">By: {party.name}</p>
-      <p className="mt-1.5 text-[9px] leading-relaxed text-slate-600">{party.address}</p>
+      <p className="mt-2 text-base font-bold text-slate-900">{party.entity}</p>
+      <p className="mt-0.5 text-sm text-slate-600">By: {party.name}</p>
+      <p className="mt-1.5 text-xs leading-relaxed text-slate-600">{party.address}</p>
     </div>
   );
 }
@@ -27,14 +27,14 @@ function Clause({ index, clause }: { index: number; clause: ContractClause }) {
   return (
     <li className="mb-3.5 flex flex-row gap-2.5">
       {/* Accent index in its own column so the heading stays on one line. */}
-      <span className="w-4 font-sans text-[11px] font-bold tracking-[-0.1pt] text-[#1e3a5f]">
+      <span className="w-4 font-sans text-sm font-bold tracking-[-0.1pt] text-[#1e3a5f]">
         {index}.
       </span>
       <div className="flex flex-1 flex-col">
-        <h2 className="font-sans text-[11px] font-bold tracking-[-0.1pt] text-slate-900">
+        <h2 className="font-sans text-sm font-bold tracking-[-0.1pt] text-slate-900">
           {clause.heading}
         </h2>
-        <p className="mt-1 text-justify text-[10px] leading-[1.55] text-slate-700">{clause.body}</p>
+        <p className="mt-1 text-justify text-sm leading-[1.55] text-slate-700">{clause.body}</p>
       </div>
     </li>
   );
@@ -44,15 +44,15 @@ function Clause({ index, clause }: { index: number; clause: ContractClause }) {
 function SignatureColumn({ party, name }: { party: ContractParty; name: string }) {
   return (
     <div className="flex flex-1 flex-col">
-      <span className="font-sans text-[8px] font-semibold uppercase tracking-[2pt] text-[#1e3a5f]">
+      <span className="font-sans text-2xs font-semibold uppercase tracking-[2pt] text-[#1e3a5f]">
         {party.role}
       </span>
       <Signature name={name} className="mt-2 h-14 w-full border-b border-slate-900" />
-      <p className="mt-1.5 text-[11px] font-bold text-slate-900">{party.name}</p>
-      <p className="text-[9px] text-slate-600">{party.entity}</p>
+      <p className="mt-1.5 text-sm font-bold text-slate-900">{party.name}</p>
+      <p className="text-xs text-slate-600">{party.entity}</p>
       <div className="mt-5 flex flex-col">
         <div className="h-5 border-b border-slate-900" />
-        <span className="mt-1.5 font-sans text-[8px] font-semibold uppercase tracking-[2pt] text-slate-400">
+        <span className="mt-1.5 font-sans text-2xs font-semibold uppercase tracking-[2pt] text-slate-400">
           Date
         </span>
       </div>
@@ -65,10 +65,10 @@ function PageFooter({ title, page }: { title: string; page: number }) {
     <>
       <div className="flex-1" />
       <div className="mt-8 flex flex-row justify-between border-t border-slate-200 pt-3">
-        <span className="font-sans text-[8px] font-semibold uppercase tracking-[2pt] text-slate-400">
+        <span className="font-sans text-2xs font-semibold uppercase tracking-[2pt] text-slate-400">
           {title}
         </span>
-        <span className="font-sans text-[8px] font-semibold uppercase tracking-[2pt] text-slate-400">
+        <span className="font-sans text-2xs font-semibold uppercase tracking-[2pt] text-slate-400">
           Page {page} of 2
         </span>
       </div>
@@ -93,22 +93,22 @@ export function Contract({ data }: ContractProps) {
 
         {/* Confident title block. */}
         <div className="mt-12 flex flex-col">
-          <span className="font-sans text-[8px] font-semibold uppercase tracking-[2pt] text-[#1e3a5f]">
+          <span className="font-sans text-2xs font-semibold uppercase tracking-[2pt] text-[#1e3a5f]">
             Confidential
           </span>
-          <h1 className="mt-2.5 font-sans text-[30px] font-bold leading-[1.05] tracking-[-0.3pt] text-slate-900">
+          <h1 className="mt-2.5 font-sans text-3xl font-bold leading-[1.05] tracking-[-0.3pt] text-slate-900">
             {data.title}
           </h1>
           <div className="mt-4 flex flex-row items-center gap-3">
             <div className="h-[3px] w-12 bg-[#1e3a5f]" />
-            <span className="font-sans text-[9px] font-semibold uppercase tracking-[2pt] text-slate-600">
+            <span className="font-sans text-xs font-semibold uppercase tracking-[2pt] text-slate-600">
               Effective {data.effectiveDate}
             </span>
           </div>
         </div>
 
         {/* Recital intro - plain flowing serif (no inline spans: imprint breaks them). */}
-        <p className="mt-8 text-justify text-[10.5px] leading-[1.6] text-slate-700">
+        <p className="mt-8 text-justify text-sm leading-[1.6] text-slate-700">
           This {data.title} (this &ldquo;Agreement&rdquo;) is entered into as of{' '}
           {data.effectiveDate} (the &ldquo;Effective Date&rdquo;) by and between{' '}
           {data.partyA.entity} (the &ldquo;{data.partyA.role}&rdquo;) and {data.partyB.entity} (the
@@ -125,7 +125,7 @@ export function Contract({ data }: ContractProps) {
         {/* Recitals. */}
         <div className="mt-6 flex flex-col gap-1.5">
           {data.recitals.map((line, i) => (
-            <p key={i} className="text-justify text-[9.5px] italic leading-[1.5] text-slate-600">
+            <p key={i} className="text-justify text-xs italic leading-[1.5] text-slate-600">
               {line}
             </p>
           ))}
@@ -154,21 +154,21 @@ export function Contract({ data }: ContractProps) {
 
         {/* Notes. */}
         <div className="mt-3 border-t border-slate-200 pt-3">
-          <span className="font-sans text-[8px] font-semibold uppercase tracking-[2pt] text-slate-400">
+          <span className="font-sans text-2xs font-semibold uppercase tracking-[2pt] text-slate-400">
             Notes
           </span>
           <ol className="mt-2 flex flex-col gap-1">
             {data.footnotes.map((note, i) => (
               <li key={i} className="flex flex-row">
-                <span className="mr-2 text-[8px] text-slate-400">{i + 1}.</span>
-                <p className="flex-1 text-[8.5px] leading-snug text-slate-600">{note}</p>
+                <span className="mr-2 text-2xs text-slate-400">{i + 1}.</span>
+                <p className="flex-1 text-2xs leading-snug text-slate-600">{note}</p>
               </li>
             ))}
           </ol>
         </div>
 
         {/* Execution clause. */}
-        <p className="mt-6 text-justify text-[10px] leading-[1.55] text-slate-700">
+        <p className="mt-6 text-justify text-sm leading-[1.55] text-slate-700">
           IN WITNESS WHEREOF, the Parties have executed this Agreement as of the Effective Date, at{' '}
           {data.signedAt}, intending to be legally bound, under the laws of {data.governingLaw}.
         </p>

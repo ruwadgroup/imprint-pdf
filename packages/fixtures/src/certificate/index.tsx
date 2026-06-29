@@ -31,13 +31,11 @@ function Seal({ name }: { name: string }) {
   return (
     <div className="flex h-[92px] w-[92px] items-center justify-center rounded-full border-2 border-[#b08d57]">
       <div className="flex h-[76px] w-[76px] flex-col items-center justify-center rounded-full border border-[#b08d57] bg-[#16233f]">
-        <span className="text-[7px] font-semibold uppercase tracking-[2pt] text-[#b08d57]">
-          Seal
-        </span>
-        <span className="font-display text-[20px] font-bold leading-none text-white">
+        <span className="text-2xs font-semibold uppercase tracking-[2pt] text-[#b08d57]">Seal</span>
+        <span className="font-display text-xl font-bold leading-none text-white">
           <Initials name={name} />
         </span>
-        <span className="text-[7px] font-semibold uppercase tracking-[2pt] text-[#b08d57]">
+        <span className="text-2xs font-semibold uppercase tracking-[2pt] text-[#b08d57]">
           Honoris
         </span>
       </div>
@@ -48,9 +46,9 @@ function Seal({ name }: { name: string }) {
 function SignatureBlock({ name, role }: { name: string; role: string }) {
   return (
     <div className="flex w-[200px] flex-col items-center">
-      <p className="font-script text-[24px] leading-none text-[#1e2a44]">{name}</p>
+      <p className="font-script text-2xl leading-none text-[#1e2a44]">{name}</p>
       <div className="mt-1 w-full border-t border-[#b08d57]" />
-      <p className="mt-2 font-sans text-[8px] font-semibold uppercase tracking-[2pt] text-[#5b6678]">
+      <p className="mt-2 font-sans text-2xs font-semibold uppercase tracking-[2pt] text-[#5b6678]">
         {role}
       </p>
     </div>
@@ -82,10 +80,10 @@ export function Certificate({ data }: CertificateProps) {
 
             {/* Header: issuer eyebrow + title */}
             <div className="relative flex flex-col items-center">
-              <p className="text-[9px] font-semibold uppercase tracking-[4pt] text-[#b08d57]">
+              <p className="text-xs font-semibold uppercase tracking-[4pt] text-[#b08d57]">
                 {data.organization}
               </p>
-              <h1 className="mt-3 text-center font-display text-[40px] font-bold leading-none tracking-[1pt] text-[#16233f]">
+              <h1 className="mt-3 text-center font-display text-4xl font-bold leading-none tracking-[1pt] text-[#16233f]">
                 {data.title}
               </h1>
               <div className="mt-3 flex flex-row items-center gap-2.5">
@@ -97,12 +95,12 @@ export function Certificate({ data }: CertificateProps) {
 
             {/* Recipient block */}
             <div className="relative flex flex-col items-center">
-              <p className="text-[10px] uppercase tracking-[3pt] text-[#5b6678]">{data.preamble}</p>
-              <p className="mt-2 text-center font-script text-[64px] leading-none text-[#b08d57]">
+              <p className="text-sm uppercase tracking-[3pt] text-[#5b6678]">{data.preamble}</p>
+              <p className="mt-2 text-center font-script text-6xl leading-none text-[#b08d57]">
                 {data.recipient}
               </p>
               <div className="mt-3 h-px w-[320px] bg-[#e3dccd]" />
-              <p className="mt-4 max-w-[520px] text-center font-display text-[12px] font-medium leading-relaxed text-[#1e2a44]">
+              <p className="mt-4 max-w-[520px] text-center font-display text-base font-medium leading-relaxed text-[#1e2a44]">
                 {data.description}
               </p>
             </div>
@@ -117,10 +115,10 @@ export function Certificate({ data }: CertificateProps) {
 
               <div className="flex flex-col items-center">
                 <Seal name={data.recipient} />
-                <p className="mt-3 text-[9px] font-semibold uppercase tracking-[2pt] text-[#1e2a44]">
+                <p className="mt-3 text-xs font-semibold uppercase tracking-[2pt] text-[#1e2a44]">
                   {data.date}
                 </p>
-                <p className="mt-1 text-[8px] uppercase tracking-[1.5pt] text-[#8a93a5]">
+                <p className="mt-1 text-2xs uppercase tracking-[1.5pt] text-[#8a93a5]">
                   No. {data.certificateId}
                 </p>
               </div>

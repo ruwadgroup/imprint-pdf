@@ -16,15 +16,15 @@ function Item({ item }: { item: MenuItem }) {
           dotted underline on a flexible filler span, so it tracks the text
           baseline rather than floating above the descenders. */}
       <div className="flex flex-row items-baseline">
-        <span className="font-serif text-[12.5px] font-semibold tracking-[0.15pt] text-[#1c1917]">
+        <span className="font-serif text-base font-semibold tracking-[0.15pt] text-[#1c1917]">
           {item.name}
         </span>
         <span className="mx-2 flex-1 -translate-y-[1px] self-baseline border-b border-dotted border-[#a8a29e]" />
-        <span className="font-display text-[12.5px] font-semibold tracking-[0.4pt] text-[#7c6f3f]">
+        <span className="font-display text-base font-semibold tracking-[0.4pt] text-[#7c6f3f]">
           {money(item.price)}
         </span>
       </div>
-      <p className="mt-1 max-w-[235px] font-serif text-[9.5px] italic leading-snug text-[#78716c]">
+      <p className="mt-1 max-w-[235px] font-serif text-xs italic leading-snug text-[#78716c]">
         {item.description}
       </p>
     </div>
@@ -35,7 +35,7 @@ function Section({ section }: { section: MenuSection }) {
   return (
     <div className="mb-8 flex flex-col">
       <div className="mb-4 flex flex-row items-center">
-        <h2 className="font-display text-[16px] font-semibold uppercase tracking-[3.5pt] text-[#1c1917]">
+        <h2 className="font-display text-xl font-semibold uppercase tracking-[3.5pt] text-[#1c1917]">
           {section.title}
         </h2>
         <div className="ml-3.5 flex flex-1 flex-row items-center gap-2.5">
@@ -64,13 +64,13 @@ export function Menu({ data }: MenuProps) {
             <div className="h-[5px] w-[5px] rotate-45 bg-[#7c6f3f]" />
             <div className="h-px w-9 bg-[#7c6f3f]" />
           </div>
-          <h1 className="mt-5 text-center font-display text-[46px] font-bold leading-none tracking-[1.5pt] text-[#1c1917]">
+          <h1 className="mt-5 text-center font-display text-5xl font-bold leading-none tracking-[1.5pt] text-[#1c1917]">
             {data.name}
           </h1>
-          <p className="mt-3 text-center font-display text-[13px] font-semibold italic text-[#78716c]">
+          <p className="mt-3 text-center font-display text-base font-semibold italic text-[#78716c]">
             {data.tagline}
           </p>
-          <p className="mt-4 text-center font-serif text-[8px] font-semibold uppercase tracking-[2.8pt] text-[#a8a29e]">
+          <p className="mt-4 text-center font-serif text-2xs font-semibold uppercase tracking-[2.8pt] text-[#a8a29e]">
             {data.location}
           </p>
           <div className="mt-5 h-px w-full bg-[#d8d2c6]" />
@@ -96,7 +96,7 @@ export function Menu({ data }: MenuProps) {
             <div className="h-[4px] w-[4px] rotate-45 bg-[#a8a29e]" />
             <div className="h-px w-9 bg-[#d8d2c6]" />
           </div>
-          <p className="mt-4 max-w-[400px] text-center font-serif text-[9px] italic leading-relaxed text-[#a8a29e]">
+          <p className="mt-4 max-w-[400px] text-center font-serif text-xs italic leading-relaxed text-[#a8a29e]">
             {data.footer}
           </p>
         </div>

@@ -1,14 +1,34 @@
 /*
- * @imprint-pdf/tailwind preset — registers the page-position and print-pipeline
- * variants used by imprint. Each variant is a passthrough; imprint's
- * resolver is the one that decides whether a variant is active for a given
- * page based on its position (or output pipeline). Tailwind only needs to
- * know the variants exist so it compiles classes like `page-first:p-12`.
+ * @imprint-pdf/react preset — imprint's print-native Tailwind v4 base.
  *
- * Usage in your app stylesheet:
+ * Two things ship here:
+ *
+ *   1. The page-position and print-pipeline variants imprint relies on. Each
+ *      variant is a passthrough; imprint's resolver decides whether a variant
+ *      is active for a given page based on its position (or output pipeline).
+ *      Tailwind only needs to know the variants exist so it compiles classes
+ *      like `page-first:p-12`.
+ *
+ *   2. A `@theme` block that remaps Tailwind's screen-tuned type scale to
+ *      print-native point sizes, so `text-xs … text-9xl`, `leading-*`, and
+ *      `tracking-*` resolve to correct print sizes out of the box.
+ *
+ * Usage in your app stylesheet — import it ALONGSIDE tailwindcss:
  *
  *   @import "tailwindcss";
- *   @import "@imprint-pdf/tailwind/preset";
+ *   @import "@imprint-pdf/react/preset";
+ *
+ * The rem <-> pt mapping
+ * ----------------------
+ * imprint converts CSS lengths to PDF points as `rem -> px` (x16) `-> pt`
+ * (x0.75). That collapses to:
+ *
+ *   pt  = rem x 12
+ *   rem = pt  / 12
+ *
+ * Tailwind v4 reads font sizes from `--text-*` theme vars, so every size below
+ * is expressed in `rem` using `rem = pt / 12`. The comment on each line records
+ * the target point size.
  */
 
 @custom-variant page-first {
@@ -25,4 +45,54 @@
 }
 @custom-variant imprint-cmyk {
   @slot;
+}
+
+@theme {
+  /* Print-native type scale. rem = pt / 12; paired line-heights are unitless
+   * multipliers (~1.4 for body copy, ~1.1 for display sizes 3xl and up). */
+  --text-2xs: 0.5rem; /* 6pt  */
+  --text-2xs--line-height: 1.4;
+  --text-xs: 0.5833rem; /* 7pt  */
+  --text-xs--line-height: 1.4;
+  --text-sm: 0.6667rem; /* 8pt  */
+  --text-sm--line-height: 1.4;
+  --text-base: 0.75rem; /* 9pt  */
+  --text-base--line-height: 1.4;
+  --text-lg: 0.9167rem; /* 11pt */
+  --text-lg--line-height: 1.4;
+  --text-xl: 1.25rem; /* 15pt */
+  --text-xl--line-height: 1.3;
+  --text-2xl: 1.5rem; /* 18pt */
+  --text-2xl--line-height: 1.2;
+  --text-3xl: 1.8333rem; /* 22pt */
+  --text-3xl--line-height: 1.1;
+  --text-4xl: 2.3333rem; /* 28pt */
+  --text-4xl--line-height: 1.1;
+  --text-5xl: 3rem; /* 36pt */
+  --text-5xl--line-height: 1.1;
+  --text-6xl: 4rem; /* 48pt */
+  --text-6xl--line-height: 1.1;
+  --text-7xl: 5rem; /* 60pt */
+  --text-7xl--line-height: 1.1;
+  --text-8xl: 6rem; /* 72pt */
+  --text-8xl--line-height: 1.1;
+  --text-9xl: 8rem; /* 96pt */
+  --text-9xl--line-height: 1.1;
+
+  /* Line-height utilities (`leading-*`) — Tailwind defaults, kept print-sane. */
+  --leading-none: 1;
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+
+  /* Letter-spacing utilities (`tracking-*`). `tracking-tight` is nudged to
+   * -0.01em — print text holds together tighter than on screen. */
+  --tracking-tighter: -0.05em;
+  --tracking-tight: -0.01em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
 }

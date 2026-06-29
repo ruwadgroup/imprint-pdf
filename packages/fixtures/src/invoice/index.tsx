@@ -13,10 +13,10 @@ export interface InvoiceProps {
 function MetaRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-row items-baseline border-l-2 border-indigo-600 pl-2.5">
-      <span className="w-20 text-[8px] font-semibold uppercase tracking-[1.5pt] text-slate-400">
+      <span className="w-20 text-2xs font-semibold uppercase tracking-[1.5pt] text-slate-400">
         {label}
       </span>
-      <span className="text-[10px] font-semibold text-slate-900">{value}</span>
+      <span className="text-sm font-semibold text-slate-900">{value}</span>
     </div>
   );
 }
@@ -32,8 +32,8 @@ export function Invoice({ data }: InvoiceProps) {
         {/* Masthead */}
         <div className="flex flex-row items-start justify-between">
           <div className="flex flex-col">
-            <h1 className="text-[34px] font-bold leading-none tracking-[-1pt]">Invoice</h1>
-            <span className="mt-2 text-[12px] font-semibold text-indigo-600">{data.number}</span>
+            <h1 className="text-4xl font-bold leading-none tracking-[-1pt]">Invoice</h1>
+            <span className="mt-2 text-base font-semibold text-indigo-600">{data.number}</span>
           </div>
           <div className="flex flex-col items-end gap-2.5">
             <div className="flex flex-row items-center gap-2">
@@ -41,9 +41,9 @@ export function Invoice({ data }: InvoiceProps) {
                 <div className="absolute left-0 top-0 h-[13px] w-[13px] rounded-sm bg-indigo-600" />
                 <div className="absolute bottom-0 right-0 h-[13px] w-[13px] rounded-sm bg-slate-900" />
               </div>
-              <span className="text-[12px] font-bold tracking-[-0.2pt]">{data.from.name}</span>
+              <span className="text-base font-bold tracking-[-0.2pt]">{data.from.name}</span>
             </div>
-            <p className="text-[9px] text-slate-500">{data.from.email}</p>
+            <p className="text-xs text-slate-500">{data.from.email}</p>
           </div>
         </div>
 
@@ -52,11 +52,11 @@ export function Invoice({ data }: InvoiceProps) {
         {/* Bill-to + meta */}
         <div className="mb-10 flex flex-row items-start justify-between">
           <div className="flex flex-col">
-            <span className="text-[8px] font-semibold uppercase tracking-[1.5pt] text-slate-400">
+            <span className="text-2xs font-semibold uppercase tracking-[1.5pt] text-slate-400">
               Billed to
             </span>
-            <p className="mt-1.5 text-[13px] font-bold">{data.to.name}</p>
-            <p className="mt-1 max-w-[220px] text-[10px] leading-relaxed text-slate-500">
+            <p className="mt-1.5 text-base font-bold">{data.to.name}</p>
+            <p className="mt-1 max-w-[220px] text-sm leading-relaxed text-slate-500">
               {data.to.address}
             </p>
           </div>
@@ -81,16 +81,16 @@ export function Invoice({ data }: InvoiceProps) {
           </Tr>
           {data.items.map((item, i) => (
             <Tr key={i} className="border-b border-slate-100 px-4">
-              <Td flex className="text-[11px] font-semibold text-slate-900">
+              <Td flex className="text-sm font-semibold text-slate-900">
                 {item.description}
               </Td>
-              <Td align="right" width={50} className="text-[10px] text-slate-600">
+              <Td align="right" width={50} className="text-sm text-slate-600">
                 {item.qty}
               </Td>
-              <Td align="right" width={90} className="text-[10px] text-slate-600">
+              <Td align="right" width={90} className="text-sm text-slate-600">
                 {money(item.rate)}
               </Td>
-              <Td align="right" width={104} className="text-[11px] font-bold text-slate-900">
+              <Td align="right" width={104} className="text-sm font-bold text-slate-900">
                 {money(item.qty * item.rate)}
               </Td>
             </Tr>
@@ -100,20 +100,20 @@ export function Invoice({ data }: InvoiceProps) {
         <div className="mt-8 flex flex-row justify-end">
           <div className="flex w-[270px] flex-col">
             <div className="flex flex-row justify-between py-1.5">
-              <span className="text-[10px] text-slate-500">Subtotal</span>
-              <span className="text-[10px] font-semibold text-slate-900">{money(subtotal)}</span>
+              <span className="text-sm text-slate-500">Subtotal</span>
+              <span className="text-sm font-semibold text-slate-900">{money(subtotal)}</span>
             </div>
             <div className="flex flex-row justify-between border-b border-slate-200 py-1.5">
-              <span className="text-[10px] text-slate-500">
+              <span className="text-sm text-slate-500">
                 Tax ({(data.taxRate * 100).toFixed(2)}%)
               </span>
-              <span className="text-[10px] font-semibold text-slate-900">{money(tax)}</span>
+              <span className="text-sm font-semibold text-slate-900">{money(tax)}</span>
             </div>
             <div className="mt-3 flex flex-row items-center justify-between rounded-md bg-slate-900 px-4 py-3">
-              <span className="text-[9px] font-semibold uppercase tracking-[1.5pt] text-slate-300">
+              <span className="text-xs font-semibold uppercase tracking-[1.5pt] text-slate-300">
                 Total due
               </span>
-              <span className="text-[19px] font-bold text-white">{money(total)}</span>
+              <span className="text-xl font-bold text-white">{money(total)}</span>
             </div>
           </div>
         </div>
@@ -122,10 +122,10 @@ export function Invoice({ data }: InvoiceProps) {
         <div className="mt-10 flex flex-row items-stretch gap-3 rounded-md bg-slate-50 px-4 py-3">
           <div className="w-[3px] rounded-sm bg-indigo-600" />
           <div className="flex flex-col">
-            <span className="text-[8px] font-semibold uppercase tracking-[1.5pt] text-slate-400">
+            <span className="text-2xs font-semibold uppercase tracking-[1.5pt] text-slate-400">
               Notes
             </span>
-            <p className="mt-1 text-[9.5px] leading-relaxed text-slate-500">{data.notes}</p>
+            <p className="mt-1 text-xs leading-relaxed text-slate-500">{data.notes}</p>
           </div>
         </div>
       </Page>

@@ -20,11 +20,11 @@ export function ShippingLabel({ data }: ShippingLabelProps) {
         <div className="flex h-full flex-col border-[3px] border-black">
           {/* Inverted carrier bar with country badge */}
           <div className="flex flex-row items-center justify-between bg-black px-3 py-2.5">
-            <span className="text-[20px] font-bold uppercase tracking-[0.5pt] text-white">
+            <span className="text-xl font-bold uppercase tracking-[0.5pt] text-white">
               {data.carrier}
             </span>
             <div className="flex items-center justify-center border-2 border-white px-2 py-0.5">
-              <span className="text-[10px] font-bold uppercase tracking-[1pt] text-white">
+              <span className="text-sm font-bold uppercase tracking-[1pt] text-white">
                 {data.to.country}
               </span>
             </div>
@@ -32,21 +32,21 @@ export function ShippingLabel({ data }: ShippingLabelProps) {
 
           {/* Inverted service-class strip (mono weight) */}
           <div className="flex flex-row items-center justify-between border-b-[3px] border-black bg-black px-3 py-1.5">
-            <span className="text-[15px] font-bold uppercase tracking-[1.5pt] text-white">
+            <span className="text-lg font-bold uppercase tracking-[1.5pt] text-white">
               {data.service}
             </span>
-            <span className="font-mono text-[11px] font-bold uppercase tracking-[1pt] text-white">
+            <span className="font-mono text-sm font-bold uppercase tracking-[1pt] text-white">
               {data.weight}
             </span>
           </div>
 
           {/* FROM block - small */}
           <div className="flex flex-col border-b-[3px] border-black px-3 py-2">
-            <span className="text-[7px] font-bold uppercase tracking-[1.5pt] text-black">From</span>
-            <span className="mt-0.5 text-[9px] font-bold uppercase leading-tight text-black">
+            <span className="text-2xs font-bold uppercase tracking-[1.5pt] text-black">From</span>
+            <span className="mt-0.5 text-xs font-bold uppercase leading-tight text-black">
               {data.from.name}
             </span>
-            <span className="text-[8px] font-semibold uppercase leading-snug text-black">
+            <span className="text-2xs font-semibold uppercase leading-snug text-black">
               {data.from.line1}
               {data.from.line2 ? `, ${data.from.line2}` : ''} · {data.from.cityStateZip} ·{' '}
               {data.from.country}
@@ -55,24 +55,24 @@ export function ShippingLabel({ data }: ShippingLabelProps) {
 
           {/* SHIP TO block - dominant, fills remaining space */}
           <div className="flex flex-1 flex-col border-b-[3px] border-black px-3 pb-3 pt-3.5">
-            <span className="text-[7px] font-bold uppercase tracking-[1.5pt] text-black">
+            <span className="text-2xs font-bold uppercase tracking-[1.5pt] text-black">
               Ship To
             </span>
-            <span className="mt-1 text-[26px] font-bold uppercase leading-none text-black">
+            <span className="mt-1 text-2xl font-bold uppercase leading-none text-black">
               {data.to.name}
             </span>
-            <span className="mt-2.5 text-[15px] font-bold uppercase leading-tight text-black">
+            <span className="mt-2.5 text-lg font-bold uppercase leading-tight text-black">
               {data.to.line1}
             </span>
             {data.to.line2 ? (
-              <span className="text-[15px] font-bold uppercase leading-tight text-black">
+              <span className="text-lg font-bold uppercase leading-tight text-black">
                 {data.to.line2}
               </span>
             ) : null}
-            <span className="mt-1 text-[18px] font-bold uppercase leading-tight text-black">
+            <span className="mt-1 text-xl font-bold uppercase leading-tight text-black">
               {data.to.cityStateZip}
             </span>
-            <span className="mt-1 text-[13px] font-bold uppercase leading-tight text-black">
+            <span className="mt-1 text-base font-bold uppercase leading-tight text-black">
               {data.to.country}
             </span>
           </div>
@@ -80,22 +80,22 @@ export function ShippingLabel({ data }: ShippingLabelProps) {
           {/* Boxed ship-date / weight / class row (mono) */}
           <div className="flex flex-row border-b-[3px] border-black">
             <div className="flex flex-1 flex-col border-r-2 border-black px-3 py-1.5">
-              <span className="text-[7px] font-bold uppercase tracking-[1.5pt] text-black">
+              <span className="text-2xs font-bold uppercase tracking-[1.5pt] text-black">
                 Ship Date
               </span>
-              <span className="font-mono text-[11px] font-bold text-black">{data.shipDate}</span>
+              <span className="font-mono text-sm font-bold text-black">{data.shipDate}</span>
             </div>
             <div className="flex flex-1 flex-col border-r-2 border-black px-3 py-1.5">
-              <span className="text-[7px] font-bold uppercase tracking-[1.5pt] text-black">
+              <span className="text-2xs font-bold uppercase tracking-[1.5pt] text-black">
                 Weight
               </span>
-              <span className="font-mono text-[11px] font-bold text-black">{data.weight}</span>
+              <span className="font-mono text-sm font-bold text-black">{data.weight}</span>
             </div>
             <div className="flex flex-[1.4] flex-col px-3 py-1.5">
-              <span className="text-[7px] font-bold uppercase tracking-[1.5pt] text-black">
+              <span className="text-2xs font-bold uppercase tracking-[1.5pt] text-black">
                 Class
               </span>
-              <span className="font-mono text-[11px] font-bold uppercase leading-tight text-black">
+              <span className="font-mono text-sm font-bold uppercase leading-tight text-black">
                 {data.service}
               </span>
             </div>
@@ -104,10 +104,10 @@ export function ShippingLabel({ data }: ShippingLabelProps) {
           {/* Full-width tracking barcode */}
           <div className="flex flex-col items-center px-3 pb-2 pt-2.5">
             <Barcode value={data.trackingNumber} width={262} height={62} />
-            <span className="mt-1.5 font-mono text-[13px] font-bold tracking-[1pt] text-black">
+            <span className="mt-1.5 font-mono text-base font-bold tracking-[1pt] text-black">
               {data.trackingNumber}
             </span>
-            <span className="mt-0.5 text-[7px] font-bold uppercase tracking-[2.5pt] text-black">
+            <span className="mt-0.5 text-2xs font-bold uppercase tracking-[2.5pt] text-black">
               Tracking Number
             </span>
           </div>

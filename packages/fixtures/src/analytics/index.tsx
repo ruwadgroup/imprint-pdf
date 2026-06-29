@@ -58,7 +58,7 @@ function BarChart({ bars }: { bars: AnalyticsBar[] }) {
       <div className="flex h-[134px] flex-row items-end justify-between">
         {bars.map((b, i) => (
           <div key={i} className="flex flex-1 flex-col items-center justify-end">
-            <span className="mb-1.5 font-mono text-[8.5px] font-bold text-slate-900">
+            <span className="mb-1.5 font-mono text-2xs font-bold text-slate-900">
               {(b.value / 1000).toFixed(0)}K
             </span>
             <div
@@ -73,7 +73,7 @@ function BarChart({ bars }: { bars: AnalyticsBar[] }) {
       <div className="flex flex-row border-t border-slate-200 pt-2">
         {bars.map((b, i) => (
           <div key={i} className="flex flex-1 items-center justify-center">
-            <span className="text-[8.5px] font-medium text-slate-500">{b.label}</span>
+            <span className="text-2xs font-medium text-slate-500">{b.label}</span>
           </div>
         ))}
       </div>
@@ -107,18 +107,18 @@ function ConversionTrend({ series }: { series: number[] }) {
           })}
         </div>
         <div className="mt-2 flex flex-row justify-between">
-          <span className="font-mono text-[8px] text-slate-400">{min.toFixed(2)}%</span>
-          <span className="text-[8px] font-medium text-slate-500">10 weeks</span>
-          <span className="font-mono text-[8px] font-bold text-teal-700">{max.toFixed(2)}%</span>
+          <span className="font-mono text-2xs text-slate-400">{min.toFixed(2)}%</span>
+          <span className="text-2xs font-medium text-slate-500">10 weeks</span>
+          <span className="font-mono text-2xs font-bold text-teal-700">{max.toFixed(2)}%</span>
         </div>
       </div>
       {/* current read-out */}
       <div className="flex w-[92px] flex-col justify-center rounded-r border-l-[3px] border-teal-600 bg-slate-50 px-4">
         <Eyebrow className="text-slate-500">Current</Eyebrow>
-        <span className="mt-1 font-mono text-[20px] font-bold tracking-[-0.4pt] text-slate-900">
+        <span className="mt-1 font-mono text-xl font-bold tracking-[-0.4pt] text-slate-900">
           {max.toFixed(2)}%
         </span>
-        <span className="mt-1 font-mono text-[8px] text-slate-400">from {min.toFixed(1)}%</span>
+        <span className="mt-1 font-mono text-2xs text-slate-400">from {min.toFixed(1)}%</span>
       </div>
     </div>
   );
@@ -132,17 +132,17 @@ export function Analytics({ data }: AnalyticsProps) {
         <div className="-mx-14 mb-8 flex flex-row items-end justify-between bg-slate-900 px-14 pb-7 pt-12">
           <div className="flex flex-col">
             <Eyebrow className="text-teal-200">Growth Report · {data.period}</Eyebrow>
-            <h1 className="mt-2 text-[34px] font-bold leading-none tracking-[-1pt]">
+            <h1 className="mt-2 text-4xl font-bold leading-none tracking-[-1pt]">
               <span className="text-white">Growth </span>
               <span className="text-teal-400">Analytics</span>
             </h1>
-            <p className="mt-2.5 text-[10px] text-slate-400">
+            <p className="mt-2.5 text-sm text-slate-400">
               Reporting period <span className="font-semibold text-white">{data.period}</span>
             </p>
           </div>
           <div className="flex flex-row items-center gap-1.5 rounded-full bg-teal-600 px-3 py-1">
             <div className="h-1.5 w-1.5 rounded-full bg-white" />
-            <span className="text-[8px] font-bold uppercase tracking-[1.5pt] text-white">
+            <span className="text-2xs font-bold uppercase tracking-[1.5pt] text-white">
               Live Snapshot
             </span>
           </div>
@@ -155,10 +155,10 @@ export function Analytics({ data }: AnalyticsProps) {
               key={i}
               className="flex w-[164px] flex-col rounded-r border-l-[3px] border-teal-600 bg-slate-50 px-4 py-3.5"
             >
-              <span className="text-[8px] font-semibold uppercase tracking-[1.5pt] text-slate-400">
+              <span className="text-2xs font-semibold uppercase tracking-[1.5pt] text-slate-400">
                 {kpi.label}
               </span>
-              <span className="mt-1.5 font-mono text-[20px] font-bold tracking-[-0.4pt] text-slate-900">
+              <span className="mt-1.5 font-mono text-xl font-bold tracking-[-0.4pt] text-slate-900">
                 {kpi.value}
               </span>
               <div className="mt-1.5 flex flex-row items-center gap-1">
@@ -166,7 +166,7 @@ export function Analytics({ data }: AnalyticsProps) {
                   className={`h-1.5 w-1.5 rotate-45 ${kpi.up ? 'bg-emerald-600' : 'bg-rose-600'}`}
                 />
                 <span
-                  className={`font-mono text-[9px] font-bold ${
+                  className={`font-mono text-xs font-bold ${
                     kpi.up ? 'text-emerald-600' : 'text-rose-600'
                   }`}
                 >
@@ -180,13 +180,13 @@ export function Analytics({ data }: AnalyticsProps) {
         {/* Two charts side by side in cards */}
         <div className="mb-8 flex flex-row gap-3.5">
           <div className="flex flex-[1.35] flex-col rounded-md border border-slate-200 bg-slate-50 px-4 py-3.5">
-            <span className="mb-3 text-[9px] font-bold uppercase tracking-[1.5pt] text-teal-700">
+            <span className="mb-3 text-xs font-bold uppercase tracking-[1.5pt] text-teal-700">
               Sessions by channel
             </span>
             <BarChart bars={data.trafficByChannel} />
           </div>
           <div className="flex flex-1 flex-col rounded-md border border-slate-200 bg-slate-50 px-4 py-3.5">
-            <span className="mb-3 text-[9px] font-bold uppercase tracking-[1.5pt] text-teal-700">
+            <span className="mb-3 text-xs font-bold uppercase tracking-[1.5pt] text-teal-700">
               Conversion rate trend
             </span>
             <div className="flex-1" />
@@ -195,7 +195,7 @@ export function Analytics({ data }: AnalyticsProps) {
         </div>
 
         {/* Ranked table */}
-        <span className="mb-3 text-[9px] font-bold uppercase tracking-[1.5pt] text-teal-700">
+        <span className="mb-3 text-xs font-bold uppercase tracking-[1.5pt] text-teal-700">
           Top pages
         </span>
         <Table>
@@ -217,20 +217,20 @@ export function Analytics({ data }: AnalyticsProps) {
               }`}
             >
               <Td width={36}>
-                <span className="font-mono text-[10px] font-bold text-teal-700">
+                <span className="font-mono text-sm font-bold text-teal-700">
                   {String(i + 1).padStart(2, '0')}
                 </span>
               </Td>
               <Td flex>
-                <span className="font-mono text-[10px] font-medium text-slate-900">{p.page}</span>
+                <span className="font-mono text-sm font-medium text-slate-900">{p.page}</span>
               </Td>
               <Td align="right" width={96}>
-                <span className="text-right font-mono text-[10px] font-bold text-slate-900">
+                <span className="text-right font-mono text-sm font-bold text-slate-900">
                   {num(p.views)}
                 </span>
               </Td>
               <Td align="right" width={72}>
-                <span className="text-right font-mono text-[10px] font-semibold text-slate-600">
+                <span className="text-right font-mono text-sm font-semibold text-slate-600">
                   {p.share.toFixed(1)}%
                 </span>
               </Td>
@@ -241,7 +241,7 @@ export function Analytics({ data }: AnalyticsProps) {
         <div className="flex-1" />
         {/* Footer summary strip */}
         <div className="mt-7 flex flex-row items-center justify-between border-t border-slate-200 pt-3">
-          <span className="text-[8px] uppercase tracking-[1.5pt] text-slate-400">{data.title}</span>
+          <span className="text-2xs uppercase tracking-[1.5pt] text-slate-400">{data.title}</span>
           <div className="flex flex-row items-center gap-2">
             <Pill className="bg-emerald-100 text-emerald-700">5 of 6 KPIs up</Pill>
             <Pill className="bg-rose-100 text-rose-700">Revenue -1.8%</Pill>

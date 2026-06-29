@@ -54,7 +54,7 @@ export function Th({
   align = 'left',
   flex,
   width,
-  className = 'text-[9px] font-semibold uppercase tracking-[1pt] text-white',
+  className = 'text-xs font-semibold uppercase tracking-[1pt] text-white',
   cellClassName = '',
   style,
 }: CellProps) {
@@ -74,7 +74,7 @@ export function Td({
   align = 'left',
   flex,
   width,
-  className = 'text-[10px] text-slate-800',
+  className = 'text-sm text-slate-800',
   cellClassName = '',
   style,
 }: CellProps) {

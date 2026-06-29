@@ -50,6 +50,11 @@ export interface ResolvedStyle {
   borderRightColor?: string;
   borderBottomColor?: string;
   borderLeftColor?: string;
+  borderStyle?: string;
+  borderTopStyle?: string;
+  borderRightStyle?: string;
+  borderBottomStyle?: string;
+  borderLeftStyle?: string;
   borderRadius?: string | number;
   borderTopLeftRadius?: string | number;
   borderTopRightRadius?: string | number;
@@ -102,6 +107,7 @@ export interface ResolvedStyle {
   lineClamp?: string | number;
   textIndent?: string | number;
   color?: string;
+  textShadow?: string;
   transform?: string;
   transformOrigin?: string;
   boxShadow?: string;

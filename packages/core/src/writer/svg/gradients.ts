@@ -45,7 +45,7 @@ function parseStops(el: SvgElement): GradientStop[] {
   return stops;
 }
 
-function buildShadingFunction(page: PDFPage, stops: GradientStop[]): PDFRef {
+export function buildShadingFunction(page: PDFPage, stops: GradientStop[]): PDFRef {
   const ctx = page.doc.context;
   if (stops.length <= 2) {
     const c0 = stops[0]?.color ?? [0, 0, 0];

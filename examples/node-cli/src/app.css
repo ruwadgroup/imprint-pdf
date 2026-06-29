@@ -1,3 +1,4 @@
+@import "@imprint-pdf/react/preset.css";
 @import "tailwindcss";
 
 /* Maps the curated corpus fonts onto Tailwind's `font-*` utilities so the

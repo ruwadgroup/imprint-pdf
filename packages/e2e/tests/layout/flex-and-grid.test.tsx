@@ -42,10 +42,12 @@ describe('flex and grid layout', () => {
     const pdf = await render(
       <Document>
         <Page size="A4" style={{ padding: 24 }}>
+          {/* Fixed-width items so the assertion measures box distribution, not
+              the per-glyph advance difference between L, M and R. */}
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-            <span>L</span>
-            <span>M</span>
-            <span>R</span>
+            <span style={{ width: 20 }}>L</span>
+            <span style={{ width: 20 }}>M</span>
+            <span style={{ width: 20 }}>R</span>
           </div>
         </Page>
       </Document>,

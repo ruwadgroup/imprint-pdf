@@ -1,4 +1,4 @@
-import type { PDFPage } from 'pdf-lib';
+import type { Color, PDFPage } from 'pdf-lib';
 import { degrees, rgb } from 'pdf-lib';
 import type { ComputedGeometry, TextNode } from '../types.js';
 import type { LoadedFont } from '../typography/font-common.js';
@@ -6,6 +6,55 @@ import { selectFont } from '../typography/font-common.js';
 import { measureText } from '../typography/text.js';
 import { normalizeOpacity, parseColor, toPt } from './color.js';
 import { alignTextX } from './coords.js';
+
+interface TextShadow {
+  dx: number;
+  dy: number;
+  color: Color;
+}
+
+/** Split on top-level commas, ignoring those nested in `rgb(...)` etc. */
+function splitShadowList(input: string): string[] {
+  const out: string[] = [];
+  let depth = 0;
+  let start = 0;
+  for (let i = 0; i < input.length; i++) {
+    const ch = input[i];
+    if (ch === '(') depth++;
+    else if (ch === ')') depth--;
+    else if (ch === ',' && depth === 0) {
+      out.push(input.slice(start, i).trim());
+      start = i + 1;
+    }
+  }
+  out.push(input.slice(start).trim());
+  return out;
+}
+
+/** Parse a CSS `text-shadow` value into drawable offset+colour layers (blur is
+ * dropped - PDF has no blur). Offsets resolve px/pt; colour falls back to the
+ * text colour when omitted. */
+function parseTextShadows(value: string | undefined, fallback: Color): TextShadow[] {
+  if (!value || value === 'none') return [];
+  const layers: TextShadow[] = [];
+  for (const part of splitShadowList(value)) {
+    if (!part) continue;
+    const tokens = part.split(/\s+/);
+    const lengths: string[] = [];
+    const colorToks: string[] = [];
+    for (const t of tokens) {
+      if (/^-?[\d.]+(px|pt|rem|em)?$/.test(t)) lengths.push(t);
+      else colorToks.push(t);
+    }
+    if (lengths.length < 2) continue;
+    layers.push({
+      dx: toPt(lengths[0], 0),
+      dy: toPt(lengths[1], 0),
+      color: parseColor(colorToks.join(' ')) ?? fallback,
+    });
+  }
+  return layers;
+}
 
 function firstFontFamily(value: string | undefined): string | undefined {
   return (
@@ -69,6 +118,10 @@ export async function drawText(
   // `fontSize / 20` matches browsers; floor at 0.5pt so it doesn't vanish in print.
   const decorationThickness = Math.max(0.5, fontSize / 20);
 
+  // text-shadow layers, parsed once. CSS paints the first listed shadow on top,
+  // so reverse the list to draw furthest-back first.
+  const textShadows = parseTextShadows(style.textShadow as string | undefined, color).reverse();
+
   for (const line of metrics.lines) {
     const xOffset = line.xOffset ?? 0;
     const lineX = alignTextX(
@@ -77,9 +130,23 @@ export async function drawText(
       wrapWidth - xOffset,
       line.width,
     );
-    const lineY = pageHeight - (geo.y + geo.paddingTop + line.y + fontSize);
+    const lineY = pageHeight - (geo.y + geo.paddingTop + line.y + metrics.baseline);
     // One-fontSize slop each side so edge-straddling glyphs survive.
     if (lineY < -fontSize || lineY > pageHeight + fontSize) continue;
+
+    // text-shadow: draw each shadow layer behind the glyphs (back to front).
+    // PDF has no blur, so only the offset + colour are reproduced.
+    for (const sh of textShadows) {
+      page.drawText(line.text, {
+        x: lineX + sh.dx,
+        y: lineY - sh.dy,
+        font: loadedFont.pdfFont,
+        size: fontSize,
+        color: sh.color,
+        opacity,
+        lineHeight: metrics.lineHeight,
+      });
+    }
 
     page.drawText(line.text, {
       x: lineX,

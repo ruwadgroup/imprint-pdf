@@ -17,12 +17,12 @@ export interface TaxFormProps {
 }
 
 const fieldClass =
-  'h-7 w-full rounded-sm border border-slate-300 bg-white px-2 text-[11px] text-slate-900';
+  'h-7 w-full rounded-sm border border-slate-300 bg-white px-2 text-sm text-slate-900';
 
 /** Uppercase tracked eyebrow label sitting above a bordered input. */
 function FieldLabel({ index, children }: { index?: string; children: string }) {
   return (
-    <span className="text-[8px] font-semibold uppercase tracking-[1.2pt] text-slate-600">
+    <span className="text-2xs font-semibold uppercase tracking-[1.2pt] text-slate-600">
       {index ? <span className="text-blue-700">{index} </span> : null}
       {children}
     </span>
@@ -33,10 +33,10 @@ function FieldLabel({ index, children }: { index?: string; children: string }) {
 function PartHeading({ part, children }: { part: string; children: string }) {
   return (
     <div className="flex flex-row items-center gap-2.5">
-      <span className="rounded-sm bg-blue-700 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[1.5pt] text-white">
+      <span className="rounded-sm bg-blue-700 px-1.5 py-0.5 text-2xs font-bold uppercase tracking-[1.5pt] text-white">
         {part}
       </span>
-      <span className="text-[12px] font-bold tracking-[-0.2pt] text-slate-900">{children}</span>
+      <span className="text-base font-bold tracking-[-0.2pt] text-slate-900">{children}</span>
       <div className="h-px flex-1 bg-slate-300" />
     </div>
   );
@@ -56,27 +56,27 @@ export function TaxForm({ data }: TaxFormProps) {
                 <div className="absolute left-0 top-0 h-[13px] w-[13px] rounded-sm bg-white" />
                 <div className="absolute bottom-0 right-0 h-[13px] w-[13px] rounded-sm bg-blue-300" />
               </div>
-              <span className="text-[12px] font-bold tracking-[-0.2pt] text-white">
+              <span className="text-base font-bold tracking-[-0.2pt] text-white">
                 {data.agency}
               </span>
             </div>
             <div className="mt-3 flex flex-row items-baseline gap-3">
-              <h1 className="text-[40px] font-bold leading-none tracking-[-1pt] text-white">
+              <h1 className="text-4xl font-bold leading-none tracking-[-1pt] text-white">
                 {data.formCode}
               </h1>
-              <span className="rounded-full bg-blue-200 px-2 py-0.5 text-[8px] font-bold uppercase tracking-[1pt] text-blue-900">
+              <span className="rounded-full bg-blue-200 px-2 py-0.5 text-2xs font-bold uppercase tracking-[1pt] text-blue-900">
                 {data.revision}
               </span>
             </div>
-            <p className="mt-2.5 max-w-[340px] text-[10.5px] font-medium leading-snug text-blue-100">
+            <p className="mt-2.5 max-w-[340px] text-sm font-medium leading-snug text-blue-100">
               {data.formTitle}
             </p>
           </div>
           <div className="flex w-[160px] flex-col justify-center rounded-sm border border-white/30 bg-white/10 px-3 py-2.5">
-            <span className="text-[7px] font-bold uppercase tracking-[1.5pt] text-blue-200">
+            <span className="text-2xs font-bold uppercase tracking-[1.5pt] text-blue-200">
               Instructions
             </span>
-            <p className="mt-1.5 text-[8.5px] leading-snug text-blue-50">
+            <p className="mt-1.5 text-2xs leading-snug text-blue-50">
               Give this form to the requester. Do not send it to the IRS.
             </p>
           </div>
@@ -105,7 +105,7 @@ export function TaxForm({ data }: TaxFormProps) {
                 name="tax_classification"
                 options={data.classifications}
                 defaultValue={d.classification}
-                className="grid grid-cols-3 gap-x-4 gap-y-2 text-[10px] text-slate-900"
+                className="grid grid-cols-3 gap-x-4 gap-y-2 text-sm text-slate-900"
               />
             </div>
           </div>
@@ -164,7 +164,7 @@ export function TaxForm({ data }: TaxFormProps) {
                   name="exempt_payee"
                   className="h-3.5 w-3.5 rounded-sm border border-slate-600"
                 />
-                <span className="text-[10px] text-slate-900">
+                <span className="text-sm text-slate-900">
                   I am exempt from backup withholding (exempt payee).
                 </span>
               </div>
@@ -173,7 +173,7 @@ export function TaxForm({ data }: TaxFormProps) {
                   name="exempt_fatca"
                   className="h-3.5 w-3.5 rounded-sm border border-slate-600"
                 />
-                <span className="text-[10px] text-slate-900">
+                <span className="text-sm text-slate-900">
                   I am exempt from FATCA reporting requirements.
                 </span>
               </div>
@@ -183,7 +183,7 @@ export function TaxForm({ data }: TaxFormProps) {
           {/* Part II - Certification */}
           <div className="mt-2 flex flex-col gap-2.5">
             <PartHeading part="Part II">Certification</PartHeading>
-            <p className="text-[9.5px] leading-relaxed text-slate-600">
+            <p className="text-xs leading-relaxed text-slate-600">
               Under penalties of perjury, I certify that: (1) the number shown on this form is my
               correct taxpayer identification number; (2) I am not subject to backup withholding;
               and (3) I am a U.S. citizen or other U.S. person. The Internal Revenue Service does
@@ -197,7 +197,7 @@ export function TaxForm({ data }: TaxFormProps) {
                 defaultChecked
                 className="h-3.5 w-3.5 rounded-sm border border-blue-700"
               />
-              <span className="text-[10px] font-semibold text-slate-900">
+              <span className="text-sm font-semibold text-slate-900">
                 I have read and agree to the certification above.
               </span>
             </div>
@@ -216,12 +216,10 @@ export function TaxForm({ data }: TaxFormProps) {
 
         <div className="flex-1" />
         <div className="mt-8 flex flex-row items-center justify-between border-t border-slate-300 pt-3">
-          <span className="text-[8px] uppercase tracking-[1.5pt] text-slate-400">
+          <span className="text-2xs uppercase tracking-[1.5pt] text-slate-400">
             {data.formCode} &middot; {data.revision}
           </span>
-          <span className="text-[8px] uppercase tracking-[1.5pt] text-slate-400">
-            {data.agency}
-          </span>
+          <span className="text-2xs uppercase tracking-[1.5pt] text-slate-400">{data.agency}</span>
         </div>
       </Page>
     </Document>
