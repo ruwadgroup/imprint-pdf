@@ -84,6 +84,9 @@ export async function mergeWithConfig(options: RenderOptions): Promise<RenderOpt
     if (safelist !== undefined) tw.safelist = safelist;
     const content = callerTw?.content ?? configTw?.content;
     if (content !== undefined) tw.content = content;
+    // A precompiled class map (e.g. from the `imprintTailwind()` build plugin)
+    // is authoritative — render uses it directly and skips runtime compilation.
+    if (callerTw?.classMap !== undefined) tw.classMap = callerTw.classMap;
     tw.projectRoot =
       callerTw?.projectRoot ??
       configTw?.projectRoot ??

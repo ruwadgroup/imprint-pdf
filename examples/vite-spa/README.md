@@ -1,31 +1,35 @@
 # example - vite-spa
 
-Vite + React single-page app whose button renders the `invoice` fixture to a PDF
-entirely in the browser, then opens it in a new tab.
+Vite + React single-page app that renders a PDF **entirely in the browser**
+using the project's real Tailwind theme, then opens it in a new tab.
 
 ## What's shown
 
-The Category E browser glue: import `pdf` from the **standalone** entry, render
-a fixture to bytes, wrap them in a `Blob`, and hand the object URL to
-`window.open`.
+- The bare `import { pdf } from '@imprint-pdf/react'` resolves to the pure-WASM
+  build in the browser via export conditions - no `/standalone`, no patches.
+- `imprint()` from `@imprint-pdf/vite` compiles the PDF's Tailwind classes
+  against `src/app.css` (a custom `@theme`) at **build time**, exposed as
+  `virtual:imprint-classes`. The browser renders with the real theme (e.g. the
+  custom `text-brand` color) and never bundles the Tailwind compiler.
 
 ```ts
-const bytes = await pdf(byId('invoice')!.render(), { as: 'bytes' });
-const url = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
-window.open(url);
+import { classMap } from 'virtual:imprint-classes';
+const bytes = await pdf(<BrandInvoice />, { as: 'bytes', tailwind: { classMap } });
+window.open(URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' })));
 ```
 
 ## Run
 
 ```bash
 pnpm --filter @imprint-pdf/example-vite-spa dev
-# → open the printed localhost URL, click "Open invoice PDF"
+# → open the printed localhost URL, click "Open branded PDF"
 ```
 
 ## DX notes
 
 - **Category:** E (browser, bytes → Blob → `window.open`)
-- **Entry:** browser - `import { pdf } from '@imprint-pdf/react/standalone'`
-- **Glue:** 3 lines (`pdf` → `Blob` → `window.open`)
-- **Rating:** 🟢 - Vite bundles the standalone WASM build with zero extra
-  config.
+- **Entry:** bare `import { pdf } from '@imprint-pdf/react'` (browser condition
+  → WASM build)
+- **Tailwind:** project theme via the `imprint()` build plugin + `classMap` - no
+  Tailwind engine in the bundle
+- **Rating:** 🟢 - one bare import, one plugin, full project theme client-side

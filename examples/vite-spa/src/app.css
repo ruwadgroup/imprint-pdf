@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+/* A custom project theme. The imprintTailwind() build plugin compiles the PDF's
+   classes against this stylesheet (in Node), so `text-brand` resolves to this
+   color in the browser-rendered PDF - no Tailwind engine ships to the client. */
+@theme {
+  --color-brand: oklch(0.55 0.2 270);
+}

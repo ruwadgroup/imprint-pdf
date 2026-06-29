@@ -59,6 +59,55 @@ export function App() {
 }
 ```
 
+## Using your project's Tailwind theme in the browser
+
+`@imprint-pdf/react` is isomorphic — the bare import resolves to the pure-WASM
+build in the browser via package export conditions, so no `/standalone` import
+and no bundler patches are needed.
+
+In the browser the renderer can't run the Tailwind compiler (it pulls Node
+deps), and reading classes off the DOM only sees classes your page's CSS still
+contains — Tailwind purges the rest. The fix is to **precompile** your PDF's
+classes against your project theme at build time (in Node, where Tailwind runs)
+and hand the result to `pdf()`. The `imprint()` Vite plugin does this for you:
+
+```ts
+// vite.config.ts
+import { imprint } from '@imprint-pdf/vite';
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  // scans your source for the PDF's classes and compiles them against your
+  // theme (e.g. ./src/app.css with `@import "tailwindcss"; @theme {…}`),
+  // exposed as the virtual module `virtual:imprint-classes`.
+  plugins: [imprint({ stylesheet: 'src/app.css' })],
+});
+```
+
+```tsx
+import { pdf } from '@imprint-pdf/react';
+import { classMap } from 'virtual:imprint-classes';
+
+// classMap carries your real @theme tokens (custom colors, fonts, spacing).
+// pdf() uses it directly — no Tailwind engine ships to the browser.
+const bytes = await pdf(<Invoice data={data} />, {
+  as: 'bytes',
+  tailwind: { classMap },
+});
+```
+
+Add the virtual-module type to your `vite-env.d.ts`:
+
+```ts
+declare module 'virtual:imprint-classes' {
+  import type { ResolvedStyle } from '@imprint-pdf/core';
+  export const classMap: Record<string, ResolvedStyle>;
+  export const classList: string[];
+}
+```
+
+The full example is `examples/vite-spa`.
+
 ## Dev server + HMR
 
 ```bash
