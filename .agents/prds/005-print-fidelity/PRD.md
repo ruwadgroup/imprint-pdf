@@ -4,7 +4,7 @@ title:
   Print fidelity - text alignment engine, full static Tailwind support, print
   size preset
 slug: 005-print-fidelity
-status: go
+status: done
 tags:
   [
     area:core,
