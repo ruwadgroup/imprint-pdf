@@ -9,8 +9,7 @@
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Status: 1.0.0-alpha](https://img.shields.io/badge/status-1.0.0--alpha-red.svg)](#status)
 
-**A typesafe, edge-native, framework-agnostic PDF library for React. Real
-Tailwind. Real typography. No Chromium.**
+**Generate PDFs from React components, styled with real Tailwind. No Chromium.**
 
 </div>
 
@@ -31,45 +30,46 @@ const response = await pdf(
 
 That's it. `pdf()` returns a `Response` you can hand to any web framework. Pass
 `{ as: 'bytes' }` for a `Uint8Array`, `{ as: 'stream' }` for a `ReadableStream`.
-Everything else is config the library doesn't make you write.
 
 ## Why
 
-Generating a PDF in a JavaScript app shouldn't require launching a 200 MB
-browser. It shouldn't require learning a hand-rolled `StyleSheet` DSL. It
-shouldn't require pushing coordinates by hand. And it should run in the same
-runtime as the rest of your code - Node, Bun, Vercel Edge, Cloudflare Workers,
-the browser.
+Making a PDF in a JavaScript app usually means one of two bad deals: boot a 200
+MB headless Chromium, or learn a bespoke layout DSL and nudge coordinates by
+hand.
 
-imprint-pdf gives you the **actual** Tailwind v4 Oxide compiler, the **actual**
-HarfBuzz shaping engine, the **actual** Knuth–Plass justification algorithm, and
-the **actual** Taffy layout engine (Block + Flexbox + CSS Grid). All Apache-2.0.
-All in one install.
+imprint does neither. You write React and Tailwind - the same code you already
+write - and get a PDF back. It runs wherever your app runs: Node, Bun, the
+browser, and edge runtimes like Vercel Edge and Cloudflare Workers.
+
+The trick is that it uses the real tools, not lookalikes: the actual Tailwind
+compiler, professional text shaping and line-breaking, and a real CSS layout
+engine with Flexbox and Grid. All Apache-2.0, all in one install. (For the
+curious, that's Tailwind Oxide, HarfBuzz, Knuth–Plass, and Taffy.)
 
 ## Features
 
-- **Real Tailwind classes.** `p-4 grid grid-cols-12 gap-6 text-pretty` - the
-  real compiler, not a translator, not a subset. Plugins, arbitrary values,
-  OKLCH colors, and `@theme` design tokens all work. Supports Tailwind v3 and v4
-  - auto-detected from your project's installed version.
-- **Real React.** A custom reconciler. JSX components, refs, hooks. HTML
-  elements (`<div>`, `<h1>`, `<table>`) compile to semantically tagged PDF
-  nodes. Works on React 18 and 19 - both reconciler majors are bundled.
-- **Real typography.** HarfBuzz shaping (Arabic, Indic, Thai, CJK, kerning,
-  ligatures, variable fonts), Knuth–Plass justification, Plass page breaking
-  (widows / orphans / footnotes).
-- **One API.** `pdf(<Doc />)` returns a `Response`.
-  `pdf(<Doc />, { as: 'bytes' })` returns a `Uint8Array`.
-  `pdf(<Doc />, { as: 'stream' })` returns a `ReadableStream`. Same function
-  everywhere - Node, Bun, the browser, edge.
-- **Edge-native.** Sub-100 ms cold on Cloudflare Workers and Vercel Edge.
-- **CSS Grid.** Taffy (Rust → WASM). Block + Flexbox + Grid in one layout pass.
-- **Vector charts.** Recharts, Visx, ECharts, Observable Plot SVG output flows
-  through the vector pipeline - crisp at any zoom, no rasterized PNG.
-- **AcroForms in JSX.** `<TextField>`, `<Checkbox>`, `<RadioGroup>`,
-  `<Signature>` declared as components. Real PDF form fields, not screenshots.
-- **Print-grade output.** PDF/X-4 + CMYK + ICC profiles + PDF/UA-1 tagged PDF +
-  PKCS#7 signing + factur-X / ZUGFeRD, all as opt-in add-ons.
+- **Real Tailwind, not a subset.** Your actual `p-4 grid grid-cols-12 gap-6`
+  classes run through the real compiler - plugins, arbitrary values, OKLCH
+  colors, and `@theme` tokens all work. Tailwind v3 and v4, auto-detected.
+- **Real React.** JSX, components, hooks, and refs, through a custom reconciler.
+  HTML tags (`<div>`, `<h1>`, `<table>`) map to tagged PDF nodes. React 18
+  and 19.
+- **Real typography.** Proper shaping for Arabic, Indic, Thai, and CJK, plus
+  kerning, ligatures, and variable fonts - and paragraph and page breaking that
+  respects widows, orphans, and footnotes.
+- **One function, everywhere.** `pdf(<Doc />)` returns a `Response`;
+  `{ as: 'bytes' }` gives a `Uint8Array`, `{ as: 'stream' }` a `ReadableStream`.
+  Same call on Node, Bun, the browser, and edge.
+- **Edge-ready.** Sub-100 ms cold starts on Cloudflare Workers and Vercel Edge -
+  there is no browser to boot.
+- **CSS Grid and Flexbox.** One real layout pass, not a flexbox-only
+  approximation.
+- **Charts as vectors.** Recharts, Visx, ECharts, and Observable Plot SVG flow
+  through crisp at any zoom - not a rasterized screenshot.
+- **Real form fields.** `<TextField>`, `<Checkbox>`, `<RadioGroup>`, and
+  `<Signature>` become actual PDF AcroForm fields.
+- **Print-grade output, opt-in.** PDF/X-4 + CMYK + ICC profiles, PDF/UA-1 tagged
+  PDF, PKCS#7 signing, and factur-X / ZUGFeRD.
 
 ## Documentation
 
@@ -251,21 +251,17 @@ See [`STABILITY.md`](STABILITY.md) for the full contract.
 ## Sponsor
 
 imprint-pdf is Apache-2.0 and self-funded. If your company ships PDFs through it
-
-- or you'd like to - sponsorship is what unlocks the next milestones on the
-  [roadmap](ROADMAP.md), including the v1.x custom PDF writer that drops the
-  `pdf-lib` runtime dependency for a smaller bundle and edge-friendlier output.
+(or would like to), sponsorship unlocks the next milestones on the
+[roadmap](ROADMAP.md) - including the v1.x custom PDF writer that drops the
+`pdf-lib` runtime dependency for a smaller bundle and edge-friendlier output.
 
 [**GitHub Sponsors → `@tamimbinhakim`**](https://github.com/sponsors/tamimbinhakim)
 
-Backers and sponsors will be credited in releases and the repo README.
-
 ## License
 
-**Apache-2.0** - every package. Engine, React layer, Tailwind compiler, CLI,
-integrations, _and_ the compliance & print add-ons (PDF/X-4 + CMYK + ICC,
-PDF/UA-1 tagged PDF, PKCS#7 signing, factur-X / ZUGFeRD). No commercial seats,
-no time-bombed source. See [`LICENSE`](LICENSE).
+**Apache-2.0** - every package, including the compliance and print add-ons
+(PDF/X-4 + CMYK + ICC, PDF/UA-1 tagged PDF, PKCS#7 signing, factur-X / ZUGFeRD).
+No commercial seats, no time-bombed source. See [`LICENSE`](LICENSE).
 
 ## Contributing
 
@@ -281,4 +277,4 @@ See [`CONTRIBUTING.md`](.github/CONTRIBUTING.md) and
 [`RELEASING.md`](.github/RELEASING.md).
 
 © [Tamim Bin Hakim](https://github.com/tamimbinhakim) and contributors.
-</content> </invoke>
+</content>
