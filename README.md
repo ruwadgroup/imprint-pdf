@@ -9,7 +9,8 @@
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Status: 1.0.0-alpha](https://img.shields.io/badge/status-1.0.0--alpha-red.svg)](#status)
 
-**Generate PDFs from React components, styled with real Tailwind. No Chromium.**
+**Generate PDFs from React components, styled with real Tailwind, without
+Chromium.**
 
 </div>
 
