@@ -7,13 +7,7 @@
 <br />
 
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-[![TypeScript](https://img.shields.io/badge/typescript-strict-blue.svg?logo=typescript&logoColor=white)](tsconfig.base.json)
-[![Code style: Biome](https://img.shields.io/badge/code_style-biome-60a5fa.svg)](https://biomejs.dev/)
-[![pnpm](https://img.shields.io/badge/pnpm-monorepo-f69220.svg?logo=pnpm&logoColor=white)](https://pnpm.io/)
-[![Conventional Commits](https://img.shields.io/badge/conventional_commits-1.0.0-fa6673.svg)](https://www.conventionalcommits.org)
 [![Status: 1.0.0-alpha](https://img.shields.io/badge/status-1.0.0--alpha-red.svg)](#status)
-[![GitHub Repo stars](https://img.shields.io/github/stars/tamimbinhakim/imprint-pdf?style=flat&logo=github)](https://github.com/tamimbinhakim/imprint-pdf/stargazers)
-[![Sponsor](https://img.shields.io/badge/sponsor-%E2%9D%A4-ec4899.svg?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/tamimbinhakim)
 
 **A typesafe, edge-native, framework-agnostic PDF library for React. Real
 Tailwind. Real typography. No Chromium.**
@@ -271,7 +265,7 @@ Backers and sponsors will be credited in releases and the repo README.
 **Apache-2.0** - every package. Engine, React layer, Tailwind compiler, CLI,
 integrations, _and_ the compliance & print add-ons (PDF/X-4 + CMYK + ICC,
 PDF/UA-1 tagged PDF, PKCS#7 signing, factur-X / ZUGFeRD). No commercial seats,
-no time-bombed source. See [`LICENSING.md`](LICENSING.md).
+no time-bombed source. See [`LICENSE`](LICENSE).
 
 ## Contributing
 
@@ -283,8 +277,8 @@ pnpm typecheck   # composite tsc
 pnpm lint        # biome check
 ```
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md) and
-[`.github/RELEASING.md`](.github/RELEASING.md).
+See [`CONTRIBUTING.md`](.github/CONTRIBUTING.md) and
+[`RELEASING.md`](.github/RELEASING.md).
 
 © [Tamim Bin Hakim](https://github.com/tamimbinhakim) and contributors.
 </content> </invoke>
