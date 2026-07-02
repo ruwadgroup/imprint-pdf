@@ -68,7 +68,17 @@ export function withImprint(pluginOptions: ImprintPluginOptions = {}) {
     // Set both keys: `serverExternalPackages` (Next 15+) and
     // `experimental.serverComponentsExternalPackages` (Next 14). Next warns
     // on unknown keys but doesn't error.
-    const imprintExternals = ['@imprint-pdf/next', '@imprint-pdf/react', '@imprint-pdf/core'];
+    // `taffy-wasm` / `harfbuzzjs` ship wasm-bindgen artifacts that webpack
+    // cannot parse (`Can't resolve 'wbg'`) — they must stay runtime requires.
+    // Listing them directly also covers workspace-symlink setups where
+    // externalizing `@imprint-pdf/core` alone doesn't stop the traversal.
+    const imprintExternals = [
+      '@imprint-pdf/next',
+      '@imprint-pdf/react',
+      '@imprint-pdf/core',
+      'taffy-wasm',
+      'harfbuzzjs',
+    ];
     // We resolve the consumer's `tailwindcss` / `postcss` via
     // `createRequire(projectRoot)`, which nft can't statically follow. Marking
     // them external tells nft they're real runtime deps so they get traced
@@ -135,6 +145,21 @@ export function withImprint(pluginOptions: ImprintPluginOptions = {}) {
         config.module ??= {};
         config.module.rules ??= [];
         config.module.rules.push({ test: /\.wasm$/, type: 'webassembly/async' });
+
+        // `serverExternalPackages` only applies to imports resolved from
+        // node_modules; pnpm-workspace symlinks (this repo's own examples)
+        // still get bundled, and webpack then chokes on the wasm-bindgen
+        // artifacts. Force the wasm-bearing deps to stay runtime requires.
+        if (ctx.isServer) {
+          const externals = (config as { externals?: unknown[] }).externals;
+          const wasmExternals = {
+            'taffy-wasm': 'commonjs taffy-wasm',
+            harfbuzzjs: 'commonjs harfbuzzjs',
+          };
+          (config as { externals: unknown }).externals = Array.isArray(externals)
+            ? [...externals, wasmExternals]
+            : [externals, wasmExternals].filter(Boolean);
+        }
 
         // `@imprint-pdf/tailwind/webpack` is inlined into this package's dist
         // via tsup `noExternal`, so the require resolves even though the
