@@ -202,6 +202,12 @@ export function measureText(
   for (const para of inputText.split('\n')) {
     if (lineClamp > 0 && lines.length >= lineClamp) break;
 
+    // Boundary whitespace is significant when this run sits in an inline row
+    // next to sibling runs ("Page " + "2") — keep one space each side so the
+    // measured box reserves it. CSS collapses runs of spaces the same way.
+    const lead = /^[ \t]/.test(para) ? ' ' : '';
+    const trail = /[ \t]$/.test(para) ? ' ' : '';
+
     const words = para.split(/\s+/).filter(Boolean);
     if (!words.length) {
       lines.push({ text: '', width: 0, y, xOffset: 0 });
@@ -214,7 +220,7 @@ export function measureText(
     const indent = isFirstParagraph && textIndent > 0 ? textIndent : 0;
 
     if (nowrap) {
-      let lineText = words.join(' ');
+      let lineText = lead + words.join(' ') + trail;
       const availW = containerWidth > 0 ? containerWidth - indent : Infinity;
       if (ellipsis && availW > 0 && Number.isFinite(availW)) {
         lineText = truncateWithEllipsis(words, spaceW, availW, measure);
@@ -233,7 +239,9 @@ export function measureText(
       for (const lineWords of broken) {
         if (lineClamp > 0 && lines.length >= lineClamp) break;
         if (!lineWords.length) continue;
-        let lineText = lineWords.join(' ');
+        const isFirst = lineIdx === 0;
+        const isLast = lineIdx === broken.length - 1;
+        let lineText = (isFirst ? lead : '') + lineWords.join(' ') + (isLast ? trail : '');
         const w = measure(lineText);
         const xOff = lineIdx === 0 ? indent : 0;
 

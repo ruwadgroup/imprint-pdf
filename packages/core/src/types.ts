@@ -125,6 +125,12 @@ export interface ResolvedStyle {
   overflow?: string;
   overflowX?: string;
   overflowY?: string;
+  /** CSS fragmentation: `avoid` / `avoid-page` keeps this box on one page. */
+  breakInside?: string;
+  /** CSS fragmentation: `page` forces a page break before this box. */
+  breakBefore?: string;
+  /** CSS fragmentation: `page` forces a page break after this box. */
+  breakAfter?: string;
 }
 
 /** Either a named page size (derived from `PAGE_SIZES`) or an explicit `[w, h]` in points. */

@@ -274,11 +274,16 @@ function toTaffyStyle(style: ResolvedStyle, containerWidth: number): Style {
   };
 
   const margin = resolveEdges(style, 'margin', containerWidth);
+  // `auto` margins must reach Taffy as Auto — resolveEdges would resolve them
+  // to the container width (its generic `auto → base` rule), which is how
+  // `mt-auto` once pushed content hundreds of points off the page.
+  const marginSide = (raw: string | number | undefined, resolved: number): LengthPercentageAuto =>
+    raw === 'auto' || (raw === undefined && style.margin === 'auto') ? 'auto' : lpa(resolved);
   s.margin = {
-    top: lpa(margin.top),
-    right: lpa(margin.right),
-    bottom: lpa(margin.bottom),
-    left: lpa(margin.left),
+    top: marginSide(style.marginTop, margin.top),
+    right: marginSide(style.marginRight, margin.right),
+    bottom: marginSide(style.marginBottom, margin.bottom),
+    left: marginSide(style.marginLeft, margin.left),
   };
 
   const gapBase = style.gap !== undefined ? resolvePt(style.gap, containerWidth) : 0;
@@ -368,6 +373,15 @@ function buildNode(
   if (isLeafFixed) {
     const s = toTaffyStyle(node.style, containerWidth);
     const ctx: LeafContext = { node, fixed: true, inheritedStyle: cascaded };
+    const taffyId = tree.newLeafWithContext(s, ctx);
+    return { taffyId, imprintId: node.id, children: [] };
+  }
+
+  // Radio groups render their own option rows at draw time; register them as
+  // measured leaves so the intrinsic (rows × row-height) size reaches Taffy.
+  if (node.type === 'radiogroup') {
+    const s = toTaffyStyle(node.style, containerWidth);
+    const ctx: LeafContext = { node, inheritedStyle: cascaded };
     const taffyId = tree.newLeafWithContext(s, ctx);
     return { taffyId, imprintId: node.id, children: [] };
   }
@@ -512,11 +526,34 @@ async function layoutPage(
         };
       }
 
+      // Radio groups are leaves but have intrinsic height: one row per option.
+      if (node.type === 'radiogroup') {
+        const options = (node.props as { options?: unknown[] }).options ?? [];
+        const style: ResolvedStyle = { ...(ctx.inheritedStyle ?? {}), ...node.style };
+        const fontSize = resolvePt(style.fontSize, 0) || 10.5;
+        const rowH = Math.max(16, fontSize * 1.7);
+        return {
+          width: knownDimensions.width ?? (availW > 0 ? availW : pageW),
+          height: knownDimensions.height ?? options.length * rowH,
+        };
+      }
+
       return { width: knownDimensions.width ?? 0, height: knownDimensions.height ?? 0 };
     },
   );
 
-  geometries.set(pageNode.id, makePageGeo(pageW, pageH));
+  // Record the page's real padding so post-layout passes (pagination) know
+  // where the content box starts and ends.
+  const pagePad = resolveEdges(pageNode.style, 'padding', pageW);
+  geometries.set(pageNode.id, {
+    ...makePageGeo(pageW, pageH),
+    paddingTop: pagePad.top,
+    paddingRight: pagePad.right,
+    paddingBottom: pagePad.bottom,
+    paddingLeft: pagePad.left,
+    contentWidth: pageW - pagePad.left - pagePad.right,
+    contentHeight: pageH - pagePad.top - pagePad.bottom,
+  });
 
   for (const child of rootResult.children) {
     extractGeometries(child, tree, 0, 0, geometries);

@@ -307,6 +307,7 @@ export async function drawNode(
 ): Promise<void> {
   const geo = geometries.get(node.id);
   if (!geo) return;
+  if (node.style.display === 'none') return;
 
   // Only text cascades; other nodes carry their fully resolved style.
   const style =
@@ -401,7 +402,7 @@ export async function drawNode(
       drawCheckbox(node as CheckboxNode, page, doc, pageHeight, geo);
       break;
     case 'radiogroup':
-      drawRadioGroup(node as RadioGroupNode, page, doc, pageHeight, geo);
+      await drawRadioGroup(node as RadioGroupNode, page, doc, pageHeight, geo, fonts);
       break;
     case 'dropdown':
       drawDropdown(node as DropdownNode, page, doc, pageHeight, geo);

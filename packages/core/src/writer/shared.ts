@@ -1,6 +1,7 @@
 import type { PDFDocument as PDFDocumentType, PDFPage } from 'pdf-lib';
 import { PDFDocument } from 'pdf-lib';
 import { resolvePageDimensions } from '../layout/pages.js';
+import { paginateDocument } from '../layout/paginate.js';
 import { substitutePageMarkers } from '../style/variants.js';
 import type {
   AssetResolver,
@@ -72,12 +73,16 @@ function buildNamedDests(document: DocumentNode, pdfPages: PDFPage[]): Map<strin
 
 export async function writePdfWith(
   runtime: WritePdfRuntime,
-  document: DocumentNode,
-  geometries: Map<string, ComputedGeometry>,
+  inputDocument: DocumentNode,
+  inputGeometries: Map<string, ComputedGeometry>,
   fontDeclarations: FontDeclaration[],
   resolver: AssetResolver,
   options: WritePdfOptions = {},
 ): Promise<Uint8Array> {
+  // Overflowing pages split into continuation pages here, so `<PageNumber>` /
+  // `<TotalPages>` and named destinations all see the physical page list.
+  const { document, geometries } = paginateDocument(inputDocument, inputGeometries);
+
   const doc = await PDFDocument.create();
   const fonts = await runtime.loadFonts(doc, fontDeclarations, resolver, options.onAssetError);
 
@@ -142,6 +147,20 @@ export async function writePdfWith(
   ): Promise<void> {
     const cloned = substitutePageMarkers(template, pageIndex, totalPages);
     const geos = await runtime.runLayout(cloned, pageWidth, pageHeight, fonts);
+    // Footers anchor to the physical page bottom (like `position: fixed;
+    // bottom: 0`); authors add bottom padding on the footer for edge clearance.
+    if (template.type === 'footer') {
+      let contentBottom = 0;
+      for (const [id, geo] of geos) {
+        if (id !== cloned.id) contentBottom = Math.max(contentBottom, geo.y + geo.height);
+      }
+      const dy = pageHeight - contentBottom;
+      if (dy > 0) {
+        for (const [id, geo] of geos) {
+          if (id !== cloned.id) geos.set(id, { ...geo, y: geo.y + dy });
+        }
+      }
+    }
     await drawNode(
       cloned,
       page,

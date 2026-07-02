@@ -101,6 +101,9 @@ const PROP_MAP: Partial<Record<string, keyof ResolvedStyle>> = {
   'background-image': 'backgroundImage',
   'object-position': 'objectPosition',
   'aspect-ratio': 'aspectRatio',
+  'break-inside': 'breakInside',
+  'break-before': 'breakBefore',
+  'break-after': 'breakAfter',
 };
 
 // Pre-extract :root custom properties so var() lookups don't rescan the CSS.
@@ -208,7 +211,10 @@ function resolveCalc(value: string): string {
     try {
       const hasDeg = /deg/.test(expr);
       const hasDimension = /\d(?:\.\d+)?(?:rem|px|em|pt)/.test(expr);
-      const withPx = expr.replace(/(\d*\.?\d+)rem/g, (__, n: string) => `${parseFloat(n) * 16}`);
+      // Tailwind v4's `rounded-full` is `calc(infinity * 1px)`; the writer
+      // clamps radii to the CSS max, so any huge finite stand-in works.
+      const withInf = expr.replace(/\binfinity\b/gi, '100000');
+      const withPx = withInf.replace(/(\d*\.?\d+)rem/g, (__, n: string) => `${parseFloat(n) * 16}`);
       const noUnits = withPx.replace(/(\d*\.?\d+)px/g, '$1').replace(/deg/g, '');
       if (/^[\d\s+\-*/().]+$/.test(noUnits)) {
         // biome-ignore lint/security/noGlobalEval: input is regex-restricted to digits and operators

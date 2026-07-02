@@ -146,6 +146,13 @@ function mapType(type: string): PdfNodeType {
   return IMPRINT_TYPES[type] ?? HTML_ALIASES[type] ?? 'view';
 }
 
+// HTML inline elements. A plain view lays out as a block (column), which
+// would stack `<span>text <PageNumber /></span>` into a vertical tower —
+// inline tags holding mixed content default to a baseline row instead (see
+// applyInlineDefaults). Single-text inline nodes keep block behavior so their
+// text still wraps to the container width.
+const INLINE_TAGS = new Set(['span', 'a', 'strong', 'em', 'small', 'code', 'label']);
+
 function resolveStyle(
   className: string | undefined,
   style: Record<string, unknown> | undefined,
@@ -208,6 +215,8 @@ function buildHostConfig(DefaultEventPriority: number): unknown {
       // Tailwind's two-pass pipeline reads className back off the tree.
       const nodeProps: Record<string, unknown> = { ...restProps };
       if (className != null) nodeProps.className = className;
+
+      if (INLINE_TAGS.has(type)) nodeProps.__inline = true;
 
       const node: PdfNode = {
         type: mapType(type),
@@ -424,6 +433,30 @@ function collapseTextChildren(node: PdfNode): void {
   }
 }
 
+// Inline tags holding mixed content (text + element children, left un-merged
+// by collapseTextChildren) would stack vertically as blocks — lay them out as
+// a baseline row instead. Single-child inline nodes keep block behavior so
+// their text wraps to the container width. Runs after collapseTextChildren so
+// pure-text spans have already been merged. Also strips the `__inline` marker.
+function applyInlineDefaults(node: PdfNode): void {
+  const isInline = node.props.__inline === true;
+  if (isInline) delete node.props.__inline;
+  if (
+    isInline &&
+    node.children.length > 1 &&
+    node.style.display === undefined &&
+    node.style.flexDirection === undefined
+  ) {
+    node.style = {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'baseline',
+      ...node.style,
+    };
+  }
+  for (const child of node.children) applyInlineDefaults(child);
+}
+
 export async function buildPdfNodeTree(element: ReactElement): Promise<PdfNode> {
   const cache = await loadReconciler();
   const container: Container = { document: null, nextId: makeIdGenerator() };
@@ -437,5 +470,6 @@ export async function buildPdfNodeTree(element: ReactElement): Promise<PdfNode> 
   }
 
   collapseTextChildren(container.document);
+  applyInlineDefaults(container.document);
   return container.document;
 }

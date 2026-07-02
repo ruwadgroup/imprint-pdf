@@ -51,7 +51,9 @@ function adjustmentRatio(used: number, target: number, stretch: number, shrink: 
 
 function badness(r: number): number {
   if (r < -1) return 10_000;
-  return Math.min(10_000, Math.round(100 * Math.abs(r) ** 3));
+  // No rounding: near-fit ratios must still order, or every "almost full"
+  // page collapses to badness 0 and the DP breaks ties arbitrarily early.
+  return Math.min(10_000, 100 * Math.abs(r) ** 3);
 }
 
 function pageDemerits(r: number, p: number, widowOrphan: number): number {
@@ -111,7 +113,10 @@ export function breakPages(blocks: PageBlock[], options: BreakPagesOptions): Pag
       }
 
       const p = lastBlock || forced ? FORCED : 0;
-      const d = a.demerits + pageDemerits(r, p, widowOrphan);
+      // Ragged bottom: a forced/final break never pays for being underfull,
+      // so earlier pages fill up instead of spreading content evenly.
+      const rEff = p === FORCED && r > 0 ? 0 : r;
+      const d = a.demerits + pageDemerits(rEff, p, widowOrphan);
       if (d < localD) {
         localD = d;
         localBest = { position: b, page: a.page + 1, demerits: d, ratio: r, previous: a };

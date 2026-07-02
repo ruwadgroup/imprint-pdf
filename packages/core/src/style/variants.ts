@@ -19,23 +19,12 @@ function variantsActiveFor(ctx: VariantContext): Set<ImprintVariant> {
   return active;
 }
 
-// `<PageNumber>` / `<TotalPages>` lower to a `view` carrying these flags.
-// Resolved here so the substitution rides the same per-page clone that applies
-// page-* variants — no extra walk. The text node carries empty style; drawText
-// inherits from inline context, matching how the reconciler emits literal text.
-function makeMarkerText(parent: PdfNode, value: string, suffix: string): TextNode {
-  return {
-    type: 'text',
-    id: `${parent.id}-${suffix}`,
-    text: value,
-    style: {},
-    props: {},
-    children: [],
-  };
-}
-
 // Shallow-clones each node so one authored tree can render under different
 // variant contexts (proof PDF then CMYK plate) without cross-contamination.
+// `<PageNumber>` / `<TotalPages>` marker views lower to plain text nodes here,
+// and a container left with only text runs collapses them into one node — so
+// `<span>Page <PageNumber /> of <TotalPages /></span>` measures and draws as
+// the single string "Page 2 of 4" (per-run text loses boundary whitespace).
 function applyToSubtree(node: PdfNode, active: Set<ImprintVariant>, ctx: VariantContext): PdfNode {
   let style = node.style;
   if (node.variants) {
@@ -46,22 +35,61 @@ function applyToSubtree(node: PdfNode, active: Set<ImprintVariant>, ctx: Variant
   }
 
   const props = node.props as Record<string, unknown>;
-  const children: PdfNode[] =
-    props.__pageNumber === true
-      ? [makeMarkerText(node, String(ctx.pageIndex + 1), 'pgn')]
-      : props.__totalPages === true
-        ? [makeMarkerText(node, String(ctx.pageCount), 'tot')]
-        : node.children.map((c) => applyToSubtree(c, active, ctx));
+  if (props.__pageNumber === true || props.__totalPages === true) {
+    const value = props.__pageNumber === true ? String(ctx.pageIndex + 1) : String(ctx.pageCount);
+    return {
+      type: 'text',
+      id: node.id,
+      text: value,
+      style,
+      props: {},
+      children: [],
+    } satisfies TextNode;
+  }
+
+  let children = node.children.map((c) => applyToSubtree(c, active, ctx));
+  if (children.length > 1 && children.every((c) => c.type === 'text')) {
+    const merged = children.map((c) => (c.type === 'text' ? (c.text ?? '') : '')).join('');
+    const first = children[0] as TextNode;
+    children = [{ ...first, text: merged, style, children: [] }];
+  }
 
   return { ...node, style, children } as PdfNode;
 }
 
+// Running elements are document-level by contract, but authoring them inside
+// the first `<Page>` is a natural mistake — without hoisting they'd silently
+// lay out as ordinary in-flow content (the footer would render mid-page).
+const RUNNING_TYPES = new Set(['header', 'footer', 'watermark']);
+
+function hoistRunningElements(document: DocumentNode): DocumentNode {
+  const hoisted: PdfNode[] = [];
+  let changed = false;
+
+  const children = document.children.map((child) => {
+    if (child.type !== 'page') return child;
+    const running = child.children.filter((c) => RUNNING_TYPES.has(c.type));
+    if (running.length === 0) return child;
+    changed = true;
+    for (const node of running) {
+      // First instance of each type wins, matching the document-level rule.
+      if (!hoisted.some((h) => h.type === node.type)) hoisted.push(node);
+    }
+    return { ...child, children: child.children.filter((c) => !RUNNING_TYPES.has(c.type)) };
+  });
+
+  if (!changed) return document;
+  const kept = hoisted.filter((h) => !document.children.some((c) => c.type === h.type));
+  return { ...document, children: [...children, ...kept] } as DocumentNode;
+}
+
 export function applyImprintVariants(document: DocumentNode): DocumentNode {
-  const pageNodes = document.children.filter((c): c is PageNode => c.type === 'page');
+  const normalized = hoistRunningElements(document);
+  const pageNodes = normalized.children.filter((c): c is PageNode => c.type === 'page');
   const pageCount = pageNodes.length;
 
   let pageIndex = 0;
-  const newChildren = document.children.map((child) => {
+  const newChildren = normalized.children.map((child) => {
     if (child.type !== 'page') return child;
     const page = child as PageNode;
     const ctx: VariantContext = {
@@ -74,17 +102,18 @@ export function applyImprintVariants(document: DocumentNode): DocumentNode {
     return applyToSubtree(page, variantsActiveFor(ctx), ctx);
   });
 
-  return { ...document, children: newChildren };
+  return { ...normalized, children: newChildren };
 }
 
 // Per-page substitution for running header/footer/watermark trees — authored
 // once, drawn on every page. Returns a fresh clone with `<PageNumber>` /
-// `<TotalPages>` markers filled in for the given page.
+// `<TotalPages>` markers filled in for the given page. Page variants apply
+// here too, so `page:first:hidden` can keep a running element off a cover.
 export function substitutePageMarkers(
   node: PdfNode,
   pageIndex: number,
   pageCount: number,
 ): PdfNode {
   const ctx: VariantContext = { pageIndex, pageCount, bleed: false, cmyk: false };
-  return applyToSubtree(node, new Set(), ctx);
+  return applyToSubtree(node, variantsActiveFor(ctx), ctx);
 }

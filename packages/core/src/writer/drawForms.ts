@@ -1,5 +1,5 @@
 import type { PDFDocument, PDFPage } from 'pdf-lib';
-import { PDFArray, PDFDict, PDFName, PDFString } from 'pdf-lib';
+import { PDFArray, PDFDict, PDFName, PDFString, rgb } from 'pdf-lib';
 import type {
   ButtonNode,
   CheckboxNode,
@@ -9,9 +9,12 @@ import type {
   ResolvedStyle,
   SignatureNode,
   TextFieldNode,
+  TextNode,
 } from '../types.js';
+import type { LoadedFont } from '../typography/font-common.js';
 import { parseColor, toPt } from './color.js';
 import { pdfY } from './coords.js';
+import { drawText } from './drawText.js';
 
 // Field-flag bits: PDF §12.7.3.1 / §12.7.4.2.1 / §12.7.4.4.1.
 const FF_REQUIRED = 1 << 1;
@@ -39,7 +42,9 @@ function ensureAcroForm(doc: PDFDocument): PDFDict {
   let acroForm = doc.catalog.lookupMaybe(PDFName.of('AcroForm'), PDFDict);
   if (!acroForm) {
     const fields = doc.context.obj([]) as PDFArray;
-    acroForm = doc.context.obj({ Fields: fields }) as PDFDict;
+    // No widget ships an appearance stream; NeedAppearances tells viewers to
+    // synthesize them from /V + /DA (choice fields stay blank without it).
+    acroForm = doc.context.obj({ Fields: fields, NeedAppearances: true }) as PDFDict;
     doc.catalog.set(PDFName.of('AcroForm'), doc.context.register(acroForm));
   }
   return acroForm;
@@ -116,13 +121,14 @@ export function drawCheckbox(
   );
 }
 
-export function drawRadioGroup(
+export async function drawRadioGroup(
   node: RadioGroupNode,
   page: PDFPage,
   doc: PDFDocument,
   pageHeight: number,
   geo: ComputedGeometry,
-): void {
+  fonts: Map<string, LoadedFont>,
+): Promise<void> {
   const { x, y, height } = geo;
   const pdfYPos = pdfY(pageHeight, y, height);
   const props = node.props;
@@ -144,8 +150,11 @@ export function drawRadioGroup(
   if (fields instanceof PDFArray) fields.push(groupRef);
 
   const optH = height / options.length;
-  const radioSize = Math.min(optH * 0.7, 14);
+  const radioSize = Math.min(optH * 0.55, 11);
   const kidsArr = groupDict.lookup(PDFName.of('Kids')) as PDFArray;
+  const fontSize = toPt(node.style.fontSize, 10.5);
+  const labelColor = parseColor(node.style.color as string | undefined) ?? rgb(0.1, 0.13, 0.18);
+  const ringColor = rgb(0.45, 0.51, 0.59);
 
   for (let i = 0; i < options.length; i++) {
     const opt = options[i]!;
@@ -165,6 +174,47 @@ export function drawRadioGroup(
     const widgetRef = doc.context.register(widgetDict);
     kidsArr.push(widgetRef);
     page.node.addAnnot(widgetRef);
+
+    // Visible glyphs: ring + dot printed into the content stream so the group
+    // reads on paper and in viewers that ignore widget defaults.
+    const r = radioSize / 2;
+    page.drawEllipse({
+      x: x + r,
+      y: optCenterY,
+      xScale: r,
+      yScale: r,
+      borderColor: ringColor,
+      borderWidth: 0.9,
+    });
+    if (isChecked) {
+      page.drawEllipse({
+        x: x + r,
+        y: optCenterY,
+        xScale: r * 0.5,
+        yScale: r * 0.5,
+        color: 'red' in labelColor ? labelColor : rgb(0.1, 0.13, 0.18),
+      });
+    }
+
+    // Option label, set with the document's own fonts.
+    const labelNode: TextNode = {
+      type: 'text',
+      id: `${node.id}-opt${i}`,
+      text: opt.label,
+      style: {},
+      props: {},
+      children: [],
+    };
+    const labelGeo: ComputedGeometry = {
+      ...geo,
+      x: x + radioSize + 6,
+      y: y + i * optH + Math.max(0, (optH - fontSize * 1.2) / 2),
+      width: Math.max(0, geo.width - radioSize - 6),
+      height: fontSize * 1.2,
+      contentWidth: Math.max(0, geo.width - radioSize - 6),
+      contentHeight: fontSize * 1.2,
+    };
+    await drawText(labelNode, node.style, page, pageHeight, labelGeo, fonts);
   }
 }
 
