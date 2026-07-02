@@ -142,7 +142,7 @@ public API, CI / dev-tooling tweaks.
 
 ## Releasing
 
-Maintainers only. See [`.github/RELEASING.md`](.github/RELEASING.md).
+Maintainers only. See [`.github/RELEASING.md`](RELEASING.md).
 
 ## Reporting bugs / requesting features
 

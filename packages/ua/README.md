@@ -7,7 +7,7 @@ Mandated by the EU European Accessibility Act (EAA, in force June 2025) and US
 Section 508. This package makes imprint-pdf's output machine-verifiable against
 PDF/UA-1 (ISO 14289-1).
 
-**License: Apache-2.0.** See [`LICENSING.md`](../../LICENSING.md).
+**License: Apache-2.0.** See [`LICENSE`](../../LICENSE).
 
 ```bash
 pnpm add @imprint-pdf/ua

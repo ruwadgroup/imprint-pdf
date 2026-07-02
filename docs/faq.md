@@ -71,8 +71,8 @@ authored as React components, not converted web pages.
 
 Apache-2.0, same as the rest. No time-bomb, no commercial seat requirement —
 `@imprint-pdf/print`, `@imprint-pdf/sign`, and `@imprint-pdf/ua` ship under the
-same license as the engine. See [`LICENSING.md`](../LICENSING.md) for the full
-list and sponsorship contact.
+same license as the engine. See [`LICENSE`](../LICENSE) for the full list and
+sponsorship contact.
 
 ## Does imprint-pdf render existing HTML or web pages?
 

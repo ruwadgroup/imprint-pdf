@@ -3,7 +3,7 @@
 PKCS#7 detached digital signatures and AES-256 encryption for
 [imprint-pdf](https://github.com/tamimbinhakim/imprint-pdf) PDFs.
 
-**License: Apache-2.0.** See [`LICENSING.md`](../../LICENSING.md).
+**License: Apache-2.0.** See [`LICENSE`](../../LICENSE).
 
 ```bash
 pnpm add @imprint-pdf/sign

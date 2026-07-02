@@ -4,17 +4,17 @@ Thanks for using imprint-pdf! Here's how to get help.
 
 ## Documentation
 
-Start with the [docs](docs/README.md):
+Start with the [docs](../docs/README.md):
 
-- [Overview](docs/overview.md)
-- [Quick start](docs/quick-start.md)
-- [Concepts](docs/concepts.md)
-- [Guides](docs/README.md#guides)
-- [Frameworks](docs/README.md#frameworks)
-- [Reference](docs/README.md#reference)
+- [Overview](../docs/overview.md)
+- [Quick start](../docs/quick-start.md)
+- [Concepts](../docs/concepts.md)
+- [Guides](../docs/README.md#guides)
+- [Frameworks](../docs/README.md#frameworks)
+- [Reference](../docs/README.md#reference)
 
-The [README](README.md) covers install, quick-start, and a feature overview. The
-[ARCHITECTURE](ARCHITECTURE.md) doc explains the design.
+The [README](../README.md) covers install, quick-start, and a feature overview.
+The [ARCHITECTURE](../ARCHITECTURE.md) doc explains the design.
 
 ## Bugs
 
@@ -47,7 +47,7 @@ answer.
 File a
 [feature request issue](https://github.com/tamimbinhakim/imprint-pdf/issues/new/choose)
 explaining the use case and what you've already tried. Pre-1.0 the API moves
-quickly; the [roadmap](ROADMAP.md) shows what's planned.
+quickly; the [roadmap](../ROADMAP.md) shows what's planned.
 
 ## Sponsored support
 

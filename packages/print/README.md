@@ -4,7 +4,7 @@ Print-ready output (PDF/X-4, CMYK, ICC profiles, bleed/trim, PDF/A) for
 [imprint-pdf](https://github.com/tamimbinhakim/imprint-pdf). Optional add-on
 package — Apache-2.0 like the rest of the project.
 
-**License: Apache-2.0.** See [`LICENSING.md`](../../LICENSING.md).
+**License: Apache-2.0.** See [`LICENSE`](../../LICENSE).
 
 ```bash
 pnpm add @imprint-pdf/print
