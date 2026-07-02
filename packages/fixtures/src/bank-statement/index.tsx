@@ -49,12 +49,12 @@ export function BankStatement({ data }: BankStatementProps) {
       author={data.bank}
       subject="Monthly bank statement"
     >
-      <Page size="A4" className="bg-white px-14 pb-12 pt-8 font-sans text-slate-900">
+      <Page size="A4" className="bg-white px-14 pb-12 pt-12 font-sans text-slate-900">
         {/* Slim running head — secondary page running-head, NOT the masthead.
             The teal band below is the real masthead on page 1; this thin line
             repeats on continuation pages so the ledger always carries context. */}
         <Header>
-          <div className="mb-5 flex flex-row items-center justify-between border-b border-slate-200 pb-2">
+          <div className="flex flex-row items-center justify-between border-b border-slate-200 px-14 pb-2 pt-4 page-first:hidden">
             <span className="text-2xs font-semibold uppercase tracking-[1.2pt] text-slate-400">
               {data.bank}
             </span>
@@ -66,9 +66,9 @@ export function BankStatement({ data }: BankStatementProps) {
 
         {/* Running footer — masked account + page numbers. */}
         <Footer>
-          <div className="mt-6 flex flex-row items-center justify-between border-t border-slate-200 pt-3">
+          <div className="flex flex-row items-center justify-between border-t border-slate-200 px-14 pb-4 pt-3">
             <span className="font-mono text-2xs text-slate-400">{data.accountNumberMasked}</span>
-            <span className="flex shrink-0 flex-row items-baseline gap-1 whitespace-nowrap font-mono text-2xs text-slate-400">
+            <span className="font-mono text-2xs text-slate-400">
               Page <PageNumber /> / <TotalPages />
             </span>
           </div>
@@ -85,8 +85,11 @@ export function BankStatement({ data }: BankStatementProps) {
               <span className="text-base font-bold tracking-[-0.2pt] text-white">{data.bank}</span>
             </div>
             <h1 className="text-3xl font-bold leading-none tracking-[-1pt] text-white">
-              Statement<span className="font-light"> of Account</span>
+              Statement
             </h1>
+            <span className="mt-1 text-3xl font-light leading-none tracking-[-1pt] text-white">
+              of Account
+            </span>
           </div>
           <div className="flex flex-col items-end gap-2 pt-1">
             <span className="text-2xs font-semibold uppercase tracking-[1.5pt] text-teal-100">

@@ -108,7 +108,6 @@ function ConversionTrend({ series }: { series: number[] }) {
         </div>
         <div className="mt-2 flex flex-row justify-between">
           <span className="font-mono text-2xs text-slate-400">{min.toFixed(2)}%</span>
-          <span className="text-2xs font-medium text-slate-500">10 weeks</span>
           <span className="font-mono text-2xs font-bold text-teal-700">{max.toFixed(2)}%</span>
         </div>
       </div>
@@ -129,7 +128,7 @@ export function Analytics({ data }: AnalyticsProps) {
     <Document title={data.title} author="Growth Team" subject="Analytics dashboard">
       <Page size="A4" className="bg-white px-14 pb-12 pt-0 font-sans text-slate-900">
         {/* Bold header band, full-bleed to the page edges */}
-        <div className="-mx-14 mb-8 flex flex-row items-end justify-between bg-slate-900 px-14 pb-7 pt-12">
+        <div className="-mx-14 mb-6 flex flex-row items-end justify-between bg-slate-900 px-14 pb-6 pt-8">
           <div className="flex flex-col">
             <Eyebrow className="text-teal-200">Growth Report · {data.period}</Eyebrow>
             <h1 className="mt-2 text-4xl font-bold leading-none tracking-[-1pt]">
@@ -148,12 +147,12 @@ export function Analytics({ data }: AnalyticsProps) {
           </div>
         </div>
 
-        {/* KPI card grid - 3 across, 2 rows */}
-        <div className="mb-8 flex flex-row flex-wrap gap-2.5">
+        {/* KPI card grid - 3 across, 2 rows, stretching the full content width */}
+        <div className="mb-6 grid grid-cols-3 gap-2.5 break-inside-avoid">
           {data.kpis.map((kpi, i) => (
             <div
               key={i}
-              className="flex w-[164px] flex-col rounded-r border-l-[3px] border-teal-600 bg-slate-50 px-4 py-3.5"
+              className="flex flex-col rounded-r border-l-[3px] border-teal-600 bg-slate-50 px-4 py-3"
             >
               <span className="text-2xs font-semibold uppercase tracking-[1.5pt] text-slate-400">
                 {kpi.label}
@@ -178,7 +177,7 @@ export function Analytics({ data }: AnalyticsProps) {
         </div>
 
         {/* Two charts side by side in cards */}
-        <div className="mb-8 flex flex-row gap-3.5">
+        <div className="mb-6 flex flex-row gap-3.5 break-inside-avoid">
           <div className="flex flex-[1.35] flex-col rounded-md border border-slate-200 bg-slate-50 px-4 py-3.5">
             <span className="mb-3 text-xs font-bold uppercase tracking-[1.5pt] text-teal-700">
               Sessions by channel
@@ -186,9 +185,12 @@ export function Analytics({ data }: AnalyticsProps) {
             <BarChart bars={data.trafficByChannel} />
           </div>
           <div className="flex flex-1 flex-col rounded-md border border-slate-200 bg-slate-50 px-4 py-3.5">
-            <span className="mb-3 text-xs font-bold uppercase tracking-[1.5pt] text-teal-700">
-              Conversion rate trend
-            </span>
+            <div className="mb-3 flex flex-row items-baseline justify-between">
+              <span className="text-xs font-bold uppercase tracking-[1.5pt] text-teal-700">
+                Conversion rate trend
+              </span>
+              <span className="text-2xs font-medium text-slate-400">10 weeks</span>
+            </div>
             <div className="flex-1" />
             <ConversionTrend series={data.conversionTrend} />
           </div>
@@ -216,20 +218,20 @@ export function Analytics({ data }: AnalyticsProps) {
                 i % 2 === 1 ? 'bg-slate-50' : 'bg-white'
               }`}
             >
-              <Td width={36}>
+              <Td width={36} cellClassName="py-1.5">
                 <span className="font-mono text-sm font-bold text-teal-700">
                   {String(i + 1).padStart(2, '0')}
                 </span>
               </Td>
-              <Td flex>
+              <Td flex cellClassName="py-1.5">
                 <span className="font-mono text-sm font-medium text-slate-900">{p.page}</span>
               </Td>
-              <Td align="right" width={96}>
+              <Td align="right" width={96} cellClassName="py-1.5">
                 <span className="text-right font-mono text-sm font-bold text-slate-900">
                   {num(p.views)}
                 </span>
               </Td>
-              <Td align="right" width={72}>
+              <Td align="right" width={72} cellClassName="py-1.5">
                 <span className="text-right font-mono text-sm font-semibold text-slate-600">
                   {p.share.toFixed(1)}%
                 </span>
@@ -240,7 +242,7 @@ export function Analytics({ data }: AnalyticsProps) {
 
         <div className="flex-1" />
         {/* Footer summary strip */}
-        <div className="mt-7 flex flex-row items-center justify-between border-t border-slate-200 pt-3">
+        <div className="mt-5 flex flex-row items-center justify-between border-t border-slate-200 pt-3">
           <span className="text-2xs uppercase tracking-[1.5pt] text-slate-400">{data.title}</span>
           <div className="flex flex-row items-center gap-2">
             <Pill className="bg-emerald-100 text-emerald-700">5 of 6 KPIs up</Pill>

@@ -17,7 +17,7 @@ export interface ReportProps {
 function RunningHeader({ data }: { data: ReportData }) {
   return (
     <Header>
-      <div className="mb-8 flex flex-row items-center justify-between border-b-[1.5px] border-blue-600 pb-2.5 font-sans">
+      <div className="flex flex-row items-center justify-between border-b-[1.5px] border-blue-600 px-14 pb-2.5 pt-5 font-sans page-first:hidden">
         <span className="text-2xs font-bold uppercase tracking-[2pt] text-blue-600">
           {data.company}
         </span>
@@ -30,7 +30,7 @@ function RunningHeader({ data }: { data: ReportData }) {
 function RunningFooter() {
   return (
     <Footer>
-      <div className="mt-6 flex flex-row items-center justify-between border-t border-slate-200 pt-2.5 font-sans">
+      <div className="flex flex-row items-center justify-between border-t border-slate-200 px-14 pb-4 pt-2.5 font-sans page-first:hidden">
         <span className="text-2xs uppercase tracking-[1.5pt] text-slate-400">
           Confidential - Internal use only
         </span>
@@ -180,7 +180,7 @@ export function Report({ data }: ReportProps) {
       </Page>
 
       {/* ── Page 2 · Executive summary, KPIs, chart, outlook ─────────── */}
-      <Page size="A4" className="bg-white px-14 pb-12 pt-9 font-sans text-slate-900">
+      <Page size="A4" className="bg-white px-14 pb-12 pt-14 font-sans text-slate-900">
         <RunningHeader data={data} />
         <RunningFooter />
 
@@ -315,7 +315,7 @@ export function Report({ data }: ReportProps) {
       </Page>
 
       {/* ── Page 3 · Budget vs Actual ledger ─────────────────────────── */}
-      <Page size="A4" className="bg-white px-14 pb-12 pt-9 font-sans text-slate-900">
+      <Page size="A4" className="bg-white px-14 pb-12 pt-14 font-sans text-slate-900">
         <RunningHeader data={data} />
         <RunningFooter />
 
@@ -373,7 +373,7 @@ export function Report({ data }: ReportProps) {
       </Page>
 
       {/* ── Page 4 · Ledger continued + totals ───────────────────────── */}
-      <Page size="A4" className="bg-white px-14 pb-12 pt-9 font-sans text-slate-900">
+      <Page size="A4" className="bg-white px-14 pb-12 pt-14 font-sans text-slate-900">
         <RunningHeader data={data} />
         <RunningFooter />
 

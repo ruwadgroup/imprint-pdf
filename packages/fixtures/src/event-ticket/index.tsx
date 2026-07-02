@@ -11,7 +11,7 @@ export interface EventTicketProps {
 
 // Vibrant modern concert ticket. Bold full-bleed violet field on the body, a
 // perforated stub on the right in deeper indigo. Sans (Inter) throughout, mono
-// for the scan/ticket code. Fixed 540x220 - keep within the size, no overflow.
+// for the scan/ticket code. Fixed 540x236 - keep within the size, no overflow.
 
 /** Eyebrow-labelled detail cell, light type on the accent field. */
 function Detail({
@@ -38,12 +38,12 @@ export function EventTicket({ data }: EventTicketProps) {
   return (
     <Document title={data.eventName} author={data.brand}>
       <Page
-        size={[540, 220]}
+        size={[540, 236]}
         sizeUnit="pt"
         className="flex flex-row bg-violet-700 font-sans text-white"
       >
         {/* Main ticket body - full-bleed violet accent field */}
-        <div className="flex flex-1 flex-col bg-violet-700 px-6 py-4">
+        <div className="flex flex-1 flex-col bg-violet-700 px-6 py-3.5">
           {/* Top row: brand + LIVE pill */}
           <div className="flex flex-row items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-[3pt] text-violet-200">
@@ -74,17 +74,17 @@ export function EventTicket({ data }: EventTicketProps) {
           <div className="h-px bg-white/20" />
 
           {/* Eyebrow-labelled detail grid */}
-          <div className="mt-3 flex flex-row items-start justify-between">
-            <Detail label="Date" value={data.date} className="w-[150px]" />
-            <Detail label="Doors" value={data.doors} className="w-12" />
+          <div className="mt-2.5 flex flex-row items-start justify-between">
+            <Detail label="Date" value={data.date} sub={data.time} className="w-[140px]" />
+            <Detail label="Doors" value={data.doors} className="w-20" />
             <Detail
               label="Venue"
               value={data.venue}
               sub={data.venueAddress}
-              className="w-[132px]"
+              className="w-[148px]"
             />
           </div>
-          <div className="mt-2.5 flex flex-row items-start gap-6">
+          <div className="mt-2 flex flex-row items-start gap-6">
             <Detail label="Section" value={data.section} />
             <Detail label="Row" value={data.row} />
             <Detail label="Seat" value={data.seat} />

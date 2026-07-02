@@ -10,7 +10,7 @@ export interface BoardingPassProps {
 }
 
 const PAGE_W = 600;
-const PAGE_H = 232;
+const PAGE_H = 248;
 
 function Detail({
   label,
@@ -71,12 +71,12 @@ export function BoardingPass({ data }: BoardingPassProps) {
           </div>
 
           {/* HUGE route line */}
-          <div className="mt-3.5 flex flex-row items-center">
+          <div className="mt-4 flex flex-row items-center">
             <div className="flex flex-col">
-              <span className="text-5xl font-bold leading-none tracking-[-1.5pt]">
+              <span className="text-6xl font-bold leading-none tracking-[-2pt]">
                 {data.from.code}
               </span>
-              <span className="mt-1.5 text-2xs font-semibold uppercase tracking-[1pt] text-slate-500">
+              <span className="mt-2 text-2xs font-semibold uppercase tracking-[1pt] text-slate-500">
                 {data.from.city}
               </span>
             </div>
@@ -87,25 +87,25 @@ export function BoardingPass({ data }: BoardingPassProps) {
             </div>
 
             <div className="flex flex-col items-end">
-              <span className="text-5xl font-bold leading-none tracking-[-1.5pt]">
+              <span className="text-6xl font-bold leading-none tracking-[-2pt]">
                 {data.to.code}
               </span>
-              <span className="mt-1.5 text-2xs font-semibold uppercase tracking-[1pt] text-slate-500">
+              <span className="mt-2 text-2xs font-semibold uppercase tracking-[1pt] text-slate-500">
                 {data.to.city}
               </span>
             </div>
           </div>
 
           {/* Passenger */}
-          <div className="mt-3.5 flex flex-col">
+          <div className="mt-3 flex flex-col">
             <span className="text-2xs font-bold uppercase tracking-[1.4pt] text-slate-400">
               Passenger
             </span>
-            <span className="mt-1 text-lg font-bold tracking-[-0.3pt]">{data.passenger}</span>
+            <span className="mt-1 text-base font-bold tracking-[-0.3pt]">{data.passenger}</span>
           </div>
 
           {/* Detail grid */}
-          <div className="mt-3 flex flex-row justify-between border-t border-slate-200 pt-3">
+          <div className="mt-2.5 flex flex-row justify-between border-t border-slate-200 pt-2.5">
             <Detail label="Flight" value={data.flight} mono />
             <Detail label="Date" value={data.date} />
             <Detail label="Gate" value={data.gate} mono />
@@ -116,17 +116,17 @@ export function BoardingPass({ data }: BoardingPassProps) {
 
           <div className="flex-1" />
 
-          {/* Barcode strip */}
-          <div className="flex flex-row items-end justify-between">
-            <Barcode value={data.barcodeValue} width={300} height={28} />
-            <span className="font-mono text-2xs tracking-[0.4pt] text-slate-400">
+          {/* Barcode strip - code text under the bars so nothing crowds the stub. */}
+          <div className="flex flex-col">
+            <Barcode value={data.barcodeValue} width={300} height={24} />
+            <span className="mt-1 font-mono text-2xs tracking-[0.4pt] text-slate-400">
               {data.barcodeValue}
             </span>
           </div>
         </div>
 
         {/* ---- Perforated tear-off stub ---- */}
-        <div className="flex w-[170px] flex-col border-l-2 border-dashed border-indigo-300 bg-indigo-50 px-4 pb-4 pt-4">
+        <div className="flex w-[170px] flex-col border-l-2 border-dashed border-indigo-300 bg-indigo-50 px-4 pb-3 pt-3">
           <div className="flex flex-row items-center justify-between">
             <span className="text-sm font-bold tracking-[-0.2pt] text-indigo-700">
               {data.airline}
@@ -136,23 +136,23 @@ export function BoardingPass({ data }: BoardingPassProps) {
             </span>
           </div>
 
-          <div className="mt-2 flex flex-row items-center justify-center">
+          <div className="mt-1.5 flex flex-row items-center justify-center">
             <span className="text-xl font-bold tracking-[-0.5pt]">{data.from.code}</span>
             <div className="mx-2 h-1 w-1 rotate-45 bg-indigo-700" />
             <span className="text-xl font-bold tracking-[-0.5pt]">{data.to.code}</span>
           </div>
 
-          <div className="mt-2.5 flex flex-row justify-center">
+          <div className="mt-2 flex flex-row justify-center">
             <div className="rounded bg-white p-1.5">
-              <QrCode value={data.barcodeValue} size={74} />
+              <QrCode value={data.barcodeValue} size={64} />
             </div>
           </div>
 
-          <div className="mt-auto flex flex-row justify-between pt-3">
+          <div className="mt-auto flex flex-row justify-between pt-2">
             <Detail label="Seat" value={data.seat} mono />
             <Detail label="Flight" value={data.flight} mono align="right" />
           </div>
-          <div className="mt-2 flex flex-row justify-between border-t border-indigo-200 pt-2">
+          <div className="mt-1.5 flex flex-row justify-between border-t border-indigo-200 pt-1.5">
             <Detail label="Grp" value={data.group} mono />
             <Detail label="Seq" value={data.sequence} mono align="right" />
           </div>

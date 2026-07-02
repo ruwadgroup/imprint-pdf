@@ -9,7 +9,8 @@ export interface TaxFormData {
     name: string;
     businessName: string;
     address: string;
-    cityStateZip: string;
+    city: string;
+    zip: string;
     ssn: string;
     ein: string;
     classification: string;
@@ -41,7 +42,8 @@ export const taxFormSample: TaxFormData = {
     name: 'Helena Vasquez',
     businessName: 'Northwind Studio LLC',
     address: '500 Market Street, Suite 1200',
-    cityStateZip: 'San Francisco, CA 94105',
+    city: 'San Francisco',
+    zip: '94105',
     ssn: '',
     ein: '47-1234567',
     classification: 'llc',

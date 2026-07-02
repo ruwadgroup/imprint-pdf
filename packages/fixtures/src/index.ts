@@ -30,7 +30,7 @@ export const documents: DocEntry[] = [
     title: 'Invoice',
     description: 'Line-item invoice with a totals block and tax.',
     features: ['tables', 'totals', 'tailwind'],
-    fonts: fontSets.corporate,
+    fonts: fontSets.corporateMono,
     Component: Invoice,
     sampleProps: { data: invoiceSample },
   }),

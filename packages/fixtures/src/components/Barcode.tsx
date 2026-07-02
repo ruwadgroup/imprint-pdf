@@ -42,16 +42,13 @@ export interface BarcodeProps {
 }
 
 export function Barcode({ value, width = 200, height = 48, className = '' }: BarcodeProps) {
-  const bars = bits(value, 48);
+  // 96 modules reads like a real Code128 symbol; 48 renders as fat slabs.
+  const bars = bits(value, 96);
   const barWidth = width / bars.length;
   return (
     <div className={`flex flex-row items-end ${className}`} style={{ width, height }}>
       {bars.map((on, i) => (
-        <div
-          key={i}
-          className={on ? 'bg-black' : 'bg-white'}
-          style={{ width: barWidth, height: on ? height : height * 0.82 }}
-        />
+        <div key={i} className={on ? 'bg-black' : 'bg-white'} style={{ width: barWidth, height }} />
       ))}
     </div>
   );

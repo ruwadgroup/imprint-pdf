@@ -2,6 +2,7 @@ import {
   Checkbox,
   Document,
   Dropdown,
+  Footer,
   Form,
   Page,
   RadioGroup,
@@ -17,13 +18,13 @@ export interface TaxFormProps {
 }
 
 const fieldClass =
-  'h-7 w-full rounded-sm border border-slate-300 bg-white px-2 text-sm text-slate-900';
+  'h-6 w-full rounded-sm border border-slate-300 bg-white px-2 text-sm text-slate-900';
 
 /** Uppercase tracked eyebrow label sitting above a bordered input. */
 function FieldLabel({ index, children }: { index?: string; children: string }) {
   return (
     <span className="text-2xs font-semibold uppercase tracking-[1.2pt] text-slate-600">
-      {index ? <span className="text-blue-700">{index} </span> : null}
+      {index ? <span className="shrink-0 text-blue-700">{index} </span> : null}
       {children}
     </span>
   );
@@ -48,7 +49,7 @@ export function TaxForm({ data }: TaxFormProps) {
     <Document title={`${data.formCode} - ${data.formTitle}`} author={data.agency}>
       <Page size="A4" className="bg-white px-12 pb-10 pt-0 font-sans text-slate-900">
         {/* Bold colored masthead band, bleeding to the page edges */}
-        <div className="-mx-12 flex flex-row items-stretch justify-between gap-6 bg-blue-900 px-12 pb-6 pt-9">
+        <div className="-mx-12 flex flex-row items-stretch justify-between gap-6 bg-blue-900 px-12 pb-4 pt-6">
           <div className="flex flex-col justify-center">
             {/* Brand mark: two offset coloured squares + wordmark */}
             <div className="flex flex-row items-center gap-2">
@@ -82,51 +83,47 @@ export function TaxForm({ data }: TaxFormProps) {
           </div>
         </div>
 
-        <Form name="w9" className="mt-6 flex flex-col gap-4">
+        <Form name="w9" className="mt-4 flex flex-col gap-2.5">
           {/* Part I - Identification */}
           <PartHeading part="Part I">Taxpayer identification</PartHeading>
 
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 break-inside-avoid">
             <FieldLabel index="1.">Name (as shown on your income tax return)</FieldLabel>
             <TextField name="legal_name" required defaultValue={d.name} className={fieldClass} />
           </div>
 
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 break-inside-avoid">
             <FieldLabel index="2.">
               Business name / disregarded entity, if different from above
             </FieldLabel>
             <TextField name="business_name" defaultValue={d.businessName} className={fieldClass} />
           </div>
 
-          <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-1.5 break-inside-avoid">
             <FieldLabel index="3.">Federal tax classification</FieldLabel>
-            <div className="rounded-sm border border-slate-300 bg-slate-50 p-2.5">
+            <div className="rounded-sm border border-slate-300 bg-slate-50 px-3 py-2">
               <RadioGroup
                 name="tax_classification"
                 options={data.classifications}
                 defaultValue={d.classification}
-                className="grid grid-cols-3 gap-x-4 gap-y-2 text-sm text-slate-900"
+                className="text-xs text-slate-900"
               />
             </div>
           </div>
 
-          <div className="flex flex-row gap-4">
+          <div className="flex flex-row gap-4 break-inside-avoid">
             <div className="flex flex-1 flex-col gap-1">
               <FieldLabel index="4.">Address (number, street, and apt. or suite no.)</FieldLabel>
               <TextField name="street_address" defaultValue={d.address} className={fieldClass} />
             </div>
           </div>
 
-          <div className="flex flex-row gap-4">
+          <div className="flex flex-row gap-4 break-inside-avoid">
             <div className="flex flex-1 flex-col gap-1">
-              <FieldLabel index="5.">City, state, and ZIP code</FieldLabel>
-              <TextField
-                name="city_state_zip"
-                defaultValue={d.cityStateZip}
-                className={fieldClass}
-              />
+              <FieldLabel index="5.">City</FieldLabel>
+              <TextField name="city" defaultValue={d.city} className={fieldClass} />
             </div>
-            <div className="flex w-44 flex-col gap-1">
+            <div className="flex w-40 flex-col gap-1">
               <FieldLabel>State</FieldLabel>
               <Dropdown
                 name="state"
@@ -135,9 +132,13 @@ export function TaxForm({ data }: TaxFormProps) {
                 className={fieldClass}
               />
             </div>
+            <div className="flex w-28 flex-col gap-1">
+              <FieldLabel>ZIP code</FieldLabel>
+              <TextField name="zip" defaultValue={d.zip} className={fieldClass} />
+            </div>
           </div>
 
-          <div className="flex flex-row gap-4">
+          <div className="flex flex-row gap-4 break-inside-avoid">
             <div className="flex flex-1 flex-col gap-1">
               <FieldLabel index="6.">Social security number</FieldLabel>
               <TextField
@@ -154,11 +155,11 @@ export function TaxForm({ data }: TaxFormProps) {
           </div>
 
           {/* Panelled exemptions box */}
-          <div className="mt-1 flex flex-col rounded-sm border border-slate-300">
+          <div className="mt-1 flex flex-col rounded-sm border border-slate-300 break-inside-avoid">
             <div className="rounded-t-sm border-b border-slate-300 bg-slate-50 px-3 py-1.5">
               <FieldLabel>Exemptions (codes apply only to certain entities)</FieldLabel>
             </div>
-            <div className="flex flex-col gap-2 px-3 py-2.5">
+            <div className="flex flex-col gap-1.5 px-3 py-2">
               <div className="flex flex-row items-center gap-2">
                 <Checkbox
                   name="exempt_payee"
@@ -181,9 +182,9 @@ export function TaxForm({ data }: TaxFormProps) {
           </div>
 
           {/* Part II - Certification */}
-          <div className="mt-2 flex flex-col gap-2.5">
+          <div className="mt-2 flex flex-col gap-2.5 break-inside-avoid">
             <PartHeading part="Part II">Certification</PartHeading>
-            <p className="text-xs leading-relaxed text-slate-600">
+            <p className="text-xs leading-snug text-slate-600">
               Under penalties of perjury, I certify that: (1) the number shown on this form is my
               correct taxpayer identification number; (2) I am not subject to backup withholding;
               and (3) I am a U.S. citizen or other U.S. person. The Internal Revenue Service does
@@ -201,7 +202,7 @@ export function TaxForm({ data }: TaxFormProps) {
                 I have read and agree to the certification above.
               </span>
             </div>
-            <div className="mt-3 flex flex-row items-end gap-4">
+            <div className="mt-2 flex flex-row items-end gap-4">
               <div className="flex flex-1 flex-col gap-1">
                 <FieldLabel>Signature of U.S. person</FieldLabel>
                 <TextField name="signer_name" className={fieldClass} />
@@ -214,13 +215,16 @@ export function TaxForm({ data }: TaxFormProps) {
           </div>
         </Form>
 
-        <div className="flex-1" />
-        <div className="mt-8 flex flex-row items-center justify-between border-t border-slate-300 pt-3">
-          <span className="text-2xs uppercase tracking-[1.5pt] text-slate-400">
-            {data.formCode} &middot; {data.revision}
-          </span>
-          <span className="text-2xs uppercase tracking-[1.5pt] text-slate-400">{data.agency}</span>
-        </div>
+        <Footer>
+          <div className="flex flex-row items-center justify-between border-t border-slate-300 px-12 pb-4 pt-3">
+            <span className="text-2xs uppercase tracking-[1.5pt] text-slate-400">
+              {data.formCode} &middot; {data.revision}
+            </span>
+            <span className="text-2xs uppercase tracking-[1.5pt] text-slate-400">
+              {data.agency.split(' - ').pop()}
+            </span>
+          </div>
+        </Footer>
       </Page>
     </Document>
   );

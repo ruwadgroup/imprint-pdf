@@ -11,9 +11,11 @@ export interface ReceiptProps {
 }
 
 // Narrow ~80mm thermal receipt: 226pt wide (~80mm) on a snug strip that hugs
-// its content rather than floating on a full A4 sheet.
+// its content rather than floating on a full A4 sheet. Like real thermal
+// paper, the strip grows with the ledger.
 const PAGE_W = 226;
-const PAGE_H = 384;
+const BASE_H = 490;
+const PER_ITEM_H = 29;
 
 // Hairline dotted rule, the visual rhythm of a thermal receipt.
 const Dotted = () => <div className="my-2.5 border-t border-dotted border-slate-400" />;
@@ -53,7 +55,7 @@ export function Receipt({ data }: ReceiptProps) {
   return (
     <Document title={`Receipt ${data.receiptNo}`} author={data.merchant}>
       <Page
-        size={[PAGE_W, PAGE_H]}
+        size={[PAGE_W, BASE_H + data.items.length * PER_ITEM_H]}
         sizeUnit="pt"
         className="bg-white px-5 pb-5 pt-6 font-mono text-slate-900"
       >
@@ -66,7 +68,7 @@ export function Receipt({ data }: ReceiptProps) {
           <h1 className="mt-2 text-center text-base font-bold uppercase tracking-[2pt] text-slate-900">
             {data.merchant}
           </h1>
-          <p className="mt-1.5 max-w-[150px] text-center text-2xs leading-snug text-slate-500">
+          <p className="mt-1.5 max-w-[176px] text-center text-2xs leading-snug text-slate-500">
             {data.address}
           </p>
           <p className="text-2xs leading-snug text-slate-500">{data.phone}</p>

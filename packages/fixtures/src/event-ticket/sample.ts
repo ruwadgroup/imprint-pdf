@@ -3,6 +3,8 @@ export interface EventTicketData {
   eventName: string;
   subtitle: string;
   date: string;
+  /** Show time, rendered as the sub-line under the date. */
+  time: string;
   doors: string;
   venue: string;
   venueAddress: string;
@@ -18,7 +20,8 @@ export const eventTicketSample: EventTicketData = {
   brand: 'LUMEN LIVE',
   eventName: 'Aurora Nights Festival',
   subtitle: 'Main Stage · An evening of orchestral electronica',
-  date: 'Sat, Aug 15 2026 · 8:00 PM',
+  date: 'Sat, Aug 15 2026',
+  time: '8:00 PM',
   doors: '6:30 PM',
   venue: 'Harborfront Amphitheater',
   venueAddress: 'Pier 9, Seattle, WA',

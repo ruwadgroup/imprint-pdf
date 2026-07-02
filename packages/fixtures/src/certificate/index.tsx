@@ -29,13 +29,15 @@ function CornerFlourish({ className }: { className?: string }) {
 
 function Seal({ name }: { name: string }) {
   return (
-    <div className="flex h-[92px] w-[92px] items-center justify-center rounded-full border-2 border-[#b08d57]">
-      <div className="flex h-[76px] w-[76px] flex-col items-center justify-center rounded-full border border-[#b08d57] bg-[#16233f]">
-        <span className="text-2xs font-semibold uppercase tracking-[2pt] text-[#b08d57]">Seal</span>
+    <div className="flex h-[96px] w-[96px] items-center justify-center rounded-full border-2 border-[#b08d57]">
+      <div className="flex h-[80px] w-[80px] flex-col items-center justify-center gap-1 rounded-full border border-[#b08d57] bg-[#16233f]">
+        <span className="text-[5pt] font-semibold uppercase tracking-[1pt] text-[#b08d57]">
+          Sigillum
+        </span>
         <span className="font-display text-xl font-bold leading-none text-white">
           <Initials name={name} />
         </span>
-        <span className="text-2xs font-semibold uppercase tracking-[2pt] text-[#b08d57]">
+        <span className="text-[5pt] font-semibold uppercase tracking-[1pt] text-[#b08d57]">
           Honoris
         </span>
       </div>

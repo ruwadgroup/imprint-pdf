@@ -54,7 +54,7 @@ export function ShippingLabel({ data }: ShippingLabelProps) {
           </div>
 
           {/* SHIP TO block - dominant, fills remaining space */}
-          <div className="flex flex-1 flex-col border-b-[3px] border-black px-3 pb-3 pt-3.5">
+          <div className="flex flex-1 flex-col border-b-[3px] border-black px-3 pb-2.5 pt-2.5">
             <span className="text-2xs font-bold uppercase tracking-[1.5pt] text-black">
               Ship To
             </span>
@@ -102,9 +102,9 @@ export function ShippingLabel({ data }: ShippingLabelProps) {
           </div>
 
           {/* Full-width tracking barcode */}
-          <div className="flex flex-col items-center px-3 pb-2 pt-2.5">
-            <Barcode value={data.trackingNumber} width={262} height={62} />
-            <span className="mt-1.5 font-mono text-base font-bold tracking-[1pt] text-black">
+          <div className="flex flex-col items-center px-3 pb-2 pt-2">
+            <Barcode value={data.trackingNumber} width={262} height={52} />
+            <span className="mt-1 font-mono text-base font-bold tracking-[1pt] text-black">
               {data.trackingNumber}
             </span>
             <span className="mt-0.5 text-2xs font-bold uppercase tracking-[2.5pt] text-black">

@@ -1,4 +1,12 @@
-import { Document, Page, Signature } from '@imprint-pdf/react';
+import {
+  Document,
+  Footer,
+  Header,
+  Page,
+  PageNumber,
+  Signature,
+  TotalPages,
+} from '@imprint-pdf/react';
 import type { ContractClause, ContractData, ContractParty } from './sample.js';
 
 export type { ContractClause, ContractData, ContractParty } from './sample.js';
@@ -25,7 +33,7 @@ function PartyCard({ party }: { party: ContractParty }) {
 /** Numbered clause: accent number + bold sans heading, justified serif body. */
 function Clause({ index, clause }: { index: number; clause: ContractClause }) {
   return (
-    <li className="mb-3.5 flex flex-row gap-2.5">
+    <li className="mb-3.5 flex flex-row gap-2.5 break-inside-avoid">
       {/* Accent index in its own column so the heading stays on one line. */}
       <span className="w-4 font-sans text-sm font-bold tracking-[-0.1pt] text-[#1e3a5f]">
         {index}.
@@ -60,39 +68,31 @@ function SignatureColumn({ party, name }: { party: ContractParty; name: string }
   );
 }
 
-function PageFooter({ title, page }: { title: string; page: number }) {
-  return (
-    <>
-      <div className="flex-1" />
-      <div className="mt-8 flex flex-row justify-between border-t border-slate-200 pt-3">
-        <span className="font-sans text-2xs font-semibold uppercase tracking-[2pt] text-slate-400">
-          {title}
-        </span>
-        <span className="font-sans text-2xs font-semibold uppercase tracking-[2pt] text-slate-400">
-          Page {page} of 2
-        </span>
-      </div>
-    </>
-  );
-}
-
 export function Contract({ data }: ContractProps) {
-  // imprint does not auto-paginate; split clauses so neither page overflows A4.
-  const firstPageClauseCount = 6;
-  const firstClauses = data.clauses.slice(0, firstPageClauseCount);
-  const restClauses = data.clauses.slice(firstPageClauseCount);
-
-  const pageClass = 'bg-white px-16 pb-16 pt-0 font-serif text-slate-900';
-
+  // Clauses flow onto as many pages as they need - the renderer paginates
+  // automatically, repeating the running header rule and footer per page.
   return (
     <Document title={data.title} author={data.partyA.entity}>
-      {/* ---------------------------------------------------------------- Page 1 */}
-      <Page size="A4" className={pageClass}>
-        {/* Full-bleed accent rule at the very top of the page. */}
-        <div className="-mx-16 h-2 bg-[#1e3a5f]" />
+      <Page size="A4" className="bg-white px-16 pb-16 pt-12 font-serif text-slate-900">
+        {/* Full-bleed accent rule at the very top of every page. */}
+        <Header>
+          <div className="h-2 w-full bg-[#1e3a5f]" />
+        </Header>
+
+        {/* Running footer with live page numbers. */}
+        <Footer>
+          <div className="flex flex-row justify-between border-t border-slate-200 px-16 pb-8 pt-3">
+            <span className="font-sans text-2xs font-semibold uppercase tracking-[2pt] text-slate-400">
+              {data.title}
+            </span>
+            <span className="font-sans text-2xs font-semibold uppercase tracking-[2pt] text-slate-400">
+              Page <PageNumber /> of <TotalPages />
+            </span>
+          </div>
+        </Footer>
 
         {/* Confident title block. */}
-        <div className="mt-12 flex flex-col">
+        <div className="flex flex-col">
           <span className="font-sans text-2xs font-semibold uppercase tracking-[2pt] text-[#1e3a5f]">
             Confidential
           </span>
@@ -131,29 +131,15 @@ export function Contract({ data }: ContractProps) {
           ))}
         </div>
 
-        {/* Clauses 1-6. */}
+        {/* Clauses - the full run, flowing across pages. */}
         <ol className="mt-6 flex flex-col">
-          {firstClauses.map((clause, i) => (
+          {data.clauses.map((clause, i) => (
             <Clause key={i} index={i + 1} clause={clause} />
           ))}
         </ol>
 
-        <PageFooter title={data.title} page={1} />
-      </Page>
-
-      {/* ---------------------------------------------------------------- Page 2 */}
-      <Page size="A4" className={pageClass}>
-        <div className="-mx-16 h-2 bg-[#1e3a5f]" />
-
-        {/* Remaining clauses. */}
-        <ol className="mt-12 flex flex-col" start={firstPageClauseCount + 1}>
-          {restClauses.map((clause, i) => (
-            <Clause key={i} index={firstPageClauseCount + i + 1} clause={clause} />
-          ))}
-        </ol>
-
         {/* Notes. */}
-        <div className="mt-3 border-t border-slate-200 pt-3">
+        <div className="mt-3 border-t border-slate-200 pt-3 break-inside-avoid">
           <span className="font-sans text-2xs font-semibold uppercase tracking-[2pt] text-slate-400">
             Notes
           </span>
@@ -173,13 +159,11 @@ export function Contract({ data }: ContractProps) {
           {data.signedAt}, intending to be legally bound, under the laws of {data.governingLaw}.
         </p>
 
-        {/* Signature section. */}
-        <div className="mt-8 flex flex-row gap-12">
+        {/* Signature section - always kept together on one page. */}
+        <div className="mt-8 flex flex-row gap-12 break-inside-avoid">
           <SignatureColumn party={data.partyA} name="party_a_sig" />
           <SignatureColumn party={data.partyB} name="party_b_sig" />
         </div>
-
-        <PageFooter title={data.title} page={2} />
       </Page>
     </Document>
   );
