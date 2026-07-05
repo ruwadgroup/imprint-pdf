@@ -1,6 +1,6 @@
 {
   "name": "@imprint-pdf/fixtures",
-  "version": "0.0.0",
+  "version": "0.0.1-alpha.0",
   "private": true,
   "type": "module",
   "description": "Internal imprint-pdf document corpus — real-world PDF fixtures authored once, consumed by the test matrix, the benchmark suite, and the per-runtime example adapters. Never published.",

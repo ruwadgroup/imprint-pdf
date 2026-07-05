@@ -702,17 +702,17 @@ importers:
   examples/react18-tailwind3-nextjs:
     dependencies:
       '@imprint-pdf/core':
-        specifier: 1.0.0-alpha.9
-        version: 1.0.0-alpha.9
+        specifier: 1.0.0-alpha.10
+        version: 1.0.0-alpha.10
       '@imprint-pdf/fonts':
         specifier: 1.0.0-alpha.6
         version: 1.0.0-alpha.6
       '@imprint-pdf/next':
-        specifier: 1.0.0-alpha.9
-        version: 1.0.0-alpha.9(next@14.2.35(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(postcss@8.5.14)(react@18.3.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))
+        specifier: 1.0.0-alpha.10
+        version: 1.0.0-alpha.10(next@14.2.35(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(postcss@8.5.14)(react@18.3.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))
       '@imprint-pdf/react':
-        specifier: 1.0.0-alpha.9
-        version: 1.0.0-alpha.9(postcss@8.5.14)(react@18.3.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))
+        specifier: 1.0.0-alpha.10
+        version: 1.0.0-alpha.10(postcss@8.5.14)(react@18.3.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))
       next:
         specifier: 14.2.35
         version: 14.2.35(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -3094,16 +3094,16 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@imprint-pdf/core@1.0.0-alpha.9':
-    resolution: {integrity: sha512-1QTyBG50s7dLQ/OzI39kZloRg5GUXi3T8+gLc3EaY4hoh2umKXhd+aHmfRiZTnGNTtoKAy4S7xAym8IGzcDttg==}
+  '@imprint-pdf/core@1.0.0-alpha.10':
+    resolution: {integrity: sha512-mjRFTiKwZWIinkD+Wrf0eRWTm+Mgd2UrR6YstqyRRrS+x2V5aTIlcyXENVqOIXIiECjJkTMgtL83Fs/OMT6YSA==}
     engines: {node: '>=20.0.0'}
 
   '@imprint-pdf/fonts@1.0.0-alpha.6':
     resolution: {integrity: sha512-hQ4gqoiI9/Th+46KcFlyZ3pt0cjWBGcjTolqG2+tvhz6pAoiNiZJHm4s6ewiP70GXz5/NBgfD2ZNBa21bNwajQ==}
     engines: {node: '>=20.0.0'}
 
-  '@imprint-pdf/next@1.0.0-alpha.9':
-    resolution: {integrity: sha512-2jNSjnQifUB+NAGq3CSpI7+5T6IgHTWc+WL+ZbLEIMZPIXfi5GFFVqbVcsigCOSWn0f8lQSg5NEWuZX8jAPg5A==}
+  '@imprint-pdf/next@1.0.0-alpha.10':
+    resolution: {integrity: sha512-Neg+OzgEONhMfhT06oSoQ0VnLgqa321UfCtwhHl++oUuE3Hqww+Jl9+WLpV/Ho8kW9HCrc+3qdt2nPvo0bpSlg==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       next: ^14.0.0 || ^15.0.0 || ^16.0.0
@@ -3116,8 +3116,8 @@ packages:
       tailwindcss:
         optional: true
 
-  '@imprint-pdf/react@1.0.0-alpha.9':
-    resolution: {integrity: sha512-Ss0PUOiMNIQNC2qE8eCH4NNLmIAkjI6sfm2sg9fEpBlIuBQGC/UOug1rDpbiY2G+VN+eO4wT3u3lHMBB4LyKMA==}
+  '@imprint-pdf/react@1.0.0-alpha.10':
+    resolution: {integrity: sha512-3u9xUhkUd7srjk93pzUCnyuqUOSMhhBIkfeiqupI6fsv0o26nkfr85MB2PMPdgoYv+ojecRxZufqFaaifY2Sgw==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       postcss: ^8.4.0
@@ -7138,6 +7138,7 @@ packages:
   git-raw-commits@5.0.1:
     resolution: {integrity: sha512-Y+csSm2GD/PCSh6Isd/WiMjNAydu0VBiG9J7EdQsNA5P9uXvLayqjmTsNlK5Gs9IhblFZqOU0yid5Il5JPoLiQ==}
     engines: {node: '>=18'}
+    deprecated: Deprecated and no longer maintained. Use @conventional-changelog/git-client instead.
     hasBin: true
 
   github-slugger@2.0.0:
@@ -12638,7 +12639,7 @@ snapshots:
   '@img/sharp-win32-x64@0.34.5':
     optional: true
 
-  '@imprint-pdf/core@1.0.0-alpha.9':
+  '@imprint-pdf/core@1.0.0-alpha.10':
     dependencies:
       '@pdf-lib/fontkit': 1.1.1
       fontkit: 2.0.4
@@ -12651,19 +12652,19 @@ snapshots:
     dependencies:
       '@imprint-pdf/core': link:packages/core
 
-  '@imprint-pdf/next@1.0.0-alpha.9(next@14.2.35(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(postcss@8.5.14)(react@18.3.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))':
+  '@imprint-pdf/next@1.0.0-alpha.10(next@14.2.35(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(postcss@8.5.14)(react@18.3.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))':
     dependencies:
-      '@imprint-pdf/core': 1.0.0-alpha.9
-      '@imprint-pdf/react': 1.0.0-alpha.9(postcss@8.5.14)(react@18.3.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))
+      '@imprint-pdf/core': 1.0.0-alpha.10
+      '@imprint-pdf/react': 1.0.0-alpha.10(postcss@8.5.14)(react@18.3.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))
       next: 14.2.35(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
     optionalDependencies:
       postcss: 8.5.14
       tailwindcss: 3.4.19(tsx@4.21.0)(yaml@2.8.3)
 
-  '@imprint-pdf/react@1.0.0-alpha.9(postcss@8.5.14)(react@18.3.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))':
+  '@imprint-pdf/react@1.0.0-alpha.10(postcss@8.5.14)(react@18.3.1)(tailwindcss@3.4.19(tsx@4.21.0)(yaml@2.8.3))':
     dependencies:
-      '@imprint-pdf/core': 1.0.0-alpha.9
+      '@imprint-pdf/core': 1.0.0-alpha.10
       react: 18.3.1
       react-reconciler-18: react-reconciler@0.29.2(react@18.3.1)
       react-reconciler-19: react-reconciler@0.33.0(react@18.3.1)

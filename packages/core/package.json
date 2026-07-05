@@ -1,6 +1,6 @@
 {
   "name": "@imprint-pdf/core",
-  "version": "1.0.0-alpha.10",
+  "version": "1.0.0-alpha.11",
   "description": "Framework-free PDF IR types, layout primitives, asset resolution, and Tailwind CSS processing for imprint-pdf.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",

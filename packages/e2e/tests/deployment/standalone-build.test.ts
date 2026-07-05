@@ -30,13 +30,27 @@
  */
 
 import { type ChildProcess, execFileSync, spawn } from 'node:child_process';
-import { existsSync, readdirSync, readFileSync, realpathSync, rmSync, statSync } from 'node:fs';
+import {
+  cpSync,
+  existsSync,
+  readdirSync,
+  readFileSync,
+  realpathSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
 import { createServer } from 'node:net';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
-const SKIP = process.env.SKIP_DEPLOYMENT_SMOKE === '1';
+// Skipped on Windows: this boots a Next `output: 'standalone'` server through
+// `pnpm`/`next` child processes (a Linux/serverless deployment shape, which is
+// what imprint actually deploys to). `execFileSync('pnpm', …)` can't resolve
+// the `pnpm.cmd` shim without a shell on Windows, and Windows isn't a
+// deployment target, so there's nothing to smoke-test there.
+const SKIP = process.env.SKIP_DEPLOYMENT_SMOKE === '1' || process.platform === 'win32';
 const describeOrSkip = SKIP ? describe.skip : describe;
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -55,10 +69,32 @@ function findFirstDir(parent: string, prefix: string): string | undefined {
   return undefined;
 }
 
-function copyOverlay(srcFile: string, destFile: string): void {
-  if (!existsSync(srcFile)) return;
-  if (!existsSync(dirname(destFile))) return; // skip if the target package isn't installed
-  execFileSync('cp', [srcFile, destFile]);
+// Overlay a freshly-built workspace package onto its published-version install.
+//
+// Copies the whole workspace `dist/` (so every entry point the new code
+// references exists — e.g. core now emits `browser.js`, react emits
+// `standalone.js`) and patches the resolution fields (`exports`/`main`/
+// `module`/`types`) into the installed `package.json`. Those fields are what
+// changed with the isomorphic entry work: the published tarball's `exports`
+// map lags the new dist (published `core@alpha.9` has no `./browser` export,
+// but the new react dist imports `@imprint-pdf/core/browser`). `dependencies`
+// are left untouched — the published install already has the right packages on
+// disk, so we simulate the *next* tarball's code + resolution shape without
+// dragging pnpm `catalog:`/`workspace:*` specifiers into the build.
+function overlayPackage(pkgDir: string, realDir: string): void {
+  const srcDist = resolve(REPO_ROOT, pkgDir, 'dist');
+  if (existsSync(srcDist)) {
+    cpSync(srcDist, resolve(realDir, 'dist'), { recursive: true });
+  }
+
+  const srcPkg = JSON.parse(readFileSync(resolve(REPO_ROOT, pkgDir, 'package.json'), 'utf8'));
+  const destPkgPath = resolve(realDir, 'package.json');
+  const destPkg = JSON.parse(readFileSync(destPkgPath, 'utf8'));
+  for (const field of ['exports', 'main', 'module', 'types'] as const) {
+    if (srcPkg[field] !== undefined) destPkg[field] = srcPkg[field];
+    else delete destPkg[field];
+  }
+  writeFileSync(destPkgPath, `${JSON.stringify(destPkg, null, 2)}\n`);
 }
 
 function pickFreePort(): Promise<number> {
@@ -136,32 +172,9 @@ describeOrSkip('standalone deployment smoke', () => {
       return realpathSync(link);
     };
 
-    const reactReal = resolvePkgRealDir('react');
-    const coreReal = resolvePkgRealDir('core');
-    const nextReal = resolvePkgRealDir('next');
-
-    const overlay = (pkgDir: string, distRelPath: string) => {
-      copyOverlay(
-        resolve(REPO_ROOT, pkgDir, distRelPath),
-        resolve(
-          pkgDir === 'packages/react'
-            ? reactReal
-            : pkgDir === 'packages/core'
-              ? coreReal
-              : nextReal,
-          distRelPath,
-        ),
-      );
-    };
-
-    overlay('packages/react', 'dist/index.js');
-    overlay('packages/react', 'dist/index.cjs');
-    overlay('packages/core', 'dist/index.js');
-    overlay('packages/core', 'dist/index.cjs');
-    overlay('packages/next', 'dist/plugin.js');
-    overlay('packages/next', 'dist/plugin.cjs');
-    overlay('packages/next', 'dist/index.js');
-    overlay('packages/next', 'dist/index.cjs');
+    overlayPackage('packages/react', resolvePkgRealDir('react'));
+    overlayPackage('packages/core', resolvePkgRealDir('core'));
+    overlayPackage('packages/next', resolvePkgRealDir('next'));
 
     // 3. Fresh next build.
     rmSync(resolve(EXAMPLE_DIR, '.next'), { recursive: true, force: true });

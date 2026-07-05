@@ -1,6 +1,6 @@
 {
   "name": "@imprint-pdf/fonts",
-  "version": "1.0.0-alpha.6",
+  "version": "1.0.0-alpha.7",
   "description": "Ergonomic font declarations for imprint-pdf — Google Fonts via Fontsource, zero-config.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
@@ -11,7 +11,13 @@
   },
   "homepage": "https://github.com/tamimbinhakim/imprint-pdf/tree/main/packages/fonts#readme",
   "bugs": "https://github.com/tamimbinhakim/imprint-pdf/issues",
-  "keywords": ["pdf", "fonts", "google-fonts", "fontsource", "imprint"],
+  "keywords": [
+    "pdf",
+    "fonts",
+    "google-fonts",
+    "fontsource",
+    "imprint"
+  ],
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -52,7 +58,13 @@
     },
     "./package.json": "./package.json"
   },
-  "files": ["dist", "data", "README.md", "CHANGELOG.md", "LICENSE"],
+  "files": [
+    "dist",
+    "data",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
