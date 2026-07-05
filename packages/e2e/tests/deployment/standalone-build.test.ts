@@ -45,7 +45,12 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
-const SKIP = process.env.SKIP_DEPLOYMENT_SMOKE === '1';
+// Skipped on Windows: this boots a Next `output: 'standalone'` server through
+// `pnpm`/`next` child processes (a Linux/serverless deployment shape, which is
+// what imprint actually deploys to). `execFileSync('pnpm', …)` can't resolve
+// the `pnpm.cmd` shim without a shell on Windows, and Windows isn't a
+// deployment target, so there's nothing to smoke-test there.
+const SKIP = process.env.SKIP_DEPLOYMENT_SMOKE === '1' || process.platform === 'win32';
 const describeOrSkip = SKIP ? describe.skip : describe;
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
