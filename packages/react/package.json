@@ -1,6 +1,6 @@
 {
   "name": "@imprint-pdf/react",
-  "version": "1.0.0-alpha.10",
+  "version": "1.0.0-alpha.11",
   "description": "React components and reconciler for imprint-pdf — Document, Page, View, Text, Image, Svg, Form, and chart adapters.",
   "license": "Apache-2.0",
   "author": "Tamim Bin Hakim <tamimbinhakim.work@gmail.com>",
@@ -67,8 +67,12 @@
     "tailwindcss": "^3.4.0 || ^4.0.0"
   },
   "peerDependenciesMeta": {
-    "postcss": { "optional": true },
-    "tailwindcss": { "optional": true }
+    "postcss": {
+      "optional": true
+    },
+    "tailwindcss": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@imprint-pdf/tailwind": "workspace:*",
