@@ -17,9 +17,9 @@
   },
   "devDependencies": {
     "@types/node": "catalog:",
-    "nuxt": "^3.0.0",
+    "nuxt": "^3.21.9",
     "typescript": "catalog:",
-    "vue": "^3.0.0",
+    "vue": "^3.5.40",
     "vue-tsc": "^2.0.0"
   }
 }
